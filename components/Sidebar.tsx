@@ -77,23 +77,6 @@ const MENU_GROUPS = [
     ]
   },
   {
-    title: "Books",
-    icon: Library,
-    color: "text-green-400",
-    items: [
-      { name: "Reading Tracker", path: "/dashboard" },
-      { name: "Text Library", path: "/library" },
-    ]
-  },
-  {
-    title: "Portfolio",
-    icon: Briefcase,
-    color: "text-pink-400",
-    items: [
-      { name: "Case Study Generator", path: "/tools/case-study-generator" },
-    ]
-  },
-  {
     title: "History",
     icon: History,
     color: "text-foreground",
