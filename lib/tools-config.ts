@@ -206,5 +206,13 @@ export const TOOLS: ToolConfig[] = [
     icon: "Briefcase",
     type: "textarea",
     systemPrompt: "Transform the provided literary analysis notes into a structured, professional Portfolio Case Study. Include: Challenge, Methodology, Key Findings, and Conclusion. Respond in Indonesian using Markdown."
+  },
+  {
+    id: "imagery-grader",
+    title: "Imagery Grader",
+    description: "Evaluasi kualitas terjemahan citraan (imagery) sastra.",
+    icon: "CheckCircle",
+    type: "textarea",
+    systemPrompt: "You are an Imagery Grader. The user will provide an original literary text and their translation. Evaluate how well the sensory details, emotional resonance, and imagery were preserved in the translation. Give a score out of 10 and suggest improvements. Respond in Indonesian using Markdown."
   }
 ];

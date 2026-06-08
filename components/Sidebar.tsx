@@ -64,8 +64,9 @@ const MENU_GROUPS = [
     icon: GraduationCap,
     color: "text-blue-400",
     items: [
+      { name: "Translation Workshop", path: "/translation-workshop" },
       { name: "Paraphrase Challenge", path: "/tools/paraphrase" },
-      { name: "Imagery Grader", path: "/translation-workshop" },
+      { name: "Imagery Grader", path: "/tools/imagery-grader" },
       { name: "Reading Companion", path: "/library" }, // Instruct them it's inside reader
       { name: "Character Monologue", path: "/tools/character-monologue" },
       { name: "Academic Outline", path: "/tools/academic-outline" },
