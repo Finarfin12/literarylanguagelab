@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Plus, Sparkles } from "lucide-react";
 
 export default async function LibraryPage() {
   const supabase = await createClient();
@@ -13,10 +13,21 @@ export default async function LibraryPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-serif font-bold text-foreground">Text Library</h1>
-        <p className="text-muted-foreground mt-2">Pilih teks sastra untuk mulai membaca dan belajar.</p>
+    <div className="p-8 max-w-5xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
+        <div>
+          <h1 className="text-4xl font-serif font-bold text-foreground">Text Library</h1>
+          <p className="text-muted-foreground mt-2">Pilih teks sastra untuk mulai membaca dan belajar.</p>
+        </div>
+        <div className="flex gap-3">
+          <Link
+            href="/library/add"
+            className="flex items-center gap-2 px-6 py-3 bg-brand text-background font-bold rounded-xl hover:bg-brand-hover hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-brand/20"
+          >
+            <Sparkles className="w-5 h-5" />
+            <span>Generate & Add Text</span>
+          </Link>
+        </div>
       </div>
 
       {error && (
@@ -28,8 +39,8 @@ export default async function LibraryPage() {
       {texts?.length === 0 ? (
         <div className="text-center p-12 border border-dashed border-border rounded-xl">
           <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-xl font-medium text-foreground">Belum ada teks tersedia</h3>
-          <p className="text-muted-foreground mt-2">Tambahkan teks melalui Supabase Dashboard untuk memunculkannya di sini.</p>
+          <h3 className="text-xl font-serif font-bold text-foreground mb-2">Belum ada teks tersedia</h3>
+          <p className="text-muted-foreground">Klik tombol "Generate & Add Text" di atas untuk membuat teks karya sastra secara otomatis dengan AI.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
