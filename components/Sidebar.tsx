@@ -54,7 +54,8 @@ const MENU_GROUPS = [
       { name: "Nuance Detector", path: "/tools/nuance-detector" },
       { name: "Metaphor Generator", path: "/tools/metaphor-generator" },
       { name: "Time Traveler", path: "/tools/time-traveler" },
-      { name: "Lexicon Search", path: "/vocabulary" },
+      { name: "Lexicon Search", path: "/tools/lexicon-search" },
+      { name: "Vocabulary Bank", path: "/vocabulary" },
       { name: "Idiom Library", path: "/idioms" },
       { name: "Flashcard Mode", path: "/vocabulary/review" },
     ]
