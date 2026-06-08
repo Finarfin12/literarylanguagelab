@@ -20,7 +20,7 @@ export default async function RegisterPage({
           <p className="text-muted-foreground">Create an account to build your vocabulary bank.</p>
         </div>
 
-        <form className="space-y-6">
+        <form action={signup} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2" htmlFor="fullName">
               Full Name
@@ -64,7 +64,6 @@ export default async function RegisterPage({
           </div>
 
           <SubmitButton
-            formAction={signup}
             className="w-full rounded-xl bg-blue-500 px-4 py-3.5 text-sm font-bold text-background transition-all hover:bg-blue-600 hover:scale-[1.02] active:scale-95 shadow-lg shadow-blue-500/20"
           >
             Create Account

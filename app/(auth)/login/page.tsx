@@ -20,7 +20,7 @@ export default async function LoginPage({
           <p className="text-muted-foreground">Welcome back. Please log in to continue your journey.</p>
         </div>
 
-        <form className="space-y-6">
+        <form action={login} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2" htmlFor="email">
               Email Address
@@ -50,7 +50,6 @@ export default async function LoginPage({
           </div>
 
           <SubmitButton
-            formAction={login}
             className="w-full rounded-xl bg-brand px-4 py-3.5 text-sm font-bold text-background transition-all hover:bg-brand-hover hover:scale-[1.02] active:scale-95 shadow-lg shadow-brand/20"
           >
             Sign In
