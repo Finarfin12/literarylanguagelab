@@ -1,154 +1,170 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Save, Check, Loader2, BookA, Info, Quote } from "lucide-react";
-import { createClient } from "@/utils/supabase/client";
+import { X, BookOpen, BookmarkPlus, Loader2, Globe, Wind, Sparkles } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 interface WordLookupSidebarProps {
   word: string | null;
   contextSentence: string | null;
+  textId: string;
   title: string;
   author: string;
-  textId: string;
   onClose: () => void;
 }
 
-export default function WordLookupSidebar({ word, contextSentence, title, author, textId, onClose }: WordLookupSidebarProps) {
+const MODES = [
+  { id: "dictionary", label: "Dictionary", icon: BookOpen },
+  { id: "cultural", label: "Cultural Context", icon: Globe },
+  { id: "nuance", label: "Nuance Detector", icon: Wind },
+  { id: "synonyms", label: "Literary Synonyms", icon: Sparkles }
+];
+
+export default function WordLookupSidebar({ word, contextSentence, textId, title, author, onClose }: WordLookupSidebarProps) {
+  const [activeMode, setActiveMode] = useState("dictionary");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
-  
-  const supabase = createClient();
+  const [saved, setSaved] = useState(false);
+
+  // Cached results to prevent refetching when switching modes
+  const [cache, setCache] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (!word) return;
-    
-    const fetchDefinition = async () => {
-      setLoading(true);
-      setError(null);
+    if (word) {
+      setCache({}); // Reset cache for new word
       setResult(null);
       setSaved(false);
-      
-      try {
-        const res = await fetch("/api/lookup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            word,
-            contextSentence,
-            title,
-            author,
-          }),
-        });
-        
-        const data = await res.json();
-        
-        if (!res.ok) throw new Error(data.error || "Failed to analyze word");
-        
-        setResult(data.result);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchDefinition();
-  }, [word, contextSentence, title, author]);
+      fetchAnalysis(word, "dictionary", true);
+    }
+  }, [word]);
 
-  const handleSave = async () => {
-    if (!word || !result) return;
-    setSaving(true);
+  const fetchAnalysis = async (targetWord: string, mode: string, initialLoad: boolean = false) => {
+    setActiveMode(mode);
     
+    if (cache[mode] && !initialLoad) {
+      setResult(cache[mode]);
+      return;
+    }
+
+    setLoading(true);
+    setResult(null);
+
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-      
-      const { error } = await supabase.from("vocabulary").insert({
-        user_id: user.id,
-        word: word,
-        definition: result, // For MVP we save the raw Groq response
-        context_sentence: contextSentence,
-        context_source: title,
-        register: "Extracted by AI", // Will parse properly in Phase 2
+      const res = await fetch("/api/lookup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ word: targetWord, contextSentence, mode }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      setResult(data.result);
+      setCache(prev => ({ ...prev, [mode]: data.result }));
+    } catch (error) {
+      setResult("Terjadi kesalahan saat menganalisis kata.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveToVocab = async () => {
+    if (!word || !result) return;
+    
+    setSaving(true);
+    try {
+      const res = await fetch("/api/vocabulary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          word,
+          definition: cache["dictionary"] || result, // Prefer dictionary definition for saving
+          contextSentence,
+          contextSource: `${title} by ${author}`,
+          masteryLevel: 0
+        })
       });
       
-      if (error) throw error;
-      setSaved(true);
-    } catch (err: any) {
-      alert("Failed to save: " + err.message);
+      if (res.ok) {
+        setSaved(true);
+      }
+    } catch (error) {
+      alert("Failed to save vocabulary");
     } finally {
       setSaving(false);
     }
   };
 
+  if (!word) return null;
+
   return (
-    <div className="h-full flex flex-col">
-      <div className="p-4 border-b border-border flex items-center justify-between bg-card z-10">
-        <h3 className="font-serif font-bold text-lg text-foreground flex items-center gap-2">
-          <BookA className="w-5 h-5 text-brand" /> Word Analysis
-        </h3>
-        <button onClick={onClose} className="p-2 text-muted-foreground hover:text-foreground rounded-md hover:bg-white/5 transition-colors">
+    <div className="flex flex-col h-full bg-background/80 backdrop-blur-xl relative overflow-hidden">
+      {/* Header */}
+      <div className="p-6 border-b border-white/10 flex items-center justify-between z-10 relative">
+        <h2 className="text-2xl font-serif font-bold text-foreground truncate max-w-[200px]">{word}</h2>
+        <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-muted-foreground transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
-      
-      <div className="flex-1 overflow-y-auto p-6">
-        {!word ? (
-          <div className="flex flex-col items-center justify-center h-full text-muted-foreground text-center">
-            <Info className="w-12 h-12 mb-4 opacity-20" />
-            <p>Highlight any word or phrase in the text to see its meaning and context.</p>
+
+      {/* Modes Grid */}
+      <div className="p-4 grid grid-cols-2 gap-2 border-b border-white/10 z-10 relative">
+        {MODES.map((m) => {
+          const Icon = m.icon;
+          const isActive = activeMode === m.id;
+          return (
+            <button
+              key={m.id}
+              onClick={() => fetchAnalysis(word, m.id)}
+              disabled={loading && !isActive}
+              className={`flex items-center gap-2 p-3 rounded-xl text-xs font-medium transition-all ${
+                isActive 
+                  ? "bg-brand/20 text-brand border border-brand/30 shadow-inner" 
+                  : "bg-white/5 text-muted-foreground hover:bg-white/10 border border-transparent"
+              } ${(loading && !isActive) ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              <Icon className="w-4 h-4" />
+              <span>{m.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto p-6 z-10 relative">
+        <div className="bg-card/50 border border-white/5 rounded-2xl p-5 mb-6">
+          <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider font-bold">Konteks Kalimat</p>
+          <p className="text-sm italic text-foreground/80 leading-relaxed">"{contextSentence}"</p>
+        </div>
+
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12 text-brand">
+            <Loader2 className="w-10 h-10 animate-spin mb-4" />
+            <p className="text-sm font-medium animate-pulse">Membedah makna...</p>
           </div>
-        ) : loading ? (
-          <div className="flex flex-col items-center justify-center h-full text-brand space-y-4">
-            <Loader2 className="w-8 h-8 animate-spin" />
-            <p className="text-sm text-muted-foreground animate-pulse">Consulting the literature...</p>
-          </div>
-        ) : error ? (
-          <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
-            <p className="font-semibold mb-1">Error</p>
-            <p className="text-sm">{error}</p>
-          </div>
-        ) : result && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-            <div>
-              <h2 className="text-3xl font-serif font-bold text-brand mb-2">{word}</h2>
-              <div className="p-3 bg-white/5 border border-border rounded-lg relative">
-                <Quote className="w-4 h-4 text-brand absolute top-3 left-3 opacity-50" />
-                <p className="text-sm text-muted-foreground pl-6 italic">"{contextSentence}"</p>
-              </div>
-            </div>
-            
-            <div className="prose prose-sm prose-invert prose-p:leading-relaxed prose-headings:text-foreground max-w-none text-foreground">
-              <div className="whitespace-pre-wrap">{result}</div>
-            </div>
+        ) : (
+          <div className="prose prose-sm prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:text-brand prose-headings:font-serif">
+            {result && <ReactMarkdown>{result}</ReactMarkdown>}
           </div>
         )}
       </div>
-      
-      {result && (
-        <div className="p-4 border-t border-border bg-card">
-          <button
-            onClick={handleSave}
-            disabled={saved || saving}
-            className={`w-full py-3 px-4 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
-              saved 
-                ? 'bg-green-500/20 text-green-400 border border-green-500/50' 
-                : 'bg-brand text-background hover:bg-brand-hover hover:scale-[1.02] active:scale-95'
-            }`}
-          >
-            {saving ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
-            ) : saved ? (
-              <><Check className="w-4 h-4" /> Saved to Vocabulary</>
-            ) : (
-              <><Save className="w-4 h-4" /> Save to Vocabulary Bank</>
-            )}
-          </button>
-        </div>
-      )}
+
+      {/* Footer Action */}
+      <div className="p-6 border-t border-white/10 bg-background/50 z-10 relative">
+        <button 
+          onClick={handleSaveToVocab}
+          disabled={saving || saved || loading}
+          className={`w-full py-4 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${
+            saved 
+              ? "bg-green-500/20 text-green-400 border border-green-500/30" 
+              : "bg-brand text-background hover:shadow-[0_0_20px_rgba(62,207,142,0.4)]"
+          } disabled:opacity-50`}
+        >
+          {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <BookmarkPlus className="w-5 h-5" />}
+          {saved ? "Tersimpan di Kamus!" : "Simpan ke Vocabulary Bank"}
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,54 +1,39 @@
 import { NextResponse } from "next/server";
 import Groq from "groq-sdk";
-import { createClient } from "@/utils/supabase/server";
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+const MODES: Record<string, string> = {
+  "dictionary": "You are a literary dictionary. Provide the definition of the word/phrase, its grammatical register (e.g., formal, archaic, colloquial), and a brief explanation in Indonesian. Respond in Markdown format. Be concise.",
+  "cultural": "You are 'Cultural Context Decoder'. Explain the cultural, historical, or mythological origins of the word/phrase. Give an example of its usage. Explain in Indonesian using Markdown.",
+  "nuance": "You are 'Nuance Detector'. Explain the specific connotative 'flavor' of the word. Is it warm, cold, formal, casual, sharp, soft? Compare it to a similar synonym to highlight its unique nuance. Explain in Indonesian using Markdown.",
+  "synonyms": "You are 'Literary Synonyms'. Provide up to 5 advanced or literary synonyms for this word/phrase. Explain briefly in what specific emotion or situation each synonym is best used. Explain in Indonesian using Markdown."
+};
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { word, contextSentence, mode = "dictionary" } = await req.json();
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!word || !MODES[mode]) {
+      return NextResponse.json({ error: "Invalid request parameters" }, { status: 400 });
     }
 
-    const { word, contextSentence, title, author } = await req.json();
+    const prompt = `Target Word/Phrase: "${word}"\nContext Sentence: "${contextSentence || 'No context provided'}"`;
 
-    if (!word || !contextSentence) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
-    const prompt = `
-Analyze the word/phrase "${word}" as used in this literary context:
-"${contextSentence}"
-
-From: ${title} by ${author}
-
-Provide:
-1. Definition in this specific context
-2. Register (formal/literary/colloquial/archaic)
-3. Why the author likely chose this word over simpler alternatives
-4. One example of similar usage
-
-Keep response concise and helpful for an intermediate English learner.
-Respond in Indonesian.
-    `;
-
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [{ role: "user", content: prompt }],
+    const completion = await groq.chat.completions.create({
+      messages: [
+        { role: "system", content: MODES[mode] },
+        { role: "user", content: prompt }
+      ],
       model: "llama-3.3-70b-versatile",
       temperature: 0.3,
-      max_tokens: 500,
+      max_tokens: 1000,
     });
 
-    const responseText = chatCompletion.choices[0]?.message?.content || "";
-
-    return NextResponse.json({ result: responseText });
+    const result = completion.choices[0]?.message?.content || "";
+    return NextResponse.json({ result });
   } catch (error: any) {
-    console.error("Groq API Error:", error);
+    console.error("Lookup Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

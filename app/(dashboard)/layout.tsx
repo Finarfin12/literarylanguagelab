@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { LogOut, BookOpen, Library, BookMarked, RefreshCcw, Sparkles } from "lucide-react";
+import { LogOut, BookOpen, Library, BookMarked, RefreshCcw, Sparkles, Languages } from "lucide-react";
 
 export default async function DashboardLayout({
   children,
@@ -31,6 +31,10 @@ export default async function DashboardLayout({
           <Link href="/lingowise" className="flex items-center space-x-4 px-4 py-3 rounded-xl text-foreground/80 hover:bg-white/5 hover:text-brand hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 bg-brand/5 border border-brand/10">
             <Sparkles className="w-5 h-5 text-brand" />
             <span className="font-medium text-brand">LingoWise AI</span>
+          </Link>
+          <Link href="/translation-workshop" className="flex items-center space-x-4 px-4 py-3 rounded-xl text-foreground/80 hover:bg-white/5 hover:text-blue-400 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 bg-blue-500/5 border border-blue-500/10">
+            <Languages className="w-5 h-5 text-blue-400" />
+            <span className="font-medium text-blue-400">Translation Workshop</span>
           </Link>
           <Link href="/library" className="flex items-center space-x-4 px-4 py-3 rounded-xl text-foreground/80 hover:bg-white/5 hover:text-brand hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
             <Library className="w-5 h-5" />
