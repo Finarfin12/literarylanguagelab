@@ -43,10 +43,17 @@ export default function LexiconSearchPage() {
     }
   };
 
-  const playAudio = (url: string) => {
-    if (!url) return;
-    const audio = new Audio(url);
-    audio.play();
+  const playAudio = (url: string, fallbackText: string) => {
+    if (url) {
+      const fullUrl = url.startsWith("//") ? `https:${url}` : url;
+      const audio = new Audio(fullUrl);
+      audio.play().catch(e => console.error("Audio play failed", e));
+    } else if (window.speechSynthesis) {
+      // Fallback TTS
+      const utterance = new SpeechSynthesisUtterance(fallbackText);
+      utterance.lang = "en-US";
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   const handleSaveToLexicon = async () => {
@@ -63,8 +70,8 @@ export default function LexiconSearchPage() {
       const { error } = await supabase.from("vocabulary").insert({
         user_id: user.id,
         word: dictData.word,
-        meaning: meaning,
-        context: result.translation ? `Terjemahan: ${result.translation}` : null,
+        definition: meaning,
+        context_sentence: result.translation ? `Terjemahan: ${result.translation}` : null,
       });
 
       if (error) throw error;
@@ -131,11 +138,19 @@ export default function LexiconSearchPage() {
               <div className="flex items-center gap-4 text-muted-foreground">
                 <span className="font-mono text-lg">{result.dictionary[0].phonetic}</span>
                 
-                {result.dictionary[0].phonetics?.find((p:any) => p.audio)?.audio && (
+                {result.dictionary[0].phonetics?.find((p:any) => p.audio)?.audio ? (
                   <button 
-                    onClick={() => playAudio(result.dictionary[0].phonetics.find((p:any) => p.audio).audio)}
+                    onClick={() => playAudio(result.dictionary[0].phonetics.find((p:any) => p.audio).audio, result.dictionary[0].word)}
                     className="p-2 hover:bg-white/10 rounded-full transition-colors text-brand"
-                    title="Dengarkan Pelafalan"
+                    title="Dengarkan Pelafalan API"
+                  >
+                    <Volume2 className="w-5 h-5" />
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => playAudio("", result.dictionary[0].word)}
+                    className="p-2 hover:bg-white/10 rounded-full transition-colors text-brand"
+                    title="Dengarkan Pelafalan (TTS)"
                   >
                     <Volume2 className="w-5 h-5" />
                   </button>
