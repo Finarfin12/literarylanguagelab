@@ -11,7 +11,9 @@ import {
 } from "lucide-react";
 
 interface SidebarProps {
-  userEmail: string | undefined;
+  userEmail?: string;
+  userName?: string;
+  userAvatar?: string;
 }
 
 const MENU_GROUPS = [
@@ -86,19 +88,10 @@ const MENU_GROUPS = [
     items: [
       { name: "Archive & Insights", path: "/history" },
     ]
-  },
-  {
-    title: "Akun",
-    icon: User,
-    color: "text-foreground",
-    items: [
-      { name: "Profil Saya", path: "/profile" },
-      { name: "Pengaturan", path: "/settings" },
-    ]
   }
 ];
 
-export default function Sidebar({ userEmail }: SidebarProps) {
+export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProps) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   
@@ -203,15 +196,28 @@ export default function Sidebar({ userEmail }: SidebarProps) {
         </div>
       </div>
 
-      <div className="p-4 border-t border-white/10 shrink-0 bg-background">
-        <div className="flex items-center justify-between">
-          <span className="text-xs truncate text-muted-foreground max-w-[180px]">{userEmail || "guest"}</span>
-          <form action="/auth/signout" method="post">
-            <button className="p-2 rounded-xl text-muted-foreground hover:text-red-400 hover:bg-red-400/10 transition-colors" title="Sign Out">
-              <LogOut className="w-4 h-4" />
-            </button>
-          </form>
-        </div>
+      <div className="p-4 border-t border-white/10 shrink-0 bg-background flex items-center justify-between gap-2">
+        <Link href="/profile" className="flex items-center gap-3 hover:bg-white/5 p-2 rounded-xl transition-colors flex-1 overflow-hidden group">
+          {userAvatar ? (
+            <img src={userAvatar} className="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10 group-hover:border-brand/50 transition-colors" />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-brand/20 flex items-center justify-center shrink-0 border border-brand/30">
+              <User className="w-4 h-4 text-brand" />
+            </div>
+          )}
+          <div className="flex flex-col truncate">
+            <span className="text-sm font-bold text-foreground truncate">{userName || userEmail?.split('@')[0] || "Guest"}</span>
+            <span className="text-xs text-muted-foreground truncate">{userEmail || "Not logged in"}</span>
+          </div>
+        </Link>
+        <form action="/auth/signout" method="post" className="shrink-0 flex items-center">
+          <Link href="/settings" className="p-2 rounded-xl text-muted-foreground hover:text-brand hover:bg-brand/10 transition-colors" title="Settings">
+            <Settings className="w-4 h-4" />
+          </Link>
+          <button className="p-2 rounded-xl text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors" title="Sign Out">
+            <LogOut className="w-4 h-4" />
+          </button>
+        </form>
       </div>
     </aside>
   );

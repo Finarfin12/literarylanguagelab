@@ -16,7 +16,11 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar userEmail={user?.email} />
+      <Sidebar 
+        userEmail={user?.email} 
+        userName={user?.user_metadata?.full_name} 
+        userAvatar={user?.user_metadata?.avatar_url} 
+      />
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto relative">
