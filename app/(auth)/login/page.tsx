@@ -2,6 +2,7 @@ import { login } from "../actions";
 import Link from "next/link";
 import AuthAlert from "@/components/ui/AuthAlert";
 import SubmitButton from "@/components/ui/SubmitButton";
+import OAuthButtons from "@/components/ui/OAuthButtons";
 
 export default async function LoginPage({
   searchParams,
@@ -56,6 +57,10 @@ export default async function LoginPage({
             Sign In
           </SubmitButton>
         </form>
+
+        <div className="mt-6">
+          <OAuthButtons />
+        </div>
 
         <p className="mt-8 text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
