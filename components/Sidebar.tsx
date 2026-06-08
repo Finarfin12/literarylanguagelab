@@ -55,6 +55,7 @@ const MENU_GROUPS = [
       { name: "Metaphor Generator", path: "/tools/metaphor-generator" },
       { name: "Time Traveler", path: "/tools/time-traveler" },
       { name: "Lexicon Search", path: "/tools/lexicon-search" },
+      { name: "A-Z Browser", path: "/tools/a-z-dictionary" },
       { name: "Vocabulary Bank", path: "/vocabulary" },
       { name: "Idiom Library", path: "/idioms" },
       { name: "Flashcard Mode", path: "/vocabulary/review" },

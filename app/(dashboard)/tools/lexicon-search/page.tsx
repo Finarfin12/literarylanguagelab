@@ -1,9 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Search, Volume2, BookMarked, Loader2, Sparkles, AlertCircle } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
+
+function SearchParamHandler({ onSearch }: { onSearch: (w: string) => void }) {
+  const params = useSearchParams();
+  useEffect(() => {
+    const w = params.get("word");
+    if (w) {
+      onSearch(w);
+    }
+  }, [params]);
+  return null;
+}
 
 export default function LexiconSearchPage() {
   const [word, setWord] = useState("");
@@ -12,9 +24,8 @@ export default function LexiconSearchPage() {
   const [saving, setSaving] = useState(false);
   const supabase = createClient();
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!word.trim()) return;
+  const performSearch = async (targetWord: string) => {
+    if (!targetWord.trim()) return;
 
     setLoading(true);
     setResult(null);
@@ -23,7 +34,7 @@ export default function LexiconSearchPage() {
       const res = await fetch("/api/lexicon-search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ word })
+        body: JSON.stringify({ word: targetWord })
       });
 
       const data = await res.json();
@@ -41,6 +52,16 @@ export default function LexiconSearchPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    performSearch(word);
+  };
+
+  const autoSearch = (w: string) => {
+    setWord(w);
+    performSearch(w);
   };
 
   const playAudio = (url: string, fallbackText: string) => {
@@ -100,6 +121,10 @@ export default function LexiconSearchPage() {
 
   return (
     <div className="p-8 max-w-5xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <Suspense fallback={null}>
+        <SearchParamHandler onSearch={autoSearch} />
+      </Suspense>
+      
       <div className="mb-10 text-center">
         <h1 className="text-4xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
           <BookMarked className="w-8 h-8 text-brand" />
