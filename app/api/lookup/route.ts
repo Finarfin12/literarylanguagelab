@@ -39,7 +39,7 @@ Respond in Indonesian.
 
     const chatCompletion = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "llama-3.1-8b-instant",
+      model: "llama-3.3-70b-versatile",
       temperature: 0.3,
       max_tokens: 500,
     });

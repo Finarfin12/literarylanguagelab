@@ -22,7 +22,7 @@ export async function POST(req: Request) {
           content: prompt
         }
       ],
-      model: "llama3-8b-8192",
+      model: "llama-3.3-70b-versatile",
       temperature: 0.8,
       max_tokens: 2000,
       response_format: { type: "json_object" }
