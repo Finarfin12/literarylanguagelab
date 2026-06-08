@@ -68,9 +68,17 @@ export default function LexiconSearchPage() {
     if (url) {
       const fullUrl = url.startsWith("//") ? `https:${url}` : url;
       const audio = new Audio(fullUrl);
-      audio.play().catch(e => console.error("Audio play failed", e));
+      audio.play().catch(e => {
+        console.error("Audio play failed, falling back to TTS", e);
+        if (window.speechSynthesis) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(fallbackText);
+          utterance.lang = "en-US";
+          window.speechSynthesis.speak(utterance);
+        }
+      });
     } else if (window.speechSynthesis) {
-      // Fallback TTS
+      window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(fallbackText);
       utterance.lang = "en-US";
       window.speechSynthesis.speak(utterance);
@@ -88,6 +96,9 @@ export default function LexiconSearchPage() {
       const dictData = result.dictionary[0];
       const meaning = dictData.meanings[0]?.definitions[0]?.definition || "Tidak ada definisi";
       
+      // Ensure profile exists to satisfy foreign key constraints
+      await supabase.from("profiles").upsert({ id: user.id }, { onConflict: 'id' }).select();
+
       const { error } = await supabase.from("vocabulary").insert({
         user_id: user.id,
         word: dictData.word,
@@ -130,7 +141,7 @@ export default function LexiconSearchPage() {
           <BookMarked className="w-8 h-8 text-brand" />
           Lexicon Search Engine
         </h1>
-        <p className="text-muted-foreground mt-2 text-lg">Cari definisi, pelafalan, sinonim, rima, dan terjemahan menggunakan API eksternal.</p>
+        <p className="text-muted-foreground mt-2 text-lg">Cari definisi, pelafalan, sinonim, rima, dan terjemahan secara instan.</p>
       </div>
 
       <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto mb-12 group">
@@ -167,7 +178,7 @@ export default function LexiconSearchPage() {
                   <button 
                     onClick={() => playAudio(result.dictionary[0].phonetics.find((p:any) => p.audio).audio, result.dictionary[0].word)}
                     className="p-2 hover:bg-white/10 rounded-full transition-colors text-brand"
-                    title="Dengarkan Pelafalan API"
+                    title="Dengarkan Pelafalan"
                   >
                     <Volume2 className="w-5 h-5" />
                   </button>
@@ -175,7 +186,7 @@ export default function LexiconSearchPage() {
                   <button 
                     onClick={() => playAudio("", result.dictionary[0].word)}
                     className="p-2 hover:bg-white/10 rounded-full transition-colors text-brand"
-                    title="Dengarkan Pelafalan (TTS)"
+                    title="Dengarkan Pelafalan"
                   >
                     <Volume2 className="w-5 h-5" />
                   </button>

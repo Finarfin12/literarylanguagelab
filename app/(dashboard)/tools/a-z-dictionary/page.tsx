@@ -40,7 +40,7 @@ export default function AZDictionaryPage() {
           A-Z Dictionary Browser
         </h1>
         <p className="text-muted-foreground mt-2 text-lg max-w-2xl mx-auto">
-          Jelajahi ribuan kata bahasa Inggris secara alfabetis menggunakan Datamuse API. Klik kata untuk melihat definisinya secara lengkap.
+          Jelajahi ribuan kata bahasa Inggris secara alfabetis. Klik kata untuk melihat definisinya secara lengkap.
         </p>
       </div>
 
