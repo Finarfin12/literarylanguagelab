@@ -58,7 +58,7 @@ export default function AddTextPage() {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-8 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
         <h1 className="text-4xl font-serif font-bold text-foreground">Add New Text</h1>
         <p className="text-muted-foreground mt-2">Tambahkan teks sastra ke Library, baik dengan menulis sendiri atau meminta bantuan AI.</p>
