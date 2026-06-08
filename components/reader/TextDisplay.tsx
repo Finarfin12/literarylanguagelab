@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { MessageSquareQuote } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
+import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
 
 interface TextDisplayProps {
   textId: string;
@@ -13,7 +15,7 @@ interface TextDisplayProps {
 export default function TextDisplay({ textId, title, author, content }: TextDisplayProps) {
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [contextSentence, setContextSentence] = useState<string | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeSidebar, setActiveSidebar] = useState<"lookup" | "companion" | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Parse paragraphs
@@ -36,7 +38,7 @@ export default function TextDisplay({ textId, title, author, content }: TextDisp
 
       setSelectedWord(text);
       setContextSentence(sentence);
-      setIsSidebarOpen(true);
+      setActiveSidebar("lookup");
     };
 
     document.addEventListener("mouseup", handleSelection);
@@ -47,7 +49,7 @@ export default function TextDisplay({ textId, title, author, content }: TextDisp
     <div className="flex h-full relative overflow-hidden">
       {/* Main Reading Area */}
       <div 
-        className={`flex-1 overflow-y-auto transition-all duration-300 ${isSidebarOpen ? 'pr-96' : ''}`}
+        className={`flex-1 overflow-y-auto transition-all duration-300 relative ${activeSidebar ? 'pr-[400px]' : ''}`}
       >
         <div className="max-w-3xl mx-auto px-8 py-12">
           <header className="mb-12 text-center">
@@ -64,21 +66,41 @@ export default function TextDisplay({ textId, title, author, content }: TextDisp
             ))}
           </div>
         </div>
+        
+        {/* FAB for Reading Companion */}
+        <button
+          onClick={() => setActiveSidebar(activeSidebar === "companion" ? null : "companion")}
+          className="fixed bottom-8 right-8 z-40 bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all hover:scale-110 flex items-center justify-center group"
+          title="Ask Reading Companion"
+        >
+          <MessageSquareQuote className="w-6 h-6" />
+        </button>
       </div>
 
-      {/* Sidebar */}
-      <div className={`absolute top-0 right-0 w-96 h-full bg-background/80 backdrop-blur-3xl border-l border-white/10 transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <WordLookupSidebar 
-          word={selectedWord} 
-          contextSentence={contextSentence}
-          title={title}
-          author={author}
-          textId={textId}
-          onClose={() => {
-            setIsSidebarOpen(false);
-            window.getSelection()?.removeAllRanges();
-          }} 
-        />
+      {/* Sidebar Area */}
+      <div className={`absolute top-0 right-0 w-[400px] h-full bg-background/80 backdrop-blur-3xl border-l border-white/10 transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 ${activeSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
+        {activeSidebar === "lookup" && (
+          <WordLookupSidebar 
+            word={selectedWord} 
+            contextSentence={contextSentence}
+            title={title}
+            author={author}
+            textId={textId}
+            onClose={() => {
+              setActiveSidebar(null);
+              window.getSelection()?.removeAllRanges();
+            }} 
+          />
+        )}
+        
+        {activeSidebar === "companion" && (
+          <ReadingCompanionSidebar
+            title={title}
+            author={author}
+            content={content}
+            onClose={() => setActiveSidebar(null)}
+          />
+        )}
       </div>
     </div>
   );
