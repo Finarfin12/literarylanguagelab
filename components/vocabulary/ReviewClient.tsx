@@ -70,8 +70,10 @@ export default function ReviewClient({ dueVocab }: ReviewClientProps) {
         </div>
       </div>
 
-      <div className="flex-1 bg-card border border-border rounded-2xl shadow-xl flex flex-col items-center justify-center p-8 md:p-12 text-center transition-all">
-        <h2 className="text-4xl md:text-5xl font-serif font-bold text-brand mb-8">{currentItem.word}</h2>
+      <div className="flex-1 bg-card/40 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl flex flex-col items-center justify-center p-8 md:p-12 text-center transition-all relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-50" />
+        <div className="relative z-10 w-full flex flex-col items-center">
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-brand mb-8 drop-shadow-md">{currentItem.word}</h2>
         
         {!showAnswer ? (
           <button 
@@ -128,6 +130,7 @@ export default function ReviewClient({ dueVocab }: ReviewClientProps) {
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

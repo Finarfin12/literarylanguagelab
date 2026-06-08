@@ -43,23 +43,23 @@ export default async function LibraryPage() {
           <p className="text-muted-foreground">Klik tombol "Generate & Add Text" di atas untuk membuat teks karya sastra secara otomatis dengan AI.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {texts?.map((text) => (
-            <Link key={text.id} href={`/read/${text.id}`} className="group block">
-              <div className="bg-card border border-border rounded-xl p-6 h-full transition-all duration-300 hover:shadow-lg hover:shadow-brand/5 hover:border-brand/50 flex flex-col">
-                <div className="mb-4">
-                  <span className="inline-block px-2 py-1 text-xs font-medium bg-brand/10 text-brand rounded-full mb-3">
-                    {text.difficulty}
-                  </span>
-                  <h2 className="text-xl font-serif font-bold text-foreground group-hover:text-brand transition-colors line-clamp-2">
-                    {text.title}
-                  </h2>
-                  <p className="text-muted-foreground mt-1">by {text.author}</p>
-                </div>
-                
-                <div className="mt-auto pt-4 flex items-center justify-between text-sm text-muted-foreground border-t border-border/50">
-                  <span>{text.era} • {text.genre}</span>
-                  <span>{text.word_count || 0} words</span>
+            <Link href={`/read/${text.id}`} key={text.id}>
+              <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-6 hover:bg-card/60 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand/10 transition-all duration-500 group relative overflow-hidden flex flex-col h-full">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10 flex-1 flex flex-col">
+                  <h2 className="text-2xl font-serif font-bold text-foreground group-hover:text-brand transition-colors line-clamp-2">{text.title}</h2>
+                  <p className="text-muted-foreground mt-2 italic flex-1">{text.author}</p>
+                  
+                  <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
+                    <span className="text-xs font-medium px-3 py-1 bg-brand/10 text-brand rounded-full border border-brand/20">
+                      Level {text.difficulty_level}
+                    </span>
+                    <span className="text-xs text-muted-foreground flex items-center gap-1 group-hover:text-foreground transition-colors">
+                      <BookOpen className="w-3 h-3" /> Read
+                    </span>
+                  </div>
                 </div>
               </div>
             </Link>

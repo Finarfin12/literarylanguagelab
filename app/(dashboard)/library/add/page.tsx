@@ -64,8 +64,9 @@ export default function AddTextPage() {
         <p className="text-muted-foreground mt-2">Tambahkan teks sastra ke Library, baik dengan menulis sendiri atau meminta bantuan AI.</p>
       </div>
 
-      <div className="bg-card border border-border rounded-2xl shadow-xl overflow-hidden mb-10">
-        <div className="flex border-b border-border">
+      <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl overflow-hidden mb-10 relative">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
+        <div className="flex border-b border-white/10">
           <button 
             onClick={() => setMode("ai")}
             className={`flex-1 py-4 px-6 text-sm font-bold flex items-center justify-center gap-2 transition-colors ${mode === "ai" ? "bg-brand/10 text-brand border-b-2 border-brand" : "text-muted-foreground hover:bg-white/5"}`}
@@ -160,8 +161,8 @@ export default function AddTextPage() {
               ></textarea>
             </div>
 
-            <div className="pt-4 border-t border-border flex justify-end">
-              <SubmitButton className="px-8 py-3 rounded-xl bg-foreground text-background font-bold hover:bg-muted transition-all shadow-lg">
+            <div className="pt-6 border-t border-white/10 flex justify-end">
+              <SubmitButton className="px-8 py-4 rounded-xl bg-gradient-to-r from-brand to-brand-hover text-background font-bold hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-0.5 transition-all duration-300">
                 Simpan ke Library
               </SubmitButton>
             </div>

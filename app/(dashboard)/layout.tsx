@@ -18,27 +18,27 @@ export default async function DashboardLayout({
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-border bg-card flex flex-col">
+      <aside className="w-72 border-r border-white/5 bg-background/50 backdrop-blur-2xl flex flex-col shadow-2xl relative z-10 transition-all">
         <div className="p-6">
           <h2 className="text-xl font-serif font-bold text-brand">Literary Lab</h2>
         </div>
 
-        <nav className="flex-1 px-4 space-y-2">
-          <Link href="/dashboard" className="flex items-center space-x-3 px-3 py-2 rounded-md text-foreground hover:bg-white/5 hover:text-brand transition-colors">
+        <nav className="flex-1 px-6 space-y-3 mt-6">
+          <Link href="/dashboard" className="flex items-center space-x-4 px-4 py-3 rounded-xl text-foreground/80 hover:bg-white/5 hover:text-brand hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
             <BookOpen className="w-5 h-5" />
-            <span>Dashboard</span>
+            <span className="font-medium">Dashboard</span>
           </Link>
-          <Link href="/library" className="flex items-center space-x-3 px-3 py-2 rounded-md text-foreground hover:bg-white/5 hover:text-brand transition-colors">
+          <Link href="/library" className="flex items-center space-x-4 px-4 py-3 rounded-xl text-foreground/80 hover:bg-white/5 hover:text-brand hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
             <Library className="w-5 h-5" />
-            <span>Library</span>
+            <span className="font-medium">Library</span>
           </Link>
-          <Link href="/vocabulary" className="flex items-center space-x-3 px-3 py-2 rounded-md text-foreground hover:bg-white/5 hover:text-brand transition-colors">
+          <Link href="/vocabulary" className="flex items-center space-x-4 px-4 py-3 rounded-xl text-foreground/80 hover:bg-white/5 hover:text-brand hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
             <BookMarked className="w-5 h-5" />
-            <span>Vocabulary Bank</span>
+            <span className="font-medium">Vocabulary Bank</span>
           </Link>
-          <Link href="/review" className="flex items-center space-x-3 px-3 py-2 rounded-md text-foreground hover:bg-white/5 hover:text-brand transition-colors">
+          <Link href="/review" className="flex items-center space-x-4 px-4 py-3 rounded-xl text-foreground/80 hover:bg-white/5 hover:text-brand hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
             <RefreshCcw className="w-5 h-5" />
-            <span>Review</span>
+            <span className="font-medium">Review</span>
           </Link>
         </nav>
 
