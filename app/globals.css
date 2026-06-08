@@ -1,6 +1,20 @@
 @import "tailwindcss";
 
 :root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --brand: #2fa16b;
+  --brand-hover: #238555;
+  --card: rgba(255, 255, 255, 0.7);
+  --card-foreground: #0f172a;
+  --popover: rgba(255, 255, 255, 0.95);
+  --popover-foreground: #0f172a;
+  --border: #e2e8f0;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+}
+
+.dark {
   --background: #0f1115;
   --foreground: #ededed;
   --brand: #3ecf8e;
@@ -13,7 +27,6 @@
   --muted: #888888;
   --muted-foreground: #a0a0a0;
 }
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -33,10 +46,10 @@
 body {
   @apply bg-background text-foreground antialiased selection:bg-brand/30 selection:text-white min-h-screen;
   background-image: 
-    radial-gradient(ellipse at 15% 50%, rgba(62, 207, 142, 0.08), transparent 35%),
-    radial-gradient(ellipse at 85% 30%, rgba(59, 130, 246, 0.08), transparent 35%);
+    radial-gradient(ellipse at 15% 50%, color-mix(in srgb, var(--brand) 8%, transparent), transparent 35%),
+    radial-gradient(ellipse at 85% 30%, color-mix(in srgb, #3b82f6 8%, transparent), transparent 35%);
   background-attachment: fixed;
-  background-color: #0f1115;
+  background-color: var(--background);
 }
 
 /* Utilities for literature text */
