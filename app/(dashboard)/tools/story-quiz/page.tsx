@@ -122,7 +122,7 @@ export default function StoryQuizPage() {
           <div className="bg-card/40 backdrop-blur-md border border-brand/20 rounded-3xl p-8 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
             <h2 className="text-xl font-serif font-bold text-brand mb-6 border-b border-white/10 pb-4">The Story ({genre})</h2>
-            <div className="prose prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-lg font-serif italic text-foreground/90">
+            <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-lg font-serif italic text-foreground/90">
               <ReactMarkdown>{quizData.story}</ReactMarkdown>
             </div>
             

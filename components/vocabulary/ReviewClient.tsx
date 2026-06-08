@@ -85,7 +85,7 @@ export default function ReviewClient({ dueVocab }: ReviewClientProps) {
         ) : (
           <div className="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="p-6 bg-background rounded-xl border border-border text-left">
-              <div className="prose prose-sm prose-invert max-w-none text-foreground/90">
+              <div className="prose prose-sm dark:prose-invert max-w-none text-foreground/90">
                 <div className="whitespace-pre-wrap">{currentItem.definition}</div>
               </div>
             </div>

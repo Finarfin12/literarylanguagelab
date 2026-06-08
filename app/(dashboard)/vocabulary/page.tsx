@@ -49,7 +49,7 @@ export default async function VocabularyPage() {
                 </div>
 
                 <div className="mb-4 flex-1">
-                  <div className="prose prose-sm prose-invert text-foreground/90 max-w-none line-clamp-3">
+                  <div className="prose prose-sm dark:prose-invert text-foreground/90 max-w-none line-clamp-3">
                     <div className="whitespace-pre-wrap">{item.definition}</div>
                   </div>
                 </div>

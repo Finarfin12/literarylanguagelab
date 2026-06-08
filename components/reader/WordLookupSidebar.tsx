@@ -165,7 +165,7 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
             <p className="text-sm font-medium animate-pulse">Menjalankan {MODES.find(m => m.id === activeMode)?.label}...</p>
           </div>
         ) : (
-          <div className="prose prose-sm prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:text-brand prose-headings:font-serif">
+          <div className="prose prose-sm dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:text-brand prose-headings:font-serif">
             {result && <ReactMarkdown>{result}</ReactMarkdown>}
           </div>
         )}

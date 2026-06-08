@@ -117,7 +117,7 @@ export default function AlterEgoChatPage() {
                   {m.role === "user" ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
                 </div>
                 <div className={`p-5 rounded-2xl ${m.role === "user" ? "bg-blue-500/10 border border-blue-500/20 text-foreground" : "bg-brand/10 border border-brand/20 text-foreground"}`}>
-                  <div className="prose prose-invert max-w-none prose-p:leading-relaxed text-sm">
+                  <div className="prose dark:prose-invert max-w-none prose-p:leading-relaxed text-sm">
                     {m.role === "user" ? m.content : <ReactMarkdown>{m.content}</ReactMarkdown>}
                   </div>
                 </div>

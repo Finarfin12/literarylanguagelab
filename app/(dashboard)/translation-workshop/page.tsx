@@ -103,7 +103,7 @@ export default function TranslationWorkshopPage() {
             <h2 className="text-2xl font-serif font-bold text-brand mb-8 flex items-center gap-3 border-b border-brand/20 pb-4">
               <CheckCircle2 className="w-8 h-8" /> Feedback & Grading
             </h2>
-            <div className="prose prose-invert prose-brand max-w-none prose-lg prose-headings:font-serif prose-headings:text-brand prose-p:leading-relaxed prose-li:text-foreground/90">
+            <div className="prose dark:prose-invert prose-brand max-w-none prose-lg prose-headings:font-serif prose-headings:text-brand prose-p:leading-relaxed prose-li:text-foreground/90">
               <ReactMarkdown>{result}</ReactMarkdown>
             </div>
           </div>

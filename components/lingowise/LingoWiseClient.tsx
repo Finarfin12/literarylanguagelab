@@ -120,7 +120,7 @@ export default function LingoWiseClient() {
                 <p className="animate-pulse">AI sedang menganalisis teks Anda di laboratorium...</p>
               </div>
             ) : (
-              <div className="flex-1 overflow-y-auto pr-4 prose prose-invert prose-brand max-w-none prose-headings:font-serif prose-headings:text-brand prose-p:leading-relaxed prose-p:text-foreground/90">
+              <div className="flex-1 overflow-y-auto pr-4 prose dark:prose-invert prose-brand max-w-none prose-headings:font-serif prose-headings:text-brand prose-p:leading-relaxed prose-p:text-foreground/90">
                 {result && <ReactMarkdown>{result}</ReactMarkdown>}
               </div>
             )}

@@ -97,7 +97,7 @@ export default function ReadingCompanionSidebar({ title, author, content, onClos
                 {m.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
               </div>
               <div className={`p-4 rounded-2xl ${m.role === "user" ? "bg-blue-500/10 border border-blue-500/20 text-foreground" : "bg-purple-500/10 border border-purple-500/20 text-foreground"}`}>
-                <div className="prose prose-sm prose-invert max-w-none prose-p:leading-relaxed">
+                <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed">
                   {m.role === "user" ? m.content : <ReactMarkdown>{m.content}</ReactMarkdown>}
                 </div>
               </div>

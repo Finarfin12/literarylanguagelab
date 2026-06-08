@@ -7,7 +7,7 @@ import { useTheme } from "next-themes";
 import { 
   ChevronDown, ChevronRight, LogOut, 
   BrainCircuit, Palette, BookMarked, 
-  GraduationCap, Library, Briefcase, History, Sun, Moon, Sparkles
+  GraduationCap, Library, Briefcase, History, Sun, Moon, Sparkles, User, Settings
 } from "lucide-react";
 
 interface SidebarProps {
@@ -86,6 +86,15 @@ const MENU_GROUPS = [
     items: [
       { name: "Archive & Insights", path: "/history" },
     ]
+  },
+  {
+    title: "Akun",
+    icon: User,
+    color: "text-foreground",
+    items: [
+      { name: "Profil Saya", path: "/profile" },
+      { name: "Pengaturan", path: "/settings" },
+    ]
   }
 ];
 
@@ -104,7 +113,21 @@ export default function Sidebar({ userEmail }: SidebarProps) {
     }));
   };
 
-  const WOTD = { word: "Mellifluous", def: "Sweet or musical; pleasant to hear." };
+  const [mounted, setMounted] = useState(false);
+  // Ensure we only render the random word on client to avoid hydration mismatch
+  useState(() => setMounted(true));
+
+  const words = [
+    { word: "Mellifluous", def: "Sweet or musical; pleasant to hear." },
+    { word: "Serendipity", def: "The occurrence of events by chance in a happy or beneficial way." },
+    { word: "Epiphany", def: "A moment of sudden revelation or insight." },
+    { word: "Petrichor", def: "A pleasant smell that frequently accompanies the first rain after a long period of warm, dry weather." },
+    { word: "Luminous", def: "Full of or shedding light; bright or shining, especially in the dark." },
+    { word: "Eloquence", def: "Fluent or persuasive speaking or writing." },
+    { word: "Ineffable", def: "Too great or extreme to be expressed or described in words." }
+  ];
+  const today = new Date().getDate();
+  const WOTD = words[today % words.length];
 
   return (
     <aside className="w-80 border-r border-white/5 bg-background/50 backdrop-blur-2xl flex flex-col shadow-2xl relative z-10 transition-all h-full">
@@ -121,7 +144,7 @@ export default function Sidebar({ userEmail }: SidebarProps) {
         </button>
       </div>
 
-      <div className="px-6 mb-4">
+      <div className="px-6 mb-4" suppressHydrationWarning>
         <div className="bg-brand/10 border border-brand/20 p-4 rounded-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-2 opacity-20"><Sparkles className="w-12 h-12 text-brand" /></div>
           <p className="text-xs font-bold text-brand uppercase tracking-wider mb-1">Word of the Day</p>
