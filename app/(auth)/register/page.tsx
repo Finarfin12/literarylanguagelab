@@ -1,3 +1,4 @@
+import { signup } from "../actions";
 import Link from "next/link";
 import AuthAlert from "@/components/ui/AuthAlert";
 import SubmitButton from "@/components/ui/SubmitButton";
