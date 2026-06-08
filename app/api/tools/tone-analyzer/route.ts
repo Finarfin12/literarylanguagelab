@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 3. Provide a 'Before & After' comparison showing how the text is rewritten to perfectly match the requested Target Tone.
 4. Explain the grammar/diction choices made to achieve this new tone.
 
-Respond entirely in Indonesian using clear Markdown formatting (except for the English text itself).`;
+Respond entirely in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text). The English text quotes should be in italic or blockquotes.`;
 
     const completion = await groq.chat.completions.create({
       messages: [

@@ -11,6 +11,7 @@
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.108.0",
+    "@tailwindcss/typography": "^0.5.20",
     "groq-sdk": "^1.2.1",
     "html2pdf.js": "^0.14.0",
     "lucide-react": "^1.17.0",

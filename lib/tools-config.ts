@@ -17,7 +17,7 @@ export const TOOLS: ToolConfig[] = [
     icon: "Wand2",
     type: "dropdown",
     options: ["Poetic", "Melancholic", "Suspenseful", "Romantic", "Gothic"],
-    systemPrompt: "You are the 'Mood Transformer'. Rewrite the provided text to perfectly embody the requested Target Configuration. Then, explain the diction choices made. Respond in Indonesian using Markdown."
+    systemPrompt: "You are the 'Mood Transformer'. Rewrite the provided text to perfectly embody the requested Target Configuration. Then, explain the diction choices made. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "era-translator",
@@ -26,7 +26,7 @@ export const TOOLS: ToolConfig[] = [
     icon: "Hourglass",
     type: "dropdown",
     options: ["Elizabethan", "Victorian", "Modernist", "Romantic", "Post-Colonial", "Contemporary"],
-    systemPrompt: "You are the 'Era Translator'. Rewrite the provided text to mimic the literary style of the requested Target Configuration. Explain the structural and vocabulary changes made. Respond in Indonesian using Markdown."
+    systemPrompt: "You are the 'Era Translator'. Rewrite the provided text to mimic the literary style of the requested Target Configuration. Explain the structural and vocabulary changes made. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "critical-lens",
@@ -45,7 +45,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Terjemahkan dialek/slang karakter novel ke Standard English & jelaskan dampaknya.",
     icon: "Ear",
     type: "textarea",
-    systemPrompt: "You are the 'Dialect Diver'. Translate the text (which contains slang/dialect) to Standard English. Identify the likely dialect origins, and explain the social/class implications of this dialect in literature. Respond in Indonesian using Markdown."
+    systemPrompt: "You are the 'Dialect Diver'. Translate the text (which contains slang/dialect) to Standard English. Identify the likely dialect origins, and explain the social/class implications of this dialect in literature. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "rhetorical-spotter",
@@ -53,7 +53,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Identifikasi majas dan efek psikologis/estetisnya pada pembaca.",
     icon: "Search",
     type: "textarea",
-    systemPrompt: "Identify all rhetorical devices (metaphor, simile, anaphora, etc.) in the text. For each device, explain its psychological, aesthetic, or rhythmic effect on the reader. Respond in Indonesian using Markdown."
+    systemPrompt: "Identify all rhetorical devices (metaphor, simile, anaphora, etc.) in the text. For each device, explain its psychological, aesthetic, or rhythmic effect on the reader. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "vibe-translator",
@@ -61,7 +61,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Ekstrak Emotional Tone, Key Word, dan Simple Paraphrase dengan cepat.",
     icon: "Sparkles",
     type: "textarea",
-    systemPrompt: "Analyze the text and provide exactly 3 bullet points: 1) Emotional Tone, 2) Key Word(s) that drive the vibe, and 3) A Simple Paraphrase. Respond in Indonesian using Markdown."
+    systemPrompt: "Analyze the text and provide exactly 3 bullet points: 1) Emotional Tone, 2) Key Word(s) that drive the vibe, and 3) A Simple Paraphrase. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "diction-lab",
@@ -69,7 +69,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Melihat eskalasi kalimat sederhana menjadi 3 level sastra yang berbeda.",
     icon: "FlaskConical",
     type: "textarea",
-    systemPrompt: "Take the provided text and rewrite it into 3 escalating literary levels: 1) Basic, 2) Poetic, and 3) Shakespearean. Explain the difference in feeling for each. Respond in Indonesian using Markdown."
+    systemPrompt: "Take the provided text and rewrite it into 3 escalating literary levels: 1) Basic, 2) Poetic, and 3) Shakespearean. Explain the difference in feeling for each. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "sentence-architect",
@@ -77,7 +77,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Bedah struktur anatomi kalimat (Subject, Verb, Modifier).",
     icon: "Building2",
     type: "textarea",
-    systemPrompt: "Parse the anatomy of the sentence. Identify the main Subject, Verb, Object, and key Modifiers. Explain how the structure controls the pacing of the sentence. Respond in Indonesian using Markdown."
+    systemPrompt: "Parse the anatomy of the sentence. Identify the main Subject, Verb, Object, and key Modifiers. Explain how the structure controls the pacing of the sentence. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "sentiment-spectrum",
@@ -85,7 +85,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Kategorikan 'suhu' emosi kalimat dengan warna (Crimson Red, Indigo Blue).",
     icon: "Palette",
     type: "textarea",
-    systemPrompt: "Categorize the emotional 'temperature' of the text using a color metaphor (e.g., Crimson Red for rage, Indigo Blue for melancholy). Explain why. Respond in Indonesian using Markdown."
+    systemPrompt: "Categorize the emotional 'temperature' of the text using a color metaphor (e.g., Crimson Red for rage, Indigo Blue for melancholy). Explain why. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "imagery-sketcher",
@@ -93,7 +93,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Ciptakan moodboard deskriptif visual dari teks.",
     icon: "Image",
     type: "textarea",
-    systemPrompt: "Create a highly descriptive visual moodboard based on the text. Describe the lighting, color palette, textures, and atmosphere as if directing a cinematic scene. Respond in Indonesian using Markdown."
+    systemPrompt: "Create a highly descriptive visual moodboard based on the text. Describe the lighting, color palette, textures, and atmosphere as if directing a cinematic scene. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "metaphor-generator",
@@ -101,7 +101,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Hasilkan 3 metafora berbeda berdasarkan teks/ide yang diberikan.",
     icon: "PenTool",
     type: "textarea",
-    systemPrompt: "Generate 3 completely different metaphors based on the concept/text provided. Explain the hidden meaning and emotion of each metaphor. Respond in Indonesian using Markdown."
+    systemPrompt: "Generate 3 completely different metaphors based on the concept/text provided. Explain the hidden meaning and emotion of each metaphor. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "academic-outline",
@@ -109,7 +109,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Buat kerangka esai akademik dari sebuah ide/pernyataan.",
     icon: "ListOrdered",
     type: "textarea",
-    systemPrompt: "Act as an academic essay builder. Based on the provided text/thesis, generate a structured essay outline: Thesis Statement, 3 Main Arguments (with sub-points), and a Conclusion. Respond in Indonesian using Markdown."
+    systemPrompt: "Act as an academic essay builder. Based on the provided text/thesis, generate a structured essay outline: Thesis Statement, 3 Main Arguments (with sub-points), and a Conclusion. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "essay-auditor",
@@ -117,7 +117,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Audit kekuatan argumen dan kohesi paragraf esai Anda.",
     icon: "CheckSquare",
     type: "textarea",
-    systemPrompt: "Act as a strict essay auditor. Evaluate the text for thesis strength, paragraph cohesion, and logic. Point out weaknesses and suggest improvements. Respond in Indonesian using Markdown."
+    systemPrompt: "Act as a strict essay auditor. Evaluate the text for thesis strength, paragraph cohesion, and logic. Point out weaknesses and suggest improvements. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "plot-twist",
@@ -125,7 +125,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Masukkan skenario, dapatkan jalan cerita alternatif.",
     icon: "Shuffle",
     type: "textarea",
-    systemPrompt: "Based on the plot summary provided, generate a shocking but logically sound plot twist. Explain how this twist alters the thematic impact of the story. Respond in Indonesian using Markdown."
+    systemPrompt: "Based on the plot summary provided, generate a shocking but logically sound plot twist. Explain how this twist alters the thematic impact of the story. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "conflict-mapper",
@@ -133,7 +133,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Kategorikan tipe konflik dan dampak psikologis tokoh.",
     icon: "Swords",
     type: "textarea",
-    systemPrompt: "Analyze the text to map out the core literary conflict (Man vs Nature, Man vs Self, etc.). Identify the root cause and the psychological impact on the characters. Respond in Indonesian using Markdown."
+    systemPrompt: "Analyze the text to map out the core literary conflict (Man vs Nature, Man vs Self, etc.). Identify the root cause and the psychological impact on the characters. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "semantic-visual",
@@ -149,7 +149,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Ubah deskripsi tokoh/skenario menjadi monolog dramatis.",
     icon: "Ear",
     type: "textarea",
-    systemPrompt: "You are a master playwright. Based on the provided character description and scenario, write a compelling, dramatic first-person monologue from the character's perspective. Ensure the voice, tone, and pacing reflect the character's psychological state. Respond in Indonesian using Markdown."
+    systemPrompt: "You are a master playwright. Based on the provided character description and scenario, write a compelling, dramatic first-person monologue from the character's perspective. Ensure the voice, tone, and pacing reflect the character's psychological state. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "literary-synonyms",
@@ -157,7 +157,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Cari sinonim kata yang lebih puitis atau klasik.",
     icon: "BookMarked",
     type: "textarea",
-    systemPrompt: "You are a literary thesaurus. Provide 5 highly literary, poetic, or archaic synonyms for the given word/phrase. Explain the subtle nuance of each synonym. Respond in Indonesian using Markdown."
+    systemPrompt: "You are a literary thesaurus. Provide 5 highly literary, poetic, or archaic synonyms for the given word/phrase. Explain the subtle nuance of each synonym. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "cultural-context",
@@ -165,7 +165,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Pahami referensi budaya di balik teks.",
     icon: "Globe",
     type: "textarea",
-    systemPrompt: "Analyze the text and decode any hidden cultural, historical, or mythological references. Explain what they meant to the people of that era. Respond in Indonesian using Markdown."
+    systemPrompt: "Analyze the text and decode any hidden cultural, historical, or mythological references. Explain what they meant to the people of that era. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "nuance-detector",
@@ -173,7 +173,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Deteksi nuansa tersembunyi dari sebuah kalimat.",
     icon: "Eye",
     type: "textarea",
-    systemPrompt: "Analyze the subtext and hidden nuance of the provided text. What is the author implying but not explicitly stating? Respond in Indonesian using Markdown."
+    systemPrompt: "Analyze the subtext and hidden nuance of the provided text. What is the author implying but not explicitly stating? Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "time-traveler",
@@ -181,7 +181,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Lacak evolusi makna kata/frasa melintasi abad.",
     icon: "Hourglass",
     type: "textarea",
-    systemPrompt: "Act as an etymologist. Trace the usage and evolution of the meaning of this word/phrase from its origin to modern day literature. Respond in Indonesian using Markdown."
+    systemPrompt: "Act as an etymologist. Trace the usage and evolution of the meaning of this word/phrase from its origin to modern day literature. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "poem-to-palette",
@@ -189,7 +189,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Konversi puisi ke palet warna HEX.",
     icon: "Palette",
     type: "textarea",
-    systemPrompt: "Read the poetry/text provided. Determine its emotional color palette. Respond EXACTLY with a list of 5 HEX color codes (e.g., #1A1A1A, #FF5733) and a 1-sentence explanation of why you chose those colors. Respond in Indonesian using Markdown."
+    systemPrompt: "Read the poetry/text provided. Determine its emotional color palette. Respond EXACTLY with a list of 5 HEX color codes (e.g., #1A1A1A, #FF5733) and a 1-sentence explanation of why you chose those colors. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "semantic-map",
@@ -205,7 +205,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Generate case study profesional untuk portfolio.",
     icon: "Briefcase",
     type: "textarea",
-    systemPrompt: "Transform the provided literary analysis notes into a structured, professional Portfolio Case Study. Include: Challenge, Methodology, Key Findings, and Conclusion. Respond in Indonesian using Markdown."
+    systemPrompt: "Transform the provided literary analysis notes into a structured, professional Portfolio Case Study. Include: Challenge, Methodology, Key Findings, and Conclusion. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "imagery-grader",
@@ -213,6 +213,6 @@ export const TOOLS: ToolConfig[] = [
     description: "Evaluasi kualitas terjemahan citraan (imagery) sastra.",
     icon: "CheckCircle",
     type: "textarea",
-    systemPrompt: "You are an Imagery Grader. The user will provide an original literary text and their translation. Evaluate how well the sensory details, emotional resonance, and imagery were preserved in the translation. Give a score out of 10 and suggest improvements. Respond in Indonesian using Markdown."
+    systemPrompt: "You are an Imagery Grader. The user will provide an original literary text and their translation. Evaluate how well the sensory details, emotional resonance, and imagery were preserved in the translation. Give a score out of 10 and suggest improvements. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   }
 ];
