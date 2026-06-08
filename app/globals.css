@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --background: #1c1c1c; /* Dark grey from Supabase SQL editor */
+  --foreground: #ededed;
+  --brand: #3ecf8e; /* Supabase green */
+  --brand-hover: #2eb87c;
+  --card: #252525;
+  --card-foreground: #ededed;
+  --border: #3a3a3a;
+  --muted: #888888;
+  --muted-foreground: #a0a0a0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Utilities for literature text */
+.prose-literature {
+  font-family: var(--font-serif);
+  line-height: 1.8;
+  color: #dcdcdc;
+  font-size: 1.125rem;
+}
+
+.prose-literature p {
+  margin-bottom: 1.5em;
+  text-indent: 1.5em;
+}
+
+.prose-literature p:first-of-type {
+  text-indent: 0;
+}
+
+::selection {
+  background-color: rgba(62, 207, 142, 0.3); /* Brand color transparent */
+  color: #ffffff;
+}
