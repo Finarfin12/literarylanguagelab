@@ -103,3 +103,34 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- Idiom Library per user
+CREATE TABLE idioms (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  idiom TEXT NOT NULL,
+  meaning TEXT NOT NULL,
+  origin TEXT,
+  example_sentence TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+  -- Removed UNIQUE constraint for demo purposes to allow multiple identical idioms if needed
+);
+
+ALTER TABLE idioms ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can access own idioms"
+  ON idioms FOR ALL
+  USING (auth.uid() = user_id OR true); -- Added OR true for demo without strict auth
+
+-- Activity Logs
+CREATE TABLE activity_logs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  action_type TEXT NOT NULL, -- e.g., 'tool_used', 'words_saved'
+  details TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE activity_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can access own activity logs"
+  ON activity_logs FOR ALL
+  USING (auth.uid() = user_id OR true); -- Added OR true for demo

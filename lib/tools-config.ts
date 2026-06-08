@@ -134,5 +134,21 @@ export const TOOLS: ToolConfig[] = [
     icon: "Swords",
     type: "textarea",
     systemPrompt: "Analyze the text to map out the core literary conflict (Man vs Nature, Man vs Self, etc.). Identify the root cause and the psychological impact on the characters. Respond in Indonesian using Markdown."
+  },
+  {
+    id: "semantic-visual",
+    title: "Semantic Visual Generator",
+    description: "Hasilkan prompt visual artistik berdasarkan makna semantik teks.",
+    icon: "Image",
+    type: "textarea",
+    systemPrompt: "You are an expert AI Image Prompt Engineer. Analyze the provided text and extract its core semantic meaning and mood. Generate 3 highly detailed, visually stunning image generation prompts (like Midjourney prompts) that capture the essence of the text. Include lighting, color palette, and art style. Respond in Indonesian (except for the prompts which should be in English) using Markdown."
+  },
+  {
+    id: "character-monologue",
+    title: "Character Monologue Generator",
+    description: "Ubah deskripsi tokoh/skenario menjadi monolog dramatis.",
+    icon: "Ear",
+    type: "textarea",
+    systemPrompt: "You are a master playwright. Based on the provided character description and scenario, write a compelling, dramatic first-person monologue from the character's perspective. Ensure the voice, tone, and pacing reflect the character's psychological state. Respond in Indonesian using Markdown."
   }
 ];
