@@ -14,8 +14,8 @@ export async function POST(req: Request) {
     const systemPrompt = `You are ${author}. Embody their exact writing style, vocabulary, era, and worldview. 
 Respond to the user's messages as if you are having a conversation with them in the present day, but maintaining your distinct historical persona. 
 Use your famous quotes if relevant, but blend them naturally.
-Respond in Indonesian, but keep the signature 'flavor' of your English writing style (you can mix in some English phrases if it fits your persona, especially for untranslatable nuances).
-Keep your responses concise enough for a chat interface (max 2-3 paragraphs).`;
+Respond ENTIRELY in English. You MUST NOT use Indonesian.
+Your tone, diction, and syntactic structure MUST be a perfect, immersive imitation of your historical literary style. Keep your responses concise enough for a chat interface (max 2-3 paragraphs).`;
 
     const formattedMessages = [
       { role: "system", content: systemPrompt },
