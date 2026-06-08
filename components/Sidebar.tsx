@@ -7,7 +7,8 @@ import { useTheme } from "next-themes";
 import { 
   ChevronDown, ChevronRight, LogOut, 
   BrainCircuit, Palette, BookMarked, 
-  GraduationCap, Library, Briefcase, History, Sun, Moon, Sparkles, User, Settings
+  GraduationCap, Library, Briefcase, History, Sun, Moon, Sparkles, User, Settings,
+  Menu, PanelLeftClose
 } from "lucide-react";
 
 interface SidebarProps {
@@ -95,6 +96,8 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     "LingoWise": true, // open first one by default
   });
@@ -123,19 +126,41 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
   const WOTD = words[today % words.length];
 
   return (
-    <aside className="w-80 border-r border-white/5 bg-background/50 backdrop-blur-2xl flex flex-col shadow-2xl relative z-10 transition-all h-full">
-      <div className="p-6 shrink-0 flex items-center justify-between">
-        <h2 className="text-2xl font-serif font-bold text-brand flex items-center gap-2">
-          <BrainCircuit className="w-6 h-6" />
-          Literary Lab
-        </h2>
+    <>
+      {!isSidebarOpen && (
         <button 
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-colors text-muted-foreground hover:text-brand"
+          onClick={() => setIsSidebarOpen(true)}
+          className="fixed top-6 left-6 z-50 p-2.5 bg-card/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg hover:bg-white/10 transition-colors group"
+          title="Buka Menu"
         >
-          {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          <Menu className="w-5 h-5 text-foreground group-hover:text-brand transition-colors" />
         </button>
-      </div>
+      )}
+
+      <aside className={`transition-all duration-300 ease-in-out border-r border-white/5 bg-background/50 backdrop-blur-2xl flex flex-col shadow-2xl relative z-40 h-full ${
+        isSidebarOpen ? "w-80 translate-x-0" : "w-0 -translate-x-full opacity-0 overflow-hidden border-none"
+      }`}>
+        <div className="p-6 shrink-0 flex items-center justify-between">
+          <h2 className="text-2xl font-serif font-bold text-brand flex items-center gap-2 whitespace-nowrap">
+            <BrainCircuit className="w-6 h-6" />
+            Literary Lab
+          </h2>
+          <div className="flex items-center gap-1">
+            <button 
+              onClick={() => setIsSidebarOpen(false)}
+              className="p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-colors text-muted-foreground hover:text-red-400"
+              title="Tutup Menu"
+            >
+              <PanelLeftClose className="w-4 h-4" />
+            </button>
+            <button 
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-colors text-muted-foreground hover:text-brand"
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
 
       <div className="px-6 mb-4" suppressHydrationWarning>
         <div className="bg-brand/10 border border-brand/20 p-4 rounded-2xl relative overflow-hidden group">
@@ -220,5 +245,6 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
         </form>
       </div>
     </aside>
+    </>
   );
 }
