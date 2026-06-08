@@ -3,10 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
 import { 
   ChevronDown, ChevronRight, LogOut, 
   BrainCircuit, Palette, BookMarked, 
-  GraduationCap, Library, Briefcase, History
+  GraduationCap, Library, Briefcase, History, Sun, Moon, Sparkles
 } from "lucide-react";
 
 interface SidebarProps {
@@ -104,6 +105,8 @@ const MENU_GROUPS = [
 
 export default function Sidebar({ userEmail }: SidebarProps) {
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     "LingoWise": true, // open first one by default
   });
@@ -115,13 +118,30 @@ export default function Sidebar({ userEmail }: SidebarProps) {
     }));
   };
 
+  const WOTD = { word: "Mellifluous", def: "Sweet or musical; pleasant to hear." };
+
   return (
     <aside className="w-80 border-r border-white/5 bg-background/50 backdrop-blur-2xl flex flex-col shadow-2xl relative z-10 transition-all h-full">
-      <div className="p-6 shrink-0">
+      <div className="p-6 shrink-0 flex items-center justify-between">
         <h2 className="text-2xl font-serif font-bold text-brand flex items-center gap-2">
           <BrainCircuit className="w-6 h-6" />
           Literary Lab
         </h2>
+        <button 
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-colors text-muted-foreground hover:text-brand"
+        >
+          {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </button>
+      </div>
+
+      <div className="px-6 mb-4">
+        <div className="bg-brand/10 border border-brand/20 p-4 rounded-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-2 opacity-20"><Sparkles className="w-12 h-12 text-brand" /></div>
+          <p className="text-xs font-bold text-brand uppercase tracking-wider mb-1">Word of the Day</p>
+          <p className="text-lg font-serif font-bold text-foreground">{WOTD.word}</p>
+          <p className="text-sm text-muted-foreground italic mt-1 relative z-10">"{WOTD.def}"</p>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
