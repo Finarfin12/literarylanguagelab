@@ -11,14 +11,24 @@ export default function GraphViewer({ data }: { data: string }) {
   useEffect(() => {
     try {
       let jsonStr = data;
-      // Extract JSON if it's wrapped in markdown code blocks or text
-      const match = data.match(/\{[\s\S]*\}/);
-      if (match) {
-        jsonStr = match[0];
+      // First try to extract from markdown code blocks
+      const codeBlockMatch = data.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+      if (codeBlockMatch) {
+        jsonStr = codeBlockMatch[1];
+      } else {
+        // Fallback to finding the outermost curly braces
+        const braceMatch = data.match(/\{[\s\S]*\}/);
+        if (braceMatch) {
+          jsonStr = braceMatch[0];
+        }
       }
+      
       const parsed = JSON.parse(jsonStr);
-      if (parsed.nodes && parsed.edges) {
-        setGraphData(parsed);
+      const links = parsed.links || parsed.edges;
+      if (parsed.nodes && links) {
+        setGraphData({ nodes: parsed.nodes, links: links });
+      } else {
+        console.error("Missing nodes or links/edges in parsed JSON");
       }
     } catch (e) {
       console.error("Invalid JSON for graph", e);

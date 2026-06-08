@@ -197,7 +197,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Petakan relasi semantik teks dalam bentuk graf.",
     icon: "Share2",
     type: "textarea",
-    systemPrompt: "Analyze the core themes of the text. Output a JSON structure representing a semantic graph of nodes and edges connecting the themes, characters, and motifs. No markdown wrappers, JUST JSON."
+    systemPrompt: "Analyze the core themes of the text. Output a JSON structure representing a semantic graph. Required format: {\"nodes\": [{\"id\": \"Theme1\", \"label\": \"Theme 1\", \"type\": \"core\"}], \"links\": [{\"source\": \"Theme1\", \"target\": \"Theme2\", \"label\": \"relates to\"}]}. ONLY OUTPUT VALID JSON. No markdown wrappers, JUST JSON."
   },
   {
     id: "case-study-generator",
