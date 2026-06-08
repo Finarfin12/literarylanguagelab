@@ -36,9 +36,40 @@ export default function AlterEgoChatPage() {
   }, [messages]);
 
   const handleAuthorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setAuthor(e.target.value);
-    setMessages([]); // Reset chat when author changes
+    const newAuthor = e.target.value;
+    setAuthor(newAuthor);
+    
+    // Load history
+    const history = localStorage.getItem(`alter_ego_${newAuthor}`);
+    if (history) {
+      try {
+        setMessages(JSON.parse(history));
+      } catch (e) {
+        setMessages([]);
+      }
+    } else {
+      setMessages([]);
+    }
   };
+
+  useEffect(() => {
+    // Initial load
+    const history = localStorage.getItem(`alter_ego_${author}`);
+    if (history) {
+      try {
+        setMessages(JSON.parse(history));
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, []);
+
+  // Save to localStorage whenever messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem(`alter_ego_${author}`, JSON.stringify(messages));
+    }
+  }, [messages, author]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -108,7 +139,7 @@ export default function AlterEgoChatPage() {
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-50">
               <Sparkles className="w-16 h-16 mb-4" />
-              <p>Mulai percakapan dengan {author}</p>
+              <p className="text-center text-sm px-4">Mulai percakapan dengan {author}.<br/>Riwayat obrolan Anda akan tersimpan otomatis.</p>
             </div>
           ) : (
             messages.map((m, i) => (
