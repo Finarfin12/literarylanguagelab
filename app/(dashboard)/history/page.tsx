@@ -1,25 +1,79 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { History, Activity, TrendingUp, BookOpen, Clock } from "lucide-react";
+import { History, Activity, TrendingUp, BookOpen, Clock, Frown } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function HistoryPage() {
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [wordsMastered, setWordsMastered] = useState(0);
+  const [analysesRun, setAnalysesRun] = useState(0);
+  const [streak, setStreak] = useState(0);
 
-  // Dummy fetch (since we just created the table and it's empty, we'll mock some data for the Insight view)
   useEffect(() => {
-    setTimeout(() => {
-      setLogs([
-        { id: 1, action: "Tool Used: Semantic Visual Generator", time: "10 minutes ago" },
-        { id: 2, action: "Tool Used: Alter Ego Chat (Shakespeare)", time: "1 hour ago" },
-        { id: 3, action: "Saved Idiom: 'Bite the bullet'", time: "3 hours ago" },
-        { id: 4, action: "Completed Paraphrase Challenge (Score: 8/10)", time: "Yesterday" },
-        { id: 5, action: "Read Text: 'Ode to a Nightingale'", time: "2 days ago" },
-      ]);
+    async function fetchData() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      // Fetch logs
+      const { data: activityData } = await supabase
+        .from('activity_logs')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(50);
+      
+      setLogs(activityData || []);
+      
+      // Count total lifetime activities
+      const { count: totalAnalyses } = await supabase
+        .from('activity_logs')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+        
+      setAnalysesRun(totalAnalyses || 0);
+
+      // Fetch vocab count
+      const { count: vocabCount } = await supabase
+        .from('vocabulary')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+      
+      setWordsMastered(vocabCount || 0);
+
+      // Basic streak calculation
+      if (activityData && activityData.length > 0) {
+        const uniqueDates = new Set(activityData.map(d => new Date(d.created_at).toDateString()));
+        setStreak(uniqueDates.size);
+      } else {
+        setStreak(0);
+      }
+
       setLoading(false);
-    }, 1000);
+    }
+
+    fetchData();
   }, []);
+
+  function formatTime(dateString: string) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 60) return `${diffMins} minutes ago`;
+    if (diffHours < 24) return `${diffHours} hours ago`;
+    if (diffDays === 1) return `Yesterday`;
+    if (diffDays < 7) return `${diffDays} days ago`;
+    return date.toLocaleDateString();
+  }
 
   return (
     <div className="p-8 max-w-6xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -41,7 +95,7 @@ export default function HistoryPage() {
           </div>
           <div>
             <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Words Mastered</p>
-            <p className="text-3xl font-serif font-bold text-foreground">124</p>
+            <p className="text-3xl font-serif font-bold text-foreground">{wordsMastered}</p>
           </div>
         </div>
 
@@ -51,7 +105,7 @@ export default function HistoryPage() {
           </div>
           <div>
             <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Analyses Run</p>
-            <p className="text-3xl font-serif font-bold text-foreground">58</p>
+            <p className="text-3xl font-serif font-bold text-foreground">{analysesRun}</p>
           </div>
         </div>
 
@@ -61,7 +115,7 @@ export default function HistoryPage() {
           </div>
           <div>
             <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Current Streak</p>
-            <p className="text-3xl font-serif font-bold text-foreground">4 Days</p>
+            <p className="text-3xl font-serif font-bold text-foreground">{streak} Days</p>
           </div>
         </div>
       </div>
@@ -77,6 +131,12 @@ export default function HistoryPage() {
             <div className="animate-pulse space-y-4">
               {[1,2,3].map(i => <div key={i} className="h-16 bg-white/5 rounded-xl"></div>)}
             </div>
+          ) : logs.length === 0 ? (
+            <div className="text-center py-10 flex flex-col items-center">
+              <Frown className="w-12 h-12 text-white/20 mb-4" />
+              <p className="text-xl font-serif font-bold text-muted-foreground">Belum ada aktivitas</p>
+              <p className="text-sm text-white/40 mt-2">Gunakan alat-alat di LingoWise untuk mengisi log ini.</p>
+            </div>
           ) : (
             logs.map(log => (
               <div key={log.id} className="flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 transition-colors rounded-xl border border-white/5">
@@ -84,7 +144,7 @@ export default function HistoryPage() {
                   <div className="w-2 h-2 rounded-full bg-brand"></div>
                   <span className="text-foreground font-medium">{log.action}</span>
                 </div>
-                <span className="text-sm text-muted-foreground">{log.time}</span>
+                <span className="text-sm text-muted-foreground">{formatTime(log.created_at)}</span>
               </div>
             ))
           )}

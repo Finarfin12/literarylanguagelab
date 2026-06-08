@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Groq from "groq-sdk";
 import { TOOLS } from "@/lib/tools-config";
+import { createClient } from "@/utils/supabase/server";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -30,6 +31,21 @@ export async function POST(req: Request) {
     });
 
     const result = completion.choices[0]?.message?.content || "";
+
+    // LOG ACTIVITY
+    try {
+      const supabase = await createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("activity_logs").insert({
+          user_id: user.id,
+          action: `Tool Used: ${tool.title}${configValue ? ` (${configValue})` : ""}`,
+        });
+      }
+    } catch (logError) {
+      console.error("Failed to log activity:", logError);
+    }
+
     return NextResponse.json({ result });
   } catch (error: any) {
     console.error("Dynamic Tool Error:", error);
