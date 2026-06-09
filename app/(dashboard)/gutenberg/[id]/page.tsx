@@ -106,7 +106,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   useEffect(() => {
     async function loadBook() {
       try {
-        const metaRes = await fetch(`/api/gutenberg/${resolvedParams.id}`);
+        const metaRes = await fetch(`https://gutendex.com/books/${resolvedParams.id}`);
         if (!metaRes.ok) throw new Error("Buku tidak ditemukan di Gutenberg.");
         const meta = (await metaRes.json()) as GutenbergBook;
         setBookMeta(meta);
