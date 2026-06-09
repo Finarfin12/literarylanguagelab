@@ -46,7 +46,7 @@ export default function AZDictionaryPage() {
       </div>
 
       {/* A-Z Sticky Nav */}
-      <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-xl border-y border-white/10 py-4 mb-8">
+      <div className="sticky top-0 z-20 bg-background backdrop-blur-xl border-y border-border py-4 mb-8">
         <div className="flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto">
           {ALPHABETS.map((letter) => (
             <button
@@ -55,7 +55,7 @@ export default function AZDictionaryPage() {
               className={`w-10 h-10 rounded-xl font-bold flex items-center justify-center transition-all ${
                 activeLetter === letter
                   ? "bg-brand text-background shadow-[0_0_15px_rgba(62,207,142,0.4)] scale-110"
-                  : "bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-muted hover:bg-muted/80 hover:text-foreground"
               }`}
             >
               {letter}
@@ -73,7 +73,7 @@ export default function AZDictionaryPage() {
             placeholder={`Cari kata berawalan ${activeLetter}...`}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-background/50 border border-white/10 focus:border-brand/50 rounded-2xl py-3 pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand/50 transition-all"
+            className="w-full bg-background border border-border focus:border-brand/50 rounded-2xl py-3 pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand/50 transition-all"
           />
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function AZDictionaryPage() {
                 <div 
                   key={item.word + idx} 
                   onClick={() => router.push(`/tools/lexicon-search?word=${item.word}`)}
-                  className="bg-card/40 backdrop-blur-md border border-white/5 hover:border-brand/30 p-5 rounded-2xl cursor-pointer group hover:bg-card/80 transition-all hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
+                  className="bg-card shadow-sm backdrop-blur-md border border-border hover:border-brand/30 p-5 rounded-2xl cursor-pointer group hover:bg-card shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                     <ArrowRight className="w-4 h-4 text-brand" />
@@ -107,7 +107,7 @@ export default function AZDictionaryPage() {
                   {defSnippet ? (
                     <p className="text-xs text-muted-foreground line-clamp-2 italic">{defSnippet}</p>
                   ) : (
-                    <p className="text-xs text-white/20 italic">Klik untuk melihat definisi</p>
+                    <p className="text-xs text-muted-foreground italic">Klik untuk melihat definisi</p>
                   )}
                 </div>
               );

@@ -195,7 +195,7 @@ export default function AlterEgoChatPage() {
   return (
     <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)] flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       
-      <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+      <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
           <Link href="/tools" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors w-max text-sm">
             <ArrowLeft className="w-4 h-4" /> Kembali ke Toolkits
@@ -210,8 +210,8 @@ export default function AlterEgoChatPage() {
 
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left Sidebar: Chat History */}
-        <div className="w-72 flex flex-col border border-white/10 rounded-3xl overflow-hidden bg-card/20 backdrop-blur-md shrink-0 hidden md:flex">
-          <div className="p-4 border-b border-white/10">
+        <div className="w-72 flex flex-col border border-border rounded-3xl overflow-hidden bg-card shadow-sm backdrop-blur-md shrink-0 hidden md:flex">
+          <div className="p-4 border-b border-border">
             <button 
               onClick={handleNewSession}
               className="w-full py-3 px-4 bg-brand/10 hover:bg-brand/20 text-brand rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
@@ -232,7 +232,7 @@ export default function AlterEgoChatPage() {
                     setActiveSessionId(s.id);
                     setAuthor(s.author_name);
                   }}
-                  className={`p-3 rounded-xl cursor-pointer group flex items-start gap-3 transition-colors ${activeSessionId === s.id ? 'bg-white/10 border border-white/20' : 'hover:bg-white/5 border border-transparent'}`}
+                  className={`p-3 rounded-xl cursor-pointer group flex items-start gap-3 transition-colors ${activeSessionId === s.id ? 'bg-muted hover:bg-muted/80 border border-border' : 'hover:bg-muted border border-transparent'}`}
                 >
                   <MessageSquare className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
@@ -252,15 +252,15 @@ export default function AlterEgoChatPage() {
         </div>
 
         {/* Right Chat Area */}
-        <div className="flex-1 bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden flex flex-col shadow-xl relative">
+        <div className="flex-1 bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl overflow-hidden flex flex-col shadow-xl relative">
           
           {/* Author Selection Top Bar */}
-          <div className="p-4 border-b border-white/10 bg-background/50 flex items-center justify-between">
+          <div className="p-4 border-b border-border bg-background flex items-center justify-between">
             <span className="text-sm font-bold text-muted-foreground hidden sm:inline-block">Penulis:</span>
             <select 
               value={author}
               onChange={handleAuthorChange}
-              className="w-full sm:w-64 bg-background border border-white/20 rounded-xl p-2.5 text-foreground font-serif focus:ring-2 focus:ring-brand outline-none cursor-pointer text-sm"
+              className="w-full sm:w-64 bg-background border border-border rounded-xl p-2.5 text-foreground font-serif focus:ring-2 focus:ring-brand outline-none cursor-pointer text-sm"
             >
               {AUTHORS.map(a => <option key={a} value={a}>{a}</option>)}
             </select>
@@ -302,14 +302,14 @@ export default function AlterEgoChatPage() {
           </div>
 
           {/* Input Box */}
-          <div className="p-4 border-t border-white/10 bg-background/50 backdrop-blur-xl">
+          <div className="p-4 border-t border-border bg-background backdrop-blur-xl">
             <div className="flex items-end gap-3 max-w-4xl mx-auto">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={`Ketik pesan untuk ${author}...`}
-                className="flex-1 bg-background border border-white/10 rounded-2xl p-4 max-h-32 min-h-[56px] resize-none focus:ring-1 focus:ring-brand focus:outline-none text-foreground"
+                className="flex-1 bg-background border border-border rounded-2xl p-4 max-h-32 min-h-[56px] resize-none focus:ring-1 focus:ring-brand focus:outline-none text-foreground"
                 rows={1}
               />
               <button

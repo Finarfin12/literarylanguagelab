@@ -126,14 +126,14 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
       {!isSidebarOpen && (
         <button 
           onClick={() => setIsSidebarOpen(true)}
-          className="fixed top-6 left-6 z-50 p-2.5 bg-card/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg hover:bg-white/10 transition-colors group"
+          className="fixed top-6 left-6 z-50 p-2.5 bg-card shadow-sm backdrop-blur-xl border border-border rounded-xl shadow-lg hover:bg-muted hover:bg-muted/80 transition-colors group"
           title="Buka Menu"
         >
           <Menu className="w-5 h-5 text-foreground group-hover:text-brand transition-colors" />
         </button>
       )}
 
-      <aside className={`transition-all duration-300 ease-in-out border-r border-white/5 bg-background/50 backdrop-blur-2xl flex flex-col shadow-2xl relative z-40 h-full ${
+      <aside className={`transition-all duration-300 ease-in-out border-r border-border bg-background backdrop-blur-2xl flex flex-col shadow-2xl relative z-40 h-full ${
         isSidebarOpen ? "w-80 translate-x-0" : "w-0 -translate-x-full opacity-0 overflow-hidden border-none"
       }`}>
         <div className="p-6 shrink-0 flex items-center justify-between">
@@ -144,14 +144,14 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
           <div className="flex items-center gap-1">
             <button 
               onClick={() => setIsSidebarOpen(false)}
-              className="p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-colors text-muted-foreground hover:text-red-400"
+              className="p-2 bg-muted rounded-xl hover:bg-muted hover:bg-muted/80 transition-colors text-muted-foreground hover:text-red-400"
               title="Tutup Menu"
             >
               <PanelLeftClose className="w-4 h-4" />
             </button>
             <button 
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-colors text-muted-foreground hover:text-brand"
+              className="p-2 bg-muted rounded-xl hover:bg-muted hover:bg-muted/80 transition-colors text-muted-foreground hover:text-brand"
             >
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
@@ -176,7 +176,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
               pathname === '/dashboard' 
                 ? 'bg-brand/10 border-brand/20 shadow-[0_0_15px_rgba(62,207,142,0.15)]' 
-                : 'bg-white/5 border-white/5 hover:bg-white/10'
+                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
             }`}
           >
             <div className="flex items-center gap-3">
@@ -193,7 +193,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
               pathname.startsWith('/library') 
                 ? 'bg-blue-500/10 border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.15)]' 
-                : 'bg-white/5 border-white/5 hover:bg-white/10'
+                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
             }`}
           >
             <div className="flex items-center gap-3">
@@ -210,7 +210,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
               pathname === '/tools/a-z-dictionary' 
                 ? 'bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)]' 
-                : 'bg-white/5 border-white/5 hover:bg-white/10'
+                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
             }`}
           >
             <div className="flex items-center gap-3">
@@ -227,7 +227,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
               pathname.startsWith('/forum') 
                 ? 'bg-brand/10 border-brand/20 shadow-[0_0_15px_rgba(62,207,142,0.15)]' 
-                : 'bg-white/5 border-white/5 hover:bg-white/10'
+                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
             }`}
           >
             <div className="flex items-center gap-3">
@@ -246,10 +246,10 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             const isChildActive = group.items.some(item => pathname === item.path);
 
             return (
-              <div key={group.title} className="bg-white/5 rounded-2xl overflow-hidden border border-white/5">
+              <div key={group.title} className="bg-muted rounded-2xl overflow-hidden border border-border">
                 <button 
                   onClick={() => toggleGroup(group.title)}
-                  className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
+                  className="w-full flex items-center justify-between p-4 hover:bg-muted transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <Icon className={`w-5 h-5 ${group.color}`} />
@@ -270,8 +270,8 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
                           href={item.path}
                           className={`block px-4 py-2 text-sm rounded-xl transition-all ${
                             isActive 
-                              ? `bg-white/10 ${group.color} font-bold` 
-                              : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                              ? `bg-muted hover:bg-muted/80 ${group.color} font-bold` 
+                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
                           }`}
                         >
                           {item.name}
@@ -286,10 +286,10 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
         </div>
       </div>
 
-      <div className="p-4 border-t border-white/10 shrink-0 bg-background flex items-center justify-between gap-2">
-        <Link href="/profile" className="flex items-center gap-3 hover:bg-white/5 p-2 rounded-xl transition-colors flex-1 overflow-hidden group">
+      <div className="p-4 border-t border-border shrink-0 bg-background flex items-center justify-between gap-2">
+        <Link href="/profile" className="flex items-center gap-3 hover:bg-muted p-2 rounded-xl transition-colors flex-1 overflow-hidden group">
           {userAvatar ? (
-            <img src={userAvatar} className="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10 group-hover:border-brand/50 transition-colors" />
+            <img src={userAvatar} className="w-9 h-9 rounded-full object-cover shrink-0 border border-border group-hover:border-brand/50 transition-colors" />
           ) : (
             <div className="w-9 h-9 rounded-full bg-brand/20 flex items-center justify-center shrink-0 border border-brand/30">
               <User className="w-4 h-4 text-brand" />

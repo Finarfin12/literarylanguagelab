@@ -78,7 +78,7 @@ export default function TextDisplay({ textId, title, author, content }: TextDisp
       </div>
 
       {/* Sidebar Area */}
-      <div className={`absolute top-0 right-0 w-[400px] h-full bg-background/80 backdrop-blur-3xl border-l border-white/10 transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 ${activeSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`absolute top-0 right-0 w-[400px] h-full bg-background backdrop-blur-3xl border-l border-border transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 ${activeSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
         {activeSidebar === "lookup" && (
           <WordLookupSidebar 
             word={selectedWord} 

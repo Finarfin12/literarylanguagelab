@@ -56,7 +56,7 @@ export default function ToneAnalyzerPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-8">
-        <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 shadow-xl relative overflow-hidden">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
           
           <div className="mb-6">
@@ -78,7 +78,7 @@ export default function ToneAnalyzerPage() {
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Paste text here..."
-              className="w-full h-48 bg-background/50 border border-white/10 rounded-2xl p-4 text-foreground font-serif focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
+              className="w-full h-48 bg-background border border-border rounded-2xl p-4 text-foreground font-serif focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
             ></textarea>
           </div>
 
@@ -95,8 +95,8 @@ export default function ToneAnalyzerPage() {
         </div>
 
         {result && (
-          <div className="bg-card/60 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <h2 className="text-2xl font-serif font-bold text-brand mb-6 border-b border-white/10 pb-4">Analysis Result</h2>
+          <div className="bg-card shadow-sm backdrop-blur-2xl border border-border rounded-3xl p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <h2 className="text-2xl font-serif font-bold text-brand mb-6 border-b border-border pb-4">Analysis Result</h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:font-serif">
               <ReactMarkdown>{result}</ReactMarkdown>
             </div>

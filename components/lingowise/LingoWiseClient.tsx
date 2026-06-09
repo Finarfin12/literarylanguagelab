@@ -54,14 +54,14 @@ export default function LingoWiseClient() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* Left Column: Input & Tools */}
       <div className="lg:col-span-5 space-y-6">
-        <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
           <h2 className="text-xl font-serif font-bold text-foreground mb-4">Input Teks Sastra</h2>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Paste teks bahasa Inggris (kutipan novel, puisi, dll) di sini..."
-            className="w-full h-48 bg-background/50 border border-white/10 rounded-2xl p-4 text-foreground focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
+            className="w-full h-48 bg-background border border-border rounded-2xl p-4 text-foreground focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
           ></textarea>
         </div>
 
@@ -80,11 +80,11 @@ export default function LingoWiseClient() {
                   className={`flex flex-col items-start p-5 rounded-2xl border transition-all duration-300 text-left relative overflow-hidden group
                     ${isActive 
                       ? "bg-brand/10 border-brand/50 shadow-[0_0_20px_rgba(62,207,142,0.2)]" 
-                      : "bg-card/40 backdrop-blur-md border-white/10 hover:bg-card/60 hover:-translate-y-1 hover:shadow-xl hover:border-white/20"}
+                      : "bg-card shadow-sm backdrop-blur-md border-border hover:bg-card shadow-sm hover:-translate-y-1 hover:shadow-xl hover:border-border"}
                     ${loading && !isActive ? "opacity-50 cursor-not-allowed" : ""}
                   `}
                 >
-                  <div className={`p-2 rounded-lg mb-3 ${isActive ? "bg-brand text-background" : "bg-white/5 text-brand group-hover:bg-brand/20 transition-colors"}`}>
+                  <div className={`p-2 rounded-lg mb-3 ${isActive ? "bg-brand text-background" : "bg-muted text-brand group-hover:bg-brand/20 transition-colors"}`}>
                     {loading && isActive ? <Loader2 className="w-5 h-5 animate-spin" /> : <Icon className="w-5 h-5" />}
                   </div>
                   <h3 className={`font-bold mb-1 ${isActive ? "text-brand" : "text-foreground"}`}>{tool.name}</h3>
@@ -98,13 +98,13 @@ export default function LingoWiseClient() {
 
       {/* Right Column: Output */}
       <div className="lg:col-span-7">
-        <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 shadow-xl min-h-[600px] h-full flex flex-col relative overflow-hidden">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl min-h-[600px] h-full flex flex-col relative overflow-hidden">
           <div className="absolute top-0 right-0 p-8 opacity-5">
             <Sparkles className="w-64 h-64" />
           </div>
           
           <div className="relative z-10 flex-1 flex flex-col">
-            <h2 className="text-2xl font-serif font-bold text-foreground mb-6 flex items-center gap-3 border-b border-white/10 pb-4">
+            <h2 className="text-2xl font-serif font-bold text-foreground mb-6 flex items-center gap-3 border-b border-border pb-4">
               <Sparkles className="w-6 h-6 text-brand" /> 
               Laboratory Result
             </h2>

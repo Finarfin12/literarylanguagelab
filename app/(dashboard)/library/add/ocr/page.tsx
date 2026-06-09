@@ -84,11 +84,11 @@ export default function OCRLensPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Upload Section */}
-        <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-6 shadow-xl relative flex flex-col">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 shadow-xl relative flex flex-col">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500/0 via-blue-500 to-blue-500/0 opacity-50" />
           <h2 className="text-sm font-bold text-blue-400 mb-4 uppercase tracking-wider">Gambar Sumber</h2>
           
-          <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-white/20 rounded-2xl p-6 bg-background/30 mb-6 relative overflow-hidden group">
+          <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-6 bg-background mb-6 relative overflow-hidden group">
             {image ? (
               <img src={image} alt="Preview" className="w-full h-full object-contain max-h-[300px]" />
             ) : (
@@ -116,7 +116,7 @@ export default function OCRLensPage() {
         </div>
 
         {/* Result Section */}
-        <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-6 shadow-xl relative flex flex-col">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 shadow-xl relative flex flex-col">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
           <h2 className="text-sm font-bold text-brand mb-4 uppercase tracking-wider flex justify-between items-center">
             <span>Teks Terekstrak</span>
@@ -127,23 +127,23 @@ export default function OCRLensPage() {
             value={resultText}
             onChange={(e) => setResultText(e.target.value)}
             placeholder="Hasil scan akan muncul di sini. Anda bisa mengeditnya jika ada salah baca..."
-            className="flex-1 w-full bg-background/50 border border-white/10 rounded-2xl p-5 text-foreground font-serif focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none mb-6 min-h-[300px]"
+            className="flex-1 w-full bg-background border border-border rounded-2xl p-5 text-foreground font-serif focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none mb-6 min-h-[300px]"
           ></textarea>
 
-          <div className="space-y-4 border-t border-white/10 pt-6">
+          <div className="space-y-4 border-t border-border pt-6">
             <input 
               type="text" 
               placeholder="Judul Teks / Buku"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-background border border-white/10 rounded-xl p-3 text-foreground focus:ring-1 focus:ring-brand focus:outline-none"
+              className="w-full bg-background border border-border rounded-xl p-3 text-foreground focus:ring-1 focus:ring-brand focus:outline-none"
             />
             <input 
               type="text" 
               placeholder="Penulis (Opsional)"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              className="w-full bg-background border border-white/10 rounded-xl p-3 text-foreground focus:ring-1 focus:ring-brand focus:outline-none"
+              className="w-full bg-background border border-border rounded-xl p-3 text-foreground focus:ring-1 focus:ring-brand focus:outline-none"
             />
             <button
               onClick={handleSave}

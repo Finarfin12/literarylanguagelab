@@ -25,15 +25,15 @@ export default function OAuthButtons() {
   return (
     <div className="w-full space-y-4">
       <div className="relative flex items-center py-2">
-        <div className="flex-grow border-t border-white/10"></div>
+        <div className="flex-grow border-t border-border"></div>
         <span className="shrink-0 px-4 text-xs text-muted-foreground uppercase tracking-wider">Atau masuk dengan</span>
-        <div className="flex-grow border-t border-white/10"></div>
+        <div className="flex-grow border-t border-border"></div>
       </div>
       
       <button
         type="button"
         onClick={handleGoogleLogin}
-        className="w-full flex items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 text-sm font-bold text-foreground transition-all hover:bg-white/10 hover:border-white/20"
+        className="w-full flex items-center justify-center gap-3 rounded-xl border border-border bg-muted px-4 py-3.5 text-sm font-bold text-foreground transition-all hover:bg-muted hover:bg-muted/80 hover:border-border"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />

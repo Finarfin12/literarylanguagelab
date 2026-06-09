@@ -74,7 +74,7 @@ export default function StoryQuizPage() {
         <ArrowLeft className="w-4 h-4" /> Kembali ke Toolkits
       </Link>
 
-      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
           <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
             <CheckSquare className="w-8 h-8 text-brand" />
@@ -88,7 +88,7 @@ export default function StoryQuizPage() {
             value={genre}
             onChange={(e) => setGenre(e.target.value)}
             disabled={loading}
-            className="bg-background border border-white/20 rounded-xl p-3 text-foreground font-serif focus:ring-2 focus:ring-brand outline-none cursor-pointer"
+            className="bg-background border border-border rounded-xl p-3 text-foreground font-serif focus:ring-2 focus:ring-brand outline-none cursor-pointer"
           >
             {GENRES.map(g => <option key={g} value={g}>{g}</option>)}
           </select>
@@ -119,29 +119,29 @@ export default function StoryQuizPage() {
 
       {quizData && (
         <div className="space-y-8 animate-in fade-in duration-700">
-          <div className="bg-card/40 backdrop-blur-md border border-brand/20 rounded-3xl p-8 shadow-xl relative overflow-hidden">
+          <div className="bg-card shadow-sm backdrop-blur-md border border-brand/20 rounded-3xl p-8 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
-            <h2 className="text-xl font-serif font-bold text-brand mb-6 border-b border-white/10 pb-4">The Story ({genre})</h2>
+            <h2 className="text-xl font-serif font-bold text-brand mb-6 border-b border-border pb-4">The Story ({genre})</h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-lg font-serif italic text-foreground/90">
               <ReactMarkdown>{quizData.story}</ReactMarkdown>
             </div>
             
-            <div className="mt-8 pt-4 border-t border-white/10 flex flex-wrap gap-2">
+            <div className="mt-8 pt-4 border-t border-border flex flex-wrap gap-2">
               <span className="text-sm font-bold text-muted-foreground mr-2 my-auto">Vocab in story:</span>
               {quizData.words.map(w => (
-                <span key={w} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs font-mono text-brand">{w}</span>
+                <span key={w} className="px-3 py-1 bg-muted border border-border rounded-full text-xs font-mono text-brand">{w}</span>
               ))}
             </div>
           </div>
 
           <div className="space-y-6">
             {quizData.questions.map((q, qIndex) => (
-              <div key={qIndex} className="bg-background/50 border border-white/5 rounded-2xl p-6">
+              <div key={qIndex} className="bg-background border border-border rounded-2xl p-6">
                 <p className="font-bold text-foreground mb-4">{qIndex + 1}. {q.question}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {q.options.map((opt, optIndex) => {
                     const isSelected = answers[qIndex] === optIndex;
-                    let btnClass = "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10";
+                    let btnClass = "bg-muted border-border text-muted-foreground hover:bg-muted hover:bg-muted/80";
                     
                     if (isSelected) {
                       btnClass = "bg-brand/20 border-brand/50 text-brand";
@@ -154,7 +154,7 @@ export default function StoryQuizPage() {
                       } else if (isSelected && !isCorrect) {
                         btnClass = "bg-red-500/20 border-red-500 text-red-400 line-through opacity-70";
                       } else {
-                        btnClass = "bg-white/5 border-white/10 text-muted-foreground opacity-50";
+                        btnClass = "bg-muted border-border text-muted-foreground opacity-50";
                       }
                     }
 

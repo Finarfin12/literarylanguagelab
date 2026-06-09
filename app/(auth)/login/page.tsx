@@ -14,7 +14,7 @@ export default async function LoginPage({
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand/20 via-background to-background">
       <AuthAlert error={error} />
-      <div className="w-full max-w-md rounded-3xl bg-card/80 backdrop-blur-xl p-8 shadow-2xl border border-white/10 transition-all duration-500 hover:shadow-brand/20">
+      <div className="w-full max-w-md rounded-3xl bg-card shadow-sm backdrop-blur-xl p-8 shadow-2xl border border-border transition-all duration-500 hover:shadow-brand/20">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-serif font-bold text-foreground mb-3">
             Literary Lab
@@ -32,7 +32,7 @@ export default async function LoginPage({
               name="email"
               type="email"
               required
-              className="w-full rounded-xl border border-white/10 bg-background/50 px-4 py-3 text-foreground focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors backdrop-blur-sm"
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors backdrop-blur-sm"
               placeholder="you@example.com"
             />
           </div>
@@ -46,7 +46,7 @@ export default async function LoginPage({
               name="password"
               type="password"
               required
-              className="w-full rounded-xl border border-white/10 bg-background/50 px-4 py-3 text-foreground focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors backdrop-blur-sm"
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors backdrop-blur-sm"
               placeholder="••••••••"
             />
           </div>

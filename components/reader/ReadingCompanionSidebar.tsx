@@ -66,9 +66,9 @@ export default function ReadingCompanionSidebar({ title, author, content, onClos
   };
 
   return (
-    <div className="flex flex-col h-full bg-background/90 backdrop-blur-xl relative overflow-hidden">
+    <div className="flex flex-col h-full bg-background backdrop-blur-xl relative overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-white/10 flex items-center justify-between z-10 bg-background/50">
+      <div className="p-6 border-b border-border flex items-center justify-between z-10 bg-background">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
             <MessageSquareQuote className="w-5 h-5" />
@@ -78,7 +78,7 @@ export default function ReadingCompanionSidebar({ title, author, content, onClos
             <p className="text-xs text-muted-foreground truncate max-w-[150px]">Discussing: {title}</p>
           </div>
         </div>
-        <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-muted-foreground transition-colors">
+        <button onClick={onClose} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-full text-muted-foreground transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
@@ -119,14 +119,14 @@ export default function ReadingCompanionSidebar({ title, author, content, onClos
       </div>
 
       {/* Input Box */}
-      <div className="p-4 border-t border-white/10 bg-background/80 z-10">
+      <div className="p-4 border-t border-border bg-background z-10">
         <div className="flex items-end gap-2">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask a question..."
-            className="flex-1 bg-background border border-white/10 rounded-xl p-3 max-h-32 min-h-[48px] resize-none focus:ring-1 focus:ring-purple-500 focus:outline-none text-foreground text-sm"
+            className="flex-1 bg-background border border-border rounded-xl p-3 max-h-32 min-h-[48px] resize-none focus:ring-1 focus:ring-purple-500 focus:outline-none text-foreground text-sm"
             rows={1}
           />
           <button

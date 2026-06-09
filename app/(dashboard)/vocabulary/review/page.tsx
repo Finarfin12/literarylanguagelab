@@ -46,7 +46,7 @@ export default function FlashcardReviewPage() {
         <p className="text-xl text-muted-foreground mb-8">Anda telah mereview {cards.length} kata hari ini.</p>
         <button 
           onClick={() => { setCards([...cards].sort(() => Math.random() - 0.5)); setCurrentIndex(0); setShowAnswer(false); }}
-          className="px-8 py-4 bg-white/10 hover:bg-white/20 text-foreground font-bold rounded-xl transition-all flex items-center gap-2 mx-auto"
+          className="px-8 py-4 bg-muted hover:bg-muted/80 hover:bg-muted text-foreground font-bold rounded-xl transition-all flex items-center gap-2 mx-auto"
         >
           <RefreshCw className="w-5 h-5" /> Ulangi Review
         </button>
@@ -61,7 +61,7 @@ export default function FlashcardReviewPage() {
           <BookOpen className="w-8 h-8 text-amber-400" />
           Flashcard Review
         </h1>
-        <p className="text-muted-foreground mt-2 font-mono bg-white/5 px-4 py-1 rounded-full inline-block">Kartu {currentIndex + 1} dari {cards.length}</p>
+        <p className="text-muted-foreground mt-2 font-mono bg-muted px-4 py-1 rounded-full inline-block">Kartu {currentIndex + 1} dari {cards.length}</p>
       </div>
 
       <div 
@@ -75,7 +75,7 @@ export default function FlashcardReviewPage() {
         >
           {/* Front of card */}
           <div 
-            className="absolute inset-0 bg-card/60 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl flex flex-col items-center justify-center p-8 text-center"
+            className="absolute inset-0 bg-card shadow-sm backdrop-blur-xl border border-border rounded-3xl shadow-2xl flex flex-col items-center justify-center p-8 text-center"
             style={{ backfaceVisibility: 'hidden' }}
           >
             <p className="text-6xl font-serif font-bold text-brand mb-4">{currentCard.word}</p>
@@ -90,7 +90,7 @@ export default function FlashcardReviewPage() {
             <p className="text-sm font-bold text-brand/80 mb-4 uppercase tracking-widest">Meaning</p>
             <p className="text-4xl font-serif font-bold text-foreground mb-8">{currentCard.meaning}</p>
             {currentCard.context && (
-              <div className="bg-black/30 p-6 rounded-2xl max-w-lg border border-white/5">
+              <div className="bg-black/30 p-6 rounded-2xl max-w-lg border border-border">
                 <p className="text-lg text-muted-foreground italic">"{currentCard.context}"</p>
               </div>
             )}

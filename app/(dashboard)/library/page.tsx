@@ -62,18 +62,18 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {texts?.map((text) => (
             <Link href={`/read/${text.id}`} key={text.id}>
-              <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-6 hover:bg-card/60 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand/10 transition-all duration-500 group relative overflow-hidden flex flex-col h-full">
+              <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 hover:bg-card shadow-sm hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand/10 transition-all duration-500 group relative overflow-hidden flex flex-col h-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative z-10 flex-1 flex flex-col">
                   <h2 className="text-2xl font-serif font-bold text-foreground group-hover:text-brand transition-colors line-clamp-2">{text.title}</h2>
                   <p className="text-muted-foreground mt-2 italic flex-1">{text.author}</p>
                   
                   <div className="flex flex-wrap gap-2 mt-4">
-                    {text.era && <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-1 bg-white/5 border border-white/10 rounded-md text-muted-foreground">{text.era}</span>}
-                    {text.genre && <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-1 bg-white/5 border border-white/10 rounded-md text-muted-foreground">{text.genre}</span>}
+                    {text.era && <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-1 bg-muted border border-border rounded-md text-muted-foreground">{text.era}</span>}
+                    {text.genre && <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-1 bg-muted border border-border rounded-md text-muted-foreground">{text.genre}</span>}
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
+                  <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
                     <span className="text-xs font-medium px-3 py-1 bg-brand/10 text-brand rounded-full border border-brand/20">
                       Level {text.difficulty_level}
                     </span>

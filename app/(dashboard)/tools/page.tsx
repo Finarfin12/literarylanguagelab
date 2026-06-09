@@ -22,12 +22,12 @@ export default function ToolsDashboardPage() {
         <p className="text-muted-foreground mt-2 text-lg">Kumpulan alat spesifik untuk membedah, menganalisis, dan merombak karya sastra.</p>
       </div>
 
-      <h2 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wider border-b border-white/10 pb-2">Targeted Transformers (Dropdown)</h2>
+      <h2 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wider border-b border-border pb-2">Targeted Transformers (Dropdown)</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {dropdownTools.map(tool => {
           const Icon = iconMap[tool.icon] || Sparkles;
           return (
-            <Link key={tool.id} href={`/tools/${tool.id}`} className="bg-card/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/5 hover:border-brand/30 transition-all group">
+            <Link key={tool.id} href={`/tools/${tool.id}`} className="bg-card shadow-sm backdrop-blur-md border border-border rounded-2xl p-6 hover:bg-muted hover:border-brand/30 transition-all group">
               <div className="bg-brand/10 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Icon className="w-6 h-6 text-brand" />
               </div>
@@ -38,12 +38,12 @@ export default function ToolsDashboardPage() {
         })}
       </div>
 
-      <h2 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wider border-b border-white/10 pb-2">Analysis Extractors (Textarea)</h2>
+      <h2 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wider border-b border-border pb-2">Analysis Extractors (Textarea)</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {textareaTools.map(tool => {
           const Icon = iconMap[tool.icon] || Sparkles;
           return (
-            <Link key={tool.id} href={`/tools/${tool.id}`} className="bg-card/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/5 hover:border-blue-400/30 transition-all group">
+            <Link key={tool.id} href={`/tools/${tool.id}`} className="bg-card shadow-sm backdrop-blur-md border border-border rounded-2xl p-6 hover:bg-muted hover:border-blue-400/30 transition-all group">
               <div className="bg-blue-500/10 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Icon className="w-6 h-6 text-blue-400" />
               </div>
@@ -54,9 +54,9 @@ export default function ToolsDashboardPage() {
         })}
       </div>
 
-      <h2 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wider border-b border-white/10 pb-2">Interactive & Gamification</h2>
+      <h2 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wider border-b border-border pb-2">Interactive & Gamification</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Link href={`/tools/paraphrase`} className="bg-card/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/5 hover:border-amber-400/30 transition-all group">
+        <Link href={`/tools/paraphrase`} className="bg-card shadow-sm backdrop-blur-md border border-border rounded-2xl p-6 hover:bg-muted hover:border-amber-400/30 transition-all group">
           <div className="bg-amber-500/10 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <PenTool className="w-6 h-6 text-amber-400" />
           </div>
@@ -64,7 +64,7 @@ export default function ToolsDashboardPage() {
           <p className="text-sm text-muted-foreground">Latih kemampuan menulis ulang tanpa kehilangan esensi sastra.</p>
         </Link>
         
-        <Link href={`/tools/alter-ego`} className="bg-card/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/5 hover:border-purple-400/30 transition-all group">
+        <Link href={`/tools/alter-ego`} className="bg-card shadow-sm backdrop-blur-md border border-border rounded-2xl p-6 hover:bg-muted hover:border-purple-400/30 transition-all group">
           <div className="bg-purple-500/10 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <Sparkles className="w-6 h-6 text-purple-400" />
           </div>
@@ -72,7 +72,7 @@ export default function ToolsDashboardPage() {
           <p className="text-sm text-muted-foreground">Ngobrol langsung dengan penulis legendaris secara interaktif.</p>
         </Link>
 
-        <Link href={`/tools/story-quiz`} className="bg-card/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/5 hover:border-green-400/30 transition-all group">
+        <Link href={`/tools/story-quiz`} className="bg-card shadow-sm backdrop-blur-md border border-border rounded-2xl p-6 hover:bg-muted hover:border-green-400/30 transition-all group">
           <div className="bg-green-500/10 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <CheckSquare className="w-6 h-6 text-green-400" />
           </div>

@@ -160,14 +160,14 @@ export default function CreateThreadPage() {
         <p className="text-muted-foreground mt-2">Pilih kategori yang tepat agar diskusi Anda mudah ditemukan oleh penulis lain.</p>
       </div>
 
-      <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 shadow-xl flex-1">
+      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl flex-1">
         <form onSubmit={handleSubmit} className="space-y-6 flex flex-col h-full">
           <div>
             <label className="block text-sm font-bold text-foreground mb-2">Kategori Diskusi</label>
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full bg-background/50 border border-white/10 rounded-xl px-4 py-3.5 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all appearance-none cursor-pointer"
+              className="w-full bg-background border border-border rounded-xl px-4 py-3.5 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all appearance-none cursor-pointer"
             >
               <option value="" disabled>-- Pilih Kategori --</option>
               {categories.map(cat => (
@@ -185,22 +185,22 @@ export default function CreateThreadPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Contoh: Bagaimana cara mengatasi writer's block?"
-              className="w-full bg-background/50 border border-white/10 rounded-xl px-5 py-4 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all placeholder:text-muted-foreground/50 font-serif text-lg"
+              className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all placeholder:text-muted-foreground/50 font-serif text-lg"
               maxLength={150}
             />
           </div>
 
           <div className="flex-1 flex flex-col min-h-[300px]">
             <label className="block text-sm font-bold text-foreground mb-2">Isi Pesan</label>
-            <div className="border border-white/10 rounded-xl overflow-hidden bg-background/50 flex-1 flex flex-col focus-within:ring-2 focus-within:ring-brand transition-all">
+            <div className="border border-border rounded-xl overflow-hidden bg-background flex-1 flex flex-col focus-within:ring-2 focus-within:ring-brand transition-all">
               {/* Toolbar */}
-              <div className="flex items-center gap-1 p-2 bg-white/5 border-b border-white/10 overflow-x-auto">
-                <button type="button" onClick={() => insertFormatting('**')} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bold"><Bold className="w-4 h-4" /></button>
-                <button type="button" onClick={() => insertFormatting('*')} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Italic"><Italic className="w-4 h-4" /></button>
-                <button type="button" onClick={() => insertFormatting('[text](url)', false)} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
-                <div className="w-px h-5 bg-white/10 mx-1"></div>
+              <div className="flex items-center gap-1 p-2 bg-muted border-b border-border overflow-x-auto">
+                <button type="button" onClick={() => insertFormatting('**')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bold"><Bold className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('*')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Italic"><Italic className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('[text](url)', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
+                <div className="w-px h-5 bg-muted hover:bg-muted/80 mx-1"></div>
                 
-                <label className={`p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-2 ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} title="Upload Gambar">
+                <label className={`p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-2 ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} title="Upload Gambar">
                   {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                 </label>
@@ -216,7 +216,7 @@ export default function CreateThreadPage() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-white/10 flex justify-end">
+          <div className="pt-4 border-t border-border flex justify-end">
             <button
               type="submit"
               disabled={loading || !title.trim() || !content.trim() || !categoryId}

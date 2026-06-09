@@ -34,7 +34,7 @@ export default async function Home() {
           </Link>
           <Link 
             href="/register"
-            className="px-8 py-4 bg-white/5 border border-border text-foreground font-semibold rounded-full hover:bg-white/10 transition-all"
+            className="px-8 py-4 bg-muted border border-border text-foreground font-semibold rounded-full hover:bg-muted hover:bg-muted/80 transition-all"
           >
             Buat Akun Baru
           </Link>

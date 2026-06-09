@@ -123,16 +123,16 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
   if (!word) return null;
 
   return (
-    <div className="flex flex-col h-full bg-background/80 backdrop-blur-xl relative overflow-hidden">
-      <div className="p-4 border-b border-white/10 flex items-center justify-between z-10 relative">
+    <div className="flex flex-col h-full bg-background backdrop-blur-xl relative overflow-hidden">
+      <div className="p-4 border-b border-border flex items-center justify-between z-10 relative">
         <h2 className="text-xl font-serif font-bold text-foreground truncate max-w-[200px]">{word}</h2>
-        <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-muted-foreground transition-colors">
+        <button onClick={onClose} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-full text-muted-foreground transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
 
       {/* 12 Modes Grid */}
-      <div className="p-4 grid grid-cols-3 gap-2 border-b border-white/10 z-10 relative overflow-y-auto max-h-[30vh]">
+      <div className="p-4 grid grid-cols-3 gap-2 border-b border-border z-10 relative overflow-y-auto max-h-[30vh]">
         {MODES.map((m) => {
           const Icon = m.icon;
           const isActive = activeMode === m.id;
@@ -144,7 +144,7 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
               className={`flex flex-col items-center gap-1 p-2 rounded-xl text-[10px] font-medium transition-all text-center ${
                 isActive 
                   ? "bg-brand/20 text-brand border border-brand/30 shadow-inner" 
-                  : "bg-white/5 text-muted-foreground hover:bg-white/10 border border-transparent"
+                  : "bg-muted text-muted-foreground hover:bg-muted hover:bg-muted/80 border border-transparent"
               } ${(loading && !isActive) ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <Icon className="w-4 h-4 mb-1" />
@@ -155,7 +155,7 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
       </div>
 
       <div className="flex-1 overflow-y-auto p-6 z-10 relative">
-        <div className="bg-card/50 border border-white/5 rounded-2xl p-4 mb-6">
+        <div className="bg-card shadow-sm border border-border rounded-2xl p-4 mb-6">
           <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider font-bold">Konteks Kalimat</p>
           <p className="text-sm italic text-foreground/80 leading-relaxed">"{contextSentence}"</p>
         </div>
@@ -172,7 +172,7 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
         )}
       </div>
 
-      <div className="p-4 border-t border-white/10 bg-background/50 z-10 relative">
+      <div className="p-4 border-t border-border bg-background z-10 relative">
         <button 
           onClick={handleSaveToVocab}
           disabled={saving || saved || loading}

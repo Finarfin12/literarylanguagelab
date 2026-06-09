@@ -38,8 +38,8 @@ export default function GraphViewer({ data }: { data: string }) {
   if (!graphData) return <div className="p-4 bg-red-500/10 text-red-500 rounded-xl border border-red-500/20">Gagal merender Graf. Format JSON tidak valid atau AI gagal menghasilkan struktur nodes/edges.</div>;
 
   return (
-    <div className="w-full h-[500px] border border-white/10 rounded-2xl overflow-hidden bg-[#0A0A0A] relative shadow-inner">
-      <div className="absolute top-4 left-4 z-10 text-xs text-white/50 font-mono">Semantic Graph Data</div>
+    <div className="w-full h-[500px] border border-border rounded-2xl overflow-hidden bg-[#0A0A0A] relative shadow-inner">
+      <div className="absolute top-4 left-4 z-10 text-xs text-muted-foreground font-mono">Semantic Graph Data</div>
       <ForceGraph2D
         graphData={graphData}
         nodeLabel="label"

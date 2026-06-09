@@ -289,19 +289,19 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       </Link>
 
       {/* Original Thread Post */}
-      <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 shadow-xl mb-8 relative">
+      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl mb-8 relative">
         {canEditOrDelete(thread?.user_id || '') && !isEditing && (
            <div className="absolute top-6 right-6 flex items-center gap-2">
              <button 
                onClick={() => setIsEditing(true)}
-               className="p-2 text-muted-foreground hover:text-brand bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+               className="p-2 text-muted-foreground hover:text-brand bg-muted hover:bg-muted hover:bg-muted/80 rounded-xl transition-all"
                title="Edit Diskusi"
              >
                <Edit className="w-5 h-5" />
              </button>
              <button 
                onClick={handleDeleteThread}
-               className="p-2 text-muted-foreground hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+               className="p-2 text-muted-foreground hover:text-red-400 bg-muted hover:bg-muted hover:bg-muted/80 rounded-xl transition-all"
                title="Hapus Diskusi"
              >
                <Trash2 className="w-5 h-5" />
@@ -315,27 +315,27 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
               type="text"
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
-              className="w-full bg-background/50 border border-white/10 rounded-xl px-4 py-3 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all font-serif text-2xl font-bold"
+              className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all font-serif text-2xl font-bold"
               placeholder="Judul Diskusi"
             />
             <select
               value={editCategoryId}
               onChange={(e) => setEditCategoryId(e.target.value)}
-              className="w-full bg-background/50 border border-white/10 rounded-xl px-4 py-3 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all appearance-none cursor-pointer"
+              className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all appearance-none cursor-pointer"
             >
               {categories.map(cat => (
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>
             
-            <div className="border border-white/10 rounded-xl overflow-hidden bg-background/50 flex flex-col focus-within:ring-2 focus-within:ring-brand transition-all">
-              <div className="flex items-center gap-1 p-2 bg-white/5 border-b border-white/10 overflow-x-auto">
-                <button onClick={() => insertFormatting('**')} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bold"><Bold className="w-4 h-4" /></button>
-                <button onClick={() => insertFormatting('*')} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Italic"><Italic className="w-4 h-4" /></button>
-                <button onClick={() => insertFormatting('[text](url)', false)} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
-                <div className="w-px h-5 bg-white/10 mx-1"></div>
+            <div className="border border-border rounded-xl overflow-hidden bg-background flex flex-col focus-within:ring-2 focus-within:ring-brand transition-all">
+              <div className="flex items-center gap-1 p-2 bg-muted border-b border-border overflow-x-auto">
+                <button onClick={() => insertFormatting('**')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bold"><Bold className="w-4 h-4" /></button>
+                <button onClick={() => insertFormatting('*')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Italic"><Italic className="w-4 h-4" /></button>
+                <button onClick={() => insertFormatting('[text](url)', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
+                <div className="w-px h-5 bg-muted hover:bg-muted/80 mx-1"></div>
                 
-                <label className={`p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-2 ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} title="Upload Gambar">
+                <label className={`p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-2 ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} title="Upload Gambar">
                   {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                 </label>
@@ -356,7 +356,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
                   setEditContent(thread?.content || '');
                   setEditCategoryId(thread?.category_id || '');
                 }}
-                className="px-5 py-2.5 rounded-xl font-bold text-muted-foreground hover:bg-white/5 transition-all"
+                className="px-5 py-2.5 rounded-xl font-bold text-muted-foreground hover:bg-muted transition-all"
               >
                 Batal
               </button>
@@ -374,7 +374,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
           <>
             <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-6 pr-24">{thread?.title}</h1>
             
-            <div className="flex items-center gap-3 mb-8 pb-6 border-b border-white/10">
+            <div className="flex items-center gap-3 mb-8 pb-6 border-b border-border">
               <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border ${threadAuthor.role === 'admin' ? 'bg-red-500/20 border-red-500/40 text-red-400' : 'bg-brand/20 border-brand/30 text-brand'} overflow-hidden`}>
                 {threadAuthor.avatar_url ? (
                   <img src={threadAuthor.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
@@ -395,7 +395,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
               </div>
             </div>
 
-            <div className="prose dark:prose-invert max-w-none prose-p:leading-relaxed prose-lg text-foreground/90 prose-img:rounded-2xl prose-img:border prose-img:border-white/10 prose-img:shadow-lg">
+            <div className="prose dark:prose-invert max-w-none prose-p:leading-relaxed prose-lg text-foreground/90 prose-img:rounded-2xl prose-img:border prose-img:border-border prose-img:shadow-lg">
               <ReactMarkdown>{thread?.content || ''}</ReactMarkdown>
             </div>
           </>
@@ -410,7 +410,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       {/* Comments List */}
       <div className="space-y-6 mb-8">
         {comments.map(comment => (
-          <div key={comment.id} className="bg-card/30 border border-white/5 rounded-2xl p-6 shadow-sm relative group">
+          <div key={comment.id} className="bg-card shadow-sm border border-border rounded-2xl p-6 shadow-sm relative group">
             {canEditOrDelete(comment.user_id) && (
               <button 
                 onClick={async () => {
@@ -420,7 +420,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
                      setComments(comments.filter(c => c.id !== comment.id));
                    }
                 }}
-                className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-red-400 bg-muted hover:bg-muted hover:bg-muted/80 rounded-xl transition-all opacity-0 group-hover:opacity-100"
                 title="Hapus Komentar"
               >
                 <Trash2 className="w-4 h-4" />
@@ -457,14 +457,14 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       </div>
 
       {/* Add Comment Box */}
-      <div className="bg-background/50 border border-white/10 rounded-3xl p-6 relative">
+      <div className="bg-background border border-border rounded-3xl p-6 relative">
         <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 blur-[50px] rounded-full pointer-events-none"></div>
         <h3 className="font-bold text-foreground mb-4">Tambahkan Komentar</h3>
         <textarea
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Bagikan pemikiran atau balasan Anda..."
-          className="w-full bg-black/20 border border-white/10 rounded-xl px-5 py-4 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all placeholder:text-muted-foreground/50 resize-y min-h-[120px] mb-4 text-sm"
+          className="w-full bg-black/20 border border-border rounded-xl px-5 py-4 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all placeholder:text-muted-foreground/50 resize-y min-h-[120px] mb-4 text-sm"
         />
         <div className="flex justify-end">
           <button

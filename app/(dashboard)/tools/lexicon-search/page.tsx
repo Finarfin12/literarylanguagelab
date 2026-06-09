@@ -165,10 +165,10 @@ export default function LexiconSearchPage() {
       </form>
 
       {result && result.dictionary && result.dictionary.length > 0 && (
-        <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-700">
           
           {/* Header Section */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-white/10 pb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-border pb-8">
             <div>
               <h2 className="text-5xl font-serif font-bold text-brand mb-2">{result.dictionary[0].word}</h2>
               <div className="flex items-center gap-4 text-muted-foreground">
@@ -177,7 +177,7 @@ export default function LexiconSearchPage() {
                 {result.dictionary[0].phonetics?.find((p:any) => p.audio)?.audio ? (
                   <button 
                     onClick={() => playAudio(result.dictionary[0].phonetics.find((p:any) => p.audio).audio, result.dictionary[0].word)}
-                    className="p-2 hover:bg-white/10 rounded-full transition-colors text-brand"
+                    className="p-2 hover:bg-muted hover:bg-muted/80 rounded-full transition-colors text-brand"
                     title="Dengarkan Pelafalan"
                   >
                     <Volume2 className="w-5 h-5" />
@@ -185,7 +185,7 @@ export default function LexiconSearchPage() {
                 ) : (
                   <button 
                     onClick={() => playAudio("", result.dictionary[0].word)}
-                    className="p-2 hover:bg-white/10 rounded-full transition-colors text-brand"
+                    className="p-2 hover:bg-muted hover:bg-muted/80 rounded-full transition-colors text-brand"
                     title="Dengarkan Pelafalan"
                   >
                     <Volume2 className="w-5 h-5" />
@@ -197,7 +197,7 @@ export default function LexiconSearchPage() {
             <button
               onClick={handleSaveToLexicon}
               disabled={saving}
-              className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all flex items-center gap-2 font-medium"
+              className="px-6 py-3 bg-muted hover:bg-muted hover:bg-muted/80 border border-border rounded-xl transition-all flex items-center gap-2 font-medium"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <BookMarked className="w-5 h-5 text-brand" />}
               Simpan ke Lexicon
@@ -215,7 +215,7 @@ export default function LexiconSearchPage() {
                   </h3>
                   <ul className="space-y-4 pl-6">
                     {meaning.definitions.slice(0, 3).map((def: any, i: number) => (
-                      <li key={i} className="list-disc text-muted-foreground text-lg leading-relaxed marker:text-white/20">
+                      <li key={i} className="list-disc text-muted-foreground text-lg leading-relaxed marker:text-muted-foreground">
                         {def.definition}
                         {def.example && (
                           <div className="mt-2 text-brand/80 italic text-base border-l-2 border-brand/20 pl-4 py-1">
@@ -233,7 +233,7 @@ export default function LexiconSearchPage() {
             <div className="space-y-6">
               
               {/* LibreTranslate */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <div className="bg-muted border border-border rounded-2xl p-6">
                 <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-400" />
                   Terjemahan
@@ -246,7 +246,7 @@ export default function LexiconSearchPage() {
               </div>
 
               {/* Datamuse: Synonyms */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <div className="bg-muted border border-border rounded-2xl p-6">
                 <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-blue-400" />
                   Sinonim
@@ -265,7 +265,7 @@ export default function LexiconSearchPage() {
               </div>
 
               {/* Datamuse: Rhymes */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <div className="bg-muted border border-border rounded-2xl p-6">
                 <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-purple-400" />
                   Rima (Rhymes)
@@ -290,8 +290,8 @@ export default function LexiconSearchPage() {
       )}
 
       {result && (!result.dictionary || result.dictionary.length === 0) && (
-        <div className="text-center py-20 bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl mt-8">
-          <AlertCircle className="w-16 h-16 text-white/20 mx-auto mb-4" />
+        <div className="text-center py-20 bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl mt-8">
+          <AlertCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h2 className="text-2xl font-serif text-muted-foreground">Kata tidak ditemukan di kamus.</h2>
           <p className="text-white/40 mt-2">Coba periksa kembali ejaan kata yang Anda masukkan.</p>
         </div>

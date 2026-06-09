@@ -63,7 +63,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Cari kata atau sumber..."
-              className="w-full bg-card border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-brand"
+              className="w-full bg-card border border-border rounded-xl pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-brand"
             />
           </div>
           <select 
@@ -92,7 +92,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-8">
             {filteredVocab.map((item) => (
-              <div key={item.id} className="bg-card border border-foreground/20 rounded-3xl p-8 hover:bg-card/60 transition-all duration-500 group relative flex flex-col h-full shadow-md">
+              <div key={item.id} className="bg-card border border-foreground/20 rounded-3xl p-8 hover:bg-card shadow-sm transition-all duration-500 group relative flex flex-col h-full shadow-md">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h2 className="text-2xl font-serif font-bold text-brand">{item.word}</h2>
@@ -114,7 +114,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
                   </div>
                 </div>
                 
-                <div className="mt-4 pt-4 border-t border-white/5 space-y-4">
+                <div className="mt-4 pt-4 border-t border-border space-y-4">
                   <div>
                     <p className="text-sm text-muted-foreground italic font-serif leading-relaxed">"{item.context_sentence}"</p>
                   </div>
@@ -134,12 +134,12 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
                         <textarea 
                           value={editNotes}
                           onChange={(e) => setEditNotes(e.target.value)}
-                          className="w-full bg-background border border-white/10 rounded-lg p-3 text-sm focus:outline-none focus:border-brand resize-none"
+                          className="w-full bg-background border border-border rounded-lg p-3 text-sm focus:outline-none focus:border-brand resize-none"
                           rows={3}
                           placeholder="Tambahkan catatan personal Anda di sini..."
                         />
                         <div className="flex justify-end gap-2">
-                          <button onClick={() => setEditingId(null)} className="p-2 text-muted-foreground hover:bg-white/5 rounded-md">
+                          <button onClick={() => setEditingId(null)} className="p-2 text-muted-foreground hover:bg-muted rounded-md">
                             <X className="w-4 h-4" />
                           </button>
                           <button onClick={() => saveNotes(item.id)} className="p-2 text-brand bg-brand/10 hover:bg-brand/20 rounded-md">
@@ -148,7 +148,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
                         </div>
                       </div>
                     ) : (
-                      <div className="text-sm text-foreground/80 bg-white/5 p-3 rounded-lg min-h-[40px]">
+                      <div className="text-sm text-foreground/80 bg-muted p-3 rounded-lg min-h-[40px]">
                         {item.notes || <span className="text-muted-foreground italic">Tidak ada catatan.</span>}
                       </div>
                     )}

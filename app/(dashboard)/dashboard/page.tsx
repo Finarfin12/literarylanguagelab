@@ -115,7 +115,7 @@ export default async function DashboardPage() {
 
       {/* Main Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-card border border-white/10 rounded-3xl p-6 shadow-sm">
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
             <Flame className="w-5 h-5 text-orange-500" />
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Reading Streak</h3>
@@ -123,7 +123,7 @@ export default async function DashboardPage() {
           <p className="text-4xl font-serif font-bold text-foreground">{streak} <span className="text-xl text-muted-foreground font-sans font-normal">Hari</span></p>
         </div>
         
-        <div className="bg-card border border-white/10 rounded-3xl p-6 shadow-sm">
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
             <CheckCircle2 className="w-5 h-5 text-emerald-500" />
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Teks Selesai</h3>
@@ -131,7 +131,7 @@ export default async function DashboardPage() {
           <p className="text-4xl font-serif font-bold text-foreground">{completedTexts}</p>
         </div>
 
-        <div className="bg-card border border-white/10 rounded-3xl p-6 shadow-sm">
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
             <TrendingUp className="w-5 h-5 text-brand" />
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Review Minggu Ini</h3>
@@ -139,7 +139,7 @@ export default async function DashboardPage() {
           <p className="text-4xl font-serif font-bold text-foreground">{reviewedThisWeek || 0}</p>
         </div>
 
-        <div className="bg-card border border-white/10 rounded-3xl p-6 shadow-sm">
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
             <BookMarked className="w-5 h-5 text-purple-500" />
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Total Kosa Kata</h3>
@@ -150,7 +150,7 @@ export default async function DashboardPage() {
 
       {/* Chart & Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-        <div className="lg:col-span-2 bg-card border border-white/10 rounded-3xl p-6 shadow-sm flex flex-col min-h-[300px]">
+        <div className="lg:col-span-2 bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col min-h-[300px]">
           <h3 className="text-lg font-bold text-foreground mb-6">Vocabulary Growth (7 Hari Terakhir)</h3>
           <div className="flex-1">
             <VocabChart data={chartData} />
@@ -158,7 +158,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <div className="bg-card/60 backdrop-blur-md border border-brand/20 rounded-3xl p-6 shadow-lg relative overflow-hidden group flex-1 flex flex-col justify-center">
+          <div className="bg-card shadow-sm backdrop-blur-md border border-brand/20 rounded-3xl p-6 shadow-lg relative overflow-hidden group flex-1 flex flex-col justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-brand/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="relative z-10 text-center">
               <RefreshCcw className="w-12 h-12 text-brand mx-auto mb-4" />
@@ -172,7 +172,7 @@ export default async function DashboardPage() {
           
           <Link 
             href="/library"
-            className="group block bg-card border border-white/10 rounded-3xl p-6 hover:bg-white/5 transition-all relative overflow-hidden"
+            className="group block bg-card border border-border rounded-3xl p-6 hover:bg-muted transition-all relative overflow-hidden"
           >
             <BookOpen className="w-8 h-8 text-blue-400 mb-3" />
             <h2 className="text-lg font-bold text-foreground group-hover:text-blue-400 transition-colors mb-1">

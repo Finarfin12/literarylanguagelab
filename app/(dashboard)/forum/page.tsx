@@ -145,7 +145,7 @@ export default function ForumPage() {
     return (
       <Link 
         href={`/forum/thread/${thread.id}`} 
-        className="relative block bg-card border border-foreground/10 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group"
+        className="relative block bg-card border border-foreground/10 dark:border-border rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group"
       >
         {canDelete && (
           <button 
@@ -185,15 +185,15 @@ export default function ForumPage() {
         </p>
         
         <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground font-medium">
-          <div className="flex items-center gap-1.5 bg-foreground/5 dark:bg-white/5 px-3 py-1.5 rounded-full">
+          <div className="flex items-center gap-1.5 bg-foreground/5 dark:bg-muted px-3 py-1.5 rounded-full">
             <Clock className="w-3.5 h-3.5" />
             {new Date(thread.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
           </div>
-          <div className="flex items-center gap-1.5 bg-foreground/5 dark:bg-white/5 px-3 py-1.5 rounded-full">
+          <div className="flex items-center gap-1.5 bg-foreground/5 dark:bg-muted px-3 py-1.5 rounded-full">
             <MessageSquare className="w-3.5 h-3.5" />
             {thread.comments_count} balasan
           </div>
-          <div className="flex items-center gap-1.5 bg-foreground/5 dark:bg-white/5 px-3 py-1.5 rounded-full">
+          <div className="flex items-center gap-1.5 bg-foreground/5 dark:bg-muted px-3 py-1.5 rounded-full">
             <Users className="w-3.5 h-3.5" />
             {thread.view_count} tayangan
           </div>
@@ -266,7 +266,7 @@ export default function ForumPage() {
                   <button
                     key={cat.id}
                     onClick={() => setActiveCategory(cat)}
-                    className="flex items-start gap-5 p-6 bg-card border border-foreground/10 dark:border-white/10 rounded-3xl hover:border-brand hover:shadow-lg transition-all text-left group"
+                    className="flex items-start gap-5 p-6 bg-card border border-foreground/10 dark:border-border rounded-3xl hover:border-brand hover:shadow-lg transition-all text-left group"
                   >
                     <div className="p-4 bg-brand/10 rounded-2xl shrink-0 group-hover:scale-110 transition-transform">
                       <Icon className="w-8 h-8 text-brand" />

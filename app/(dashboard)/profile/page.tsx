@@ -62,7 +62,7 @@ export default function ProfilePage() {
       <div className="max-w-5xl mx-auto px-8 relative -mt-20 pb-12">
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row items-start md:items-end gap-6 mb-12">
-          <div className="w-40 h-40 rounded-full border-4 border-background bg-white/5 overflow-hidden shrink-0 shadow-2xl relative">
+          <div className="w-40 h-40 rounded-full border-4 border-background bg-muted overflow-hidden shrink-0 shadow-2xl relative">
             {avatarUrl ? (
               <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
@@ -78,7 +78,7 @@ export default function ProfilePage() {
             </p>
           </div>
           <div className="mb-2">
-            <Link href="/settings" className="px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors font-medium flex items-center gap-2">
+            <Link href="/settings" className="px-6 py-2.5 bg-muted hover:bg-muted hover:bg-muted/80 border border-border rounded-xl transition-colors font-medium flex items-center gap-2">
               Edit Profil
             </Link>
           </div>
@@ -88,14 +88,14 @@ export default function ProfilePage() {
           
           {/* Left Column: About & Badges */}
           <div className="space-y-8">
-            <div className="bg-white/5 border border-white/10 p-6 rounded-3xl">
+            <div className="bg-muted border border-border p-6 rounded-3xl">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <User className="w-5 h-5 text-brand" /> Tentang Saya
               </h2>
               <p className="text-muted-foreground leading-relaxed">{aboutMe}</p>
             </div>
 
-            <div className="bg-white/5 border border-white/10 p-6 rounded-3xl">
+            <div className="bg-muted border border-border p-6 rounded-3xl">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-yellow-400" /> Pencapaian
               </h2>
@@ -133,11 +133,11 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 p-8 rounded-3xl mt-8">
+            <div className="bg-muted border border-border p-8 rounded-3xl mt-8">
               <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-muted-foreground" /> Aktivitas Terakhir
               </h3>
-              <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[11px] before:w-px before:bg-white/10">
+              <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[11px] before:w-px before:bg-muted hover:bg-muted/80">
                 <div className="flex gap-4 relative">
                   <div className="w-6 h-6 rounded-full bg-brand/20 border-2 border-background flex items-center justify-center shrink-0 relative z-10">
                     <div className="w-2 h-2 rounded-full bg-brand" />
