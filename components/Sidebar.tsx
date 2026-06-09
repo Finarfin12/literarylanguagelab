@@ -97,9 +97,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    "LingoWise": true, // open first one by default
-  });
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
   const toggleGroup = (title: string) => {
     setOpenGroups(prev => ({

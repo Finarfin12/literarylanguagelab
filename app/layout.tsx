@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Merriweather } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import PwaRegister from "@/components/PwaRegister";
 import "./globals.css";
 
 const inter = Inter({
@@ -17,6 +18,19 @@ const merriweather = Merriweather({
 export const metadata: Metadata = {
   title: "Literary Language Lab",
   description: "Belajar bahasa Inggris melalui literatur sastra.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Literary Lab",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#2fa16b",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -30,6 +44,7 @@ export default function RootLayout({
       className={`${inter.variable} ${merriweather.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
+        <PwaRegister />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           {children}
         </ThemeProvider>
