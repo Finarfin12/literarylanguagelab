@@ -1,5 +1,26 @@
 import { NextResponse } from "next/server";
 
+async function fetchWithRetry(url: string | URL, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+
+    try {
+      const res = await fetch(url, {
+        headers: { Accept: "application/json" },
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      return res;
+    } catch (err) {
+      clearTimeout(timer);
+      if (i === retries) throw err;
+      await new Promise(r => setTimeout(r, 1000));
+    }
+  }
+  throw new Error("Retry exhausted");
+}
+
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -11,9 +32,7 @@ export async function GET(
   }
 
   try {
-    const res = await fetch(`https://gutendex.com/books/${id}`, {
-      headers: { Accept: "application/json" },
-    });
+    const res = await fetchWithRetry(`https://gutendex.com/books/${id}`);
 
     if (!res.ok) {
       return NextResponse.json(

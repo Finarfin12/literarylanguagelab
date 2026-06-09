@@ -16,6 +16,27 @@ function isAllowedGutenbergUrl(value: string) {
   }
 }
 
+async function fetchWithRetry(url: string, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
+
+    try {
+      const res = await fetch(url, {
+        headers: { Accept: "text/plain,*/*;q=0.8" },
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      return res;
+    } catch (err) {
+      clearTimeout(timer);
+      if (i === retries) throw err;
+      await new Promise(r => setTimeout(r, 1000));
+    }
+  }
+  throw new Error("Retry exhausted");
+}
+
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const sourceUrl = url.searchParams.get("url");
@@ -28,9 +49,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const res = await fetch(sourceUrl, {
-      headers: { Accept: "text/plain,*/*;q=0.8" },
-    });
+    const res = await fetchWithRetry(sourceUrl);
 
     if (!res.ok) {
       return NextResponse.json(
