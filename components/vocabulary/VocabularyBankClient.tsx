@@ -92,7 +92,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-8">
             {filteredVocab.map((item) => (
-              <div key={item.id} className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 hover:bg-card/60 transition-all duration-500 group relative flex flex-col h-full">
+              <div key={item.id} className="bg-card border border-foreground/20 rounded-3xl p-8 hover:bg-card/60 transition-all duration-500 group relative flex flex-col h-full shadow-md">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h2 className="text-2xl font-serif font-bold text-brand">{item.word}</h2>
