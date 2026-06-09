@@ -21,7 +21,8 @@ export default function GutenbergReaderPage({ params }: { params: { id: string }
         setBookMeta(meta);
 
         // Cari URL text
-        const txtUrl = meta.formats["text/plain; charset=utf-8"] || meta.formats["text/plain"] || meta.formats["text/plain; charset=us-ascii"];
+        const txtKey = Object.keys(meta.formats).find(key => key.startsWith("text/plain"));
+        const txtUrl = txtKey ? meta.formats[txtKey] : null;
         if (!txtUrl) throw new Error("Format teks murni tidak tersedia untuk buku ini.");
 
         // Karena Gutenberg API CORS issues jika di-fetch langsung di browser, kita akan fetch via proxy sederhana (next.js rewrite atau cors proxy)

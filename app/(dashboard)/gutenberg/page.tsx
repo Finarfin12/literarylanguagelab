@@ -21,7 +21,7 @@ export default function GutenbergSearchPage() {
       const data = await res.json();
       // Filter out books without text/plain format
       const validBooks = data.results.filter((book: any) => 
-        book.formats["text/plain"] || book.formats["text/plain; charset=utf-8"] || book.formats["text/plain; charset=us-ascii"]
+        Object.keys(book.formats).some(key => key.startsWith("text/plain"))
       );
       setBooks(validBooks.slice(0, 20));
     } catch (err) {
@@ -72,7 +72,7 @@ export default function GutenbergSearchPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {books.map((book) => {
-            const txtFormat = book.formats["text/plain"] || book.formats["text/plain; charset=utf-8"] || book.formats["text/plain; charset=us-ascii"];
+            const txtKey = Object.keys(book.formats).find(key => key.startsWith("text/plain"));
             // Extract the Gutenberg ID
             const bookId = book.id;
             
