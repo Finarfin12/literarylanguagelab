@@ -10,6 +10,7 @@ export default function AZDictionaryPage() {
   const [activeLetter, setActiveLetter] = useState("A");
   const [words, setWords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -63,6 +64,20 @@ export default function AZDictionaryPage() {
         </div>
       </div>
 
+      {/* Search Bar */}
+      <div className="max-w-2xl mx-auto mb-6 w-full px-4">
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder={`Cari kata berawalan ${activeLetter}...`}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-background/50 border border-white/10 focus:border-brand/50 rounded-2xl py-3 pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand/50 transition-all"
+          />
+        </div>
+      </div>
+
       <div className="flex-1">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
@@ -71,7 +86,7 @@ export default function AZDictionaryPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 animate-in fade-in slide-in-from-bottom-8 duration-500 pb-8">
-            {words.map((item, idx) => {
+            {words.filter(w => w.word.toLowerCase().includes(searchTerm.toLowerCase())).map((item, idx) => {
               // Extract a short definition snippet if available
               let defSnippet = "";
               if (item.defs && item.defs.length > 0) {
@@ -97,10 +112,10 @@ export default function AZDictionaryPage() {
                 </div>
               );
             })}
-            {words.length === 0 && (
+            {words.filter(w => w.word.toLowerCase().includes(searchTerm.toLowerCase())).length === 0 && (
               <div className="col-span-full text-center py-20 text-muted-foreground">
                 <Hash className="w-12 h-12 opacity-20 mx-auto mb-4" />
-                <p>Tidak ada kata yang ditemukan untuk huruf {activeLetter}.</p>
+                <p>Tidak ada kata yang ditemukan untuk "{searchTerm || activeLetter}".</p>
               </div>
             )}
           </div>
