@@ -153,7 +153,7 @@ export default function LexiconSearchPage() {
           value={word}
           onChange={(e) => setWord(e.target.value)}
           placeholder="Ketik kata bahasa Inggris di sini..."
-          className="w-full pl-14 pr-32 py-5 bg-card/50 backdrop-blur-md border border-white/10 rounded-2xl text-foreground text-xl shadow-xl focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all placeholder:text-white/20"
+          className="w-full pl-14 pr-32 py-5 bg-card border border-foreground/20 rounded-2xl text-foreground text-xl shadow-md focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all placeholder:text-muted-foreground"
         />
         <button
           type="submit"
