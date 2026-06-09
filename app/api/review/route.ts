@@ -43,6 +43,12 @@ export async function POST(req: Request) {
 
     if (error) throw error;
 
+    // Award XP for review
+    const { data: profile } = await supabase.from("profiles").select("xp").eq("id", user.id).single();
+    if (profile) {
+      await supabase.from("profiles").update({ xp: profile.xp + 2 }).eq("id", user.id);
+    }
+
     return NextResponse.json({ success: true, nextReview });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
