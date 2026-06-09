@@ -126,7 +126,7 @@ export default function ToolExecutionPage() {
               <select 
                 value={configValue}
                 onChange={(e) => setConfigValue(e.target.value)}
-                className="w-full bg-background border border-white/10 rounded-xl p-4 text-foreground focus:ring-2 focus:ring-brand focus:border-transparent outline-none appearance-none cursor-pointer"
+                className="w-full bg-background border border-foreground/20 rounded-xl p-4 text-foreground focus:ring-2 focus:ring-brand focus:border-transparent outline-none cursor-pointer shadow-sm"
               >
                 {tool.options.map(opt => (
                   <option key={opt} value={opt}>{opt}</option>

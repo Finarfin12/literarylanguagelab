@@ -69,7 +69,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
           <select 
             value={levelFilter}
             onChange={(e) => setLevelFilter(e.target.value)}
-            className="bg-card border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand appearance-none min-w-[120px]"
+            className="bg-card border border-foreground/20 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand min-w-[120px] cursor-pointer"
           >
             <option value="all">Semua Level</option>
             <option value="0">Level 0</option>

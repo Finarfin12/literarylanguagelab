@@ -64,7 +64,7 @@ export default function ToneAnalyzerPage() {
             <select 
               value={targetTone}
               onChange={(e) => setTargetTone(e.target.value)}
-              className="w-full bg-background border border-white/10 rounded-xl p-4 text-foreground focus:ring-2 focus:ring-brand focus:border-transparent outline-none appearance-none cursor-pointer"
+              className="w-full bg-background border border-foreground/20 rounded-xl p-4 text-foreground focus:ring-2 focus:ring-brand focus:border-transparent outline-none cursor-pointer shadow-sm"
             >
               {OPTIONS.map(opt => (
                 <option key={opt} value={opt}>{opt}</option>
