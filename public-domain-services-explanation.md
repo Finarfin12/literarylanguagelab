@@ -209,3 +209,167 @@ OpenLibrary **bukan cuma alternatif sementara** karena Gutendex down — ini **u
 | Update TypeScript types | Kedua file di atas |
 | Mapping `id_project_gutenberg` ke URL teks | `app/(dashboard)/gutenberg/[id]/page.tsx` |
 | Update cover image dari `cover_i` | `app/(dashboard)/gutenberg/page.tsx` |
+
+---
+
+## Strategi Dual-Provider (OpenLibrary + Gutendex)
+
+### Konsep
+
+Halaman pencarian menyediakan **toggle/pill selector** untuk memilih sumber pencarian:
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  [🔍 Cari judul buku atau penulis...           ] [Search]    │
+│                                                              │
+│  Sumber:  ○ OpenLibrary (Rekomendasi)  ○ Gutendex           │
+│           ↓ lebih cepat, lebih stabil                        │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Kenapa Dual-Provider?
+
+| Alasan | Penjelasan |
+|--------|------------|
+| **Psikologi user** | User merasa punya kontrol. Kalau satu lambat/error, bisa switch sendiri — bukan cuma lihat error tanpa opsi. Ini mengurangi frustrasi. |
+| **Redundansi nyata** | Dua provider = dua infrastruktur terpisah. Kalau OpenLibrary maintenance atau Gutendex down, user tetap bisa akses. |
+| **Transparansi** | User lihat sendiri "Oh OpenLibrary lebih cepat" — membangun kepercayaan ke sistem. |
+| **Fitur diferensiasi** | Bukan cuma fallback teknis, tapi fitur yang dikomunikasikan ke user. |
+
+### Detail Provider
+
+#### Provider 1: OpenLibrary (Default)
+
+| Aspek | Detail |
+|-------|--------|
+| **Label di UI** | "OpenLibrary (Rekomendasi)" |
+| **Sub-label** | "Lebih cepat · 3M+ buku · Cover HD" |
+| **Keunggulan** | Response ~200ms, cover image, metadata kaya (deskripsi, subjects, rating) |
+| **Endpoint search** | `openlibrary.org/search.json?q=...&has_fulltext=true&fields=...` |
+| **Endpoint metadata** | `openlibrary.org/works/OL...W.json` |
+| **Cover** | `covers.openlibrary.org/b/id/{cover_i}-M.jpg` |
+| **Ke Gutenberg ID** | Field `id_project_gutenberg` |
+| **Fetch dari** | Browser langsung (CORS OK) |
+
+#### Provider 2: Gutendex (Alternatif)
+
+| Aspek | Detail |
+|-------|--------|
+| **Label di UI** | "Gutendex (Klasik)" |
+| **Sub-label** | "70.000+ buku · Data ringan" |
+| **Keunggulan** | Response lebih kecil (JSON ringan), langsung dapat Gutenberg ID tanpa mapping |
+| **Endpoint search** | `/api/gutenberg/search?q=...` (via Vercel proxy) |
+| **Endpoint metadata** | `/api/gutenberg/:id` (via Vercel proxy) |
+| **Cover** | `gutendex formats["image/jpeg"]` (kalau ada) |
+| **Fetch dari** | Vercel proxy (tidak support CORS langsung) |
+
+### Perilaku Default
+
+- **Default**: OpenLibrary (lebih cepat, lebih stabil)
+- **Provider disimpan di `localStorage`**: User yang prefer Gutendex nggak perlu pilih ulang tiap buka halaman
+- **Saat error**: Tampilkan pesan + saran switch ke provider lain
+
+```
+┌──────────────────────────────────────────────────┐
+│  ⚠️ OpenLibrary sedang tidak tersedia            │
+│                                                  │
+│  [Coba Lagi]  atau  [Coba lewat Gutendex →]      │
+└──────────────────────────────────────────────────┘
+```
+
+### Implementasi Teknis
+
+**State management sederhana** (tanpa library tambahan):
+
+```typescript
+type SearchProvider = "openlibrary" | "gutendex";
+
+const [provider, setProvider] = useState<SearchProvider>(() => {
+  if (typeof window !== "undefined") {
+    return (localStorage.getItem("gutenberg-provider") as SearchProvider) || "openlibrary";
+  }
+  return "openlibrary";
+});
+
+// Simpan ke localStorage saat ganti
+useEffect(() => {
+  localStorage.setItem("gutenberg-provider", provider);
+}, [provider]);
+```
+
+**Pill selector UI** (Tailwind):
+
+```tsx
+<div className="flex gap-2 justify-center mb-6">
+  <button 
+    onClick={() => setProvider("openlibrary")}
+    className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
+      provider === "openlibrary" 
+        ? "bg-blue-500 text-white shadow-lg" 
+        : "bg-muted text-muted-foreground hover:bg-muted"
+    }`}
+  >
+    📚 OpenLibrary
+    <span className="block text-[10px] font-normal opacity-70">Rekomendasi</span>
+  </button>
+  <button 
+    onClick={() => setProvider("gutendex")}
+    className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
+      provider === "gutendex" 
+        ? "bg-orange-500 text-white shadow-lg" 
+        : "bg-muted text-muted-foreground hover:bg-muted"
+    }`}
+  >
+    📖 Gutendex
+    <span className="block text-[10px] font-normal opacity-70">Klasik</span>
+  </button>
+</div>
+```
+
+**Search handler:**
+
+```typescript
+const searchBooks = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!query.trim()) return;
+
+  abortRef.current?.abort();
+  const controller = new AbortController();
+  abortRef.current = controller;
+
+  setLoading(true);
+  setError("");
+
+  try {
+    let data;
+    if (provider === "openlibrary") {
+      data = await searchOpenLibrary(query, controller.signal);
+    } else {
+      data = await searchGutendex(query, controller.signal);
+    }
+    setBooks(data);
+  } catch (err) {
+    // Tampilkan error + saran switch provider
+    setError(/* pesan dengan saran switch */);
+  } finally {
+    setLoading(false);
+  }
+};
+```
+
+### Perubahan File
+
+| File | Perubahan |
+|------|-----------|
+| `app/(dashboard)/gutenberg/page.tsx` | Tambah provider state, pill selector UI, dua search handler, localStorage persistence |
+| `app/(dashboard)/gutenberg/[id]/page.tsx` | Support dua sumber metadata (OpenLibrary work key + Gutendex ID) |
+| `openlibrary-migration-plan.md` | Update dengan strategi dual-provider |
+
+### Risiko
+
+| Risiko | Mitigasi |
+|--------|----------|
+| User bingung dua pilihan | Default OpenLibrary + label "Rekomendasi" jelas |
+| Hasil search berbeda antar provider | Bisa jadi nilai tambah: user bisa bandingkan |
+| Maintenance 2 integrasi | Abaikan Gutendex kalau sudah lama down permanen |
+

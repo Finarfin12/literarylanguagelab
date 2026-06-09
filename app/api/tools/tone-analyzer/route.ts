@@ -7,26 +7,36 @@ export async function POST(req: Request) {
   try {
     const { text, targetTone } = await req.json();
 
-    if (!text || !targetTone) {
+    if (!text) {
       return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
     }
 
-    const prompt = `Text:\n"${text}"\n\nTarget Tone: ${targetTone}\n\nTask: 
-1. Evaluate the current grammatical structure and tone of the text.
-2. Estimate its CEFR reading level.
-3. Provide a 'Before & After' comparison showing how the text is rewritten to perfectly match the requested Target Tone.
-4. Explain the grammar/diction choices made to achieve this new tone.
+    const sample = text.slice(0, 3000);
+    const effectiveTarget = targetTone || "Akademis Profesional";
 
-Respond entirely in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text). The English text quotes should be in italic or blockquotes.`;
+    const prompt = `Text:\n"${sample}"\n\nTarget Tone: ${effectiveTarget}\n\nTask:
+
+## TONE DETECTION
+1. Classify the CURRENT tone (neutral/formal/sarcastic/ironic/humorous/melancholic/dramatic/romantic/ominous/urgent)
+2. Identify 2-3 linguistic markers (word choices, syntax, punctuation) that indicate this tone
+3. Explain how to preserve this tone when translating to Indonesian with specific examples
+
+## TONE TRANSFORMATION
+4. Estimate the CEFR reading level (A1-C2) of the original text
+5. Rewrite the text to perfectly match the Target Tone
+6. Provide a 'Before & After' comparison
+7. Explain the grammar/diction choices made for the transformation
+
+Respond entirely in Indonesian (except tone classification label, linguistic markers, and English text quotes which stay in English) using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, bold text, and ⚠️ warnings where literal translation would fail). English text quotes in italic or blockquotes.`;
 
     const completion = await groq.chat.completions.create({
       messages: [
-        { role: "system", content: "You are a helpful and highly intelligent literature and grammar assistant." },
+        { role: "system", content: "You are a literary tone analyst and transformation expert. You help Indonesian students of English Literature understand tone nuances and rewrite texts for different audiences." },
         { role: "user", content: prompt }
       ],
       model: "llama-3.3-70b-versatile",
-      temperature: 0.3,
-      max_tokens: 1500,
+      temperature: 0.4,
+      max_tokens: 2000,
     });
 
     const result = completion.choices[0]?.message?.content || "";

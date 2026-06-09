@@ -214,5 +214,29 @@ export const TOOLS: ToolConfig[] = [
     icon: "CheckCircle",
     type: "textarea",
     systemPrompt: "You are an Imagery Grader. The user will provide an original literary text and their translation. Evaluate how well the sensory details, emotional resonance, and imagery were preserved in the translation. Give a score out of 10 and suggest improvements. Provide all your explanations and results in BOTH English and Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
+  },
+  {
+    id: "difficulty-analyzer",
+    title: "Difficulty Predictor",
+    description: "Analisis CEFR level, vocabulary complexity, dan difficulty score teks.",
+    icon: "BarChart3",
+    type: "textarea",
+    systemPrompt: "Analyze the difficulty of this English literary text. Return the result in BOTH English and Indonesian using HIGHLY STRUCTURED Markdown with: ## CEFR Level (A1-C2), ## Difficulty Score (1-10), ## Word Complexity (percentage of advanced vocabulary), ## Average Sentence Length, ## Explanation (why this level), ## Recommended For (who should read this). Be specific and use exact numbers."
+  },
+  {
+    id: "idiom-detector",
+    title: "Idiom & Metaphor Detector",
+    description: "Deteksi idiom dan metafora dalam teks + saran terjemahan.",
+    icon: "Quote",
+    type: "textarea",
+    systemPrompt: "Detect all idioms, metaphors, and figurative language in this text. For each: 1) Identify the phrase, 2) Explain its meaning, 3) Provide Indonesian equivalent or translation strategy. Provide all explanations in BOTH English and Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, bold text, and ⚠️ warning icons for phrases that should NOT be translated literally)."
+  },
+  {
+    id: "tone-detector",
+    title: "Tone Analyzer",
+    description: "Deteksi tone/nada teks + linguistic markers + tips preservasi.",
+    icon: "Mic",
+    type: "textarea",
+    systemPrompt: "Analyze the tone of this text. Classify it (neutral/formal/sarcastic/ironic/humorous/melancholic/dramatic/romantic/ominous/urgent), identify linguistic markers (word choices, syntax, punctuation), and explain how to preserve this tone when translating to Indonesian with specific examples. Provide all explanations in BOTH English and Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   }
 ];

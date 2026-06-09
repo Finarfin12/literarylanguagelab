@@ -75,7 +75,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
 
                   <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
                     <span className="text-xs font-medium px-3 py-1 bg-brand/10 text-brand rounded-full border border-brand/20">
-                      Level {text.difficulty_level}
+                      Level {text.difficulty}
                     </span>
                     <span className="text-xs text-muted-foreground flex items-center gap-1 group-hover:text-foreground transition-colors">
                       <BookOpen className="w-3 h-3" /> Read

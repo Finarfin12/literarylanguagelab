@@ -2,20 +2,27 @@
 
 import Swal from 'sweetalert2';
 import { useState } from "react";
-import { FileText, Loader2, Wand2 } from "lucide-react";
+import { FileText, Loader2, Wand2, Search, Shuffle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 export default function ToneAnalyzerPage() {
   const [text, setText] = useState("");
+  const [mode, setMode] = useState<"detect" | "transform">("detect");
   const [targetTone, setTargetTone] = useState("Akademis Profesional");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
-  const OPTIONS = [
+  const TONE_OPTIONS = [
     "Akademis Profesional",
     "Sastra Puitis",
     "Persuasif Marketing",
-    "Penerjemahan"
+    "Penerjemahan",
+    "Formal",
+    "Casual",
+    "Sarcastic",
+    "Romantic",
+    "Gothic",
+    "Melancholic",
   ];
 
   const handleAnalyze = async () => {
@@ -31,7 +38,10 @@ export default function ToneAnalyzerPage() {
       const res = await fetch("/api/tools/tone-analyzer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, targetTone }),
+        body: JSON.stringify({
+          text,
+          targetTone: mode === "transform" ? targetTone : undefined,
+        }),
       });
 
       const data = await res.json();
@@ -39,7 +49,7 @@ export default function ToneAnalyzerPage() {
 
       setResult(data.result);
     } catch (error: any) {
-      Swal.fire({ title: "Informasi", text: String(error.message), icon: "warning", confirmButtonColor: "#2fa16b" });
+      Swal.fire({ title: "Error", text: String(error.message), icon: "error", confirmButtonColor: "#2fa16b" });
     } finally {
       setLoading(false);
     }
@@ -50,34 +60,54 @@ export default function ToneAnalyzerPage() {
       <div className="mb-10">
         <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
           <FileText className="w-8 h-8 text-brand" />
-          Tone & Grammar Analyzer
+          Tone Analyzer
         </h1>
-        <p className="text-muted-foreground mt-2 text-lg">Analisis struktur grammar, perkirakan level CEFR, dan rombak *tone* teks ke berbagai gaya bahasa.</p>
+        <p className="text-muted-foreground mt-2 text-lg">Deteksi tone/nada teks, linguistic markers, tips preservasi dalam terjemahan, dan transformasi tone.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-8">
         <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
-          
-          <div className="mb-6">
-            <label className="block text-sm font-bold text-brand uppercase tracking-wider mb-3">Target Tone</label>
-            <select 
-              value={targetTone}
-              onChange={(e) => setTargetTone(e.target.value)}
-              className="w-full bg-background border border-foreground/20 rounded-xl p-4 text-foreground focus:ring-2 focus:ring-brand focus:border-transparent outline-none cursor-pointer shadow-sm"
+
+          <div className="flex mb-6 bg-muted rounded-xl p-1">
+            <button
+              onClick={() => setMode("detect")}
+              className={`flex-1 py-3 px-4 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${mode === "detect" ? "bg-brand text-background shadow-md" : "text-muted-foreground hover:text-foreground"}`}
             >
-              {OPTIONS.map(opt => (
-                <option key={opt} value={opt}>{opt}</option>
-              ))}
-            </select>
+              <Search className="w-4 h-4" /> Detect Tone
+            </button>
+            <button
+              onClick={() => setMode("transform")}
+              className={`flex-1 py-3 px-4 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${mode === "transform" ? "bg-brand text-background shadow-md" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <Shuffle className="w-4 h-4" /> Transform Tone
+            </button>
           </div>
 
+          {mode === "transform" && (
+            <div className="mb-6 animate-in fade-in slide-in-from-top-2 duration-300">
+              <label className="block text-sm font-bold text-brand uppercase tracking-wider mb-3">Target Tone</label>
+              <select
+                value={targetTone}
+                onChange={(e) => setTargetTone(e.target.value)}
+                className="w-full bg-background border border-foreground/20 rounded-xl p-4 text-foreground focus:ring-2 focus:ring-brand focus:border-transparent outline-none cursor-pointer shadow-sm"
+              >
+                {TONE_OPTIONS.map(opt => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div className="mb-6">
-            <label className="block text-sm font-bold text-foreground uppercase tracking-wider mb-3">Input Text (English)</label>
+            <label className="block text-sm font-bold text-foreground uppercase tracking-wider mb-3">
+              Input Text (English)
+              {mode === "detect" && <span className="text-muted-foreground font-normal ml-2">— tone & linguistic markers akan dideteksi otomatis</span>}
+            </label>
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="Paste text here..."
+              placeholder="Paste English text here..."
               className="w-full h-48 bg-background border border-border rounded-2xl p-4 text-foreground font-serif focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
             ></textarea>
           </div>
@@ -89,7 +119,7 @@ export default function ToneAnalyzerPage() {
               className="px-8 py-4 bg-brand text-background font-bold rounded-xl hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center gap-2"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
-              Analyze & Transform
+              {mode === "detect" ? "Detect Tone" : "Analyze & Transform"}
             </button>
           </div>
         </div>

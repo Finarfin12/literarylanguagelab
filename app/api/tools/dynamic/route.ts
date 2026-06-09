@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       if (user) {
         await supabase.from("activity_logs").insert({
           user_id: user.id,
-          action: `Tool Used: ${tool.title}${configValue ? ` (${configValue})` : ""}`,
+          action_type: `Tool Used: ${tool.title}${configValue ? ` (${configValue})` : ""}`,
         });
       }
     } catch (logError) {

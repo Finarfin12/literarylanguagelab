@@ -1,0 +1,22 @@
+# Rencana Implementasi: Pusat Bantuan & Liter AI
+
+Tugas ini membutuhkan pembuatan Pusat Dokumentasi lengkap beserta Asisten AI khusus ("Liter AI") yang menguasai seluk-beluk aplikasi.
+
+## 1. Top-Right "Help" Button
+Saya akan menambahkan tombol bantuan (ikon tanda tanya `?` atau "Help") di sudut **kanan atas layar**. Tombol ini akan mengambang (*floating*) atau diletakkan secara elegan di atas konten utama, sehingga bisa diakses dari halaman *dashboard* mana pun.
+
+## 2. Halaman Dokumentasi `/help`
+Saat tombol ditekan, pengguna akan dibawa ke halaman `/help` yang memiliki desain "Split Screen" (Layar Terbelah):
+- **Bagian Kiri (Dokumentasi):** Berisi panduan tekstual, daftar fitur lengkap (Gutenberg, Lexicon, Translation Workshop, dll), dan alur kerja aplikasi.
+- **Bagian Kanan (Liter AI Chat):** Antarmuka obrolan (*chat interface*) tempat pengguna bisa langsung bertanya tentang aplikasi.
+
+## 3. Liter AI (Asisten WebApp)
+Saya akan membuat sebuah API Route baru `app/api/liter-ai/route.ts` menggunakan **Groq**. 
+AI ini akan disuntikkan (*prompt engineering*) dengan dokumen manual lengkap tentang **Literary Language Lab** (termasuk penjelasan tentang XP, Sistem Tier, Cara menambah kata, dsb.). Liter AI akan bisa menjawab pertanyaan pengguna secara spesifik terkait fitur aplikasi.
+
+> [!IMPORTANT]
+> **User Review Required:**
+> 1. Apakah Anda setuju dengan desain Layar Terbelah (Kiri: Buku Panduan, Kanan: Chat Liter AI) untuk halaman Help?
+> 2. Untuk tombol di kanan atas, apakah Anda lebih suka tombol "Mengambang" (*Floating Button* yang menempel terus saat di-scroll) atau diletakkan statis di sudut halaman?
+
+Setelah disetujui, saya akan langsung mengeksekusinya!

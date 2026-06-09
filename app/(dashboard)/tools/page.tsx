@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { TOOLS } from "@/lib/tools-config";
-import { Wrench, Sparkles, Wand2, Hourglass, Eye, Ear, Search, FlaskConical, Building2, Palette, Image as ImageIcon, PenTool, ListOrdered, CheckSquare, Shuffle, Swords } from "lucide-react";
+import { Wrench, Sparkles, Wand2, Hourglass, Eye, Ear, Search, FlaskConical, Building2, Palette, Image as ImageIcon, PenTool, ListOrdered, CheckSquare, Shuffle, Swords, BarChart3, Quote, Mic } from "lucide-react";
 
 const iconMap: Record<string, any> = {
-  Wand2, Hourglass, Eye, Ear, Search, Sparkles, FlaskConical, Building2, Palette, Image: ImageIcon, PenTool, ListOrdered, CheckSquare, Shuffle, Swords
+  Wand2, Hourglass, Eye, Ear, Search, Sparkles, FlaskConical, Building2, Palette, Image: ImageIcon, PenTool, ListOrdered, CheckSquare, Shuffle, Swords, BarChart3, Quote, Mic
 };
 
 export default function ToolsDashboardPage() {
