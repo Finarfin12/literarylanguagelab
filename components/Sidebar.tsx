@@ -98,6 +98,7 @@ const MENU_GROUPS = [
     color: "text-rose-400",
     items: [
       { name: "Global Leaderboard", path: "/leaderboard" },
+      { name: "Shared Annotations", path: "/community-annotations" },
     ]
   }
 ];
