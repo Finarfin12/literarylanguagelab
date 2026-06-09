@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { BookOpen, Search, Loader2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -26,16 +26,23 @@ export default function GutenbergSearchPage() {
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState("");
+  const abortRef = useRef<AbortController | null>(null);
 
   const searchBooks = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!query.trim()) return;
 
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setLoading(true);
     setHasSearched(true);
     setError("");
     try {
-      const res = await fetch(`/api/gutenberg/search?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/gutenberg/search?q=${encodeURIComponent(query)}`, {
+        signal: controller.signal,
+      });
       if (!res.ok) throw new Error("Gagal menghubungi Gutendex. Coba lagi sebentar.");
       const data = (await res.json()) as GutendexSearchResponse;
       // Filter out books without text/plain format
@@ -45,6 +52,7 @@ export default function GutenbergSearchPage() {
       );
       setBooks(validBooks.slice(0, 20));
     } catch (err: unknown) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       console.error(err);
       setBooks([]);
       setError(err instanceof Error ? err.message : "Gagal mencari buku.");

@@ -168,7 +168,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="p-2 bg-muted rounded-xl hover:bg-muted hover:bg-muted/80 transition-colors text-muted-foreground hover:text-brand"
             >
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {mounted ? (theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />) : <Moon className="w-4 h-4" />}
             </button>
           </div>
         </div>

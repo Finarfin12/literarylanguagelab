@@ -4,13 +4,14 @@ import { BookOpen, Send, User } from "lucide-react";
 import SubmitButton from "@/components/ui/SubmitButton";
 import { postDiscussion } from "../actions";
 
-export default async function ClubRoomPage({ params }: { params: { id: string } }) {
+export default async function ClubRoomPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient();
 
   const { data: club } = await supabase
     .from("clubs")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (!club) return notFound();

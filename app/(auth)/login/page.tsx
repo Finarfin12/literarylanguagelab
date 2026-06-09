@@ -7,7 +7,7 @@ import OAuthButtons from "@/components/ui/OAuthButtons";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
 
