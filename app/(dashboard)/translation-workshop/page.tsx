@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Languages, ArrowRight, Loader2, Award, CheckCircle2 } from "lucide-react";
+import { Languages, ArrowRight, Loader2, Award, CheckCircle2, ArrowLeftRight, FileType2, RotateCcw } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import Swal from 'sweetalert2';
 
@@ -10,6 +10,7 @@ export default function TranslationWorkshopPage() {
   const [translatedText, setTranslatedText] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [mode, setMode] = useState("general");
 
   const handleEvaluate = async () => {
     if (!originalText.trim() || !translatedText.trim()) {
@@ -24,7 +25,7 @@ export default function TranslationWorkshopPage() {
       const res = await fetch("/api/translation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ originalText, translatedText }),
+        body: JSON.stringify({ originalText, translatedText, mode }),
       });
 
       const data = await res.json();
@@ -47,6 +48,34 @@ export default function TranslationWorkshopPage() {
           Translation Workshop
         </h1>
         <p className="text-muted-foreground mt-2 text-lg">Ruang kerja penerjemahan sastra. Latih kepekaan Anda dalam mentransfer makna, nuansa, dan citraan dari bahasa Inggris ke bahasa Indonesia.</p>
+      </div>
+
+      {/* Mode Selection */}
+      <div className="flex flex-wrap items-center gap-4 mb-8 bg-card shadow-sm border border-border p-2 rounded-2xl">
+        <button 
+          onClick={() => setMode("general")}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "general" ? "bg-brand text-background shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+        >
+          <CheckCircle2 className="w-4 h-4" /> Feedback Umum
+        </button>
+        <button 
+          onClick={() => setMode("equivalence")}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "equivalence" ? "bg-blue-500 text-white shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+        >
+          <ArrowLeftRight className="w-4 h-4" /> Equivalence Checker
+        </button>
+        <button 
+          onClick={() => setMode("register")}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "register" ? "bg-amber-500 text-white shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+        >
+          <FileType2 className="w-4 h-4" /> Register Matcher
+        </button>
+        <button 
+          onClick={() => setMode("back_translation")}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "back_translation" ? "bg-purple-500 text-white shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+        >
+          <RotateCcw className="w-4 h-4" /> Back-Translation
+        </button>
       </div>
 
       {/* Split Screen Workspace */}
