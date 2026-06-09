@@ -58,8 +58,6 @@ const MENU_GROUPS = [
       { name: "Metaphor Generator", path: "/tools/metaphor-generator" },
       { name: "Time Traveler", path: "/tools/time-traveler" },
       { name: "Lexicon Search", path: "/tools/lexicon-search" },
-      { name: "Text Library", path: "/library" },
-      { name: "Public Domain Books", path: "/gutenberg" },
       { name: "Vocabulary Bank", path: "/vocabulary" },
       { name: "Idiom Library", path: "/idioms" },
       { name: "Spaced Repetition", path: "/review" },
@@ -218,6 +216,23 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
               <Library className={`w-5 h-5 ${pathname.startsWith('/library') ? 'text-blue-400' : 'text-blue-500'}`} />
               <span className={`font-bold ${pathname.startsWith('/library') ? 'text-foreground' : 'text-muted-foreground'}`}>
                 Text Library
+              </span>
+            </div>
+          </Link>
+
+          {/* Standalone Gutenberg Link */}
+          <Link 
+            href="/gutenberg"
+            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
+              pathname.startsWith('/gutenberg') 
+                ? 'bg-orange-500/10 border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.15)]' 
+                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <BookOpen className={`w-5 h-5 ${pathname.startsWith('/gutenberg') ? 'text-orange-400' : 'text-orange-500'}`} />
+              <span className={`font-bold ${pathname.startsWith('/gutenberg') ? 'text-foreground' : 'text-muted-foreground'}`}>
+                Public Domain Books
               </span>
             </div>
           </Link>
