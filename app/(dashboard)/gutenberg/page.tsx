@@ -1,17 +1,24 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { BookOpen, Search, Loader2, ArrowRight } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { BookOpen, Search, Loader2, ArrowRight, Sparkles, Database } from "lucide-react";
 import Link from "next/link";
 
-type GutenbergAuthor = {
-  name: string;
+type SearchProvider = "openlibrary" | "gutendex";
+
+type BookResult = {
+  id: string;
+  title: string;
+  author: string;
+  subjects: string[];
+  coverUrl?: string;
+  provider: SearchProvider;
 };
 
 type GutenbergBook = {
   id: number;
   title: string;
-  authors: GutenbergAuthor[];
+  authors: { name: string }[];
   subjects: string[];
   formats: Record<string, string>;
 };
@@ -20,13 +27,66 @@ type GutendexSearchResponse = {
   results?: GutenbergBook[];
 };
 
+type OpenLibraryDoc = {
+  key: string;
+  title: string;
+  author_name?: string[];
+  cover_i?: number;
+  first_publish_year?: number;
+  subject?: string[];
+  id_project_gutenberg?: string[];
+  has_fulltext?: boolean;
+  language?: string[];
+};
+
+type OpenLibrarySearchResponse = {
+  numFound: number;
+  docs: OpenLibraryDoc[];
+};
+
+function mapGutendex(book: GutenbergBook): BookResult {
+  return {
+    id: String(book.id),
+    title: book.title,
+    author: book.authors.map((a) => a.name.split(",").reverse().join(" ")).join(", "),
+    subjects: book.subjects,
+    coverUrl: book.formats["image/jpeg"],
+    provider: "gutendex",
+  };
+}
+
+function mapOpenLibrary(doc: OpenLibraryDoc): BookResult {
+  return {
+    id: doc.id_project_gutenberg?.[0] || "",
+    title: doc.title,
+    author: doc.author_name?.join(", ") || "Unknown",
+    subjects: doc.subject?.slice(0, 5) || [],
+    coverUrl: doc.cover_i
+      ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
+      : undefined,
+    provider: "openlibrary",
+  };
+}
+
 export default function GutenbergSearchPage() {
+  const [provider, setProvider] = useState<SearchProvider>("openlibrary");
+  const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState("");
-  const [books, setBooks] = useState<GutenbergBook[]>([]);
+  const [books, setBooks] = useState<BookResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState("");
   const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("gutenberg-provider") as SearchProvider | null;
+    if (saved === "openlibrary" || saved === "gutendex") setProvider(saved);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) localStorage.setItem("gutenberg-provider", provider);
+  }, [provider, mounted]);
 
   const searchBooks = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -39,27 +99,49 @@ export default function GutenbergSearchPage() {
     setLoading(true);
     setHasSearched(true);
     setError("");
+    setBooks([]);
+
     try {
-      const res = await fetch(`https://gutendex.com/books/?search=${encodeURIComponent(query)}`, {
-        signal: controller.signal,
-      });
-      if (!res.ok) throw new Error("Gagal menghubungi Gutendex. Coba lagi sebentar.");
-      const data = (await res.json()) as GutendexSearchResponse;
-      // Filter out books without text/plain format
-      const results = Array.isArray(data.results) ? data.results : [];
-      const validBooks = results.filter((book) =>
-        Object.keys(book.formats).some(key => key.startsWith("text/plain"))
-      );
-      setBooks(validBooks.slice(0, 20));
+      if (provider === "openlibrary") {
+        const res = await fetch(
+          `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&has_fulltext=true&fields=key,title,author_name,cover_i,first_publish_year,subject,id_project_gutenberg,has_fulltext,language&limit=20`,
+          { signal: controller.signal }
+        );
+        if (!res.ok) throw new Error("OpenLibrary gagal merespons. Coba lagi sebentar.");
+        const data = (await res.json()) as OpenLibrarySearchResponse;
+        const results = (data.docs || [])
+          .filter((d) => d.id_project_gutenberg && d.id_project_gutenberg.length > 0 && d.has_fulltext)
+          .map(mapOpenLibrary);
+        setBooks(results);
+      } else {
+        const res = await fetch(
+          `/api/gutenberg/search?q=${encodeURIComponent(query)}`,
+          { signal: controller.signal }
+        );
+        if (!res.ok) throw new Error("Gutendex gagal merespons. Coba ganti ke OpenLibrary.");
+        const data = (await res.json()) as GutendexSearchResponse;
+        const results = (data.results || [])
+          .filter((book) => Object.keys(book.formats).some((k) => k.startsWith("text/plain")))
+          .map(mapGutendex);
+        setBooks(results);
+      }
     } catch (err: unknown) {
       if (err instanceof DOMException && err.name === "AbortError") return;
       console.error(err);
-      setBooks([]);
       setError(err instanceof Error ? err.message : "Gagal mencari buku.");
     } finally {
       setLoading(false);
     }
   };
+
+  const getBookUrl = (book: BookResult) => {
+    const params = new URLSearchParams();
+    params.set("title", book.title);
+    params.set("author", book.author);
+    return `/gutenberg/${book.id}?${params.toString()}`;
+  };
+
+  if (!mounted) return null;
 
   return (
     <div className="p-8 max-w-6xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -73,17 +155,52 @@ export default function GutenbergSearchPage() {
         </p>
       </div>
 
+      {/* Provider Selector */}
+      <div className="flex justify-center mb-6">
+        <div className="bg-muted rounded-full p-1 flex gap-1">
+          <button
+            onClick={() => setProvider("openlibrary")}
+            className={`px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-1.5 ${
+              provider === "openlibrary"
+                ? "bg-blue-500 text-white shadow-lg"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            OpenLibrary
+          </button>
+          <button
+            onClick={() => setProvider("gutendex")}
+            className={`px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-1.5 ${
+              provider === "gutendex"
+                ? "bg-orange-500 text-white shadow-lg"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Database className="w-3.5 h-3.5" />
+            Gutendex
+          </button>
+        </div>
+      </div>
+      <p className="text-center text-xs text-muted-foreground -mt-4 mb-6">
+        {provider === "openlibrary"
+          ? "OpenLibrary: lebih cepat · jutaan buku · cover HD"
+          : "Gutendex: ringan · 70.000+ buku klasik"}
+      </p>
+
       <form onSubmit={searchBooks} className="mb-12 max-w-3xl mx-auto w-full relative">
-        <input 
-          type="text" 
+        <input
+          type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Cari judul buku atau nama penulis (misal: Shakespeare, Austen, Moby Dick)..."
+          placeholder={provider === "openlibrary"
+            ? "Cari judul buku atau nama penulis via OpenLibrary..."
+            : "Cari judul buku atau nama penulis via Gutendex..."}
           className="w-full bg-card border-2 border-border rounded-full py-4 pl-14 pr-32 text-lg focus:outline-none focus:border-orange-500 transition-colors shadow-sm"
         />
         <Search className="w-6 h-6 text-muted-foreground absolute left-5 top-1/2 -translate-y-1/2" />
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={loading}
           className="absolute right-2 top-2 bottom-2 px-8 bg-orange-500 text-white font-bold rounded-full hover:bg-orange-600 transition-colors disabled:opacity-50"
         >
@@ -98,6 +215,22 @@ export default function GutenbergSearchPage() {
       ) : error ? (
         <div className="text-center py-20 text-muted-foreground">
           <p className="text-xl font-serif text-rose-500">{error}</p>
+          {provider === "gutendex" && (
+            <button
+              onClick={() => { setProvider("openlibrary"); setError(""); }}
+              className="mt-4 px-6 py-2 bg-blue-500 text-white font-bold rounded-full hover:bg-blue-600 transition-colors"
+            >
+              Coba lewat OpenLibrary →
+            </button>
+          )}
+          {provider === "openlibrary" && (
+            <button
+              onClick={() => { setProvider("gutendex"); setError(""); }}
+              className="mt-4 px-6 py-2 bg-orange-500 text-white font-bold rounded-full hover:bg-orange-600 transition-colors"
+            >
+              Coba lewat Gutendex →
+            </button>
+          )}
         </div>
       ) : hasSearched && books.length === 0 ? (
         <div className="text-center py-20 text-muted-foreground">
@@ -105,49 +238,53 @@ export default function GutenbergSearchPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {books.map((book) => {
-            // Extract the Gutenberg ID
-            const bookId = book.id;
-            
-            return (
-              <div key={book.id} className="bg-card border border-border rounded-3xl p-6 flex flex-col justify-between hover:shadow-lg transition-all hover:-translate-y-1">
-                <div>
-                  <div className="flex items-start justify-between gap-4 mb-4">
-                    {book.formats["image/jpeg"] ? (
-                      <img src={book.formats["image/jpeg"]} alt="Cover" className="w-20 h-28 object-cover rounded-md shadow-md shrink-0" />
-                    ) : (
-                      <div className="w-20 h-28 bg-muted rounded-md border border-border flex items-center justify-center shrink-0">
-                        <BookOpen className="w-8 h-8 text-muted-foreground/30" />
-                      </div>
-                    )}
-                    <div className="flex-1">
-                      <h3 className="font-serif font-bold text-lg leading-tight mb-2 line-clamp-3">{book.title}</h3>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {book.authors.map((a) => a.name.split(',').reverse().join(' ')).join(', ')}
-                      </p>
+          {books.map((book) => (
+            <div
+              key={book.id}
+              className="bg-card border border-border rounded-3xl p-6 flex flex-col justify-between hover:shadow-lg transition-all hover:-translate-y-1"
+            >
+              <div>
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  {book.coverUrl ? (
+                    <img src={book.coverUrl} alt="Cover" className="w-20 h-28 object-cover rounded-md shadow-md shrink-0" />
+                  ) : (
+                    <div className="w-20 h-28 bg-muted rounded-md border border-border flex items-center justify-center shrink-0">
+                      <BookOpen className="w-8 h-8 text-muted-foreground/30" />
                     </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {book.subjects.slice(0, 2).map((sub: string, i: number) => (
-                      <span key={i} className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-orange-500/10 text-orange-600 rounded-full truncate max-w-full">
-                        {sub.split('--')[0]}
-                      </span>
-                    ))}
+                  )}
+                  <div className="flex-1">
+                    <h3 className="font-serif font-bold text-lg leading-tight mb-2 line-clamp-3">{book.title}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{book.author}</p>
                   </div>
                 </div>
-                
-                <Link 
-                  href={`/gutenberg/${bookId}`}
-                  className="w-full py-3 bg-muted border border-border text-foreground font-bold rounded-xl flex justify-center items-center gap-2 hover:bg-orange-500 hover:border-orange-500 hover:text-white transition-colors"
-                >
-                  Baca Buku Full <ArrowRight className="w-4 h-4" />
-                </Link>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {book.subjects.slice(0, 2).map((sub, i) => (
+                    <span
+                      key={i}
+                      className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-orange-500/10 text-orange-600 rounded-full truncate max-w-full"
+                    >
+                      {sub.split("--")[0]}
+                    </span>
+                  ))}
+                  {book.provider === "openlibrary" && (
+                    <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-blue-500/10 text-blue-500 rounded-full">
+                      OL
+                    </span>
+                  )}
+                </div>
               </div>
-            );
-          })}
+
+              <Link
+                href={getBookUrl(book)}
+                className="w-full py-3 bg-muted border border-border text-foreground font-bold rounded-xl flex justify-center items-center gap-2 hover:bg-orange-500 hover:border-orange-500 hover:text-white transition-colors"
+              >
+                Baca Buku Full <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          ))}
         </div>
       )}
-      
+
       {!hasSearched && (
         <div className="text-center py-10 opacity-50">
           <p className="text-muted-foreground font-serif text-lg">Pustaka lebih dari 70.000 mahakarya sastra dunia berada di ujung jari Anda.</p>

@@ -1,28 +1,28 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Loader2, ArrowLeft, Book } from "lucide-react";
 import Link from "next/link";
-import { use } from "react";
-
-type GutenbergAuthor = {
-  name: string;
-};
-
-type GutenbergBook = {
-  title: string;
-  authors: GutenbergAuthor[];
-  formats: Record<string, string>;
-};
+import { useSearchParams } from "next/navigation";
 
 type BookBlock = {
   type: "heading" | "paragraph" | "verse";
   text: string;
 };
 
+type BookMeta = {
+  title: string;
+  author: string;
+};
+
 export default function GutenbergReaderPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
-  const [bookMeta, setBookMeta] = useState<GutenbergBook | null>(null);
+  const searchParams = useSearchParams();
+  const gutenbergId = resolvedParams.id;
+  const [bookMeta, setBookMeta] = useState<BookMeta>({
+    title: searchParams.get("title") || "Loading...",
+    author: searchParams.get("author") || "Project Gutenberg",
+  });
   const [bookBlocks, setBookBlocks] = useState<BookBlock[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -30,20 +30,22 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   useEffect(() => {
     async function loadBook() {
       try {
-        const metaRes = await fetch(`https://gutendex.com/books/${resolvedParams.id}/`);
-        if (!metaRes.ok) throw new Error("Buku tidak ditemukan di Gutenberg.");
-        const meta = (await metaRes.json()) as GutenbergBook;
-        setBookMeta(meta);
+        if (!searchParams.get("title")) {
+          const metaRes = await fetch(`/api/gutenberg/${gutenbergId}`);
+          if (metaRes.ok) {
+            const meta = await metaRes.json();
+            setBookMeta({
+              title: meta.title || "Unknown Title",
+              author: meta.authors?.map((a: { name: string }) => a.name.split(",").reverse().join(" ")).join(", ") || "Unknown Author",
+            });
+          }
+        }
 
-        const txtKey = Object.keys(meta.formats).find(key => key.startsWith("text/plain"));
-        const txtUrl = txtKey ? meta.formats[txtKey] : null;
-        if (!txtUrl) throw new Error("Format teks murni tidak tersedia untuk buku ini.");
-
+        const txtUrl = `https://www.gutenberg.org/ebooks/${gutenbergId}.txt.utf8`;
         const textRes = await fetch(`/api/gutenberg/text?url=${encodeURIComponent(txtUrl)}`);
         if (!textRes.ok) throw new Error("Gagal memuat teks buku dari Project Gutenberg.");
         const data = await textRes.json();
         setBookBlocks(data.blocks);
-
       } catch (err: unknown) {
         console.error(err);
         setError(err instanceof Error ? err.message : "Gagal memuat buku.");
@@ -53,7 +55,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
     }
 
     loadBook();
-  }, [resolvedParams.id]);
+  }, [gutenbergId, searchParams]);
 
   if (loading) {
     return (
@@ -78,17 +80,14 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
 
   return (
     <div className="max-w-4xl mx-auto bg-card min-h-screen border-x border-border shadow-2xl relative animate-in fade-in duration-1000">
-      
       {/* Sticky Top Navigation */}
       <div className="sticky top-0 bg-card/90 backdrop-blur-md border-b border-border p-4 flex items-center justify-between z-10 shadow-sm">
         <Link href="/gutenberg" className="p-2 bg-muted hover:bg-orange-500 hover:text-white rounded-full transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1 text-center truncate px-4">
-            <h1 className="font-serif font-bold text-lg truncate">{bookMeta?.title}</h1>
-            <p className="text-xs text-muted-foreground uppercase tracking-widest truncate">
-              {bookMeta?.authors.map((a) => a.name.split(',').reverse().join(' ')).join(', ')}
-            </p>
+          <h1 className="font-serif font-bold text-lg truncate">{bookMeta.title}</h1>
+          <p className="text-xs text-muted-foreground uppercase tracking-widest truncate">{bookMeta.author}</p>
         </div>
         <div className="p-2 text-muted-foreground" title="Buku Lengkap">
           <Book className="w-5 h-5" />
@@ -98,12 +97,10 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
       {/* Reader Content */}
       <div className="p-8 md:p-16 lg:px-24 prose prose-lg dark:prose-invert max-w-none font-serif text-lg leading-loose">
         <div className="mb-16 text-center border-b border-border pb-10">
-           <h1 className="text-4xl md:text-5xl font-bold mb-6 font-serif">{bookMeta?.title}</h1>
-           <h2 className="text-2xl text-muted-foreground font-serif italic">
-             {bookMeta?.authors.map((a) => a.name.split(',').reverse().join(' ')).join(', ')}
-           </h2>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 font-serif">{bookMeta.title}</h1>
+          <h2 className="text-2xl text-muted-foreground font-serif italic">{bookMeta.author}</h2>
         </div>
-        
+
         <div className="font-serif text-foreground/90">
           {bookBlocks.map((block, index) => {
             if (block.type === "heading") {
@@ -130,7 +127,6 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
           })}
         </div>
       </div>
-
     </div>
   );
 }
