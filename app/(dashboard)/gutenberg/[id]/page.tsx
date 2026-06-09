@@ -16,8 +16,10 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   useEffect(() => {
     async function loadBook() {
       try {
-        // Fetch Metadata
-        const metaRes = await fetch(`https://gutendex.com/books/${resolvedParams.id}`);
+        // Fetch Metadata via CORS proxy
+        const gutendexUrl = `https://gutendex.com/books/${resolvedParams.id}`;
+        const proxyUrlMeta = `https://api.allorigins.win/raw?url=${encodeURIComponent(gutendexUrl)}`;
+        const metaRes = await fetch(proxyUrlMeta);
         if (!metaRes.ok) throw new Error("Buku tidak ditemukan di Gutenberg.");
         const meta = await metaRes.json();
         setBookMeta(meta);

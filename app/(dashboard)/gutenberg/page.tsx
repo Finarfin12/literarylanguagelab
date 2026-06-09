@@ -17,7 +17,9 @@ export default function GutenbergSearchPage() {
     setLoading(true);
     setHasSearched(true);
     try {
-      const res = await fetch(`https://gutendex.com/books/?search=${encodeURIComponent(query)}`);
+      const gutendexUrl = `https://gutendex.com/books/?search=${encodeURIComponent(query)}`;
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(gutendexUrl)}`;
+      const res = await fetch(proxyUrl);
       const data = await res.json();
       // Filter out books without text/plain format
       const validBooks = data.results.filter((book: any) => 
