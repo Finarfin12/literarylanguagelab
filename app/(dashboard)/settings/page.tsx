@@ -45,13 +45,13 @@ export default function SettingsPage() {
         const filePath = `avatars/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
-          .from('avatar')
+          .from('Avatar')
           .upload(filePath, file);
 
         if (uploadError) throw uploadError;
 
         const { data: { publicUrl } } = supabase.storage
-          .from('avatar')
+          .from('Avatar')
           .getPublicUrl(filePath);
 
         finalAvatarUrl = publicUrl;
