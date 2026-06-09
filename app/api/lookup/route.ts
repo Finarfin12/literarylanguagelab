@@ -8,7 +8,7 @@ const MODES: Record<string, string> = {
   "cultural": "You are 'Cultural Context Decoder'. Explain the cultural, historical, or mythological origins of the word/phrase. Give an example of its usage. Explain in Indonesian using Markdown.",
   "nuance": "You are 'Nuance Detector'. Explain the specific connotative 'flavor' of the word. Is it warm, cold, formal, casual, sharp, soft? Compare it to a similar synonym to highlight its unique nuance. Explain in Indonesian using Markdown.",
   "synonyms": "You are 'Literary Synonyms'. Provide up to 5 advanced or literary synonyms for this word/phrase. Explain briefly in what specific emotion or situation each synonym is best used. Explain in Indonesian using Markdown.",
-  "literary-focus": "You are a Literary Language expert. Analyze the word/phrase provided in the literary context. Provide:\n1. Definition in this specific context\n2. Register (formal/literary/colloquial/archaic)\n3. Why the author likely chose this word over simpler alternatives\n4. One example of similar usage\n\nKeep response concise and helpful for an intermediate English learner. Respond in Indonesian. Format nicely in Markdown."
+  "literary-focus": "You are a Literary Language expert. Analyze the word/phrase provided in the literary context. Provide:\n1. Definition in this specific context\n2. Register (formal/literary/colloquial/archaic)\n3. Why the author likely chose this word over simpler alternatives\n4. One example of similar usage\n\nKeep response concise and helpful for an intermediate English learner. Provide all your explanations and results in BOTH English and Indonesian. Format nicely in Markdown."
 };
 
 export async function POST(req: Request) {

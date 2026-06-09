@@ -172,7 +172,7 @@ Provide:
 4. One example of similar usage
 
 Keep response concise and helpful for an intermediate English learner.
-Respond in Indonesian.
+Provide all your explanations and results in BOTH English and Indonesian.
 ```
 
 ### 5.3 Vocabulary Bank
@@ -228,7 +228,7 @@ Provide feedback on:
 4. Specific phrases that could be improved, with suggested alternatives
 5. Overall score (1-5)
 
-Be encouraging but honest. Respond in Indonesian.
+Be encouraging but honest. Provide all your explanations and results in BOTH English and Indonesian.
 ```
 
 ### 6.2 Progress Dashboard
