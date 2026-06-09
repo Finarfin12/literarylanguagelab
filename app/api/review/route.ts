@@ -32,10 +32,11 @@ export async function POST(req: Request) {
     const { error } = await supabase
       .from("vocabulary")
       .update({
-        mastery_level: quality,
+        mastery_level: Math.min(5, repetition), // Use repetition for mastery visual
         next_review_at: nextReview.toISOString(),
-        // We'd ideally store interval, repetition, and easeFactor in DB as well,
-        // but for MVP we simplify it.
+        interval: interval,
+        repetition_count: repetition,
+        efactor: easeFactor
       })
       .eq("id", vocabId)
       .eq("user_id", user.id);

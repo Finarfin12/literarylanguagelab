@@ -1,16 +1,23 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { BookOpen, Plus, Sparkles } from "lucide-react";
+import { BookOpen, Plus, Sparkles, Search, Library as LibraryIcon } from "lucide-react";
 
-export default async function LibraryPage() {
+export default async function LibraryPage({ searchParams }: { searchParams: { q?: string } }) {
   const supabase = await createClient();
+  const query = await searchParams;
+  const searchTerm = query?.q || "";
   
-  // Fetch all public texts
-  const { data: texts, error } = await supabase
+  let queryBuilder = supabase
     .from("texts")
     .select("*")
     .eq("is_public", true)
     .order("created_at", { ascending: false });
+
+  if (searchTerm) {
+    queryBuilder = queryBuilder.or(`title.ilike.%${searchTerm}%,author.ilike.%${searchTerm}%`);
+  }
+
+  const { data: texts, error } = await queryBuilder;
 
   return (
     <div className="p-8 max-w-5xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -19,10 +26,19 @@ export default async function LibraryPage() {
           <h1 className="text-4xl font-serif font-bold text-foreground">Text Library</h1>
           <p className="text-muted-foreground mt-2">Pilih teks sastra untuk mulai membaca dan belajar.</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-4">
+          <form className="relative flex-1 min-w-[250px]">
+            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input 
+              name="q"
+              defaultValue={searchTerm}
+              placeholder="Cari judul atau penulis..." 
+              className="w-full bg-card border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all text-foreground"
+            />
+          </form>
           <Link
             href="/library/add"
-            className="flex items-center gap-2 px-6 py-3 bg-brand text-background font-bold rounded-xl hover:bg-brand-hover hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-brand/20"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-brand text-background font-bold rounded-xl hover:bg-brand-hover hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-brand/20 whitespace-nowrap"
           >
             <Sparkles className="w-5 h-5" />
             <span>Generate & Add Text</span>
@@ -52,6 +68,11 @@ export default async function LibraryPage() {
                   <h2 className="text-2xl font-serif font-bold text-foreground group-hover:text-brand transition-colors line-clamp-2">{text.title}</h2>
                   <p className="text-muted-foreground mt-2 italic flex-1">{text.author}</p>
                   
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {text.era && <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-1 bg-white/5 border border-white/10 rounded-md text-muted-foreground">{text.era}</span>}
+                    {text.genre && <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-1 bg-white/5 border border-white/10 rounded-md text-muted-foreground">{text.genre}</span>}
+                  </div>
+
                   <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
                     <span className="text-xs font-medium px-3 py-1 bg-brand/10 text-brand rounded-full border border-brand/20">
                       Level {text.difficulty_level}

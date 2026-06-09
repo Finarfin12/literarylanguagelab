@@ -10,6 +10,8 @@ export async function addText(formData: FormData) {
   const title = formData.get("title") as string;
   const author = formData.get("author") as string;
   const content = formData.get("content") as string;
+  const era = formData.get("era") as string || null;
+  const genre = formData.get("genre") as string || null;
   const difficulty = parseInt(formData.get("difficulty") as string) || 1;
 
   if (!title || !author || !content) {
@@ -18,7 +20,7 @@ export async function addText(formData: FormData) {
 
   const { error } = await supabase
     .from("texts")
-    .insert([{ title, author, content, difficulty_level: difficulty }]);
+    .insert([{ title, author, content, era, genre, difficulty_level: difficulty }]);
 
   if (error) {
     throw new Error(error.message);

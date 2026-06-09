@@ -60,7 +60,7 @@ const MENU_GROUPS = [
       { name: "Lexicon Search", path: "/tools/lexicon-search" },
       { name: "Vocabulary Bank", path: "/vocabulary" },
       { name: "Idiom Library", path: "/idioms" },
-      { name: "Flashcard Mode", path: "/vocabulary/review" },
+      { name: "Spaced Repetition", path: "/review" },
     ]
   },
   {

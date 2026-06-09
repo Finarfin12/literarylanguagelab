@@ -15,6 +15,8 @@ export default function AddTextPage() {
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
   const [difficulty, setDifficulty] = useState("3");
+  const [era, setEra] = useState("");
+  const [genre, setGenre] = useState("");
   const [prompt, setPrompt] = useState("");
 
   const handleGenerate = async () => {
@@ -127,6 +129,43 @@ export default function AddTextPage() {
                   onChange={(e) => setAuthor(e.target.value)}
                   className="w-full rounded-xl border border-white/10 bg-background/50 px-4 py-3 text-foreground focus:border-brand focus:outline-none"
                 />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Era Kesusastraan (Opsional)</label>
+                <select
+                  name="era"
+                  value={era}
+                  onChange={(e) => setEra(e.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-background/50 px-4 py-3 text-foreground focus:border-brand focus:outline-none appearance-none"
+                >
+                  <option value="">Pilih Era...</option>
+                  <option value="Classical">Classical</option>
+                  <option value="Medieval">Medieval</option>
+                  <option value="Renaissance">Renaissance</option>
+                  <option value="Victorian">Victorian</option>
+                  <option value="Romantic">Romantic</option>
+                  <option value="Modern">Modern</option>
+                  <option value="Contemporary">Contemporary</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Genre Sastra (Opsional)</label>
+                <select
+                  name="genre"
+                  value={genre}
+                  onChange={(e) => setGenre(e.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-background/50 px-4 py-3 text-foreground focus:border-brand focus:outline-none appearance-none"
+                >
+                  <option value="">Pilih Genre...</option>
+                  <option value="Novel">Novel</option>
+                  <option value="Poetry">Poetry</option>
+                  <option value="Drama">Drama</option>
+                  <option value="Essay">Essay</option>
+                  <option value="Short Story">Short Story</option>
+                </select>
               </div>
             </div>
 

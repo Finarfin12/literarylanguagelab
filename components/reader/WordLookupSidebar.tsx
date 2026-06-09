@@ -14,6 +14,7 @@ interface WordLookupSidebarProps {
 }
 
 const MODES = [
+  { id: "literary-focus", label: "Literary Focus", icon: BookOpen },
   { id: "dictionary", label: "Dictionary", icon: BookOpen },
   { id: "translate", label: "Translate", icon: Languages },
   { id: "nuance", label: "Nuance", icon: Wind },
@@ -29,7 +30,7 @@ const MODES = [
 ];
 
 export default function WordLookupSidebar({ word, contextSentence, textId, title, author, onClose }: WordLookupSidebarProps) {
-  const [activeMode, setActiveMode] = useState("dictionary");
+  const [activeMode, setActiveMode] = useState("literary-focus");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -42,7 +43,7 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
       setCache({});
       setResult(null);
       setSaved(false);
-      fetchAnalysis(word, "dictionary", true);
+      fetchAnalysis(word, "literary-focus", true);
     }
   }, [word]);
 
@@ -61,7 +62,7 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
       const res = await fetch("/api/lookup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ word: targetWord, contextSentence, mode }),
+        body: JSON.stringify({ word: targetWord, contextSentence, title, author, mode }),
       });
 
       const data = await res.json();
@@ -102,7 +103,7 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           word,
-          definition: cache["dictionary"] || result,
+          definition: cache["literary-focus"] || cache["dictionary"] || result,
           contextSentence,
           contextSource: `${title} by ${author}`,
           masteryLevel: 0

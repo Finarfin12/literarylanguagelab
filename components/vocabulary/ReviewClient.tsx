@@ -36,6 +36,9 @@ export default function ReviewClient({ dueVocab }: ReviewClientProps) {
         body: JSON.stringify({
           vocabId: currentItem.id,
           quality,
+          lastInterval: currentItem.interval || 0,
+          lastRepetition: currentItem.repetition_count || 0,
+          lastEaseFactor: currentItem.efactor || 2.5
         }),
       });
 
