@@ -61,6 +61,7 @@ const MENU_GROUPS = [
       { name: "Vocabulary Bank", path: "/vocabulary" },
       { name: "Idiom Library", path: "/idioms" },
       { name: "Spaced Repetition", path: "/review" },
+      { name: "Glossary Builder", path: "/glossary" },
     ]
   },
   {
@@ -69,6 +70,7 @@ const MENU_GROUPS = [
     color: "text-blue-400",
     items: [
       { name: "Translation Workshop", path: "/translation-workshop" },
+      { name: "Translation Memory", path: "/translation-memory" },
       { name: "Paraphrase Challenge", path: "/tools/paraphrase" },
       { name: "Imagery Grader", path: "/tools/imagery-grader" },
       { name: "Character Monologue", path: "/tools/character-monologue" },
