@@ -41,7 +41,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
           }
         }
 
-        const txtUrl = `https://www.gutenberg.org/ebooks/${gutenbergId}.txt.utf8`;
+        const txtUrl = `https://www.gutenberg.org/cache/epub/${gutenbergId}/pg${gutenbergId}.txt`;
         const textRes = await fetch(`/api/gutenberg/text?url=${encodeURIComponent(txtUrl)}`);
         if (!textRes.ok) throw new Error("Gagal memuat teks buku dari Project Gutenberg.");
         const data = await textRes.json();
