@@ -8,7 +8,7 @@ import {
   ChevronDown, ChevronRight, LogOut, 
   BrainCircuit, Palette, BookMarked, 
   GraduationCap, Library, Briefcase, History, Sun, Moon, Sparkles, User, Settings,
-  Menu, PanelLeftClose, BookOpen, MessageSquare
+  Menu, PanelLeftClose, BookOpen, MessageSquare, Trophy, Users
 } from "lucide-react";
 
 interface SidebarProps {
@@ -90,6 +90,14 @@ const MENU_GROUPS = [
     color: "text-foreground",
     items: [
       { name: "Archive & Insights", path: "/history" },
+    ]
+  },
+  {
+    title: "Community",
+    icon: Users,
+    color: "text-rose-400",
+    items: [
+      { name: "Global Leaderboard", path: "/leaderboard" },
     ]
   }
 ];
