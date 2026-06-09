@@ -16,25 +16,18 @@ function isAllowedGutenbergUrl(value: string) {
   }
 }
 
-async function fetchWithRetry(url: string, retries = 2) {
-  for (let i = 0; i <= retries; i++) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 15000);
-
-    try {
-      const res = await fetch(url, {
-        headers: { Accept: "text/plain,*/*;q=0.8" },
-        signal: controller.signal,
-      });
-      clearTimeout(timer);
-      return res;
-    } catch (err) {
-      clearTimeout(timer);
-      if (i === retries) throw err;
-      await new Promise(r => setTimeout(r, 1000));
-    }
+async function fetchWithRetry(url: string) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const res = await fetch(url, {
+      headers: { Accept: "text/plain,*/*;q=0.8" },
+      signal: controller.signal,
+    });
+    return res;
+  } finally {
+    clearTimeout(timer);
   }
-  throw new Error("Retry exhausted");
 }
 
 export async function GET(req: Request) {
