@@ -31,30 +31,45 @@ export default function ProfilePage() {
   const [stats, setStats] = useState({ vocabCount: 0, idiomCount: 0, xp: 0, streak: 0, textsCompleted: 0, reviewsThisWeek: 0 });
 
   useEffect(() => {
+    let cancelled = false;
     async function loadData() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setLoading(false); return; }
+      if (!user || cancelled) { setLoading(false); return; }
       setProfile(user);
 
-      const { data: profileData } = await supabase.from("profiles").select("xp, streak").eq("id", user.id).single();
-      const { count: vocabCount } = await supabase.from("vocabulary").select("*", { count: "exact", head: true }).eq("user_id", user.id);
-      const { count: idiomCount } = await supabase.from("idioms").select("*", { count: "exact", head: true }).eq("user_id", user.id);
-      const { data: sessions } = await supabase.from("reading_sessions").select("text_id").eq("user_id", user.id);
-      const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      const { count: reviewsThisWeek } = await supabase.from("activity_logs").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("action_type", "reviewed_vocab").gte("created_at", oneWeekAgo.toISOString());
+      const [profileRes, vocabRes, idiomRes, sessionsRes, reviewsRes] = await Promise.allSettled([
+        supabase.from("profiles").select("xp, streak").eq("id", user.id).single(),
+        supabase.from("vocabulary").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("idioms").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("reading_sessions").select("text_id").eq("user_id", user.id),
+        (async () => {
+          const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+          return supabase.from("activity_logs").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("action_type", "reviewed_vocab").gte("created_at", oneWeekAgo.toISOString());
+        })(),
+      ]);
 
-      setStats({
-        vocabCount: vocabCount || 0,
-        idiomCount: idiomCount || 0,
-        xp: profileData?.xp || 0,
-        streak: profileData?.streak || 0,
-        textsCompleted: new Set(sessions?.map((s) => s.text_id) || []).size,
-        reviewsThisWeek: reviewsThisWeek || 0,
-      });
-      setLoading(false);
+      const profileData = profileRes.status === "fulfilled" ? profileRes.value.data : null;
+      const vocabCount = vocabRes.status === "fulfilled" ? vocabRes.value.count : 0;
+      const idiomCount = idiomRes.status === "fulfilled" ? idiomRes.value.count : 0;
+      const sessions = sessionsRes.status === "fulfilled" ? sessionsRes.value.data : null;
+      const reviewsThisWeek = reviewsRes.status === "fulfilled" ? reviewsRes.value.count : 0;
+
+      if (!cancelled) {
+        setStats({
+          vocabCount: vocabCount || 0,
+          idiomCount: idiomCount || 0,
+          xp: profileData?.xp || 0,
+          streak: profileData?.streak || 0,
+          textsCompleted: new Set(sessions?.map((s) => s.text_id) || []).size,
+          reviewsThisWeek: reviewsThisWeek || 0,
+        });
+        setLoading(false);
+      }
     }
     loadData();
+    return () => { cancelled = true; };
   }, [supabase]);
+
 
   if (loading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand" /></div>;
   if (!profile) return <div className="flex-1 flex items-center justify-center"><p>Anda belum login.</p></div>;
