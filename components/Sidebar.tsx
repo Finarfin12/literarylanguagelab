@@ -93,10 +93,11 @@ const MENU_GROUPS = [
     ]
   },
   {
-    title: "Community",
-    icon: Users,
+    title: "Forum & Community",
+    icon: MessageSquare,
     color: "text-rose-400",
     items: [
+      { name: "Discussion Board", path: "/forum" },
       { name: "Global Leaderboard", path: "/leaderboard" },
       { name: "Shared Annotations", path: "/community-annotations" },
       { name: "Translation Duels", path: "/duels" },
@@ -232,23 +233,6 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
               <BookOpen className={`w-5 h-5 ${pathname === '/tools/a-z-dictionary' ? 'text-emerald-400' : 'text-emerald-500'}`} />
               <span className={`font-bold ${pathname === '/tools/a-z-dictionary' ? 'text-foreground' : 'text-muted-foreground'}`}>
                 A-Z Browser
-              </span>
-            </div>
-          </Link>
-
-          {/* Standalone Forum Link */}
-          <Link 
-            href="/forum"
-            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
-              pathname.startsWith('/forum') 
-                ? 'bg-brand/10 border-brand/20 shadow-[0_0_15px_rgba(62,207,142,0.15)]' 
-                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <MessageSquare className={`w-5 h-5 ${pathname.startsWith('/forum') ? 'text-brand' : 'text-brand/70'}`} />
-              <span className={`font-bold ${pathname.startsWith('/forum') ? 'text-foreground' : 'text-muted-foreground'}`}>
-                Forum Komunitas
               </span>
             </div>
           </Link>
