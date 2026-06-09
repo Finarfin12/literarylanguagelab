@@ -22,6 +22,10 @@ interface Thread {
   user_id: string;
   category_id: string;
   comments_count?: number;
+  author?: {
+    full_name: string;
+    avatar_url?: string;
+  }
 }
 
 const iconMap: Record<string, any> = {
@@ -77,9 +81,21 @@ export default function ForumPage() {
       if (thError) {
          console.error(thError);
       } else if (ths) {
+        const userIds = [...new Set(ths.map((t: any) => t.user_id))];
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, full_name, avatar_url')
+          .in('id', userIds);
+
+        const profileMap: Record<string, any> = {};
+        if (profilesData) {
+          profilesData.forEach(p => profileMap[p.id] = p);
+        }
+
         const formattedThreads = ths.map(t => ({
           ...t,
-          comments_count: t.forum_comments[0]?.count || 0
+          comments_count: t.forum_comments[0]?.count || 0,
+          author: profileMap[t.user_id] || { full_name: "Penulis" }
         }));
         setThreads(formattedThreads);
       }
@@ -141,12 +157,24 @@ export default function ForumPage() {
           </button>
         )}
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3 pr-10">
-          <h3 className="text-xl font-bold text-foreground group-hover:text-brand transition-colors">
-            {thread.title}
-          </h3>
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-3 pr-10">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-6 h-6 rounded-full overflow-hidden bg-brand/10 border border-brand/20 shrink-0 flex items-center justify-center">
+                {thread.author?.avatar_url ? (
+                  <img src={thread.author.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-brand font-bold text-[10px] uppercase">{thread.author?.full_name?.charAt(0) || '?'}</span>
+                )}
+              </div>
+              <span className="text-xs font-bold text-muted-foreground">{thread.author?.full_name}</span>
+            </div>
+            <h3 className="text-xl font-bold text-foreground group-hover:text-brand transition-colors">
+              {thread.title}
+            </h3>
+          </div>
           {showCategory && cat && (
-            <span className="bg-brand/10 text-brand text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
+            <span className="bg-brand/10 text-brand text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap mt-1">
               {cat.name}
             </span>
           )}
