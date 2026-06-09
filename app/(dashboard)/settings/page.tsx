@@ -113,11 +113,11 @@ export default function SettingsPage() {
           </div>
         )}
 
-        <form onSubmit={handleSave} className="space-y-6 bg-white/5 border border-white/10 p-8 rounded-3xl">
+        <form onSubmit={handleSave} className="space-y-6 bg-card border border-foreground/10 shadow-sm p-8 rounded-3xl">
           
           {/* Avatar Upload */}
           <div className="flex items-center gap-6">
-            <div className="w-24 h-24 rounded-full overflow-hidden bg-white/10 flex items-center justify-center shrink-0 border-2 border-brand/30">
+            <div className="w-24 h-24 rounded-full overflow-hidden bg-foreground/5 flex items-center justify-center shrink-0 border-2 border-brand/30">
               {avatarUrl || (file && URL.createObjectURL(file)) ? (
                 <img src={file ? URL.createObjectURL(file) : avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
@@ -126,7 +126,7 @@ export default function SettingsPage() {
             </div>
             <div className="flex-1">
               <label className="block text-sm font-medium text-foreground mb-2">Foto Profil</label>
-              <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors text-sm">
+              <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-xl transition-colors text-sm font-medium">
                 <Upload className="w-4 h-4" />
                 Pilih Gambar
                 <input 
@@ -149,8 +149,7 @@ export default function SettingsPage() {
                 type="text" 
                 value={fullName}
                 onChange={e => setFullName(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/50"
-                placeholder="John Doe"
+                className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all"
               />
             </div>
             
@@ -162,7 +161,7 @@ export default function SettingsPage() {
                 type="email" 
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/50"
+                className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all"
               />
             </div>
           </div>
@@ -173,12 +172,12 @@ export default function SettingsPage() {
               value={aboutMe}
               onChange={e => setAboutMe(e.target.value)}
               rows={4}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/50 resize-none"
+              className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none transition-all"
               placeholder="Ceritakan sedikit tentang ketertarikan sastra Anda..."
             />
           </div>
 
-          <div className="pt-4 border-t border-white/10 flex justify-end">
+          <div className="pt-4 border-t border-foreground/10 flex justify-end">
             <button 
               type="submit" 
               disabled={saving}
