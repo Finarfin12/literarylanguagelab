@@ -113,8 +113,25 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   
+  // Auto-close sidebar on mobile, open on desktop
+  useEffect(() => {
+    const check = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      setIsSidebarOpen(!mobile);
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Auto-close sidebar on mobile after navigation
+  useEffect(() => {
+    if (isMobile) setIsSidebarOpen(false);
+  }, [pathname, isMobile]);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
   const toggleGroup = (title: string) => {
