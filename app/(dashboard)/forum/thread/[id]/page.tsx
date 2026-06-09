@@ -90,9 +90,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       }
 
       // Increment view count
-      await supabase.rpc('increment_view_count', { row_id: threadId }).catch(() => {
-         // fallback if rpc doesn't exist: ignore
-      });
+      await supabase.rpc('increment_view_count', { row_id: threadId });
 
       setLoading(false);
     }
