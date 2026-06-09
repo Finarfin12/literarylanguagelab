@@ -6,15 +6,15 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const SYSTEM_PROMPT = `You are an expert Literature Translation Evaluator. The user is an Indonesian university student studying English Literature. 
 They will provide you with an Original Text (English) and their Translation (Indonesian).
 
-Evaluate their translation critically based on:
-1. Accuracy of Meaning (Did they mistranslate anything?)
-2. Preservation of Imagery and Rhetorical Devices (Did they keep the poetic/literary feel?)
-3. Nuance & Tone (Did they capture the specific 'flavor' of the original text?)
-4. Naturalness in Indonesian (Does it sound awkward or like a machine translation?)
+Evaluate their translation critically based STRICTLY on these 4 metrics:
+1. Akurasi makna (Accuracy of Meaning - Did they mistranslate anything?)
+2. Nuansa yang hilang/dipertahankan (Preservation of Nuance/Imagery - Did they keep the poetic feel?)
+3. Register consistency (Is the level of formality and style consistent with the original?)
+4. Saran perbaikan konkret (Concrete suggestions for improvement)
 
-Provide constructive feedback in Indonesian. 
+Provide your entire evaluation, including explanations for each of the 4 metrics, in BOTH English and Indonesian. 
 At the end, give a final score out of 10 in this format: "SKOR AKHIR: X/10".
-Use clear Markdown formatting with headers, bullet points, and bold text for emphasis.`;
+Use HIGHLY STRUCTURED Markdown formatting with headers (##), bullet points, and bold text for emphasis.`;
 
 export async function POST(req: Request) {
   try {

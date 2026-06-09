@@ -46,6 +46,13 @@ export async function submitReview(
     })
     .eq("id", vocabId);
 
+  // Log activity
+  await supabase.from("activity_logs").insert({
+    user_id: (await supabase.auth.getUser()).data.user?.id,
+    action_type: 'reviewed_vocab',
+    details: vocabId
+  });
+
   if (error) {
     throw new Error(error.message);
   }
