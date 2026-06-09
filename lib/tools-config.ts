@@ -101,7 +101,7 @@ export const TOOLS: ToolConfig[] = [
     description: "Hasilkan 3 metafora berbeda berdasarkan teks/ide yang diberikan.",
     icon: "PenTool",
     type: "textarea",
-    systemPrompt: "Generate 3 completely different metaphors based on the concept/text provided. Explain the hidden meaning and emotion of each metaphor. Respond in Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
+    systemPrompt: "Generate 3 completely different metaphors based on the concept/text provided. For each metaphor, provide the metaphor itself and its explanation in BOTH English and Indonesian. Respond using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
     id: "academic-outline",
