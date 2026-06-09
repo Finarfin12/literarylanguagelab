@@ -135,7 +135,7 @@ export default function HistoryPage() {
             <div className="text-center py-10 flex flex-col items-center">
               <Frown className="w-12 h-12 text-muted-foreground mb-4" />
               <p className="text-xl font-serif font-bold text-muted-foreground">Belum ada aktivitas</p>
-              <p className="text-sm text-white/40 mt-2">Gunakan alat-alat di LingoWise untuk mengisi log ini.</p>
+              <p className="text-sm text-muted-foreground mt-2">Gunakan alat-alat di LingoWise untuk mengisi log ini.</p>
             </div>
           ) : (
             logs.map(log => (

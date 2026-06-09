@@ -293,7 +293,7 @@ export default function LexiconSearchPage() {
         <div className="text-center py-20 bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl mt-8">
           <AlertCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h2 className="text-2xl font-serif text-muted-foreground">Kata tidak ditemukan di kamus.</h2>
-          <p className="text-white/40 mt-2">Coba periksa kembali ejaan kata yang Anda masukkan.</p>
+          <p className="text-muted-foreground mt-2">Coba periksa kembali ejaan kata yang Anda masukkan.</p>
         </div>
       )}
     </div>
