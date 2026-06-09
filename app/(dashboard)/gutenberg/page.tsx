@@ -40,7 +40,7 @@ export default function GutenbergSearchPage() {
     setHasSearched(true);
     setError("");
     try {
-      const res = await fetch(`https://gutendex.com/books/?search=${encodeURIComponent(query)}`, {
+      const res = await fetch(`/api/gutenberg/search?q=${encodeURIComponent(query)}`, {
         signal: controller.signal,
       });
       if (!res.ok) throw new Error("Gagal menghubungi Gutendex. Coba lagi sebentar.");
