@@ -39,49 +39,13 @@ export default async function DashboardPage() {
     .eq("user_id", user?.id);
   const completedTexts = new Set(readingSessions?.map(s => s.text_id) || []).size;
 
-  // 5. Calculate simple streak from reading_sessions & activity_logs
-  // Combine dates where user was active
-  const { data: allLogs } = await supabase
-    .from("activity_logs")
-    .select("created_at")
-    .eq("user_id", user?.id);
-  const { data: allSessions } = await supabase
-    .from("reading_sessions")
-    .select("last_active_at")
-    .eq("user_id", user?.id);
-
-  const activeDates = new Set<string>();
-  allLogs?.forEach(l => activeDates.add(new Date(l.created_at).toISOString().split('T')[0]));
-  allSessions?.forEach(s => activeDates.add(new Date(s.last_active_at).toISOString().split('T')[0]));
-  
-  const sortedDates = Array.from(activeDates).sort((a, b) => b.localeCompare(a));
-  let streak = 0;
-  const todayStr = new Date().toISOString().split('T')[0];
-  const yesterdayDate = new Date();
-  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-  const yesterdayStr = yesterdayDate.toISOString().split('T')[0];
-
-  let checkDate = new Date();
-  if (sortedDates.includes(todayStr) || sortedDates.includes(yesterdayStr)) {
-    if (sortedDates.includes(todayStr)) {
-      streak = 1;
-    } else {
-      streak = 0; // if only active yesterday, streak is maintained but not incremented until today. Wait, if active yesterday, current streak is >= 1.
-      checkDate = yesterdayDate;
-    }
-
-    // walk backwards
-    let currentDate = new Date(checkDate);
-    for (let i = streak === 0 ? 0 : 1; i < sortedDates.length; i++) {
-      currentDate.setDate(currentDate.getDate() - 1);
-      if (sortedDates.includes(currentDate.toISOString().split('T')[0])) {
-        streak++;
-      } else {
-        break;
-      }
-    }
-    if (streak === 0 && sortedDates.includes(yesterdayStr)) streak = 1; // Base case for yesterday only
-  }
+  // 5. Get login-based streak from profiles
+  const { data: profileData } = await supabase
+    .from("profiles")
+    .select("streak")
+    .eq("id", user?.id)
+    .single();
+  const streak = profileData?.streak || 0;
 
   // 6. Vocabulary Growth Chart Data (Last 7 Days)
   const chartData = [];
