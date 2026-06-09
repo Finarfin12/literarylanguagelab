@@ -58,6 +58,8 @@ const MENU_GROUPS = [
       { name: "Metaphor Generator", path: "/tools/metaphor-generator" },
       { name: "Time Traveler", path: "/tools/time-traveler" },
       { name: "Lexicon Search", path: "/tools/lexicon-search" },
+      { name: "Text Library", path: "/library" },
+      { name: "Public Domain Books", path: "/gutenberg" },
       { name: "Vocabulary Bank", path: "/vocabulary" },
       { name: "Idiom Library", path: "/idioms" },
       { name: "Spaced Repetition", path: "/review" },
