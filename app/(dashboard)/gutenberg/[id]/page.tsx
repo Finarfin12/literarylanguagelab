@@ -106,17 +106,16 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   useEffect(() => {
     async function loadBook() {
       try {
-        const txtUrl = `https://www.gutenberg.org/ebooks/${resolvedParams.id}.txt.utf8`;
-
-        const [metaRes, textRes] = await Promise.all([
-          fetch(`/api/gutenberg/${resolvedParams.id}`),
-          fetch(`/api/gutenberg/text?url=${encodeURIComponent(txtUrl)}`),
-        ]);
-
+        const metaRes = await fetch(`/api/gutenberg/${resolvedParams.id}`);
         if (!metaRes.ok) throw new Error("Buku tidak ditemukan di Gutenberg.");
         const meta = (await metaRes.json()) as GutenbergBook;
         setBookMeta(meta);
 
+        const txtKey = Object.keys(meta.formats).find(key => key.startsWith("text/plain"));
+        const txtUrl = txtKey ? meta.formats[txtKey] : null;
+        if (!txtUrl) throw new Error("Format teks murni tidak tersedia untuk buku ini.");
+
+        const textRes = await fetch(`/api/gutenberg/text?url=${encodeURIComponent(txtUrl)}`);
         if (!textRes.ok) throw new Error("Gagal memuat teks buku dari Project Gutenberg.");
         const rawText = await textRes.text();
         setBookBlocks(buildReadableBlocks(rawText));
