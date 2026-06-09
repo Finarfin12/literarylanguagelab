@@ -21,8 +21,8 @@ export async function addText(formData: FormData) {
   const content = formData.get("content") as string;
   const era = formData.get("era") as string || null;
   const genre = formData.get("genre") as string || null;
-  const difficultyRaw = formData.get("difficulty") as string || "intermediate";
-  const difficulty = era || genre ? mapDifficulty(difficultyRaw) : "intermediate";
+  const difficultyRaw = formData.get("difficulty") as string || "3";
+  const difficulty = mapDifficulty(difficultyRaw);
   const wordCount = content ? content.split(/\s+/).filter(Boolean).length : 0;
 
   if (!title || !author || !content) {

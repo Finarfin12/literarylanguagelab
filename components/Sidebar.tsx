@@ -26,6 +26,7 @@ const MENU_GROUPS = [
       { name: "OCR Lens", path: "/library/add/ocr" },
       { name: "Dialect Diver", path: "/tools/dialect-diver" },
       { name: "Tone & Grammar", path: "/tools/tone-analyzer" }, // using the standalone one, or could use dynamic
+      { name: "Tone Detector", path: "/tools/tone-detector" },
       { name: "Vibe Translator", path: "/tools/vibe-translator" },
       { name: "Mood Transformer", path: "/tools/mood-transformer" },
       { name: "Diction Lab", path: "/tools/diction-lab" },
@@ -56,6 +57,7 @@ const MENU_GROUPS = [
       { name: "Cultural Context", path: "/tools/cultural-context" },
       { name: "Nuance Detector", path: "/tools/nuance-detector" },
       { name: "Metaphor Generator", path: "/tools/metaphor-generator" },
+      { name: "Idiom & Metaphor Detector", path: "/tools/idiom-detector" },
       { name: "Time Traveler", path: "/tools/time-traveler" },
       { name: "Lexicon Search", path: "/tools/lexicon-search" },
       { name: "Vocabulary Bank", path: "/vocabulary" },
@@ -73,6 +75,7 @@ const MENU_GROUPS = [
       { name: "Translation Workshop", path: "/translation-workshop" },
       { name: "Translation Memory", path: "/translation-memory" },
       { name: "Side-by-Side Comparator", path: "/tools/comparator" },
+      { name: "Difficulty Predictor", path: "/tools/difficulty-analyzer" },
       { name: "Paraphrase Challenge", path: "/tools/paraphrase" },
       { name: "Imagery Grader", path: "/tools/imagery-grader" },
       { name: "Character Monologue", path: "/tools/character-monologue" },
