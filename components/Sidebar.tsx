@@ -62,6 +62,7 @@ const MENU_GROUPS = [
       { name: "Idiom Library", path: "/idioms" },
       { name: "Spaced Repetition", path: "/review" },
       { name: "Glossary Builder", path: "/glossary" },
+      { name: "Untranslatables", path: "/tools/untranslatables" },
     ]
   },
   {
@@ -71,6 +72,7 @@ const MENU_GROUPS = [
     items: [
       { name: "Translation Workshop", path: "/translation-workshop" },
       { name: "Translation Memory", path: "/translation-memory" },
+      { name: "Side-by-Side Comparator", path: "/tools/comparator" },
       { name: "Paraphrase Challenge", path: "/tools/paraphrase" },
       { name: "Imagery Grader", path: "/tools/imagery-grader" },
       { name: "Character Monologue", path: "/tools/character-monologue" },

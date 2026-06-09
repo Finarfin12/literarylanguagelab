@@ -1,0 +1,38 @@
+import { NextResponse } from "next/server";
+import Groq from "groq-sdk";
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+const SYSTEM_PROMPT = `You are an expert in Literary Translation, specifically focusing on "Untranslatable" words.
+The user will provide a word or concept that is difficult to translate directly into Indonesian (e.g., "wistful", "serendipity").
+Provide:
+1. Meaning: The core meaning and nuance of the word.
+2. Strategies: How to translate it using 3-4 translation procedures (e.g., Descriptive translation, Borrowing with footnote, Cultural equivalent, Modulation). Explain the trade-off of each strategy.
+3. Professional Examples: 2 hypothetical or real examples of how a professional translator might translate it in a literary context.
+
+Respond in BOTH English and Indonesian using HIGHLY STRUCTURED Markdown.`;
+
+export async function POST(req: Request) {
+  try {
+    const { word } = await req.json();
+
+    if (!word) {
+      return NextResponse.json({ error: "Missing word" }, { status: 400 });
+    }
+
+    const completion = await groq.chat.completions.create({
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: `Analyze the word: "${word}"` }
+      ],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.5,
+      max_tokens: 1000,
+    });
+
+    const result = completion.choices[0]?.message?.content || "";
+    return NextResponse.json({ result });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
