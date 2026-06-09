@@ -1,5 +1,6 @@
 "use client";
 
+import Swal from 'sweetalert2';
 import { useState, useRef, useEffect } from "react";
 import { User, Bot, Send, Loader2, Sparkles, ArrowLeft, Plus, MessageSquare, Trash2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -115,7 +116,7 @@ export default function AlterEgoChatPage() {
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      alert("Anda harus login.");
+      Swal.fire({ title: "Perhatian", text: "Anda harus login.", icon: "info", confirmButtonColor: "#2fa16b" });
       return;
     }
 
@@ -178,7 +179,7 @@ export default function AlterEgoChatPage() {
       await supabase.from('chat_sessions').update({ updated_at: new Date().toISOString() }).eq('id', currentSessionId);
       
     } catch (error: any) {
-      alert("Error: " + error.message);
+      Swal.fire({ title: "Informasi", text: String("Error: " + error.message), icon: "warning", confirmButtonColor: "#2fa16b" });
     } finally {
       setLoading(false);
     }

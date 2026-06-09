@@ -1,5 +1,6 @@
 "use client";
 
+import Swal from 'sweetalert2';
 import { useState, useEffect } from "react";
 import { BookOpen, Plus, Trash2, Loader2, Quote } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
@@ -60,7 +61,7 @@ export default function IdiomLibraryPage() {
       setNewExample("");
       fetchIdioms();
     } else {
-      alert("Gagal menyimpan idiom: " + error.message);
+      Swal.fire({ title: "Informasi", text: String("Gagal menyimpan idiom: " + error.message), icon: "warning", confirmButtonColor: "#2fa16b" });
     }
     setSaving(false);
   };

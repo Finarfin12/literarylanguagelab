@@ -1,5 +1,6 @@
 "use client";
 
+import Swal from 'sweetalert2';
 import { useState } from "react";
 import { FileText, Loader2, Wand2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -19,7 +20,7 @@ export default function ToneAnalyzerPage() {
 
   const handleAnalyze = async () => {
     if (!text.trim()) {
-      alert("Masukkan teks terlebih dahulu!");
+      Swal.fire({ title: "Perhatian", text: "Masukkan teks terlebih dahulu!", icon: "info", confirmButtonColor: "#2fa16b" });
       return;
     }
 
@@ -38,7 +39,7 @@ export default function ToneAnalyzerPage() {
 
       setResult(data.result);
     } catch (error: any) {
-      alert(error.message);
+      Swal.fire({ title: "Informasi", text: String(error.message), icon: "warning", confirmButtonColor: "#2fa16b" });
     } finally {
       setLoading(false);
     }

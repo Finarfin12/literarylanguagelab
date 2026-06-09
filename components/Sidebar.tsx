@@ -8,7 +8,7 @@ import {
   ChevronDown, ChevronRight, LogOut, 
   BrainCircuit, Palette, BookMarked, 
   GraduationCap, Library, Briefcase, History, Sun, Moon, Sparkles, User, Settings,
-  Menu, PanelLeftClose
+  Menu, PanelLeftClose, BookOpen, MessageSquare
 } from "lucide-react";
 
 interface SidebarProps {
@@ -58,7 +58,6 @@ const MENU_GROUPS = [
       { name: "Metaphor Generator", path: "/tools/metaphor-generator" },
       { name: "Time Traveler", path: "/tools/time-traveler" },
       { name: "Lexicon Search", path: "/tools/lexicon-search" },
-      { name: "A-Z Browser", path: "/tools/a-z-dictionary" },
       { name: "Vocabulary Bank", path: "/vocabulary" },
       { name: "Idiom Library", path: "/idioms" },
       { name: "Flashcard Mode", path: "/vocabulary/review" },
@@ -173,6 +172,41 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
 
       <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
         <div className="space-y-4 pb-8">
+          
+          {/* Standalone A-Z Browser Link */}
+          <Link 
+            href="/tools/a-z-dictionary"
+            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
+              pathname === '/tools/a-z-dictionary' 
+                ? 'bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)]' 
+                : 'bg-white/5 border-white/5 hover:bg-white/10'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <BookOpen className={`w-5 h-5 ${pathname === '/tools/a-z-dictionary' ? 'text-emerald-400' : 'text-emerald-500'}`} />
+              <span className={`font-bold ${pathname === '/tools/a-z-dictionary' ? 'text-foreground' : 'text-muted-foreground'}`}>
+                A-Z Browser
+              </span>
+            </div>
+          </Link>
+
+          {/* Standalone Forum Link */}
+          <Link 
+            href="/forum"
+            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
+              pathname.startsWith('/forum') 
+                ? 'bg-brand/10 border-brand/20 shadow-[0_0_15px_rgba(62,207,142,0.15)]' 
+                : 'bg-white/5 border-white/5 hover:bg-white/10'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <MessageSquare className={`w-5 h-5 ${pathname.startsWith('/forum') ? 'text-brand' : 'text-brand/70'}`} />
+              <span className={`font-bold ${pathname.startsWith('/forum') ? 'text-foreground' : 'text-muted-foreground'}`}>
+                Forum Komunitas
+              </span>
+            </div>
+          </Link>
+
           {MENU_GROUPS.map((group) => {
             const Icon = group.icon;
             const isOpen = openGroups[group.title];

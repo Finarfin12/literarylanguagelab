@@ -1,5 +1,6 @@
 "use client";
 
+import Swal from 'sweetalert2';
 import { useState } from "react";
 import { Camera, Upload, Loader2, Save, FileText, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -37,7 +38,7 @@ export default function OCRLensPage() {
       if (!res.ok) throw new Error(data.error);
       setResultText(data.result);
     } catch (error: any) {
-      alert("Gagal melakukan scan: " + error.message);
+      Swal.fire({ title: "Informasi", text: String("Gagal melakukan scan: " + error.message), icon: "warning", confirmButtonColor: "#2fa16b" });
     } finally {
       setLoading(false);
     }
@@ -45,7 +46,7 @@ export default function OCRLensPage() {
 
   const handleSave = async () => {
     if (!title || !resultText) {
-      alert("Judul dan teks hasil scan harus diisi!");
+      Swal.fire({ title: "Perhatian", text: "Judul dan teks hasil scan harus diisi!", icon: "info", confirmButtonColor: "#2fa16b" });
       return;
     }
 
@@ -65,7 +66,7 @@ export default function OCRLensPage() {
       
       router.push("/library");
     } catch (error: any) {
-      alert(error.message);
+      Swal.fire({ title: "Informasi", text: String(error.message), icon: "warning", confirmButtonColor: "#2fa16b" });
     } finally {
       setSaving(false);
     }

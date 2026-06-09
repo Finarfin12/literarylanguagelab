@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Languages, ArrowRight, Loader2, Award, CheckCircle2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import Swal from 'sweetalert2';
 
 export default function TranslationWorkshopPage() {
   const [originalText, setOriginalText] = useState("");
@@ -12,7 +13,7 @@ export default function TranslationWorkshopPage() {
 
   const handleEvaluate = async () => {
     if (!originalText.trim() || !translatedText.trim()) {
-      alert("Harap isi teks asli dan terjemahan Anda!");
+      Swal.fire({ title: "Oops!", text: "Harap isi teks asli dan terjemahan Anda!", icon: "warning", confirmButtonColor: "#2fa16b" });
       return;
     }
 
@@ -31,7 +32,8 @@ export default function TranslationWorkshopPage() {
 
       setResult(data.result);
     } catch (error: any) {
-      alert(error.message);
+      console.error(error);
+      Swal.fire({ title: "Error", text: error.message, icon: "error", confirmButtonColor: "#2fa16b" });
     } finally {
       setLoading(false);
     }

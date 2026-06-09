@@ -1,5 +1,6 @@
 "use client";
 
+import Swal from 'sweetalert2';
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Loader2, ArrowLeft, Play, Copy, Volume2, VolumeX, Download } from "lucide-react";
@@ -36,7 +37,7 @@ export default function ToolExecutionPage() {
 
   const handleExecute = async () => {
     if (!text.trim()) {
-      alert("Masukkan teks terlebih dahulu!");
+      Swal.fire({ title: "Perhatian", text: "Masukkan teks terlebih dahulu!", icon: "info", confirmButtonColor: "#2fa16b" });
       return;
     }
 
@@ -55,7 +56,7 @@ export default function ToolExecutionPage() {
 
       setResult(data.result);
     } catch (error: any) {
-      alert(error.message);
+      Swal.fire({ title: "Informasi", text: String(error.message), icon: "warning", confirmButtonColor: "#2fa16b" });
     } finally {
       setLoading(false);
     }
@@ -64,7 +65,7 @@ export default function ToolExecutionPage() {
   const handleCopy = () => {
     if (result) {
       navigator.clipboard.writeText(result);
-      alert("Teks disalin ke clipboard!");
+      Swal.fire({ title: "Perhatian", text: "Teks disalin ke clipboard!", icon: "info", confirmButtonColor: "#2fa16b" });
     }
   };
 
@@ -100,7 +101,7 @@ export default function ToolExecutionPage() {
       html2pdf().from(element).set(opt).save();
     } catch (err) {
       console.error("Failed to export PDF", err);
-      alert("Gagal mengekspor PDF.");
+      Swal.fire({ title: "Perhatian", text: "Gagal mengekspor PDF.", icon: "info", confirmButtonColor: "#2fa16b" });
     }
   };
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Swal from 'sweetalert2';
 import { useState, useEffect } from "react";
 import { Edit3, RefreshCw, Loader2, Award, ArrowLeft } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -30,7 +31,7 @@ export default function ParaphraseChallengePage() {
       if (!res.ok) throw new Error(data.error);
       setChallenge(data);
     } catch (error) {
-      alert("Gagal memuat tantangan.");
+      Swal.fire({ title: "Perhatian", text: "Gagal memuat tantangan.", icon: "info", confirmButtonColor: "#2fa16b" });
     } finally {
       setLoadingChallenge(false);
     }
@@ -59,7 +60,7 @@ export default function ParaphraseChallengePage() {
       if (!res.ok) throw new Error(data.error);
       setResult(data.result);
     } catch (error: any) {
-      alert(error.message);
+      Swal.fire({ title: "Informasi", text: String(error.message), icon: "warning", confirmButtonColor: "#2fa16b" });
     } finally {
       setLoadingEval(false);
     }
