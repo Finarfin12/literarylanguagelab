@@ -115,7 +115,7 @@ export default function GutenbergSearchPage() {
         setBooks(results);
       } else {
         const res = await fetch(
-          `/api/gutenberg/search?q=${encodeURIComponent(query)}`,
+          `https://gutendex.com/books/?search=${encodeURIComponent(query)}`,
           { signal: controller.signal }
         );
         if (!res.ok) throw new Error("Gutendex gagal merespons. Coba ganti ke OpenLibrary.");
