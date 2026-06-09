@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
-import { MessageSquare, Plus, Clock, Users, Book, PenTool, Coffee, HelpCircle, Gamepad2, Search, ArrowLeft, Pin, Sparkles } from "lucide-react";
+import { MessageSquare, Plus, Clock, Users, Book, PenTool, Coffee, HelpCircle, Gamepad2, Search, ArrowLeft, Pin, Sparkles, Trash2 } from "lucide-react";
 import Swal from 'sweetalert2';
 
 interface Category {
@@ -38,9 +38,21 @@ export default function ForumPage() {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUserProfile, setCurrentUserProfile] = useState<any>(null);
 
   useEffect(() => {
     async function loadData() {
+      // Get current user and profile
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUser(user);
+
+      if (user) {
+        const { data: profile } = await supabase.from('profiles').select('role, level').eq('id', user.id).single();
+        setCurrentUserProfile(profile);
+      }
+
       // Load categories
       const { data: cats, error: catError } = await supabase
         .from('forum_categories')
@@ -77,6 +89,31 @@ export default function ForumPage() {
     loadData();
   }, []);
 
+  const handleDeleteThread = async (e: React.MouseEvent, threadId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const result = await Swal.fire({
+      title: 'Hapus Diskusi?',
+      text: "Anda tidak akan bisa mengembalikannya!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#2fa16b',
+      confirmButtonText: 'Ya, hapus!'
+    });
+
+    if (result.isConfirmed) {
+      const { error } = await supabase.from('forum_threads').delete().eq('id', threadId);
+      if (error) {
+        Swal.fire({ title: "Gagal", text: error.message, icon: "error", confirmButtonColor: "#2fa16b" });
+      } else {
+        setThreads(threads.filter(t => t.id !== threadId));
+        Swal.fire({ title: "Berhasil", text: "Diskusi telah dihapus.", icon: "success", timer: 1500, showConfirmButton: false });
+      }
+    }
+  };
+
   // Filter threads for active category
   const filteredThreads = activeCategory 
     ? threads.filter(t => t.category_id === activeCategory.id)
@@ -87,12 +124,24 @@ export default function ForumPage() {
 
   const ThreadCard = ({ thread, showCategory = false }: { thread: Thread, showCategory?: boolean }) => {
     const cat = categories.find(c => c.id === thread.category_id);
+    const canDelete = currentUser && (currentUser.id === thread.user_id || currentUserProfile?.role === 'admin');
+
     return (
       <Link 
         href={`/forum/thread/${thread.id}`} 
-        className="block bg-card border border-foreground/10 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group"
+        className="relative block bg-card border border-foreground/10 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group"
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
+        {canDelete && (
+          <button 
+            onClick={(e) => handleDeleteThread(e, thread.id)}
+            className="absolute top-4 right-4 z-10 p-2 text-muted-foreground hover:text-red-400 bg-foreground/5 hover:bg-foreground/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+            title="Hapus Diskusi"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        )}
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3 pr-10">
           <h3 className="text-xl font-bold text-foreground group-hover:text-brand transition-colors">
             {thread.title}
           </h3>
@@ -103,7 +152,7 @@ export default function ForumPage() {
           )}
         </div>
         
-        <p className="text-muted-foreground line-clamp-2 mb-4 text-sm leading-relaxed">
+        <p className="text-muted-foreground line-clamp-2 mb-4 text-sm leading-relaxed pr-10">
           {thread.content}
         </p>
         
