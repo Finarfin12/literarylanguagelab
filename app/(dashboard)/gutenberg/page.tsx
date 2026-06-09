@@ -1,14 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BookOpen, Search, Loader2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
+type GutenbergAuthor = {
+  name: string;
+};
+
+type GutenbergBook = {
+  id: number;
+  title: string;
+  authors: GutenbergAuthor[];
+  subjects: string[];
+  formats: Record<string, string>;
+};
+
+type GutendexSearchResponse = {
+  results?: GutenbergBook[];
+};
+
 export default function GutenbergSearchPage() {
   const [query, setQuery] = useState("");
-  const [books, setBooks] = useState<any[]>([]);
+  const [books, setBooks] = useState<GutenbergBook[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [error, setError] = useState("");
 
   const searchBooks = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -16,18 +33,21 @@ export default function GutenbergSearchPage() {
 
     setLoading(true);
     setHasSearched(true);
+    setError("");
     try {
-      const gutendexUrl = `https://gutendex.com/books/?search=${encodeURIComponent(query)}`;
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(gutendexUrl)}`;
-      const res = await fetch(proxyUrl);
-      const data = await res.json();
+      const res = await fetch(`/api/gutenberg/search?q=${encodeURIComponent(query)}`);
+      if (!res.ok) throw new Error("Gagal menghubungi Gutendex. Coba lagi sebentar.");
+      const data = (await res.json()) as GutendexSearchResponse;
       // Filter out books without text/plain format
-      const validBooks = data.results.filter((book: any) => 
+      const results = Array.isArray(data.results) ? data.results : [];
+      const validBooks = results.filter((book) =>
         Object.keys(book.formats).some(key => key.startsWith("text/plain"))
       );
       setBooks(validBooks.slice(0, 20));
-    } catch (err) {
+    } catch (err: unknown) {
       console.error(err);
+      setBooks([]);
+      setError(err instanceof Error ? err.message : "Gagal mencari buku.");
     } finally {
       setLoading(false);
     }
@@ -67,6 +87,10 @@ export default function GutenbergSearchPage() {
         <div className="flex justify-center items-center py-20">
           <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
         </div>
+      ) : error ? (
+        <div className="text-center py-20 text-muted-foreground">
+          <p className="text-xl font-serif text-rose-500">{error}</p>
+        </div>
       ) : hasSearched && books.length === 0 ? (
         <div className="text-center py-20 text-muted-foreground">
           <p className="text-xl font-serif">Tidak menemukan buku sastra yang cocok dengan pencarian Anda.</p>
@@ -74,7 +98,6 @@ export default function GutenbergSearchPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {books.map((book) => {
-            const txtKey = Object.keys(book.formats).find(key => key.startsWith("text/plain"));
             // Extract the Gutenberg ID
             const bookId = book.id;
             
@@ -92,7 +115,7 @@ export default function GutenbergSearchPage() {
                     <div className="flex-1">
                       <h3 className="font-serif font-bold text-lg leading-tight mb-2 line-clamp-3">{book.title}</h3>
                       <p className="text-sm text-muted-foreground line-clamp-2">
-                        {book.authors.map((a: any) => a.name.split(',').reverse().join(' ')).join(', ')}
+                        {book.authors.map((a) => a.name.split(',').reverse().join(' ')).join(', ')}
                       </p>
                     </div>
                   </div>

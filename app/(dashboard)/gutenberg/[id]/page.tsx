@@ -3,12 +3,21 @@
 import { useState, useEffect } from "react";
 import { Loader2, ArrowLeft, Book } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { use } from "react";
+
+type GutenbergAuthor = {
+  name: string;
+};
+
+type GutenbergBook = {
+  title: string;
+  authors: GutenbergAuthor[];
+  formats: Record<string, string>;
+};
 
 export default function GutenbergReaderPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
-  const [bookMeta, setBookMeta] = useState<any>(null);
+  const [bookMeta, setBookMeta] = useState<GutenbergBook | null>(null);
   const [bookText, setBookText] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -16,12 +25,9 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   useEffect(() => {
     async function loadBook() {
       try {
-        // Fetch Metadata via CORS proxy
-        const gutendexUrl = `https://gutendex.com/books/${resolvedParams.id}`;
-        const proxyUrlMeta = `https://api.allorigins.win/raw?url=${encodeURIComponent(gutendexUrl)}`;
-        const metaRes = await fetch(proxyUrlMeta);
+        const metaRes = await fetch(`/api/gutenberg/${resolvedParams.id}`);
         if (!metaRes.ok) throw new Error("Buku tidak ditemukan di Gutenberg.");
-        const meta = await metaRes.json();
+        const meta = (await metaRes.json()) as GutenbergBook;
         setBookMeta(meta);
 
         // Cari URL text
@@ -29,10 +35,8 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         const txtUrl = txtKey ? meta.formats[txtKey] : null;
         if (!txtUrl) throw new Error("Format teks murni tidak tersedia untuk buku ini.");
 
-        // Karena Gutenberg API CORS issues jika di-fetch langsung di browser, kita akan fetch via proxy sederhana (next.js rewrite atau cors proxy)
-        // Disini kita gunakan corsproxy.io atau allorigins sebagai solusi gratis untuk demo front-end
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(txtUrl)}`;
-        const textRes = await fetch(proxyUrl);
+        const textRes = await fetch(`/api/gutenberg/text?url=${encodeURIComponent(txtUrl)}`);
+        if (!textRes.ok) throw new Error("Gagal memuat teks buku dari Project Gutenberg.");
         let rawText = await textRes.text();
 
         // Standard Gutenberg Header/Footer stripping (Approximate)
@@ -54,9 +58,9 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
 
         setBookText(rawText.trim());
 
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
-        setError(err.message || "Gagal memuat buku.");
+        setError(err instanceof Error ? err.message : "Gagal memuat buku.");
       } finally {
         setLoading(false);
       }
@@ -97,7 +101,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         <div className="flex-1 text-center truncate px-4">
             <h1 className="font-serif font-bold text-lg truncate">{bookMeta?.title}</h1>
             <p className="text-xs text-muted-foreground uppercase tracking-widest truncate">
-              {bookMeta?.authors.map((a: any) => a.name.split(',').reverse().join(' ')).join(', ')}
+              {bookMeta?.authors.map((a) => a.name.split(',').reverse().join(' ')).join(', ')}
             </p>
         </div>
         <div className="p-2 text-muted-foreground" title="Buku Lengkap">
@@ -110,7 +114,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         <div className="mb-16 text-center border-b border-border pb-10">
            <h1 className="text-4xl md:text-5xl font-bold mb-6 font-serif">{bookMeta?.title}</h1>
            <h2 className="text-2xl text-muted-foreground font-serif italic">
-             {bookMeta?.authors.map((a: any) => a.name.split(',').reverse().join(' ')).join(', ')}
+             {bookMeta?.authors.map((a) => a.name.split(',').reverse().join(' ')).join(', ')}
            </h2>
         </div>
         
