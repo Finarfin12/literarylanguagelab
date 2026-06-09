@@ -99,6 +99,8 @@ const MENU_GROUPS = [
     items: [
       { name: "Global Leaderboard", path: "/leaderboard" },
       { name: "Shared Annotations", path: "/community-annotations" },
+      { name: "Translation Duels", path: "/duels" },
+      { name: "Reading Clubs", path: "/clubs" },
     ]
   }
 ];
