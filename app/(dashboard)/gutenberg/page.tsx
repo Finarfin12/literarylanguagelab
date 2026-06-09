@@ -74,8 +74,11 @@ export default function GutenbergSearchPage() {
   const [query, setQuery] = useState("");
   const [books, setBooks] = useState<BookResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -100,11 +103,12 @@ export default function GutenbergSearchPage() {
     setHasSearched(true);
     setError("");
     setBooks([]);
+    setPage(1);
 
     try {
       if (provider === "openlibrary") {
         const res = await fetch(
-          `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&has_fulltext=true&fields=key,title,author_name,cover_i,first_publish_year,subject,id_project_gutenberg,has_fulltext,language&limit=20`,
+          `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&has_fulltext=true&fields=key,title,author_name,cover_i,first_publish_year,subject,id_project_gutenberg,has_fulltext,language&limit=20&page=1`,
           { signal: controller.signal }
         );
         if (!res.ok) throw new Error("OpenLibrary gagal merespons. Coba lagi sebentar.");
@@ -113,9 +117,10 @@ export default function GutenbergSearchPage() {
           .filter((d) => d.id_project_gutenberg && d.id_project_gutenberg.length > 0 && d.has_fulltext)
           .map(mapOpenLibrary);
         setBooks(results);
+        setHasMore(data.numFound > 20);
       } else {
         const res = await fetch(
-          `https://gutendex.com/books/?search=${encodeURIComponent(query)}`,
+          `https://gutendex.com/books/?search=${encodeURIComponent(query)}&page=1`,
           { signal: controller.signal }
         );
         if (!res.ok) throw new Error("Gutendex gagal merespons. Coba ganti ke OpenLibrary.");
@@ -124,6 +129,7 @@ export default function GutenbergSearchPage() {
           .filter((book) => Object.keys(book.formats).some((k) => k.startsWith("text/plain")))
           .map(mapGutendex);
         setBooks(results);
+        setHasMore(!!data.results?.length && data.results.length >= 32);
       }
     } catch (err: unknown) {
       if (err instanceof DOMException && err.name === "AbortError") return;
@@ -131,6 +137,46 @@ export default function GutenbergSearchPage() {
       setError(err instanceof Error ? err.message : "Gagal mencari buku.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadMore = async () => {
+    if (loadingMore || !hasMore) return;
+    const nextPage = page + 1;
+    const controller = new AbortController();
+
+    setLoadingMore(true);
+    try {
+      if (provider === "openlibrary") {
+        const res = await fetch(
+          `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&has_fulltext=true&fields=key,title,author_name,cover_i,first_publish_year,subject,id_project_gutenberg,has_fulltext,language&limit=20&page=${nextPage}`,
+          { signal: controller.signal }
+        );
+        if (!res.ok) throw new Error("Gagal memuat lebih banyak.");
+        const data = (await res.json()) as OpenLibrarySearchResponse;
+        const results = (data.docs || [])
+          .filter((d) => d.id_project_gutenberg && d.id_project_gutenberg.length > 0 && d.has_fulltext)
+          .map(mapOpenLibrary);
+        setBooks((prev) => [...prev, ...results]);
+        setHasMore(data.numFound > nextPage * 20);
+      } else {
+        const res = await fetch(
+          `https://gutendex.com/books/?search=${encodeURIComponent(query)}&page=${nextPage}`,
+          { signal: controller.signal }
+        );
+        if (!res.ok) throw new Error("Gagal memuat lebih banyak.");
+        const data = (await res.json()) as GutendexSearchResponse;
+        const results = (data.results || [])
+          .filter((book) => Object.keys(book.formats).some((k) => k.startsWith("text/plain")))
+          .map(mapGutendex);
+        setBooks((prev) => [...prev, ...results]);
+        setHasMore(!!data.results?.length && data.results.length >= 32);
+      }
+      setPage(nextPage);
+    } catch {
+      // silently fail for load more
+    } finally {
+      setLoadingMore(false);
     }
   };
 
@@ -208,81 +254,90 @@ export default function GutenbergSearchPage() {
         </button>
       </form>
 
-      {loading ? (
+      {loading && (
         <div className="flex justify-center items-center py-20">
           <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
         </div>
-      ) : error ? (
+      )}
+
+      {!loading && error && (
         <div className="text-center py-20 text-muted-foreground">
           <p className="text-xl font-serif text-rose-500">{error}</p>
-          {provider === "gutendex" && (
-            <button
-              onClick={() => { setProvider("openlibrary"); setError(""); }}
-              className="mt-4 px-6 py-2 bg-blue-500 text-white font-bold rounded-full hover:bg-blue-600 transition-colors"
-            >
-              Coba lewat OpenLibrary →
-            </button>
-          )}
-          {provider === "openlibrary" && (
-            <button
-              onClick={() => { setProvider("gutendex"); setError(""); }}
-              className="mt-4 px-6 py-2 bg-orange-500 text-white font-bold rounded-full hover:bg-orange-600 transition-colors"
-            >
-              Coba lewat Gutendex →
-            </button>
-          )}
+          <button
+            onClick={() => { setProvider(provider === "gutendex" ? "openlibrary" : "gutendex"); setError(""); }}
+            className="mt-4 px-6 py-2 bg-brand text-white font-bold rounded-full hover:bg-brand-hover transition-colors"
+          >
+            Coba lewat {provider === "gutendex" ? "OpenLibrary" : "Gutendex"} →
+          </button>
         </div>
-      ) : hasSearched && books.length === 0 ? (
+      )}
+
+      {!loading && !error && hasSearched && books.length === 0 && (
         <div className="text-center py-20 text-muted-foreground">
           <p className="text-xl font-serif">Tidak menemukan buku sastra yang cocok dengan pencarian Anda.</p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {books.map((book) => (
-            <div
-              key={book.id}
-              className="bg-card border border-border rounded-3xl p-6 flex flex-col justify-between hover:shadow-lg transition-all hover:-translate-y-1"
-            >
-              <div>
-                <div className="flex items-start justify-between gap-4 mb-4">
-                  {book.coverUrl ? (
-                    <img src={book.coverUrl} alt="Cover" className="w-20 h-28 object-cover rounded-md shadow-md shrink-0" />
-                  ) : (
-                    <div className="w-20 h-28 bg-muted rounded-md border border-border flex items-center justify-center shrink-0">
-                      <BookOpen className="w-8 h-8 text-muted-foreground/30" />
+      )}
+
+      {!loading && !error && books.length > 0 && (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {books.map((book) => (
+              <div
+                key={book.id}
+                className="bg-card border border-border rounded-3xl p-6 flex flex-col justify-between hover:shadow-lg transition-all hover:-translate-y-1"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    {book.coverUrl ? (
+                      <img src={book.coverUrl} alt="Cover" className="w-20 h-28 object-cover rounded-md shadow-md shrink-0" />
+                    ) : (
+                      <div className="w-20 h-28 bg-muted rounded-md border border-border flex items-center justify-center shrink-0">
+                        <BookOpen className="w-8 h-8 text-muted-foreground/30" />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <h3 className="font-serif font-bold text-lg leading-tight mb-2 line-clamp-3">{book.title}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-2">{book.author}</p>
                     </div>
-                  )}
-                  <div className="flex-1">
-                    <h3 className="font-serif font-bold text-lg leading-tight mb-2 line-clamp-3">{book.title}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{book.author}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {book.subjects.slice(0, 2).map((sub, i) => (
+                      <span
+                        key={i}
+                        className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-orange-500/10 text-orange-600 rounded-full truncate max-w-full"
+                      >
+                        {sub.split("--")[0]}
+                      </span>
+                    ))}
+                    {book.provider === "openlibrary" && (
+                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-blue-500/10 text-blue-500 rounded-full">OL</span>
+                    )}
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {book.subjects.slice(0, 2).map((sub, i) => (
-                    <span
-                      key={i}
-                      className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-orange-500/10 text-orange-600 rounded-full truncate max-w-full"
-                    >
-                      {sub.split("--")[0]}
-                    </span>
-                  ))}
-                  {book.provider === "openlibrary" && (
-                    <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-blue-500/10 text-blue-500 rounded-full">
-                      OL
-                    </span>
-                  )}
-                </div>
-              </div>
 
-              <Link
-                href={getBookUrl(book)}
-                className="w-full py-3 bg-muted border border-border text-foreground font-bold rounded-xl flex justify-center items-center gap-2 hover:bg-orange-500 hover:border-orange-500 hover:text-white transition-colors"
+                <Link
+                  href={getBookUrl(book)}
+                  className="w-full py-3 bg-muted border border-border text-foreground font-bold rounded-xl flex justify-center items-center gap-2 hover:bg-orange-500 hover:border-orange-500 hover:text-white transition-colors"
+                >
+                  Baca Buku Full <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {hasMore && (
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="px-8 py-3 bg-muted border border-border text-foreground font-bold rounded-full hover:bg-orange-500 hover:border-orange-500 hover:text-white transition-colors disabled:opacity-50 flex items-center gap-2"
               >
-                Baca Buku Full <ArrowRight className="w-4 h-4" />
-              </Link>
+                {loadingMore && <Loader2 className="w-4 h-4 animate-spin" />}
+                {loadingMore ? "Memuat..." : "Muat Lebih Banyak"}
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       {!hasSearched && (
