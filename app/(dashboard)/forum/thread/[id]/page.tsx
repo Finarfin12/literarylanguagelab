@@ -4,7 +4,7 @@ import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
-import { ArrowLeft, MessageSquare, Clock, User, Trash2, Send, Loader2 } from "lucide-react";
+import { ArrowLeft, MessageSquare, Clock, User, Trash2, Edit, Send, Loader2, Save, X, Bold, Italic, Link as LinkIcon, Image as ImageIcon, ShieldAlert } from "lucide-react";
 import Swal from 'sweetalert2';
 import ReactMarkdown from "react-markdown";
 
@@ -17,12 +17,18 @@ interface Thread {
   category_id: string;
 }
 
+interface UserProfile {
+  full_name: string;
+  role: string;
+  level: string;
+}
+
 interface Comment {
   id: string;
   content: string;
   user_id: string;
   created_at: string;
-  author_name?: string;
+  author: UserProfile;
 }
 
 export default function ThreadPage({ params }: { params: Promise<{ id: string }> }) {
@@ -34,14 +40,24 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
   const [thread, setThread] = useState<Thread | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [threadAuthorName, setThreadAuthorName] = useState("Penulis");
+  const [currentUserProfile, setCurrentUserProfile] = useState<UserProfile | null>(null);
+  const [threadAuthor, setThreadAuthor] = useState<UserProfile>({ full_name: "Penulis", role: "user", level: "intermediate" });
   
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Edit Mode States
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [editCategoryId, setEditCategoryId] = useState("");
+  const [categories, setCategories] = useState<any[]>([]);
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
   useEffect(() => {
-    async function loadThread() {
+    async function loadData() {
       const { data: { user } } = await supabase.auth.getUser();
       setCurrentUser(user);
 
@@ -58,6 +74,13 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
         return;
       }
       setThread(threadData);
+      setEditTitle(threadData.title);
+      setEditContent(threadData.content);
+      setEditCategoryId(threadData.category_id);
+
+      // Load categories for edit mode
+      const { data: catData } = await supabase.from('forum_categories').select('*').order('created_at', { ascending: true });
+      if (catData) setCategories(catData);
 
       // Load comments
       const { data: commentsData } = await supabase
@@ -66,25 +89,37 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
         .eq('thread_id', threadId)
         .order('created_at', { ascending: true });
 
+      // Fetch profiles
+      let userMap: Record<string, UserProfile> = {};
+      const userIdsToFetch = [threadData.user_id];
       if (commentsData) {
-        // Collect all unique user IDs to fetch their names
-        const userIds = [threadData.user_id, ...new Set(commentsData.map((c: any) => c.user_id))];
-        
-        // Fetch profiles, fallback if profiles table doesn't have them
-        // Note: For now we'll just display User-[hash] if we can't find them, or try to load from `profiles`
-        let userMap: Record<string, string> = {};
-        const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', userIds);
-        if (profiles) {
-           profiles.forEach(p => {
-             userMap[p.id] = p.full_name || 'Penulis Rahasia';
-           });
-        }
+        commentsData.forEach(c => userIdsToFetch.push(c.user_id));
+      }
+      if (user) userIdsToFetch.push(user.id);
+      
+      const uniqueUserIds = [...new Set(userIdsToFetch)];
+      
+      const { data: profiles } = await supabase.from('profiles').select('id, full_name, role, level').in('id', uniqueUserIds);
+      if (profiles) {
+         profiles.forEach(p => {
+           userMap[p.id] = {
+             full_name: p.full_name || 'Penulis Rahasia',
+             role: p.role || 'user',
+             level: p.level || 'intermediate'
+           };
+         });
+      }
 
-        setThreadAuthorName(userMap[threadData.user_id] || "Penulis");
+      if (user && userMap[user.id]) {
+        setCurrentUserProfile(userMap[user.id]);
+      }
 
+      setThreadAuthor(userMap[threadData.user_id] || { full_name: "Penulis", role: "user", level: "intermediate" });
+
+      if (commentsData) {
         const formattedComments = commentsData.map((c: any) => ({
           ...c,
-          author_name: userMap[c.user_id] || "Penulis"
+          author: userMap[c.user_id] || { full_name: "Penulis", role: "user", level: "intermediate" }
         }));
         setComments(formattedComments);
       }
@@ -94,8 +129,15 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
 
       setLoading(false);
     }
-    loadThread();
+    loadData();
   }, [threadId, router]);
+
+  const canEditOrDelete = (ownerId: string) => {
+    if (!currentUser) return false;
+    if (currentUser.id === ownerId) return true;
+    if (currentUserProfile?.role === 'admin') return true;
+    return false;
+  };
 
   const handlePostComment = async () => {
     if (!newComment.trim()) return;
@@ -118,10 +160,8 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
     if (error) {
       Swal.fire({ title: "Gagal", text: error.message, icon: "error", confirmButtonColor: "#2fa16b" });
     } else if (data) {
-      const myProfileRes = await supabase.from('profiles').select('full_name').eq('id', currentUser.id).single();
-      const myName = myProfileRes.data?.full_name || currentUser.user_metadata?.full_name || "Saya";
-
-      setComments([...comments, { ...data, author_name: myName }]);
+      const myProfile = currentUserProfile || { full_name: currentUser.user_metadata?.full_name || "Saya", role: "user", level: "intermediate" };
+      setComments([...comments, { ...data, author: myProfile }]);
       setNewComment("");
     }
     setSubmitting(false);
@@ -149,6 +189,93 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
     }
   };
 
+  const handleSaveEdit = async () => {
+    if (!editTitle.trim() || !editContent.trim() || !editCategoryId) return;
+    setSavingEdit(true);
+
+    const { error } = await supabase
+      .from('forum_threads')
+      .update({
+        title: editTitle,
+        content: editContent,
+        category_id: editCategoryId
+      })
+      .eq('id', threadId);
+
+    if (error) {
+      Swal.fire({ title: "Gagal", text: error.message, icon: "error", confirmButtonColor: "#2fa16b" });
+    } else {
+      setThread({ ...thread!, title: editTitle, content: editContent, category_id: editCategoryId });
+      setIsEditing(false);
+      Swal.fire({ title: "Berhasil", text: "Diskusi diperbarui.", icon: "success", timer: 1500, showConfirmButton: false });
+    }
+    setSavingEdit(false);
+  };
+
+  const insertFormatting = (syntax: string, isWrap = true) => {
+    const textarea = document.getElementById('edit-content-textarea') as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = editContent.substring(start, end);
+    
+    let newContent = editContent;
+    if (isWrap) {
+      newContent = editContent.substring(0, start) + syntax + selectedText + syntax + editContent.substring(end);
+    } else {
+      newContent = editContent.substring(0, start) + syntax + editContent.substring(end);
+    }
+    
+    setEditContent(newContent);
+    
+    setTimeout(() => {
+      textarea.focus();
+      const newCursorPos = isWrap ? start + syntax.length + selectedText.length + syntax.length : start + syntax.length;
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 10);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      Swal.fire({ title: "Perhatian", text: "Ukuran gambar maksimal 5MB.", icon: "warning", confirmButtonColor: "#2fa16b" });
+      return;
+    }
+
+    setUploadingImage(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+    
+    const { data, error } = await supabase.storage
+      .from('forum_images')
+      .upload(`posts/${fileName}`, file);
+
+    if (error) {
+      Swal.fire({ title: "Gagal", text: "Gagal mengunggah gambar: " + error.message, icon: "error", confirmButtonColor: "#2fa16b" });
+      setUploadingImage(false);
+      return;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('forum_images')
+      .getPublicUrl(`posts/${fileName}`);
+
+    insertFormatting(`\n![gambar](${publicUrl})\n`, false);
+    setUploadingImage(false);
+  };
+
+  const renderTierBadge = (level: string) => {
+    let color = "bg-gray-500/20 text-gray-400";
+    if (level === 'beginner') color = "bg-green-500/20 text-green-400";
+    if (level === 'intermediate') color = "bg-blue-500/20 text-blue-400";
+    if (level === 'advanced') color = "bg-purple-500/20 text-purple-400";
+    
+    return <span className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold ${color}`}>{level}</span>;
+  };
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center text-brand animate-pulse">Memuat diskusi...</div>;
   }
@@ -161,33 +288,112 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
 
       {/* Original Thread Post */}
       <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 shadow-xl mb-8 relative">
-        {currentUser?.id === thread?.user_id && (
-           <button 
-             onClick={handleDeleteThread}
-             className="absolute top-6 right-6 p-2 text-muted-foreground hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-xl transition-all"
-             title="Hapus Diskusi"
-           >
-             <Trash2 className="w-5 h-5" />
-           </button>
+        {canEditOrDelete(thread?.user_id || '') && !isEditing && (
+           <div className="absolute top-6 right-6 flex items-center gap-2">
+             <button 
+               onClick={() => setIsEditing(true)}
+               className="p-2 text-muted-foreground hover:text-brand bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+               title="Edit Diskusi"
+             >
+               <Edit className="w-5 h-5" />
+             </button>
+             <button 
+               onClick={handleDeleteThread}
+               className="p-2 text-muted-foreground hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+               title="Hapus Diskusi"
+             >
+               <Trash2 className="w-5 h-5" />
+             </button>
+           </div>
         )}
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-6 pr-12">{thread?.title}</h1>
-        
-        <div className="flex items-center gap-3 mb-8 pb-6 border-b border-white/10">
-          <div className="w-10 h-10 rounded-full bg-brand/20 flex items-center justify-center border border-brand/30">
-            <User className="w-5 h-5 text-brand" />
-          </div>
-          <div>
-            <p className="font-bold text-foreground text-sm">{threadAuthorName}</p>
-            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-              <Clock className="w-3 h-3" />
-              {new Date(thread?.created_at || '').toLocaleString('id-ID')}
-            </p>
-          </div>
-        </div>
 
-        <div className="prose dark:prose-invert max-w-none prose-p:leading-relaxed prose-lg text-foreground/90">
-          <ReactMarkdown>{thread?.content || ''}</ReactMarkdown>
-        </div>
+        {isEditing ? (
+          <div className="space-y-4 mb-6">
+            <input
+              type="text"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              className="w-full bg-background/50 border border-white/10 rounded-xl px-4 py-3 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all font-serif text-2xl font-bold"
+              placeholder="Judul Diskusi"
+            />
+            <select
+              value={editCategoryId}
+              onChange={(e) => setEditCategoryId(e.target.value)}
+              className="w-full bg-background/50 border border-white/10 rounded-xl px-4 py-3 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all appearance-none cursor-pointer"
+            >
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+            
+            <div className="border border-white/10 rounded-xl overflow-hidden bg-background/50 flex flex-col focus-within:ring-2 focus-within:ring-brand transition-all">
+              <div className="flex items-center gap-1 p-2 bg-white/5 border-b border-white/10 overflow-x-auto">
+                <button onClick={() => insertFormatting('**')} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bold"><Bold className="w-4 h-4" /></button>
+                <button onClick={() => insertFormatting('*')} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Italic"><Italic className="w-4 h-4" /></button>
+                <button onClick={() => insertFormatting('[text](url)', false)} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
+                <div className="w-px h-5 bg-white/10 mx-1"></div>
+                
+                <label className={`p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-2 ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} title="Upload Gambar">
+                  {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
+                  <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                </label>
+              </div>
+              <textarea
+                id="edit-content-textarea"
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                className="w-full bg-transparent px-5 py-4 text-foreground outline-none resize-y min-h-[250px] leading-relaxed"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button 
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditTitle(thread?.title || '');
+                  setEditContent(thread?.content || '');
+                  setEditCategoryId(thread?.category_id || '');
+                }}
+                className="px-5 py-2.5 rounded-xl font-bold text-muted-foreground hover:bg-white/5 transition-all"
+              >
+                Batal
+              </button>
+              <button 
+                onClick={handleSaveEdit}
+                disabled={savingEdit}
+                className="bg-brand text-background px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-brand-hover transition-all disabled:opacity-50"
+              >
+                {savingEdit ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Simpan Perubahan
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-6 pr-24">{thread?.title}</h1>
+            
+            <div className="flex items-center gap-3 mb-8 pb-6 border-b border-white/10">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border ${threadAuthor.role === 'admin' ? 'bg-red-500/20 border-red-500/40 text-red-400' : 'bg-brand/20 border-brand/30 text-brand'}`}>
+                {threadAuthor.role === 'admin' ? <ShieldAlert className="w-6 h-6" /> : <User className="w-6 h-6" />}
+              </div>
+              <div>
+                <p className="font-bold text-foreground text-sm flex items-center gap-2 flex-wrap">
+                  {threadAuthor.full_name}
+                  {threadAuthor.role === 'admin' && <span className="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Admin</span>}
+                  {renderTierBadge(threadAuthor.level)}
+                </p>
+                <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                  <Clock className="w-3 h-3" />
+                  {new Date(thread?.created_at || '').toLocaleString('id-ID')}
+                </p>
+              </div>
+            </div>
+
+            <div className="prose dark:prose-invert max-w-none prose-p:leading-relaxed prose-lg text-foreground/90 prose-img:rounded-2xl prose-img:border prose-img:border-white/10 prose-img:shadow-lg">
+              <ReactMarkdown>{thread?.content || ''}</ReactMarkdown>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="flex items-center gap-3 mb-6">
@@ -198,25 +404,43 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       {/* Comments List */}
       <div className="space-y-6 mb-8">
         {comments.map(comment => (
-          <div key={comment.id} className="bg-card/30 border border-white/5 rounded-2xl p-6 shadow-sm">
+          <div key={comment.id} className="bg-card/30 border border-white/5 rounded-2xl p-6 shadow-sm relative group">
+            {canEditOrDelete(comment.user_id) && (
+              <button 
+                onClick={async () => {
+                   const result = await Swal.fire({ title: 'Hapus Komentar?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Hapus' });
+                   if (result.isConfirmed) {
+                     await supabase.from('forum_comments').delete().eq('id', comment.id);
+                     setComments(comments.filter(c => c.id !== comment.id));
+                   }
+                }}
+                className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                title="Hapus Komentar"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+            
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/30 shrink-0">
-                <User className="w-4 h-4 text-blue-400" />
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${comment.author.role === 'admin' ? 'bg-red-500/20 border-red-500/30 text-red-400' : 'bg-blue-500/20 border-blue-500/30 text-blue-400'}`}>
+                {comment.author.role === 'admin' ? <ShieldAlert className="w-5 h-5" /> : <User className="w-5 h-5" />}
               </div>
               <div>
-                <p className="font-bold text-foreground text-sm flex items-center gap-2">
-                  {comment.author_name}
+                <p className="font-bold text-foreground text-sm flex items-center gap-2 flex-wrap pr-10">
+                  {comment.author.full_name}
+                  {comment.author.role === 'admin' && <span className="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Admin</span>}
+                  {renderTierBadge(comment.author.level)}
                   {comment.user_id === thread?.user_id && (
-                    <span className="bg-brand/20 text-brand px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">Pembuat</span>
+                    <span className="bg-brand/20 text-brand px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Pembuat</span>
                   )}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {new Date(comment.created_at).toLocaleString('id-ID')}
                 </p>
               </div>
             </div>
-            <div className="text-foreground/90 text-sm leading-relaxed whitespace-pre-wrap">
-              {comment.content}
+            <div className="prose dark:prose-invert max-w-none text-foreground/90 text-sm leading-relaxed prose-img:rounded-xl prose-img:max-h-96">
+              <ReactMarkdown>{comment.content}</ReactMarkdown>
             </div>
           </div>
         ))}

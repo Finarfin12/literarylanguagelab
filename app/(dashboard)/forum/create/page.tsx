@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
-import { ArrowLeft, Send, Loader2, Book, PenTool, Coffee, HelpCircle, Gamepad2 } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Book, PenTool, Coffee, HelpCircle, Gamepad2, Bold, Italic, Link as LinkIcon, Image as ImageIcon } from "lucide-react";
 import Swal from 'sweetalert2';
 
 interface Category {
@@ -32,6 +32,7 @@ export default function CreateThreadPage() {
   const [content, setContent] = useState("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     async function loadCategories() {
@@ -91,6 +92,63 @@ export default function CreateThreadPage() {
     }
   };
 
+  const insertFormatting = (syntax: string, isWrap = true) => {
+    const textarea = document.getElementById('content-textarea') as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+    
+    let newContent = content;
+    if (isWrap) {
+      newContent = content.substring(0, start) + syntax + selectedText + syntax + content.substring(end);
+    } else {
+      newContent = content.substring(0, start) + syntax + content.substring(end);
+    }
+    
+    setContent(newContent);
+    
+    // Reset focus and cursor position
+    setTimeout(() => {
+      textarea.focus();
+      const newCursorPos = isWrap ? start + syntax.length + selectedText.length + syntax.length : start + syntax.length;
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 10);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      Swal.fire({ title: "Perhatian", text: "Ukuran gambar maksimal 5MB.", icon: "warning", confirmButtonColor: "#2fa16b" });
+      return;
+    }
+
+    setUploadingImage(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+    
+    const { data, error } = await supabase.storage
+      .from('forum_images')
+      .upload(`posts/${fileName}`, file);
+
+    if (error) {
+      Swal.fire({ title: "Gagal", text: "Gagal mengunggah gambar: " + error.message, icon: "error", confirmButtonColor: "#2fa16b" });
+      setUploadingImage(false);
+      return;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('forum_images')
+      .getPublicUrl(`posts/${fileName}`);
+
+    insertFormatting(`\n![gambar](${publicUrl})\n`, false);
+    setUploadingImage(false);
+  };
+
   return (
     <div className="p-8 max-w-4xl mx-auto min-h-[calc(100vh-2rem)] flex flex-col">
       <Link href="/forum" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors w-max">
@@ -105,28 +163,19 @@ export default function CreateThreadPage() {
       <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 shadow-xl flex-1">
         <form onSubmit={handleSubmit} className="space-y-6 flex flex-col h-full">
           <div>
-            <label className="block text-sm font-bold text-foreground mb-2">Pilih Kategori</label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {categories.map(cat => {
-                const Icon = iconMap[cat.icon] || Book;
-                const isSelected = categoryId === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => setCategoryId(cat.id)}
-                    className={`p-4 rounded-2xl flex items-center gap-3 transition-all border text-left ${
-                      isSelected 
-                        ? 'bg-brand/10 border-brand text-brand shadow-[0_0_15px_rgba(62,207,142,0.15)]' 
-                        : 'bg-background/50 border-white/10 text-muted-foreground hover:bg-white/5 hover:border-white/20 hover:text-foreground'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5 shrink-0" />
-                    <span className={`font-bold text-sm ${isSelected ? 'text-brand' : 'text-foreground'}`}>{cat.name}</span>
-                  </button>
-                );
-              })}
-            </div>
+            <label className="block text-sm font-bold text-foreground mb-2">Kategori Diskusi</label>
+            <select
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              className="w-full bg-background/50 border border-white/10 rounded-xl px-4 py-3.5 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all appearance-none cursor-pointer"
+            >
+              <option value="" disabled>-- Pilih Kategori --</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -143,12 +192,28 @@ export default function CreateThreadPage() {
 
           <div className="flex-1 flex flex-col min-h-[300px]">
             <label className="block text-sm font-bold text-foreground mb-2">Isi Pesan</label>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Tuliskan gagasan, pertanyaan, atau karya Anda di sini..."
-              className="w-full flex-1 bg-background/50 border border-white/10 rounded-xl px-5 py-4 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all placeholder:text-muted-foreground/50 resize-y min-h-[300px] leading-relaxed"
-            />
+            <div className="border border-white/10 rounded-xl overflow-hidden bg-background/50 flex-1 flex flex-col focus-within:ring-2 focus-within:ring-brand transition-all">
+              {/* Toolbar */}
+              <div className="flex items-center gap-1 p-2 bg-white/5 border-b border-white/10 overflow-x-auto">
+                <button type="button" onClick={() => insertFormatting('**')} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bold"><Bold className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('*')} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Italic"><Italic className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('[text](url)', false)} className="p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
+                <div className="w-px h-5 bg-white/10 mx-1"></div>
+                
+                <label className={`p-2 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-2 ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} title="Upload Gambar">
+                  {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
+                  <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                </label>
+              </div>
+              
+              <textarea
+                id="content-textarea"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Tuliskan gagasan, pertanyaan, atau karya Anda di sini... (Mendukung Markdown)"
+                className="w-full flex-1 bg-transparent px-5 py-4 text-foreground outline-none placeholder:text-muted-foreground/50 resize-y min-h-[250px] leading-relaxed"
+              />
+            </div>
           </div>
 
           <div className="pt-4 border-t border-white/10 flex justify-end">
