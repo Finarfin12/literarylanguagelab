@@ -33,7 +33,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
               name="q"
               defaultValue={searchTerm}
               placeholder="Cari judul atau penulis..." 
-              className="w-full bg-card border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all text-foreground"
+              className="w-full bg-card border border-foreground/20 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all text-foreground shadow-sm"
             />
           </form>
           <Link

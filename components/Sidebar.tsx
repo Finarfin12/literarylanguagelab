@@ -169,6 +169,23 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
 
       <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
         <div className="space-y-4 pb-8">
+
+          {/* Standalone Dashboard Link */}
+          <Link 
+            href="/dashboard"
+            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
+              pathname === '/dashboard' 
+                ? 'bg-brand/10 border-brand/20 shadow-[0_0_15px_rgba(62,207,142,0.15)]' 
+                : 'bg-white/5 border-white/5 hover:bg-white/10'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <BrainCircuit className={`w-5 h-5 ${pathname === '/dashboard' ? 'text-brand' : 'text-brand/70'}`} />
+              <span className={`font-bold ${pathname === '/dashboard' ? 'text-foreground' : 'text-muted-foreground'}`}>
+                Progress Dashboard
+              </span>
+            </div>
+          </Link>
           
           {/* Standalone Text Library Link */}
           <Link 

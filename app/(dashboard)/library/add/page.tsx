@@ -66,18 +66,18 @@ export default function AddTextPage() {
         <p className="text-muted-foreground mt-2">Tambahkan teks sastra ke Library, baik dengan menulis sendiri atau meminta bantuan AI.</p>
       </div>
 
-      <div className="bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl overflow-hidden mb-10 relative">
+      <div className="bg-card border border-foreground/20 rounded-3xl shadow-md overflow-hidden mb-10 relative">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
-        <div className="flex border-b border-white/10">
+        <div className="flex border-b border-foreground/20">
           <button 
             onClick={() => setMode("ai")}
-            className={`flex-1 py-4 px-6 text-sm font-bold flex items-center justify-center gap-2 transition-colors ${mode === "ai" ? "bg-brand/10 text-brand border-b-2 border-brand" : "text-muted-foreground hover:bg-white/5"}`}
+            className={`flex-1 py-4 px-6 text-sm font-bold flex items-center justify-center gap-2 transition-colors ${mode === "ai" ? "bg-brand/10 text-brand border-b-2 border-brand" : "text-muted-foreground hover:bg-foreground/5"}`}
           >
             <Sparkles className="w-4 h-4" /> AI Generator
           </button>
           <button 
             onClick={() => setMode("manual")}
-            className={`flex-1 py-4 px-6 text-sm font-bold flex items-center justify-center gap-2 transition-colors ${mode === "manual" ? "bg-blue-500/10 text-blue-400 border-b-2 border-blue-400" : "text-muted-foreground hover:bg-white/5"}`}
+            className={`flex-1 py-4 px-6 text-sm font-bold flex items-center justify-center gap-2 transition-colors ${mode === "manual" ? "bg-blue-500/10 text-blue-400 border-b-2 border-blue-400" : "text-muted-foreground hover:bg-foreground/5"}`}
           >
             <PenTool className="w-4 h-4" /> Manual Entry
           </button>
@@ -93,7 +93,7 @@ export default function AddTextPage() {
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   placeholder="Contoh: Sebuah puisi gelap tentang kastil tua di Skotlandia bergaya Edgar Allan Poe..."
-                  className="flex-1 rounded-xl border border-white/10 bg-background/50 px-4 py-3 text-foreground focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                  className="flex-1 rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                 />
                 <button 
                   onClick={handleGenerate}
@@ -116,7 +116,7 @@ export default function AddTextPage() {
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-background/50 px-4 py-3 text-foreground focus:border-brand focus:outline-none"
+                  className="w-full rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
                 />
               </div>
               <div>
@@ -127,7 +127,7 @@ export default function AddTextPage() {
                   required
                   value={author}
                   onChange={(e) => setAuthor(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-background/50 px-4 py-3 text-foreground focus:border-brand focus:outline-none"
+                  className="w-full rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
                 />
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function AddTextPage() {
                   name="era"
                   value={era}
                   onChange={(e) => setEra(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-background/50 px-4 py-3 text-foreground focus:border-brand focus:outline-none appearance-none"
+                  className="w-full rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
                 >
                   <option value="">Pilih Era...</option>
                   <option value="Classical">Classical</option>
@@ -157,7 +157,7 @@ export default function AddTextPage() {
                   name="genre"
                   value={genre}
                   onChange={(e) => setGenre(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-background/50 px-4 py-3 text-foreground focus:border-brand focus:outline-none appearance-none"
+                  className="w-full rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
                 >
                   <option value="">Pilih Genre...</option>
                   <option value="Novel">Novel</option>
@@ -196,11 +196,11 @@ export default function AddTextPage() {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={12}
-                className="w-full rounded-xl border border-white/10 bg-background/50 px-4 py-3 text-foreground font-serif leading-relaxed focus:border-brand focus:outline-none resize-y"
+                className="w-full rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground font-serif leading-relaxed focus:border-brand focus:outline-none resize-y"
               ></textarea>
             </div>
 
-            <div className="pt-6 border-t border-white/10 flex justify-end">
+            <div className="pt-6 border-t border-foreground/20 flex justify-end">
               <SubmitButton className="px-8 py-4 rounded-xl bg-gradient-to-r from-brand to-brand-hover text-background font-bold hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-0.5 transition-all duration-300">
                 Simpan ke Library
               </SubmitButton>
