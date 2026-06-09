@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { Loader2, ArrowLeft, Book } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { use } from "react";
 
-export default function GutenbergReaderPage({ params }: { params: { id: string } }) {
+export default function GutenbergReaderPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
   const [bookMeta, setBookMeta] = useState<any>(null);
   const [bookText, setBookText] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -15,7 +17,7 @@ export default function GutenbergReaderPage({ params }: { params: { id: string }
     async function loadBook() {
       try {
         // Fetch Metadata
-        const metaRes = await fetch(`https://gutendex.com/books/${params.id}`);
+        const metaRes = await fetch(`https://gutendex.com/books/${resolvedParams.id}`);
         if (!metaRes.ok) throw new Error("Buku tidak ditemukan di Gutenberg.");
         const meta = await metaRes.json();
         setBookMeta(meta);
@@ -59,7 +61,7 @@ export default function GutenbergReaderPage({ params }: { params: { id: string }
     }
 
     loadBook();
-  }, [params.id]);
+  }, [resolvedParams.id]);
 
   if (loading) {
     return (
