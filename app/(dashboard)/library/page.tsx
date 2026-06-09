@@ -17,14 +17,28 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
     queryBuilder = queryBuilder.or(`title.ilike.%${searchTerm}%,author.ilike.%${searchTerm}%`);
   }
 
-  const { data: texts, error } = await queryBuilder;
+  const supabase = await createClient();
+  const query = await searchParams;
+  const searchTerm = query?.q || "";
+
+  let queryBuilder = supabase
+    .from("texts")
+    .select("*", { count: "exact" })
+    .eq("is_public", true)
+    .order("created_at", { ascending: false });
+
+  if (searchTerm) {
+    queryBuilder = queryBuilder.or(`title.ilike.%${searchTerm}%,author.ilike.%${searchTerm}%`);
+  }
+
+  const { data: texts, error, count } = await queryBuilder;
 
   return (
     <div className="p-8 max-w-5xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
         <div>
           <h1 className="text-4xl font-serif font-bold text-foreground">Text Library</h1>
-          <p className="text-muted-foreground mt-2">Pilih teks sastra untuk mulai membaca dan belajar.</p>
+          <p className="text-muted-foreground mt-2">Pilih teks sastra untuk mulai membaca dan belajar. ({count ?? "?"} teks)</p>
         </div>
         <div className="flex flex-col gap-4">
           <form className="relative flex-1 min-w-[250px]">
@@ -48,7 +62,8 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
 
       {error && (
         <div className="p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 mb-8">
-          Failed to load texts. Please check database connection.
+          <p className="font-bold">Supabase Error:</p>
+          <pre className="text-xs mt-2 whitespace-pre-wrap">{JSON.stringify(error, null, 2)}</pre>
         </div>
       )}
 
