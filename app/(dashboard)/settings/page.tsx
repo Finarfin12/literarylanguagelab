@@ -77,6 +77,14 @@ export default function SettingsPage() {
       const { error } = await supabase.auth.updateUser(updates);
       if (error) throw error;
 
+      // Update profiles table too
+      if (currentUser) {
+        await supabase.from('profiles').update({
+          full_name: fullName,
+          avatar_url: finalAvatarUrl
+        }).eq('id', currentUser.id);
+      }
+
       setAvatarUrl(finalAvatarUrl);
       if (!message) setMessage("Profil berhasil diperbarui!");
       

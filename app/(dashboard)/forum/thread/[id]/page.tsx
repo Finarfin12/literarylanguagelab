@@ -21,6 +21,7 @@ interface UserProfile {
   full_name: string;
   role: string;
   level: string;
+  avatar_url?: string;
 }
 
 interface Comment {
@@ -99,13 +100,14 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       
       const uniqueUserIds = [...new Set(userIdsToFetch)];
       
-      const { data: profiles } = await supabase.from('profiles').select('id, full_name, role, level').in('id', uniqueUserIds);
+      const { data: profiles } = await supabase.from('profiles').select('id, full_name, role, level, avatar_url').in('id', uniqueUserIds);
       if (profiles) {
          profiles.forEach(p => {
            userMap[p.id] = {
              full_name: p.full_name || 'Penulis Rahasia',
              role: p.role || 'user',
-             level: p.level || 'intermediate'
+             level: p.level || 'intermediate',
+             avatar_url: p.avatar_url
            };
          });
       }
@@ -160,7 +162,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
     if (error) {
       Swal.fire({ title: "Gagal", text: error.message, icon: "error", confirmButtonColor: "#2fa16b" });
     } else if (data) {
-      const myProfile = currentUserProfile || { full_name: currentUser.user_metadata?.full_name || "Saya", role: "user", level: "intermediate" };
+      const myProfile = currentUserProfile || { full_name: currentUser.user_metadata?.full_name || "Saya", role: "user", level: "intermediate", avatar_url: currentUser.user_metadata?.avatar_url };
       setComments([...comments, { ...data, author: myProfile }]);
       setNewComment("");
     }
@@ -373,8 +375,12 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
             <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-6 pr-24">{thread?.title}</h1>
             
             <div className="flex items-center gap-3 mb-8 pb-6 border-b border-white/10">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border ${threadAuthor.role === 'admin' ? 'bg-red-500/20 border-red-500/40 text-red-400' : 'bg-brand/20 border-brand/30 text-brand'}`}>
-                {threadAuthor.role === 'admin' ? <ShieldAlert className="w-6 h-6" /> : <User className="w-6 h-6" />}
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border ${threadAuthor.role === 'admin' ? 'bg-red-500/20 border-red-500/40 text-red-400' : 'bg-brand/20 border-brand/30 text-brand'} overflow-hidden`}>
+                {threadAuthor.avatar_url ? (
+                  <img src={threadAuthor.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  threadAuthor.role === 'admin' ? <ShieldAlert className="w-6 h-6" /> : <User className="w-6 h-6" />
+                )}
               </div>
               <div>
                 <p className="font-bold text-foreground text-sm flex items-center gap-2 flex-wrap">
@@ -422,8 +428,12 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
             )}
             
             <div className="flex items-center gap-3 mb-4">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${comment.author.role === 'admin' ? 'bg-red-500/20 border-red-500/30 text-red-400' : 'bg-blue-500/20 border-blue-500/30 text-blue-400'}`}>
-                {comment.author.role === 'admin' ? <ShieldAlert className="w-5 h-5" /> : <User className="w-5 h-5" />}
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${comment.author.role === 'admin' ? 'bg-red-500/20 border-red-500/30 text-red-400' : 'bg-blue-500/20 border-blue-500/30 text-blue-400'} overflow-hidden`}>
+                {comment.author.avatar_url ? (
+                  <img src={comment.author.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  comment.author.role === 'admin' ? <ShieldAlert className="w-5 h-5" /> : <User className="w-5 h-5" />
+                )}
               </div>
               <div>
                 <p className="font-bold text-foreground text-sm flex items-center gap-2 flex-wrap pr-10">
