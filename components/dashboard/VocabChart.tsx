@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 interface VocabChartProps {
@@ -7,6 +8,13 @@ interface VocabChartProps {
 }
 
 export default function VocabChart({ data }: VocabChartProps) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return <div className="flex items-center justify-center h-full w-full min-h-[200px]" />;
+  }
+
   if (!data || data.length === 0) {
     return (
       <div className="flex items-center justify-center h-full w-full text-muted-foreground">

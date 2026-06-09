@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -122,8 +122,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
   };
 
   const [mounted, setMounted] = useState(false);
-  // Ensure we only render the random word on client to avoid hydration mismatch
-  useState(() => setMounted(true));
+  useEffect(() => setMounted(true), []);
 
   const words = [
     { word: "Mellifluous", def: "Sweet or musical; pleasant to hear." },
@@ -174,14 +173,16 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
           </div>
         </div>
 
-      <div className="px-6 mb-4" suppressHydrationWarning>
-        <div className="bg-brand/10 border border-brand/20 p-4 rounded-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-2 opacity-20"><Sparkles className="w-12 h-12 text-brand" /></div>
-          <p className="text-xs font-bold text-brand uppercase tracking-wider mb-1">Word of the Day</p>
-          <p className="text-lg font-serif font-bold text-foreground">{WOTD.word}</p>
-          <p className="text-sm text-muted-foreground italic mt-1 relative z-10">"{WOTD.def}"</p>
+      {mounted && (
+        <div className="px-6 mb-4">
+          <div className="bg-brand/10 border border-brand/20 p-4 rounded-2xl relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-2 opacity-20"><Sparkles className="w-12 h-12 text-brand" /></div>
+            <p className="text-xs font-bold text-brand uppercase tracking-wider mb-1">Word of the Day</p>
+            <p className="text-lg font-serif font-bold text-foreground">{WOTD.word}</p>
+            <p className="text-sm text-muted-foreground italic mt-1 relative z-10">"{WOTD.def}"</p>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
         <div className="space-y-4 pb-8">
