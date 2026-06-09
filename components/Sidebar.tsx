@@ -71,7 +71,6 @@ const MENU_GROUPS = [
       { name: "Translation Workshop", path: "/translation-workshop" },
       { name: "Paraphrase Challenge", path: "/tools/paraphrase" },
       { name: "Imagery Grader", path: "/tools/imagery-grader" },
-      { name: "Reading Companion", path: "/library" }, // Instruct them it's inside reader
       { name: "Character Monologue", path: "/tools/character-monologue" },
       { name: "Academic Outline", path: "/tools/academic-outline" },
       { name: "Essay Auditor", path: "/tools/essay-auditor" },
@@ -171,6 +170,23 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
       <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
         <div className="space-y-4 pb-8">
           
+          {/* Standalone Text Library Link */}
+          <Link 
+            href="/library"
+            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
+              pathname.startsWith('/library') 
+                ? 'bg-blue-500/10 border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.15)]' 
+                : 'bg-white/5 border-white/5 hover:bg-white/10'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <Library className={`w-5 h-5 ${pathname.startsWith('/library') ? 'text-blue-400' : 'text-blue-500'}`} />
+              <span className={`font-bold ${pathname.startsWith('/library') ? 'text-foreground' : 'text-muted-foreground'}`}>
+                Text Library
+              </span>
+            </div>
+          </Link>
+
           {/* Standalone A-Z Browser Link */}
           <Link 
             href="/tools/a-z-dictionary"
