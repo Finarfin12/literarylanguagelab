@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import Sidebar from "@/components/Sidebar";
+import HelpButton from "@/components/HelpButton";
 
 export default async function DashboardLayout({
   children,
@@ -25,6 +26,7 @@ export default async function DashboardLayout({
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto relative">
         {children}
+        <HelpButton />
       </main>
     </div>
   );
