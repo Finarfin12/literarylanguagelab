@@ -6,20 +6,6 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
   const supabase = await createClient();
   const query = await searchParams;
   const searchTerm = query?.q || "";
-  
-  let queryBuilder = supabase
-    .from("texts")
-    .select("*")
-    .eq("is_public", true)
-    .order("created_at", { ascending: false });
-
-  if (searchTerm) {
-    queryBuilder = queryBuilder.or(`title.ilike.%${searchTerm}%,author.ilike.%${searchTerm}%`);
-  }
-
-  const supabase = await createClient();
-  const query = await searchParams;
-  const searchTerm = query?.q || "";
 
   let queryBuilder = supabase
     .from("texts")
