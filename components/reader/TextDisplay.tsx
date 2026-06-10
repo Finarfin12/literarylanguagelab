@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import { MessageSquareQuote } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
+import { supabase } from "@/utils/supabase/client";
+import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer";
 
 export interface BookBlock {
   type: "heading" | "paragraph" | "verse";
@@ -24,6 +26,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const [contextSentence, setContextSentence] = useState<string | null>(null);
   const [activeSidebar, setActiveSidebar] = useState<"lookup" | null>(null);
   const [showCompanion, setShowCompanion] = useState(false);
+  const [culturalRefs, setCulturalRefs] = useState<CulturalReference[]>([]);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Parse paragraphs (only if content is provided as string)
@@ -32,6 +35,15 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   // Heartbeat to track time spent
   useEffect(() => {
     if (!textId) return;
+
+    // Fetch Cultural References
+    async function fetchCulturalRefs() {
+      const { data } = await supabase.from("cultural_references").select("*");
+      if (data) {
+        setCulturalRefs(data);
+      }
+    }
+    fetchCulturalRefs();
 
     const intervalSeconds = 10;
     const interval = setInterval(() => {
@@ -113,16 +125,16 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
             {blocks ? (
               blocks.map((block, index) => {
                 if (block.type === "heading") {
-                  return <h3 key={index} className="mt-14 mb-8 text-center text-3xl font-bold font-serif">{block.text}</h3>;
+                  return <h3 key={index} className="mt-14 mb-8 text-center text-3xl font-bold font-serif"><CulturalTextRenderer text={block.text} references={culturalRefs} /></h3>;
                 }
                 if (block.type === "verse") {
-                  return <p key={index} className="my-8 whitespace-pre-line text-center italic leading-9">{block.text}</p>;
+                  return <p key={index} className="my-8 whitespace-pre-line text-center italic leading-9"><CulturalTextRenderer text={block.text} references={culturalRefs} /></p>;
                 }
-                return <p key={index} className="my-6 text-left leading-9 [text-indent:2rem] md:text-justify">{block.text}</p>;
+                return <p key={index} className="my-6 text-left leading-9 [text-indent:2rem] md:text-justify"><CulturalTextRenderer text={block.text} references={culturalRefs} /></p>;
               })
             ) : (
               paragraphs.map((p, idx) => (
-                <p key={idx} className="my-6 text-left leading-9 [text-indent:2rem] md:text-justify">{p}</p>
+                <p key={idx} className="my-6 text-left leading-9 [text-indent:2rem] md:text-justify"><CulturalTextRenderer text={p} references={culturalRefs} /></p>
               ))
             )}
           </div>
