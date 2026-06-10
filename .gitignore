@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Ignore database schemas, migrations, and markdown notes
+*.sql
+*.md
+!README.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
