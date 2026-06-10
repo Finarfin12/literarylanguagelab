@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { supabase } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import { 
   ChevronDown, ChevronRight, LogOut, 
   BrainCircuit, Palette, BookMarked, 
@@ -133,6 +133,7 @@ const MENU_GROUPS = [
 export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProps) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
+  const supabase = createClient();
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -179,14 +180,14 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             table: 'direct_messages',
             filter: `receiver_id=eq.${user.id}`
           },
-          (payload) => {
+          (payload: any) => {
             // Re-fetch count on any change (insert/update)
             supabase
               .from('direct_messages')
               .select('*', { count: 'exact', head: true })
               .eq('receiver_id', user.id)
               .eq('is_read', false)
-              .then(({ count }) => {
+              .then(({ count }: { count: number | null }) => {
                 if (count !== null) setUnreadMessages(count);
               });
           }
