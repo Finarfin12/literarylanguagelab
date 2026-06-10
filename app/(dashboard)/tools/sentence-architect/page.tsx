@@ -122,23 +122,32 @@ export default function SentenceArchitectPage() {
                   </div>
                   
                   {/* Clause Children (Nested Cards) */}
-                  <div className="p-4 space-y-3 pl-8 sm:pl-12 relative">
-                    {/* Vertical line connecting children */}
-                    <div className="absolute top-0 bottom-6 left-6 sm:left-8 w-px bg-border"></div>
-                    
-                    {clause.children.map((child, cIdx) => (
-                      <div key={cIdx} className="relative flex items-center gap-4">
-                        {/* Horizontal branch line */}
-                        <div className="absolute top-1/2 -left-6 sm:-left-8 w-6 sm:w-8 h-px bg-border"></div>
-                        
-                        <div className="bg-background border border-border rounded-xl p-3 flex-1 flex flex-col sm:flex-row sm:items-center gap-3 hover:bg-muted/50 transition-colors">
-                          <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-lg border shrink-0 ${getBadgeColor(child.type)}`}>
-                            {child.type}
-                          </span>
-                          <span className="text-foreground">{child.text}</span>
+                  <div className="p-4 pl-8 sm:pl-12 flex flex-col gap-3">
+                    {clause.children.map((child, cIdx) => {
+                      const isLast = cIdx === clause.children.length - 1;
+                      const isFirst = cIdx === 0;
+                      
+                      return (
+                        <div key={cIdx} className="relative flex items-center gap-4">
+                          {/* Vertical line piece for this child */}
+                          <div className={`absolute left-[-1.5rem] sm:left-[-2rem] w-px bg-border ${
+                            isLast 
+                              ? (isFirst ? 'top-[-1rem] h-[calc(50%+1rem)]' : 'top-[-0.75rem] h-[calc(50%+0.75rem)]')
+                              : (isFirst ? 'top-[-1rem] bottom-[-0.75rem]' : 'top-[-0.75rem] bottom-[-0.75rem]')
+                          }`}></div>
+                          
+                          {/* Horizontal branch line */}
+                          <div className="absolute top-1/2 left-[-1.5rem] sm:left-[-2rem] w-6 sm:w-8 h-px bg-border"></div>
+                          
+                          <div className="bg-background border border-border rounded-xl p-3 flex-1 flex flex-col sm:flex-row sm:items-center gap-3 hover:bg-muted/50 transition-colors z-10">
+                            <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-lg border shrink-0 ${getBadgeColor(child.type)}`}>
+                              {child.type}
+                            </span>
+                            <span className="text-foreground">{child.text}</span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               ))}
