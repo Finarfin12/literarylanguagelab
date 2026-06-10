@@ -29,8 +29,10 @@ export default function TopActions({ className }: { className?: string }) {
         setUnreadMessages(count);
       }
 
-      // Subscribe to real-time changes
-      channel = supabase.channel('direct_messages_topactions')
+      // Subscribe to real-time changes with a unique channel name per instance
+      const channelName = `direct_messages_topactions_${Math.random().toString(36).substring(2)}`;
+      
+      channel = supabase.channel(channelName)
         .on(
           'postgres_changes',
           {
