@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { MessageSquareQuote } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
-import { supabase } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer";
 
 export interface BookBlock {
@@ -38,6 +38,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
 
     // Fetch Cultural References
     async function fetchCulturalRefs() {
+      const supabase = createClient();
       const { data } = await supabase.from("cultural_references").select("*");
       if (data) {
         setCulturalRefs(data);
