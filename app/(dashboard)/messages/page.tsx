@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, Suspense } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { Search, Send, Loader2, MessageSquare, Check, CheckCheck } from "lucide-react";
+import { Search, Send, Loader2, MessageSquare, Check, CheckCheck, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import { useSearchParams } from "next/navigation";
 
@@ -213,10 +213,10 @@ function MessagesContent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto h-[calc(100vh-2rem)] py-4 px-4 flex gap-6">
+    <div className="max-w-7xl mx-auto h-[calc(100vh-6rem)] md:h-[calc(100vh-2rem)] py-4 px-4 flex gap-6">
       
       {/* LEFT PANEL: CONVERSATIONS */}
-      <div className="w-1/3 bg-card border border-border rounded-3xl flex flex-col overflow-hidden shadow-sm">
+      <div className={`w-full md:w-1/3 bg-card border border-border rounded-3xl flex-col overflow-hidden shadow-sm ${activeUserId ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-6 border-b border-border">
           <h2 className="text-2xl font-serif font-bold mb-4 flex items-center gap-2">
             <MessageSquare className="w-6 h-6 text-blue-500" /> Pesan
@@ -293,7 +293,7 @@ function MessagesContent() {
       </div>
 
       {/* RIGHT PANEL: CHAT ROOM */}
-      <div className="w-2/3 bg-card border border-border rounded-3xl flex flex-col overflow-hidden shadow-sm">
+      <div className={`w-full md:w-2/3 bg-card border border-border rounded-3xl flex-col overflow-hidden shadow-sm ${!activeUserId ? 'hidden md:flex' : 'flex'}`}>
         {!activeUserId ? (
           <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground">
             <MessageSquare className="w-16 h-16 mb-4 opacity-20" />
@@ -305,6 +305,12 @@ function MessagesContent() {
           <>
             {/* Chat Header */}
             <div className="p-4 border-b border-border flex items-center gap-3 bg-muted/20">
+              <button 
+                onClick={() => setActiveUserId(null)}
+                className="md:hidden p-2 -ml-2 rounded-xl hover:bg-muted text-foreground transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
               <img src={activeContact?.avatar_url || "https://ui-avatars.com/api/?name=U"} alt="" className="w-10 h-10 rounded-full bg-muted object-cover" />
               <div>
                 <h3 className="font-bold text-foreground">{activeContact?.full_name}</h3>
