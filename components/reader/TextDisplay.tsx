@@ -72,7 +72,11 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
     };
 
     document.addEventListener("mouseup", handleSelection);
-    return () => document.removeEventListener("mouseup", handleSelection);
+    document.addEventListener("touchend", handleSelection);
+    return () => {
+      document.removeEventListener("mouseup", handleSelection);
+      document.removeEventListener("touchend", handleSelection);
+    };
   }, []);
 
   return (
@@ -126,7 +130,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
       </div>
 
       {/* Sidebar Area for Word Lookup */}
-      <div className={`absolute top-0 right-0 w-[400px] h-full bg-background backdrop-blur-3xl border-l border-border transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 ${activeSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`absolute top-0 right-0 w-full sm:w-[400px] h-full bg-background backdrop-blur-3xl border-l border-border transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 ${activeSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
         {activeSidebar === "lookup" && (
           <WordLookupSidebar 
             word={selectedWord} 
