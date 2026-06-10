@@ -44,6 +44,16 @@ export async function POST(req: Request) {
       vocab_count: totalVocab || 1,
     }, { onConflict: "id" });
 
+    // LOG ACTIVITY
+    try {
+      await supabase.from("activity_logs").insert({
+        user_id: user.id,
+        action_type: `Saved word: ${word.trim()}`,
+      });
+    } catch (logError) {
+      console.error("Failed to log vocabulary activity:", logError);
+    }
+
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     console.error("Vocabulary API error:", error);

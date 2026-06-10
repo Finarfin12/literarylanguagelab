@@ -8,7 +8,7 @@ import {
   ChevronDown, ChevronRight, LogOut, 
   BrainCircuit, Palette, BookMarked, 
   GraduationCap, Library, Briefcase, History, Sun, Moon, Sparkles, User, Settings,
-  Menu, PanelLeftClose, BookOpen, MessageSquare, Trophy, Users, LayoutDashboard
+  Menu, PanelLeftClose, BookOpen, MessageSquare, Trophy, Users, LayoutDashboard, Languages
 } from "lucide-react";
 
 interface SidebarProps {
@@ -89,7 +89,7 @@ const MENU_GROUPS = [
   },
   {
     title: "Translation Tools",
-    icon: GraduationCap,
+    icon: Languages,
     color: "text-cyan-400",
     items: [
       { name: "Parallel Text Mode", path: "/tools/parallel-text" },

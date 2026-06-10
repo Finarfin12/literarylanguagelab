@@ -46,6 +46,22 @@ export async function POST(req: Request) {
     });
 
     const result = completion.choices[0]?.message?.content || "";
+
+    // LOG ACTIVITY
+    try {
+      const { createClient } = await import("@/utils/supabase/server");
+      const supabase = await createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("activity_logs").insert({
+          user_id: user.id,
+          action_type: `Word Lookup: ${mode}`,
+        });
+      }
+    } catch (logError) {
+      console.error("Failed to log activity:", logError);
+    }
+
     return NextResponse.json({ result });
   } catch (error: any) {
     console.error("Lookup Error:", error);
