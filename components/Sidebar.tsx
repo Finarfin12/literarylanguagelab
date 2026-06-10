@@ -137,6 +137,9 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  const [localAvatar, setLocalAvatar] = useState(userAvatar);
+  const [localName, setLocalName] = useState(userName);
   
   // Auto-close sidebar on mobile, open on desktop
   useEffect(() => {
@@ -158,6 +161,9 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
     async function initMessages() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+
+      setLocalAvatar(user.user_metadata?.avatar_url);
+      setLocalName(user.user_metadata?.full_name);
 
       // Fetch initial unread count
       const { count, error } = await supabase
@@ -406,16 +412,17 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
 
       <div className="p-4 border-t border-border shrink-0 bg-background flex items-center justify-between gap-2">
         <Link href="/profile" className="flex items-center gap-3 hover:bg-muted p-2 rounded-xl transition-colors flex-1 overflow-hidden group">
-          {userAvatar ? (
-            <img src={userAvatar} className="w-9 h-9 rounded-full object-cover shrink-0 border border-border group-hover:border-brand/50 transition-colors" />
+          {localAvatar ? (
+            <img src={localAvatar} alt="User Avatar" className="w-10 h-10 rounded-full object-cover border border-foreground/10" />
           ) : (
-            <div className="w-9 h-9 rounded-full bg-brand/20 flex items-center justify-center shrink-0 border border-brand/30">
-              <User className="w-4 h-4 text-brand" />
+            <div className="w-10 h-10 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center text-brand font-bold text-lg">
+              {localName?.charAt(0) || "U"}
             </div>
           )}
-          <div className="flex flex-col truncate">
-            <span className="text-sm font-bold text-foreground truncate">{userName || userEmail?.split('@')[0] || "Guest"}</span>
-            <span className="text-xs text-muted-foreground truncate">{userEmail || "Not logged in"}</span>
+          
+          <div className="flex flex-col text-left overflow-hidden">
+            <span className="font-bold text-foreground text-sm truncate">{localName || "Pengguna"}</span>
+            <span className="text-xs text-muted-foreground truncate">{userEmail}</span>
           </div>
         </Link>
         <div className="shrink-0 flex items-center">

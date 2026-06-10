@@ -30,6 +30,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<SupabaseUser | null>(null);
   const [stats, setStats] = useState({ vocabCount: 0, idiomCount: 0, xp: 0, streak: 0, textsCompleted: 0, reviewsThisWeek: 0 });
+  const [recentLogs, setRecentLogs] = useState<any[]>([]);
   const [badges, setBadges] = useState<string[]>([]);
 
   useEffect(() => {
@@ -48,7 +49,8 @@ export default function ProfilePage() {
         (async () => {
           const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
           return supabase.from("activity_logs").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("action_type", "reviewed_vocab").gte("created_at", oneWeekAgo.toISOString());
-        })()
+        })(),
+        supabase.from("activity_logs").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5)
       ]);
 
       const profData = results[0].status === "fulfilled" ? results[0].value.data : null;
@@ -57,6 +59,7 @@ export default function ProfilePage() {
       const sData = results[3].status === "fulfilled" ? results[3].value.data : null;
       const bData = results[4].status === "fulfilled" ? results[4].value.data : null;
       const rCount = results[5].status === "fulfilled" ? results[5].value.count : 0;
+      const logsData = results[6].status === "fulfilled" ? results[6].value.data : null;
 
       if (!cancelled) {
         if (bData) {
@@ -70,6 +73,9 @@ export default function ProfilePage() {
           textsCompleted: new Set(sData?.map((s: any) => s.text_id) || []).size,
           reviewsThisWeek: rCount || 0,
         });
+        if (logsData) {
+          setRecentLogs(logsData);
+        }
         setLoading(false);
       }
     }
@@ -181,16 +187,34 @@ export default function ProfilePage() {
             {/* Activity Timeline */}
             <div className="bg-card border border-border p-8 rounded-3xl">
               <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Clock className="w-5 h-5 text-muted-foreground" /> Aktivitas Terakhir</h3>
-              <div className="relative before:absolute before:inset-y-0 before:left-[11px] before:w-px before:bg-border">
-                <div className="flex gap-4 relative">
-                  <div className="w-6 h-6 rounded-full bg-brand/20 border-2 border-background flex items-center justify-center shrink-0 relative z-10">
-                    <div className="w-2 h-2 rounded-full bg-brand" />
+              <div className="relative before:absolute before:inset-y-0 before:left-[11px] before:w-px before:bg-border space-y-6">
+                
+                {recentLogs.map((log) => (
+                  <div key={log.id} className="flex gap-4 relative">
+                    <div className="w-6 h-6 rounded-full bg-brand/20 border-2 border-background flex items-center justify-center shrink-0 relative z-10">
+                      <div className="w-2 h-2 rounded-full bg-brand" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground capitalize">{log.action_type.replace(/_/g, ' ')}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(log.created_at).toLocaleDateString("id-ID", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground">Membuat Profil</p>
-                    <p className="text-xs text-muted-foreground">{joinDate}</p>
+                ))}
+
+                {recentLogs.length === 0 && (
+                  <div className="flex gap-4 relative">
+                    <div className="w-6 h-6 rounded-full bg-brand/20 border-2 border-background flex items-center justify-center shrink-0 relative z-10">
+                      <div className="w-2 h-2 rounded-full bg-brand" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Membuat Profil</p>
+                      <p className="text-xs text-muted-foreground">{joinDate}</p>
+                    </div>
                   </div>
-                </div>
+                )}
+                
               </div>
             </div>
           </div>
