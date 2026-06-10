@@ -137,6 +137,22 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
     }
   }, [loading, bookBlocks, gutenbergId]);
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    const handleSelectionChange = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        handleTextSelect();
+      }, 500); // 500ms debounce
+    };
+    
+    document.addEventListener("selectionchange", handleSelectionChange);
+    return () => {
+      document.removeEventListener("selectionchange", handleSelectionChange);
+      clearTimeout(timer);
+    };
+  }, []); // Run once to attach listener, handleTextSelect captures current refs
+
   const handleTextSelect = () => {
     const sel = window.getSelection();
     if (!sel || !sel.toString().trim() || !containerRef.current) {
