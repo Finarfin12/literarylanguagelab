@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
-import { ArrowLeft, Send, Loader2, Book, PenTool, Coffee, HelpCircle, Gamepad2, Bold, Italic, Link as LinkIcon, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Book, PenTool, Coffee, HelpCircle, Gamepad2, Bold, Italic, Link as LinkIcon, Image as ImageIcon, Heading, Strikethrough, Code, Quote, List, ListOrdered } from "lucide-react";
 import Swal from 'sweetalert2';
 
 interface Category {
@@ -101,7 +101,7 @@ export default function CreateThreadPage() {
     }
   };
 
-  const insertFormatting = (syntax: string, isWrap = true) => {
+  const insertFormatting = (syntaxStart: string, syntaxEnd: string = '', isWrap = true) => {
     const textarea = document.getElementById('content-textarea') as HTMLTextAreaElement;
     if (!textarea) return;
 
@@ -110,10 +110,12 @@ export default function CreateThreadPage() {
     const selectedText = content.substring(start, end);
     
     let newContent = content;
+    const endMarker = isWrap ? (syntaxEnd || syntaxStart) : '';
+    
     if (isWrap) {
-      newContent = content.substring(0, start) + syntax + selectedText + syntax + content.substring(end);
+      newContent = content.substring(0, start) + syntaxStart + selectedText + endMarker + content.substring(end);
     } else {
-      newContent = content.substring(0, start) + syntax + content.substring(end);
+      newContent = content.substring(0, start) + syntaxStart + content.substring(end);
     }
     
     setContent(newContent);
@@ -121,7 +123,7 @@ export default function CreateThreadPage() {
     // Reset focus and cursor position
     setTimeout(() => {
       textarea.focus();
-      const newCursorPos = isWrap ? start + syntax.length + selectedText.length + syntax.length : start + syntax.length;
+      const newCursorPos = isWrap ? start + syntaxStart.length + selectedText.length + endMarker.length : start + syntaxStart.length;
       textarea.setSelectionRange(newCursorPos, newCursorPos);
     }, 10);
   };
@@ -154,7 +156,7 @@ export default function CreateThreadPage() {
       .from('forum_images')
       .getPublicUrl(`posts/${fileName}`);
 
-    insertFormatting(`\n![gambar](${publicUrl})\n`, false);
+    insertFormatting(`\n![gambar](${publicUrl})\n`, '', false);
     setUploadingImage(false);
   };
 
@@ -220,8 +222,19 @@ export default function CreateThreadPage() {
               <div className="flex items-center gap-1 p-2 bg-muted border-b border-border overflow-x-auto">
                 <button type="button" onClick={() => insertFormatting('**')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bold"><Bold className="w-4 h-4" /></button>
                 <button type="button" onClick={() => insertFormatting('*')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Italic"><Italic className="w-4 h-4" /></button>
-                <button type="button" onClick={() => insertFormatting('[text](url)', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
-                <div className="w-px h-5 bg-muted hover:bg-muted/80 mx-1"></div>
+                <button type="button" onClick={() => insertFormatting('~~')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Strikethrough"><Strikethrough className="w-4 h-4" /></button>
+                <div className="w-px h-5 bg-muted-foreground/20 mx-1"></div>
+                
+                <button type="button" onClick={() => insertFormatting('### ', '', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Heading"><Heading className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('> ', '', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Quote"><Quote className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('```\n', '\n```', true)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Code Block"><Code className="w-4 h-4" /></button>
+                <div className="w-px h-5 bg-muted-foreground/20 mx-1"></div>
+
+                <button type="button" onClick={() => insertFormatting('- ', '', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bulleted List"><List className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('1. ', '', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Numbered List"><ListOrdered className="w-4 h-4" /></button>
+                <div className="w-px h-5 bg-muted-foreground/20 mx-1"></div>
+
+                <button type="button" onClick={() => insertFormatting('[text](url)', '', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
                 
                 <label className={`p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-2 ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} title="Upload Gambar">
                   {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
