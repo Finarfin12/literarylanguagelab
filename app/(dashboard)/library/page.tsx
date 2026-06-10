@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { BookOpen, Plus, Sparkles, Search, Library as LibraryIcon } from "lucide-react";
+import TopActions from "@/components/TopActions";
 
 export default async function LibraryPage({ searchParams }: { searchParams: { q?: string } }) {
   const supabase = await createClient();
@@ -27,15 +28,18 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
           <p className="text-muted-foreground mt-2">Pilih teks sastra untuk mulai membaca dan belajar. ({count ?? "?"} teks)</p>
         </div>
         <div className="flex flex-col gap-4">
-          <form className="relative flex-1 min-w-[250px]">
-            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <TopActions className="flex items-center gap-3 shrink-0 self-end sm:self-auto" />
+            <form className="relative flex-1 w-full sm:min-w-[250px]">
+              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               name="q"
               defaultValue={searchTerm}
               placeholder="Cari judul atau penulis..." 
               className="w-full bg-card border border-foreground/20 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all text-foreground shadow-sm"
             />
-          </form>
+            </form>
+          </div>
           <Link
             href="/library/add"
             className="flex items-center justify-center gap-2 px-6 py-3 bg-brand text-background font-bold rounded-xl hover:bg-brand-hover hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-brand/20 whitespace-nowrap"

@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { HelpCircle, MessageSquare } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
-export default function TopActions() {
+export default function TopActions({ className }: { className?: string }) {
   const supabase = createClient();
+  const pathname = usePathname();
   const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
@@ -59,8 +61,13 @@ export default function TopActions() {
     };
   }, []);
 
+  // Hide global TopActions on specific pages that manually place it
+  if (!className && pathname && (pathname.startsWith('/library') || pathname.match(/^\/gutenberg\/.+/))) {
+    return null;
+  }
+
   return (
-    <div className="absolute top-4 right-4 z-30 flex items-center gap-3">
+    <div className={className || "absolute top-4 right-4 z-30 flex items-center gap-3"}>
       {/* Messages Inbox Button */}
       <Link
         href="/messages"

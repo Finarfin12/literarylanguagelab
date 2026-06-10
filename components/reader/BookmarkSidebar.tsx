@@ -24,7 +24,7 @@ export default function BookmarkSidebar({ bookmarks, onGoTo, onDelete, onClose }
   const bookmarksOnly = bookmarks.filter((b) => b.type === "bookmark");
 
   return (
-    <div className="fixed right-0 top-0 h-full w-80 bg-card border-l border-border shadow-2xl z-50 flex flex-col animate-in slide-in-from-right duration-300">
+    <div className="fixed right-0 top-0 h-full w-80 bg-background backdrop-blur-3xl border-l border-border shadow-2xl z-50 flex flex-col animate-in slide-in-from-right duration-300">
       <div className="p-4 border-b border-border flex items-center justify-between shrink-0">
         <h3 className="font-bold text-foreground flex items-center gap-2">
           <BookmarkPlus className="w-4 h-4 text-brand" />

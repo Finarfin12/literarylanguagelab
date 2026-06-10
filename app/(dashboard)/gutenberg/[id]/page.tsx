@@ -8,6 +8,7 @@ import { saveBookToCache, getCachedBook } from "@/utils/indexeddb";
 import BookmarkSidebar from "@/components/reader/BookmarkSidebar";
 import TextDisplay from "@/components/reader/TextDisplay";
 import SentenceAnalysisSidebar from "@/components/reader/SentenceAnalysisSidebar";
+import TopActions from "@/components/TopActions";
 
 type BookBlock = {
   type: "heading" | "paragraph" | "verse";
@@ -241,6 +242,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
           <p className="text-xs text-muted-foreground uppercase tracking-widest truncate">{bookMeta.author}</p>
         </div>
         <div className="flex items-center gap-1 shrink-0">
+          <TopActions className="hidden sm:flex items-center gap-1 mr-2" />
           {cached && <Check className="w-4 h-4 text-brand" />}
           <button onClick={() => setBookmarkOpen(!bookmarkOpen)} className="p-2 bg-muted rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-brand">
             <BookmarkPlus className="w-4 h-4" />
