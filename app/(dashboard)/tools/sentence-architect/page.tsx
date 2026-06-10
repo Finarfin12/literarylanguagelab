@@ -132,12 +132,12 @@ export default function SentenceArchitectPage() {
                           {/* Vertical line piece for this child */}
                           <div className={`absolute left-[-1.5rem] sm:left-[-2rem] w-px bg-border ${
                             isLast 
-                              ? (isFirst ? 'top-[-1rem] h-[calc(50%+1rem)]' : 'top-[-0.75rem] h-[calc(50%+0.75rem)]')
-                              : (isFirst ? 'top-[-1rem] bottom-[-0.75rem]' : 'top-[-0.75rem] bottom-[-0.75rem]')
+                              ? (isFirst ? '-top-4 bottom-1/2' : '-top-3 bottom-1/2')
+                              : (isFirst ? '-top-4 -bottom-3' : '-top-3 -bottom-3')
                           }`}></div>
                           
                           {/* Horizontal branch line */}
-                          <div className="absolute top-1/2 left-[-1.5rem] sm:left-[-2rem] w-6 sm:w-8 h-px bg-border"></div>
+                          <div className="absolute top-1/2 left-[-1.5rem] sm:left-[-2rem] w-4 sm:w-6 h-px bg-border"></div>
                           
                           <div className="bg-background border border-border rounded-xl p-3 flex-1 flex flex-col sm:flex-row sm:items-center gap-3 hover:bg-muted/50 transition-colors z-10">
                             <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-lg border shrink-0 ${getBadgeColor(child.type)}`}>
