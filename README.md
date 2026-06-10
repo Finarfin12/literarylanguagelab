@@ -109,7 +109,7 @@ Pastikan Anda memiliki Node.js terinstal di sistem Anda.
 
 4. **Siapkan Database**
    - Buat dan hubungkan basis data (database) proyek Anda.
-   - Eksekusi skrip SQL dari file `schema_canonical.sql` dan `schema_config_system.sql` untuk membangun tabel, relasi, fungsi sistem, dan kebijakan keamanan.
+   - bangun tabel, relasi, fungsi sistem, dan kebijakan keamanan.
 
 5. **Jalankan Server Development**
    ```bash
