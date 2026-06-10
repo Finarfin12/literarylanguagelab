@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { X, BookOpen, BookmarkPlus, Loader2, Globe, Wind, Sparkles, Languages, Music, Quote, PenTool, GitMerge, Hourglass, Network, Volume2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import dynamic from "next/dynamic";
+
+const SemanticMapViewer = dynamic(() => import("./SemanticMapViewer"), { ssr: false, loading: () => <div className="h-[350px] flex items-center justify-center bg-foreground/5 rounded-2xl animate-pulse"><Loader2 className="w-6 h-6 animate-spin text-brand" /></div> });
 
 interface WordLookupSidebarProps {
   word: string | null;
@@ -79,19 +82,19 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      // Simple parsing if it's semantic map to render the JSON (for now just format it as code)
-      // In a real implementation we would render a graph here using react-force-graph.
+      // Simple parsing if it's semantic map
       let finalResult = data.result;
+      let parsedMapData = null;
       if (mode === "semantic-map") {
         try {
           const start = finalResult.indexOf('{');
           const end = finalResult.lastIndexOf('}');
           if (start !== -1 && end !== -1) {
-            const parsed = JSON.parse(finalResult.substring(start, end + 1));
-            finalResult = "```json\n" + JSON.stringify(parsed, null, 2) + "\n```\n*Visual rendering coming soon.*";
+            parsedMapData = JSON.parse(finalResult.substring(start, end + 1));
+            finalResult = JSON.stringify(parsedMapData);
           }
         } catch (e) {
-          finalResult = "Gagal memproses data visual. Berikut adalah raw datanya:\n\n```json\n" + finalResult + "\n```";
+          console.error("Failed to parse map data", e);
         }
       }
 
@@ -204,9 +207,18 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
             <p className="text-sm font-medium animate-pulse">Menjalankan {MODES.find(m => m.id === activeMode)?.label}...</p>
           </div>
         ) : (
-          <div className="prose prose-sm dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:text-brand prose-headings:font-serif">
-            {result && <ReactMarkdown>{result}</ReactMarkdown>}
-          </div>
+          <>
+            {activeMode === "semantic-map" ? (
+              <div className="mt-4">
+                <SemanticMapViewer data={result ? JSON.parse(result) : null} />
+                <p className="text-xs text-center text-muted-foreground mt-4 italic">Bisa di-*drag*, *zoom*, dan digeser.</p>
+              </div>
+            ) : (
+              <div className="prose prose-sm dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:text-brand prose-headings:font-serif">
+                {result && <ReactMarkdown>{result}</ReactMarkdown>}
+              </div>
+            )}
+          </>
         )}
       </div>
 
