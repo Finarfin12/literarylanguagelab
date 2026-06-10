@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { MessageSquareQuote } from "lucide-react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { MessageSquareQuote, Clock, Keyboard } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
 import { createClient } from "@/utils/supabase/client";
@@ -103,8 +103,32 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
     };
   }, []);
 
+  // Keyboard Shortcuts
+  useEffect(() => {
+    if (prefs?.display?.keyboard_shortcuts !== false) {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        // Esc: close sidebars
+        if (e.key === "Escape") {
+          setActiveSidebar(null);
+          setShowCompanion(false);
+          window.getSelection()?.removeAllRanges();
+        }
+        
+        // Ctrl + 1: Toggle AI Companion
+        if (e.ctrlKey && e.key === "1") {
+          e.preventDefault();
+          setShowCompanion(prev => !prev);
+        }
+      };
+      
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [prefs?.display?.keyboard_shortcuts]);
+
   // Determine dynamic styles based on preferences
   const readPrefs = prefs?.reading || {};
+  const displayPrefs = prefs?.display || {};
   
   const fontClass = readPrefs.font_family === "sans-serif" ? "font-sans" : 
                     readPrefs.font_family === "dyslexic" ? "" : "font-serif";
@@ -113,9 +137,25 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const widthClass = readPrefs.text_width === "narrow" ? "max-w-xl" : 
                      readPrefs.text_width === "wide" ? "max-w-5xl" : "max-w-3xl";
 
-  const themeClass = readPrefs.theme === "dark" ? "bg-gray-900 text-gray-100" :
-                     readPrefs.theme === "sepia" ? "bg-[#f4ecd8] text-[#5b4636]" : 
-                     "bg-background text-foreground"; // Default to global theme for 'light'
+  let themeClass = readPrefs.theme === "dark" ? "bg-gray-900 text-gray-100" :
+                   readPrefs.theme === "sepia" ? "bg-[#f4ecd8] text-[#5b4636]" : 
+                   "bg-background text-foreground"; // Default to global theme for 'light'
+
+  if (displayPrefs.high_contrast) {
+    if (readPrefs.theme === "dark") {
+      themeClass = "bg-[#000000] text-[#FFFF00] font-bold"; // Black bg, yellow text is highest contrast for low-vision
+    } else {
+      themeClass = "bg-[#FFFFFF] text-[#000000] font-bold"; // Pure white bg, pure black text
+    }
+  }
+
+  const wordCount = useMemo(() => {
+    if (blocks) return blocks.reduce((acc, block) => acc + block.text.split(/\s+/).length, 0);
+    if (paragraphs) return paragraphs.reduce((acc, p) => acc + p.split(/\s+/).length, 0);
+    return 0;
+  }, [blocks, paragraphs]);
+
+  const readingTimeMinutes = Math.ceil(wordCount / 200);
 
   const customStyle = {
     ...dyslexicStyle,
@@ -139,8 +179,13 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
         onMouseUp={onTextSelect}
       >
         <div className="sticky top-0 bg-background/80 backdrop-blur-md z-30 p-4 border-b border-border flex justify-between items-center shadow-sm">
-          <div className="flex-1 truncate">
-            {/* Can add breadcrumb or back button here if needed */}
+          <div className="flex-1 truncate flex items-center gap-4 text-sm text-muted-foreground font-medium">
+            {displayPrefs.show_reading_time !== false && (
+              <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> Est: {readingTimeMinutes} mnt</span>
+            )}
+            {displayPrefs.keyboard_shortcuts !== false && (
+              <span className="hidden md:flex items-center gap-1 opacity-50"><Keyboard className="w-4 h-4" /> Ctrl+1: AI, Esc: Tutup</span>
+            )}
           </div>
           <button 
             onClick={() => setShowCompanion(true)} 
@@ -162,6 +207,8 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
             ref={contentRef}
             className={`prose-literature ${fontClass} leading-loose opacity-90 transition-all duration-300`}
             style={customStyle}
+            role={displayPrefs.screen_reader ? "article" : undefined}
+            aria-label={displayPrefs.screen_reader ? `Buku: ${title} oleh ${author}` : undefined}
           >
             {blocks ? (
               blocks.map((block, index) => {
@@ -170,7 +217,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                 return (
                   <div key={index} className="flex gap-4 group">
                     {readPrefs.line_numbers && !isHeading && (
-                      <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60">{index + 1}</span>
+                      <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60" aria-hidden={displayPrefs.screen_reader ? "true" : "false"}>{index + 1}</span>
                     )}
                     <p className={`flex-1 ${isHeading ? 'mt-14 mb-8 text-center text-3xl font-bold' : isVerse ? 'my-8 whitespace-pre-line text-center italic' : 'my-6 text-left [text-indent:2rem] md:text-justify'}`}>
                       <CulturalTextRenderer text={block.text} references={culturalRefs} />
@@ -182,7 +229,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
               paragraphs.map((p, idx) => (
                 <div key={idx} className="flex gap-4 group">
                   {readPrefs.line_numbers && (
-                    <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60">{idx + 1}</span>
+                    <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60" aria-hidden={displayPrefs.screen_reader ? "true" : "false"}>{idx + 1}</span>
                   )}
                   <p className="flex-1 my-6 text-left [text-indent:2rem] md:text-justify">
                     <CulturalTextRenderer text={p} references={culturalRefs} />

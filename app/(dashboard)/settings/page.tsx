@@ -28,12 +28,19 @@ interface UserPreferences {
     cards_per_session: number;
     show_context: boolean;
   };
+  display: {
+    show_reading_time: boolean;
+    high_contrast: boolean;
+    screen_reader: boolean;
+    keyboard_shortcuts: boolean;
+  };
 }
 
 const defaultPreferences: UserPreferences = {
   reading: { font_family: "serif", font_size: 16, line_height: 1.75, text_width: "medium", theme: "light", auto_save: true, highlight_color: "#FFD700", line_numbers: false, tts_enabled: false },
   dictionary: { auto_lookup: true, show_register: true, show_etymology: false, def_language: "id" },
-  learning: { default_mastery: 0, auto_add_vocab: false, cards_per_session: 20, show_context: true }
+  learning: { default_mastery: 0, auto_add_vocab: false, cards_per_session: 20, show_context: true },
+  display: { show_reading_time: true, high_contrast: false, screen_reader: false, keyboard_shortcuts: true }
 };
 
 export default function SettingsPage() {
@@ -81,6 +88,7 @@ export default function SettingsPage() {
               reading: { ...defaultPreferences.reading, ...(profile.preferences.reading || {}) },
               dictionary: { ...defaultPreferences.dictionary, ...(profile.preferences.dictionary || {}) },
               learning: { ...defaultPreferences.learning, ...(profile.preferences.learning || {}) },
+              display: { ...defaultPreferences.display, ...(profile.preferences.display || {}) },
             });
           }
         }
@@ -350,6 +358,40 @@ export default function SettingsPage() {
                       <option value="en">English (Monolingual)</option>
                     </select>
                   </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-4">Tampilan & Aksesibilitas</h3>
+                <div className="space-y-3">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                    <div>
+                      <span className="text-sm font-bold block">Tampilkan Estimasi Waktu Baca</span>
+                      <span className="text-xs text-muted-foreground">Muncul di header saat membaca teks</span>
+                    </div>
+                    <input type="checkbox" checked={preferences.display?.show_reading_time ?? true} onChange={e => updatePref('display', 'show_reading_time', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                    <div>
+                      <span className="text-sm font-bold block">Mode Kontras Tinggi</span>
+                      <span className="text-xs text-muted-foreground">Meningkatkan keterbacaan untuk low-vision</span>
+                    </div>
+                    <input type="checkbox" checked={preferences.display?.high_contrast ?? false} onChange={e => updatePref('display', 'high_contrast', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                    <div>
+                      <span className="text-sm font-bold block">Kompatibilitas Screen Reader</span>
+                      <span className="text-xs text-muted-foreground">Sembunyikan elemen dekoratif dari pembaca layar</span>
+                    </div>
+                    <input type="checkbox" checked={preferences.display?.screen_reader ?? false} onChange={e => updatePref('display', 'screen_reader', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                    <div>
+                      <span className="text-sm font-bold block">Pintasan Keyboard (Shortcuts)</span>
+                      <span className="text-xs text-muted-foreground">Gunakan tombol angka (1-9) untuk navigasi cepat</span>
+                    </div>
+                    <input type="checkbox" checked={preferences.display?.keyboard_shortcuts ?? true} onChange={e => updatePref('display', 'keyboard_shortcuts', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
                 </div>
               </div>
             </div>
