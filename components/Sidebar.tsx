@@ -78,7 +78,7 @@ const MENU_GROUPS = [
       { name: "Imagery Grader", path: "/tools/imagery-grader" },
       { name: "Character Monologue", path: "/tools/character-monologue" },
       { name: "Academic Outline", path: "/tools/academic-outline" },
-      { name: "Essay Auditor", path: "/tools/essay-auditor" },
+      { name: "AI Writing Assistant", path: "/tools/writing-assistant" },
       { name: "Story Quiz", path: "/tools/story-quiz" },
       { name: "Plot Twist", path: "/tools/plot-twist" },
       { name: "Conflict Mapper", path: "/tools/conflict-mapper" },
