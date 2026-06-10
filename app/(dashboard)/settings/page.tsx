@@ -34,13 +34,29 @@ interface UserPreferences {
     screen_reader: boolean;
     keyboard_shortcuts: boolean;
   };
+  privacy: {
+    allow_analytics: boolean;
+    share_anonymous_data: boolean;
+    public_profile: boolean;
+    show_in_leaderboard: boolean;
+  };
+  performance: {
+    offline_mode: boolean;
+    preload_next_text: boolean;
+  };
+  developer: {
+    debug_mode: boolean;
+  };
 }
 
 const defaultPreferences: UserPreferences = {
   reading: { font_family: "serif", font_size: 16, line_height: 1.75, text_width: "medium", theme: "light", auto_save: true, highlight_color: "#FFD700", line_numbers: false, tts_enabled: false },
   dictionary: { auto_lookup: true, show_register: true, show_etymology: false, def_language: "id" },
   learning: { default_mastery: 0, auto_add_vocab: false, cards_per_session: 20, show_context: true },
-  display: { show_reading_time: true, high_contrast: false, screen_reader: false, keyboard_shortcuts: true }
+  display: { show_reading_time: true, high_contrast: false, screen_reader: false, keyboard_shortcuts: true },
+  privacy: { allow_analytics: true, share_anonymous_data: true, public_profile: false, show_in_leaderboard: false },
+  performance: { offline_mode: false, preload_next_text: true },
+  developer: { debug_mode: false }
 };
 
 export default function SettingsPage() {
@@ -48,7 +64,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const [activeTab, setActiveTab] = useState<"profil" | "reading" | "learning">("profil");
+  const [activeTab, setActiveTab] = useState<"profil" | "reading" | "learning" | "privacy">("profil");
   
   // Profile State
   const [fullName, setFullName] = useState("");
@@ -66,6 +82,10 @@ export default function SettingsPage() {
   // Deletion State
   const [deleting, setDeleting] = useState(false);
   const [deleteEmail, setDeleteEmail] = useState("");
+  
+  // Export/System States
+  const [exporting, setExporting] = useState<string | null>(null);
+  const [clearingCache, setClearingCache] = useState(false);
 
   useEffect(() => {
     async function loadProfile() {
@@ -89,6 +109,9 @@ export default function SettingsPage() {
               dictionary: { ...defaultPreferences.dictionary, ...(profile.preferences.dictionary || {}) },
               learning: { ...defaultPreferences.learning, ...(profile.preferences.learning || {}) },
               display: { ...defaultPreferences.display, ...(profile.preferences.display || {}) },
+              privacy: { ...defaultPreferences.privacy, ...(profile.preferences.privacy || {}) },
+              performance: { ...defaultPreferences.performance, ...(profile.preferences.performance || {}) },
+              developer: { ...defaultPreferences.developer, ...(profile.preferences.developer || {}) },
             });
           }
         }
@@ -162,21 +185,104 @@ export default function SettingsPage() {
 
   const handleDeleteAccount = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (deleteEmail !== email) return alert("Email konfirmasi tidak cocok!");
-    
-    if (!confirm("PERINGATAN: Aksi ini tidak dapat dibatalkan! Yakin ingin melanjutkan?")) return;
+    if (deleteEmail !== email) {
+      setMessage("Email konfirmasi tidak cocok.");
+      return;
+    }
+
     setDeleting(true);
     try {
-      const res = await fetch("/api/auth/delete-account", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: deleteEmail }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const { error } = await supabase.rpc('delete_user');
+      if (error) throw error;
       await supabase.auth.signOut();
-      window.location.href = "/login";
+      window.location.href = '/login';
     } catch (err: any) {
-      alert(`Gagal menghapus akun: ${err.message}`);
+      console.error("Delete account error:", err);
+      setMessage(`Gagal menghapus akun: ${err.message}`);
       setDeleting(false);
+    }
+  };
+
+  const handleExportData = async (type: 'vocab' | 'history' | 'translations') => {
+    setExporting(type);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not logged in");
+
+      let table = "";
+      if (type === 'vocab') table = "vocabulary";
+      else if (type === 'history') table = "reading_sessions";
+      else if (type === 'translations') table = "translation_submissions";
+
+      const { data, error } = await supabase.from(table).select('*').eq('user_id', user.id);
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        setMessage(`Data ${type} kosong. Tidak ada yang diekspor.`);
+        setExporting(null);
+        return;
+      }
+
+      const keys = Object.keys(data[0]);
+      const csvLines = [
+        keys.join(','),
+        ...data.map(row => keys.map(k => `"${String(row[k]).replace(/"/g, '""')}"`).join(','))
+      ];
+      const csv = csvLines.join('\n');
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${type}_export_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      setMessage(`Berhasil mengekspor data ${type}.`);
+    } catch (err: any) {
+      console.error(`Export ${type} error:`, err);
+      setMessage(`Gagal mengekspor: ${err.message}`);
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const handleDeleteAllData = async () => {
+    if (!confirm("PERINGATAN: Aksi ini akan MENGHAPUS SEMUA Vocabulary dan Riwayat Membaca secara permanen. Apakah Anda yakin?")) return;
+    
+    setDeleting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not logged in");
+
+      const { error: vError } = await supabase.from('vocabulary').delete().eq('user_id', user.id);
+      if (vError) throw vError;
+      
+      const { error: rError } = await supabase.from('reading_sessions').delete().eq('user_id', user.id);
+      if (rError) throw rError;
+
+      setMessage("Berhasil menghapus semua data Vocabulary dan Riwayat Membaca.");
+    } catch (err: any) {
+      console.error("Delete data error:", err);
+      setMessage(`Gagal menghapus data: ${err.message}`);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleClearCache = async () => {
+    setClearingCache(true);
+    try {
+      localStorage.clear();
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map(name => caches.delete(name)));
+      setMessage("Cache aplikasi berhasil dibersihkan.");
+    } catch (err: any) {
+      setMessage(`Gagal membersihkan cache: ${err.message}`);
+    } finally {
+      setClearingCache(false);
     }
   };
 
@@ -200,15 +306,18 @@ export default function SettingsPage() {
         )}
 
         {/* Tabs */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap items-center gap-2 mb-8 bg-card border border-foreground/10 p-2 rounded-full overflow-x-auto custom-scrollbar">
           <button onClick={() => setActiveTab("profil")} className={`px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "profil" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
-            <User className="w-4 h-4" /> Profil Utama
+            <User className="w-4 h-4" /> Profil
           </button>
           <button onClick={() => setActiveTab("reading")} className={`px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "reading" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
             <BookOpen className="w-4 h-4" /> Membaca & Kamus
           </button>
           <button onClick={() => setActiveTab("learning")} className={`px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "learning" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
             <BrainCircuit className="w-4 h-4" /> Kosakata & Belajar
+          </button>
+          <button onClick={() => setActiveTab("privacy")} className={`px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "privacy" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
+            <ShieldAlert className="w-4 h-4" /> Privasi & Sistem
           </button>
         </div>
 
@@ -438,6 +547,96 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* TAB 4: PRIVACY, DATA & SYSTEM */}
+          {activeTab === "privacy" && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
+              
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-4">Manajemen Data</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                  <button type="button" onClick={() => handleExportData('vocab')} disabled={exporting === 'vocab'} className="p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-xl text-sm font-bold flex flex-col items-center justify-center gap-2 transition-colors">
+                    {exporting === 'vocab' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                    Ekspor Kosakata (CSV)
+                  </button>
+                  <button type="button" onClick={() => handleExportData('history')} disabled={exporting === 'history'} className="p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-xl text-sm font-bold flex flex-col items-center justify-center gap-2 transition-colors">
+                    {exporting === 'history' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                    Ekspor Riwayat (CSV)
+                  </button>
+                  <button type="button" onClick={() => handleExportData('translations')} disabled={exporting === 'translations'} className="p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-xl text-sm font-bold flex flex-col items-center justify-center gap-2 transition-colors">
+                    {exporting === 'translations' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                    Ekspor Terjemahan (CSV)
+                  </button>
+                </div>
+                <button type="button" onClick={handleDeleteAllData} disabled={deleting} className="w-full p-4 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-xl text-red-500 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
+                  <AlertTriangle className="w-5 h-5" /> {deleting ? "Menghapus..." : "Hapus Semua Data Belajar & Riwayat"}
+                </button>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-4">Privasi</h3>
+                <div className="space-y-3">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                    <div>
+                      <span className="text-sm font-bold block">Izinkan Analitik</span>
+                      <span className="text-xs text-muted-foreground">Bantu kami mengetahui fitur apa yang paling sering digunakan</span>
+                    </div>
+                    <input type="checkbox" checked={preferences.privacy?.allow_analytics ?? true} onChange={e => updatePref('privacy', 'allow_analytics', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                    <div>
+                      <span className="text-sm font-bold block">Bagikan Data Anonim</span>
+                      <span className="text-xs text-muted-foreground">Bantu tingkatkan kualitas AI (Text-to-Speech & Saran Kosakata)</span>
+                    </div>
+                    <input type="checkbox" checked={preferences.privacy?.share_anonymous_data ?? true} onChange={e => updatePref('privacy', 'share_anonymous_data', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                    <div>
+                      <span className="text-sm font-bold block">Tampilkan di Papan Peringkat (Leaderboard)</span>
+                      <span className="text-xs text-muted-foreground">Izinkan pengguna lain melihat skor dan statistik publik Anda</span>
+                    </div>
+                    <input type="checkbox" checked={preferences.privacy?.show_in_leaderboard ?? false} onChange={e => updatePref('privacy', 'show_in_leaderboard', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-4">Performa</h3>
+                <div className="space-y-3">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                    <div>
+                      <span className="text-sm font-bold block">Mode Offline Aktif</span>
+                      <span className="text-xs text-muted-foreground">Simpan teks yang dibuka secara lokal untuk dibaca tanpa internet</span>
+                    </div>
+                    <input type="checkbox" checked={preferences.performance?.offline_mode ?? false} onChange={e => updatePref('performance', 'offline_mode', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                    <div>
+                      <span className="text-sm font-bold block">Preload Teks Selanjutnya</span>
+                      <span className="text-xs text-muted-foreground">Meningkatkan kecepatan navigasi antar bab buku</span>
+                    </div>
+                    <input type="checkbox" checked={preferences.performance?.preload_next_text ?? true} onChange={e => updatePref('performance', 'preload_next_text', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                  <button type="button" onClick={handleClearCache} disabled={clearingCache} className="w-full p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors">
+                    {clearingCache ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe2 className="w-4 h-4" />} Bersihkan Cache Aplikasi
+                  </button>
+                </div>
+              </div>
+
+              {email?.includes("admin") && (
+                <div>
+                  <h3 className="text-lg font-bold text-brand mb-4 flex items-center gap-2">Developer Tools (Admin Only)</h3>
+                  <div className="space-y-3">
+                    <label className="flex items-center justify-between p-3 bg-brand/5 border border-brand/20 rounded-xl cursor-pointer">
+                      <span className="text-sm font-bold text-brand">Enable Debug Mode</span>
+                      <input type="checkbox" checked={preferences.developer?.debug_mode ?? false} onChange={e => updatePref('developer', 'debug_mode', e.target.checked)} className="w-4 h-4 accent-brand" />
+                    </label>
+                  </div>
+                </div>
+              )}
+
             </div>
           )}
 
