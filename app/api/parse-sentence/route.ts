@@ -42,12 +42,14 @@ The JSON MUST follow this exact schema:
       "indonesian": "...",
       "explanation": "Explain how splitting the clauses makes it more natural in Indonesian."
     }
-  ]
+  ],
+  "anatomy_explanation": "A concise explanation (in Indonesian) of how the grammatical structure of this sentence works to convey its meaning."
 }
 
 Break the sentence into logical clauses (Main Clause, Relative Clause, Subordinate Clause, etc.).
 For each clause, identify the core components (Subject, Verb, Object, Modifier, Conjunction).
 Provide exactly two translation strategies: "Keep Structure" and "Split Sentences".
+Finally, provide a clear, concise 'anatomy_explanation' in Indonesian explaining how the grammar functions.
 `;
 
 export async function POST(req: Request) {

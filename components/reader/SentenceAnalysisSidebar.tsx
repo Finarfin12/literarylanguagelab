@@ -196,7 +196,7 @@ export default function SentenceAnalysisSidebar({ sentence, title, author, onClo
             
             <h3 className="text-lg font-bold text-foreground mt-8 mb-4 border-b border-border pb-2">Penjelasan Tata Bahasa</h3>
             <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-              <p>Kalimat ini dipecah ke dalam berbagai klausa utama dan klausa pelengkap seperti yang divisualisasikan di atas. Anda bisa mengklik tombol translasi jika ingin memahami terjemahannya per kata atau dalam konteks.</p>
+              <p>{(result as any).anatomy_explanation || "Kalimat ini dipecah ke dalam berbagai klausa utama dan klausa pelengkap seperti yang divisualisasikan di atas."}</p>
             </div>
           </div>
         ) : typeof result === "string" ? (
