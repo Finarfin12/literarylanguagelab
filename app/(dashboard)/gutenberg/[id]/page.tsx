@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { saveBookToCache, getCachedBook } from "@/utils/indexeddb";
 import BookmarkSidebar from "@/components/reader/BookmarkSidebar";
+import TextDisplay from "@/components/reader/TextDisplay";
 
 type BookBlock = {
   type: "heading" | "paragraph" | "verse";
@@ -219,34 +220,14 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         </div>
       </div>
 
-      <div ref={containerRef} className="p-8 md:p-16 lg:px-24 max-w-none font-serif text-lg leading-loose relative h-[calc(100vh-73px)] overflow-y-auto" onMouseUp={handleTextSelect}>
-        {selection && selectionCoords && (
-          <div className="absolute z-20 bg-card border border-border rounded-xl shadow-lg p-1 flex gap-1" style={{ left: selectionCoords.x, top: selectionCoords.y, transform: "translate(-50%, -100%)" }}>
-            <button onClick={addHighlight} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-yellow-400/20 text-yellow-600 hover:bg-yellow-400/40 flex items-center gap-1">
-              <Highlighter className="w-3 h-3" /> Highlight
-            </button>
-            <button onClick={addBookmark} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-brand/20 text-brand hover:bg-brand/40 flex items-center gap-1">
-              <BookmarkPlus className="w-3 h-3" /> Bookmark
-            </button>
-          </div>
-        )}
-
-        <div className="mb-16 text-center border-b border-border pb-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 font-serif">{bookMeta.title}</h1>
-          <h2 className="text-2xl text-muted-foreground font-serif italic">{bookMeta.author}</h2>
-        </div>
-
-        <div className="font-serif text-foreground/90">
-          {bookBlocks.map((block, index) => {
-            if (block.type === "heading") {
-              return <h3 key={index} className="mt-14 mb-8 text-center text-3xl font-bold font-serif">{block.text}</h3>;
-            }
-            if (block.type === "verse") {
-              return <p key={index} className="my-8 whitespace-pre-line text-center italic leading-9">{block.text}</p>;
-            }
-            return <p key={index} className="my-6 text-left leading-9 [text-indent:2rem] md:text-justify">{block.text}</p>;
-          })}
-        </div>
+      <div className="flex-1 relative overflow-hidden flex flex-col h-[calc(100vh-73px)]">
+        <TextDisplay 
+          textId={`gutenberg_${gutenbergId}`}
+          title={bookMeta.title}
+          author={bookMeta.author}
+          blocks={bookBlocks}
+          onTextSelect={handleTextSelect}
+        />
       </div>
 
       {bookmarkOpen && (
