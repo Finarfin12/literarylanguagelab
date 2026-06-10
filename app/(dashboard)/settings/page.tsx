@@ -75,6 +75,7 @@ export default function SettingsPage() {
   const [isPublic, setIsPublic] = useState(false);
   const [languagePref, setLanguagePref] = useState("id");
   const [notificationPref, setNotificationPref] = useState(true);
+  const [userRole, setUserRole] = useState("student");
 
   // Preferences State
   const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
@@ -101,6 +102,7 @@ export default function SettingsPage() {
           setIsPublic(profile.is_public ?? false);
           setLanguagePref(profile.language_preference ?? "id");
           setNotificationPref(profile.notification_preference ?? true);
+          setUserRole(profile.role ?? "student");
           
           if (profile.preferences) {
             // Merge existing preferences with default to avoid undefined errors
@@ -625,7 +627,7 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              {email?.includes("admin") && (
+              {userRole === "admin" && (
                 <div>
                   <h3 className="text-lg font-bold text-brand mb-4 flex items-center gap-2">Developer Tools (Admin Only)</h3>
                   <div className="space-y-3">
