@@ -46,13 +46,14 @@ export default function HistoryPage() {
       
       setWordsMastered(vocabCount || 0);
 
-      // Basic streak calculation
-      if (activityData && activityData.length > 0) {
-        const uniqueDates = new Set(activityData.map(d => new Date(d.created_at).toDateString()));
-        setStreak(uniqueDates.size);
-      } else {
-        setStreak(0);
-      }
+      // Fetch profile streak
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('streak')
+        .eq('id', user.id)
+        .single();
+        
+      setStreak(profileData?.streak || 0);
 
       setLoading(false);
     }

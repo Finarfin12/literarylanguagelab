@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS system_config (
 ALTER TABLE system_config ENABLE ROW LEVEL SECURITY;
 
 -- Everyone can read config (needed for API routes)
+DROP POLICY IF EXISTS "Everyone can read system config" ON system_config;
 CREATE POLICY "Everyone can read system config"
   ON system_config FOR SELECT
   USING (true);
@@ -29,6 +30,7 @@ CREATE POLICY "Everyone can read system config"
 -- Only admins can update config
 -- Note: Untuk MVP, bisa update via SQL editor
 -- Nanti bisa ditambah admin role check
+DROP POLICY IF EXISTS "Admins can update system config" ON system_config;
 CREATE POLICY "Admins can update system config"
   ON system_config FOR UPDATE
   USING (
@@ -195,6 +197,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS system_config_updated ON system_config;
 CREATE TRIGGER system_config_updated
   BEFORE UPDATE ON system_config
   FOR EACH ROW

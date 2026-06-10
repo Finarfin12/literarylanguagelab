@@ -168,9 +168,11 @@ CREATE TABLE IF NOT EXISTS annotation_votes (
 -- Profiles
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view all profiles" ON profiles;
 CREATE POLICY "Users can view all profiles"
   ON profiles FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 CREATE POLICY "Users can update own profile"
   ON profiles FOR UPDATE
   USING (auth.uid() = id);
@@ -178,6 +180,7 @@ CREATE POLICY "Users can update own profile"
 -- Texts (public library)
 ALTER TABLE texts ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Everyone can view public texts" ON texts;
 CREATE POLICY "Everyone can view public texts"
   ON texts FOR SELECT
   USING (is_public = true);
@@ -185,6 +188,7 @@ CREATE POLICY "Everyone can view public texts"
 -- Vocabulary (private per user)
 ALTER TABLE vocabulary ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can only access own vocabulary" ON vocabulary;
 CREATE POLICY "Users can only access own vocabulary"
   ON vocabulary FOR ALL
   USING (auth.uid() = user_id);
@@ -192,6 +196,7 @@ CREATE POLICY "Users can only access own vocabulary"
 -- Reading Sessions (private per user)
 ALTER TABLE reading_sessions ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can only access own sessions" ON reading_sessions;
 CREATE POLICY "Users can only access own sessions"
   ON reading_sessions FOR ALL
   USING (auth.uid() = user_id);
@@ -199,6 +204,7 @@ CREATE POLICY "Users can only access own sessions"
 -- Translations (private per user)
 ALTER TABLE translations ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can only access own translations" ON translations;
 CREATE POLICY "Users can only access own translations"
   ON translations FOR ALL
   USING (auth.uid() = user_id);
@@ -206,6 +212,7 @@ CREATE POLICY "Users can only access own translations"
 -- Idioms (private per user)
 ALTER TABLE idioms ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can access own idioms" ON idioms;
 CREATE POLICY "Users can access own idioms"
   ON idioms FOR ALL
   USING (auth.uid() = user_id);
@@ -213,6 +220,7 @@ CREATE POLICY "Users can access own idioms"
 -- Activity Logs (private per user)
 ALTER TABLE activity_logs ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can access own activity logs" ON activity_logs;
 CREATE POLICY "Users can access own activity logs"
   ON activity_logs FOR ALL
   USING (auth.uid() = user_id);
@@ -220,6 +228,7 @@ CREATE POLICY "Users can access own activity logs"
 -- Glossaries (private per user)
 ALTER TABLE glossaries ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can access own glossaries" ON glossaries;
 CREATE POLICY "Users can access own glossaries"
   ON glossaries FOR ALL
   USING (auth.uid() = user_id);
@@ -227,6 +236,7 @@ CREATE POLICY "Users can access own glossaries"
 -- Translation Memory (private per user)
 ALTER TABLE translation_memory ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can access own translation memory" ON translation_memory;
 CREATE POLICY "Users can access own translation memory"
   ON translation_memory FOR ALL
   USING (auth.uid() = user_id);
@@ -234,18 +244,22 @@ CREATE POLICY "Users can access own translation memory"
 -- Community Annotations
 ALTER TABLE community_annotations ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Everyone can view community annotations" ON community_annotations;
 CREATE POLICY "Everyone can view community annotations"
   ON community_annotations FOR SELECT
   USING (true);
 
+DROP POLICY IF EXISTS "Users can insert annotations" ON community_annotations;
 CREATE POLICY "Users can insert annotations"
   ON community_annotations FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own annotations" ON community_annotations;
 CREATE POLICY "Users can update their own annotations"
   ON community_annotations FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete their own annotations" ON community_annotations;
 CREATE POLICY "Users can delete their own annotations"
   ON community_annotations FOR DELETE
   USING (auth.uid() = user_id);
@@ -253,11 +267,13 @@ CREATE POLICY "Users can delete their own annotations"
 -- Annotation Votes
 ALTER TABLE annotation_votes ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can manage their own votes" ON annotation_votes;
 CREATE POLICY "Users can manage their own votes"
   ON annotation_votes FOR ALL
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Everyone can view votes" ON annotation_votes;
 CREATE POLICY "Everyone can view votes"
   ON annotation_votes FOR SELECT
   USING (true);
@@ -285,6 +301,35 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+-- Update login streak function
+CREATE OR REPLACE FUNCTION public.update_login_streak(target_user_id UUID)
+RETURNS void AS $$
+DECLARE
+  last_login DATE;
+  today DATE;
+  diff INTEGER;
+BEGIN
+  -- Ambil tanggal terakhir login dengan mengabaikan jam (cast to DATE)
+  SELECT (p.last_login_at AT TIME ZONE 'Asia/Jakarta')::DATE INTO last_login FROM profiles p WHERE p.id = target_user_id;
+  
+  today := (NOW() AT TIME ZONE 'Asia/Jakarta')::DATE;
+  
+  IF last_login IS NULL THEN
+    UPDATE profiles SET streak = 1, last_login_at = NOW() WHERE id = target_user_id;
+  ELSE
+    diff := today - last_login;
+    IF diff = 0 THEN
+      RETURN;
+    ELSIF diff = 1 THEN
+      UPDATE profiles SET streak = streak + 1, last_login_at = NOW() WHERE id = target_user_id;
+    ELSE
+      UPDATE profiles SET streak = 1, last_login_at = NOW() WHERE id = target_user_id;
+    END IF;
+  END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();

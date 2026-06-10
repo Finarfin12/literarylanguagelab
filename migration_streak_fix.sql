@@ -13,16 +13,20 @@ UPDATE profiles SET last_login_at = NOW() WHERE last_login_at IS NULL;
 CREATE OR REPLACE FUNCTION public.update_login_streak(target_user_id UUID)
 RETURNS void AS $$
 DECLARE
-  last_login TIMESTAMPTZ;
+  last_login DATE;
+  today DATE;
   diff INTEGER;
 BEGIN
-  SELECT p.last_login_at INTO last_login FROM profiles p WHERE p.id = target_user_id;
+  -- Ambil tanggal terakhir login dengan mengabaikan jam (cast to DATE)
+  SELECT (p.last_login_at AT TIME ZONE 'Asia/Jakarta')::DATE INTO last_login FROM profiles p WHERE p.id = target_user_id;
+  
+  today := (NOW() AT TIME ZONE 'Asia/Jakarta')::DATE;
   
   IF last_login IS NULL THEN
     -- First login ever
     UPDATE profiles SET streak = 1, last_login_at = NOW() WHERE id = target_user_id;
   ELSE
-    diff := EXTRACT(DAY FROM (NOW() - last_login));
+    diff := today - last_login;
     
     IF diff = 0 THEN
       -- Already logged in today — skip (don't double count)
