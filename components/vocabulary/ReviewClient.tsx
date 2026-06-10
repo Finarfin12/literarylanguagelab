@@ -5,9 +5,10 @@ import { CheckCircle2, RotateCcw, Brain, RefreshCcw, Loader2 } from "lucide-reac
 
 interface ReviewClientProps {
   dueVocab: any[];
+  learningPrefs?: any;
 }
 
-export default function ReviewClient({ dueVocab }: ReviewClientProps) {
+export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientProps) {
   const [items, setItems] = useState(dueVocab);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -93,10 +94,12 @@ export default function ReviewClient({ dueVocab }: ReviewClientProps) {
               </div>
             </div>
             
-            <div className="text-left">
-              <p className="text-sm font-medium text-muted-foreground mb-1">Konteks:</p>
-              <p className="text-foreground italic">"{currentItem.context_sentence}"</p>
-            </div>
+            {learningPrefs?.show_context !== false && (
+              <div className="text-left">
+                <p className="text-sm font-medium text-muted-foreground mb-1">Konteks:</p>
+                <p className="text-foreground italic">"{currentItem.context_sentence}"</p>
+              </div>
+            )}
             
             <div className="pt-8 border-t border-border">
               <p className="text-sm font-medium text-muted-foreground mb-4">Seberapa baik Anda mengingat ini?</p>

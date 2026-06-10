@@ -27,6 +27,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const [activeSidebar, setActiveSidebar] = useState<"lookup" | null>(null);
   const [showCompanion, setShowCompanion] = useState(false);
   const [culturalRefs, setCulturalRefs] = useState<CulturalReference[]>([]);
+  const [prefs, setPrefs] = useState<any>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Parse paragraphs (only if content is provided as string)
@@ -36,15 +37,25 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   useEffect(() => {
     if (!textId) return;
 
-    // Fetch Cultural References
-    async function fetchCulturalRefs() {
+    // Fetch Cultural References and Preferences
+    async function initData() {
       const supabase = createClient();
-      const { data } = await supabase.from("cultural_references").select("*");
-      if (data) {
-        setCulturalRefs(data);
+      
+      const [refsRes, authRes] = await Promise.all([
+        supabase.from("cultural_references").select("*"),
+        supabase.auth.getUser()
+      ]);
+
+      if (refsRes.data) setCulturalRefs(refsRes.data);
+
+      if (authRes.data.user) {
+        const { data: profile } = await supabase.from("profiles").select("preferences").eq("id", authRes.data.user.id).single();
+        if (profile?.preferences) {
+          setPrefs(profile.preferences);
+        }
       }
     }
-    fetchCulturalRefs();
+    initData();
 
     const intervalSeconds = 10;
     const interval = setInterval(() => {
@@ -92,8 +103,36 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
     };
   }, []);
 
+  // Determine dynamic styles based on preferences
+  const readPrefs = prefs?.reading || {};
+  
+  const fontClass = readPrefs.font_family === "sans-serif" ? "font-sans" : 
+                    readPrefs.font_family === "dyslexic" ? "" : "font-serif";
+  const dyslexicStyle = readPrefs.font_family === "dyslexic" ? { fontFamily: '"OpenDyslexic", "Comic Sans MS", sans-serif' } : {};
+  
+  const widthClass = readPrefs.text_width === "narrow" ? "max-w-xl" : 
+                     readPrefs.text_width === "wide" ? "max-w-5xl" : "max-w-3xl";
+
+  const themeClass = readPrefs.theme === "dark" ? "bg-gray-900 text-gray-100" :
+                     readPrefs.theme === "sepia" ? "bg-[#f4ecd8] text-[#5b4636]" : 
+                     "bg-background text-foreground"; // Default to global theme for 'light'
+
+  const customStyle = {
+    ...dyslexicStyle,
+    fontSize: readPrefs.font_size ? `${readPrefs.font_size}px` : undefined,
+    lineHeight: readPrefs.line_height ? readPrefs.line_height : undefined,
+  };
+
   return (
-    <div className="flex h-full relative overflow-hidden">
+    <div className={`flex h-full relative overflow-hidden ${themeClass}`}>
+      {readPrefs.highlight_color && (
+        <style dangerouslySetInnerHTML={{__html: `
+          .prose-literature ::selection {
+            background-color: ${readPrefs.highlight_color}80; /* 50% opacity */
+            color: inherit;
+          }
+        `}} />
+      )}
       {/* Main Reading Area */}
       <div 
         className={`flex-1 overflow-y-auto transition-all duration-300 relative ${activeSidebar ? 'md:pr-[400px]' : ''}`}
@@ -113,29 +152,42 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           </button>
         </div>
 
-        <div className="max-w-3xl mx-auto px-6 md:px-8 py-12">
+        <div className={`${widthClass} mx-auto px-6 md:px-8 py-12 transition-all duration-500`}>
           <header className="mb-12 text-center">
-            <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-4">{title}</h1>
-            <p className="text-lg md:text-xl font-serif italic text-muted-foreground">by {author}</p>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: dyslexicStyle.fontFamily ? dyslexicStyle.fontFamily : 'inherit' }}>{title}</h1>
+            <p className="text-lg md:text-xl italic opacity-80">by {author}</p>
           </header>
 
           <div 
             ref={contentRef}
-            className="prose-literature font-serif text-lg leading-loose text-foreground/90"
+            className={`prose-literature ${fontClass} leading-loose opacity-90 transition-all duration-300`}
+            style={customStyle}
           >
             {blocks ? (
               blocks.map((block, index) => {
-                if (block.type === "heading") {
-                  return <h3 key={index} className="mt-14 mb-8 text-center text-3xl font-bold font-serif"><CulturalTextRenderer text={block.text} references={culturalRefs} /></h3>;
-                }
-                if (block.type === "verse") {
-                  return <p key={index} className="my-8 whitespace-pre-line text-center italic leading-9"><CulturalTextRenderer text={block.text} references={culturalRefs} /></p>;
-                }
-                return <p key={index} className="my-6 text-left leading-9 [text-indent:2rem] md:text-justify"><CulturalTextRenderer text={block.text} references={culturalRefs} /></p>;
+                const isHeading = block.type === "heading";
+                const isVerse = block.type === "verse";
+                return (
+                  <div key={index} className="flex gap-4 group">
+                    {readPrefs.line_numbers && !isHeading && (
+                      <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60">{index + 1}</span>
+                    )}
+                    <p className={`flex-1 ${isHeading ? 'mt-14 mb-8 text-center text-3xl font-bold' : isVerse ? 'my-8 whitespace-pre-line text-center italic' : 'my-6 text-left [text-indent:2rem] md:text-justify'}`}>
+                      <CulturalTextRenderer text={block.text} references={culturalRefs} />
+                    </p>
+                  </div>
+                );
               })
             ) : (
               paragraphs.map((p, idx) => (
-                <p key={idx} className="my-6 text-left leading-9 [text-indent:2rem] md:text-justify"><CulturalTextRenderer text={p} references={culturalRefs} /></p>
+                <div key={idx} className="flex gap-4 group">
+                  {readPrefs.line_numbers && (
+                    <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60">{idx + 1}</span>
+                  )}
+                  <p className="flex-1 my-6 text-left [text-indent:2rem] md:text-justify">
+                    <CulturalTextRenderer text={p} references={culturalRefs} />
+                  </p>
+                </div>
               ))
             )}
           </div>
@@ -151,6 +203,8 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
             title={title}
             author={author}
             textId={textId}
+            dictionaryPrefs={prefs?.dictionary}
+            learningPrefs={prefs?.learning}
             onClose={() => {
               setActiveSidebar(null);
               window.getSelection()?.removeAllRanges();

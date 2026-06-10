@@ -10,6 +10,8 @@ interface WordLookupSidebarProps {
   textId: string;
   title: string;
   author: string;
+  dictionaryPrefs?: any;
+  learningPrefs?: any;
   onClose: () => void;
 }
 
@@ -31,7 +33,7 @@ const MODES = [
   { id: "semantic-map", label: "Semantic Map", icon: Network }
 ];
 
-export default function WordLookupSidebar({ word, contextSentence, textId, title, author, onClose }: WordLookupSidebarProps) {
+export default function WordLookupSidebar({ word, contextSentence, textId, title, author, dictionaryPrefs, learningPrefs, onClose }: WordLookupSidebarProps) {
   const [activeMode, setActiveMode] = useState("literary-focus");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -64,7 +66,14 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
       const res = await fetch("/api/lookup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ word: targetWord, contextSentence, title, author, mode }),
+        body: JSON.stringify({ 
+          word: targetWord, 
+          contextSentence, 
+          title, 
+          author, 
+          mode,
+          dictionaryPrefs 
+        }),
       });
 
       const data = await res.json();
@@ -88,6 +97,14 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
 
       setResult(finalResult);
       setCache(prev => ({ ...prev, [mode]: finalResult }));
+
+      // Auto-add to vocab if enabled, only when initially loading literary-focus or dictionary
+      if (initialLoad && learningPrefs?.auto_add_vocab && !saved && !saving) {
+        // Wait a small tick then save
+        setTimeout(() => {
+          handleSaveToVocab(finalResult);
+        }, 500);
+      }
     } catch (error) {
       setResult("Terjadi kesalahan saat menganalisis kata.");
     } finally {
@@ -95,8 +112,9 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
     }
   };
 
-  const handleSaveToVocab = async () => {
-    if (!word || !result) return;
+  const handleSaveToVocab = async (overrideResult?: string) => {
+    const finalDefinition = overrideResult || cache["literary-focus"] || cache["dictionary"] || result;
+    if (!word || !finalDefinition) return;
     
     setSaving(true);
     try {
@@ -105,10 +123,10 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           word,
-          definition: cache["literary-focus"] || cache["dictionary"] || result,
+          definition: finalDefinition,
           contextSentence,
           contextSource: `${title} by ${author}`,
-          masteryLevel: 0
+          masteryLevel: learningPrefs?.default_mastery || 0
         })
       });
       
@@ -194,7 +212,7 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
 
       <div className="p-4 border-t border-border bg-background z-10 relative">
         <button 
-          onClick={handleSaveToVocab}
+          onClick={() => handleSaveToVocab()}
           disabled={saving || saved || loading}
           className={`w-full py-3 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all ${
             saved 

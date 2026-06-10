@@ -5,6 +5,11 @@ export default async function ReviewPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  // Fetch user preferences
+  const { data: profile } = await supabase.from('profiles').select('preferences').eq('id', user?.id).single();
+  const learningPrefs = profile?.preferences?.learning || { cards_per_session: 20, show_context: true };
+  const cardLimit = learningPrefs.cards_per_session || 20;
+
   // Fetch words due for review (next_review_at <= now)
   const now = new Date().toISOString();
   
@@ -14,7 +19,7 @@ export default async function ReviewPage() {
     .eq("user_id", user?.id)
     .lte("next_review_at", now)
     .order("next_review_at", { ascending: true })
-    .limit(20);
+    .limit(cardLimit);
 
   return (
     <div className="h-full bg-background flex flex-col">
@@ -24,7 +29,7 @@ export default async function ReviewPage() {
       </div>
 
       <div className="flex-1 overflow-auto p-8">
-        <ReviewClient dueVocab={dueVocab || []} />
+        <ReviewClient dueVocab={dueVocab || []} learningPrefs={learningPrefs} />
       </div>
     </div>
   );

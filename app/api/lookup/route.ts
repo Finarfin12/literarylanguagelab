@@ -22,7 +22,7 @@ const MODES: Record<string, string> = {
 
 export async function POST(req: Request) {
   try {
-    const { word, contextSentence, title, author, mode = "dictionary" } = await req.json();
+    const { word, contextSentence, title, author, mode = "dictionary", dictionaryPrefs } = await req.json();
 
     if (!word || !MODES[mode]) {
       return NextResponse.json({ error: "Invalid request parameters" }, { status: 400 });
@@ -35,9 +35,22 @@ export async function POST(req: Request) {
 
     const config = await getAIConfig("tools");
     const groq = await getAIClient("tools");
+
+    // Dynamic prompt adjustments based on dictionaryPrefs
+    let systemContent = MODES[mode];
+    if (dictionaryPrefs) {
+      const targetLang = dictionaryPrefs.def_language === "en" ? "English" : "Indonesian";
+      if (mode === "dictionary" || mode === "literary-focus") {
+        let rules = `\n\nIMPORTANT PREFERENCES:\n- Explain definitions and meanings primarily in ${targetLang}.`;
+        if (dictionaryPrefs.show_register) rules += "\n- Please explicitly mention the grammatical/literary register (e.g. archaic, formal, slang).";
+        if (dictionaryPrefs.show_etymology) rules += "\n- Include a brief etymology or origin of the word.";
+        systemContent += rules;
+      }
+    }
+
     const completion = await groq.chat.completions.create({
       messages: [
-        { role: "system", content: MODES[mode] },
+        { role: "system", content: systemContent },
         { role: "user", content: prompt }
       ],
       model: config.model,
