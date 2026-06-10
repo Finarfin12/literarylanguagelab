@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req: Request) {
   try {
@@ -11,6 +10,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
     }
 
+    const config = await getAIConfig("tools");
+    const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: [
         {
@@ -22,9 +23,9 @@ export async function POST(req: Request) {
           content: prompt
         }
       ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.8,
-      max_tokens: 2000,
+      model: config.model,
+      temperature: config.temperature,
+      max_tokens: config.max_tokens,
       response_format: { type: "json_object" }
     });
 
@@ -34,6 +35,6 @@ export async function POST(req: Request) {
     return NextResponse.json(result);
   } catch (error: any) {
     console.error("Groq generation error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

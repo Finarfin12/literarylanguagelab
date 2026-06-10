@@ -29,6 +29,9 @@ export async function submitDuel(formData: FormData) {
 
 export async function voteDuelSubmission(submissionId: string) {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authorized");
+
   const { data: sub } = await supabase.from("duel_submissions").select("votes").eq("id", submissionId).single();
   if (sub) {
      await supabase.from("duel_submissions").update({ votes: sub.votes + 1 }).eq("id", submissionId);

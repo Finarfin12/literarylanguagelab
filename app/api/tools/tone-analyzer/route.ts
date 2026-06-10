@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req: Request) {
   try {
@@ -29,20 +28,22 @@ export async function POST(req: Request) {
 
 Respond entirely in Indonesian (except tone classification label, linguistic markers, and English text quotes which stay in English) using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, bold text, and ⚠️ warnings where literal translation would fail). English text quotes in italic or blockquotes.`;
 
+    const config = await getAIConfig("tools");
+    const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: [
         { role: "system", content: "You are a literary tone analyst and transformation expert. You help Indonesian students of English Literature understand tone nuances and rewrite texts for different audiences." },
         { role: "user", content: prompt }
       ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.4,
-      max_tokens: 2000,
+      model: config.model,
+      temperature: config.temperature,
+      max_tokens: config.max_tokens,
     });
 
     const result = completion.choices[0]?.message?.content || "";
     return NextResponse.json({ result });
   } catch (error: any) {
     console.error("Tone Analyzer Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

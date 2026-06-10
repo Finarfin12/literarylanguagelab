@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
 
 export async function POST(req: Request) {
   try {
@@ -25,9 +25,11 @@ Your tone, diction, and syntactic structure MUST be a perfect, immersive imitati
       }))
     ];
 
+    const config = await getAIConfig("tools");
+    const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: formattedMessages,
-      model: "llama-3.3-70b-versatile",
+      model: config.model,
       temperature: 0.8, // higher temp for roleplay creativity
       max_tokens: 1000,
     });
@@ -36,6 +38,6 @@ Your tone, diction, and syntactic structure MUST be a perfect, immersive imitati
     return NextResponse.json({ result });
   } catch (error: any) {
     console.error("Alter Ego Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

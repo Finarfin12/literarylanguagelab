@@ -1,7 +1,6 @@
-import Groq from "groq-sdk";
+import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 import { NextResponse } from "next/server";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const APP_DOCS = `
 Anda adalah Liter AI, asisten dan pustakawan virtual resmi untuk Literary Language Lab. Anda memiliki persona yang elegan, berwawasan luas, puitis namun tetap informatif, layaknya seorang pemandu di perpustakaan sastra klasik. Sapalah pengguna dengan hangat dan bantu mereka menavigasi aplikasi ini menggunakan bahasa Indonesia yang menawan dan penuh pesona sastra.
@@ -115,14 +114,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Messages diperlukan" }, { status: 400 });
     }
 
+    const config = await getAIConfig("tools");
+    const groq = await getAIClient("tools");
     const response = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: config.model,
       messages: [
         { role: "system", content: APP_DOCS },
         ...messages.slice(-10),
       ],
-      temperature: 0.7,
-      max_tokens: 1024,
+      temperature: config.temperature,
+      max_tokens: config.max_tokens,
     });
 
     return NextResponse.json({

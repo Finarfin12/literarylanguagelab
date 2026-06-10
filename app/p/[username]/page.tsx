@@ -5,12 +5,13 @@ import Sidebar from "@/components/Sidebar";
 
 export default async function PublicPortfolioPage({ params }: { params: { username: string } }) {
   const supabase = await createClient();
+  const { username } = await params;
   
   // Get user profile
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
-    .eq("username", params.username)
+    .eq("username", username)
     .single();
 
   if (!profile) return notFound();

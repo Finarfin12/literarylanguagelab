@@ -86,23 +86,7 @@ export default function ToolExecutionPage() {
   };
 
   const handleExportPDF = async () => {
-    const element = document.getElementById('result-content');
-    if (!element || !tool) return;
-    try {
-      // @ts-ignore
-      const html2pdf = (await import('html2pdf.js')).default;
-      const opt = {
-        margin:       0.5,
-        filename:     `${tool.title.replace(/\s+/g, '_')}_Analysis.pdf`,
-        image:        { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'in' as const, format: 'letter' as const, orientation: 'portrait' as const }
-      };
-      html2pdf().from(element).set(opt).save();
-    } catch (err) {
-      console.error("Failed to export PDF", err);
-      Swal.fire({ title: "Perhatian", text: "Gagal mengekspor PDF.", icon: "info", confirmButtonColor: "#2fa16b" });
-    }
+    window.print();
   };
 
   return (

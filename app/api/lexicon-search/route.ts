@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req: Request) {
   try {
@@ -69,14 +68,16 @@ export async function POST(req: Request) {
       console.warn("Falling back to Groq for translation:", libreError);
       // Fallback to Groq
       try {
+        const config = await getAIConfig("lookup");
+        const groq = await getAIClient("lookup");
         const groqCompletion = await groq.chat.completions.create({
           messages: [
             { role: "system", content: "You are a professional English to Indonesian translator. Translate the given English word/phrase into Indonesian. Provide only the direct translation, nothing else." },
             { role: "user", content: trimmedWord }
           ],
-          model: "llama-3.3-70b-versatile",
-          temperature: 0.1,
-          max_tokens: 50,
+          model: config.model,
+          temperature: config.temperature,
+      max_tokens: config.max_tokens,
         });
         translation = groqCompletion.choices[0]?.message?.content?.trim() || "";
       } catch (groqError) {
@@ -93,6 +94,6 @@ export async function POST(req: Request) {
 
   } catch (error: any) {
     console.error("Lexicon Search Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

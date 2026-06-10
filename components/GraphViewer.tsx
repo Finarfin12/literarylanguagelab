@@ -5,8 +5,24 @@ import dynamic from 'next/dynamic';
 
 const ForceGraph2D = dynamic(() => import('react-force-graph-2d'), { ssr: false });
 
+export interface GraphNode {
+  id: string;
+  label: string;
+  type?: string;
+  x?: number;
+  y?: number;
+  color?: string;
+  __bckgDimensions?: number[];
+}
+
+export interface GraphLink {
+  source: string;
+  target: string;
+  label?: string;
+}
+
 export default function GraphViewer({ data }: { data: string }) {
-  const [graphData, setGraphData] = useState<any>(null);
+  const [graphData, setGraphData] = useState<{ nodes: GraphNode[], links: GraphLink[] } | null>(null);
 
   useEffect(() => {
     try {
@@ -46,27 +62,31 @@ export default function GraphViewer({ data }: { data: string }) {
         nodeAutoColorBy="type"
         linkDirectionalArrowLength={3.5}
         linkDirectionalArrowRelPos={1}
-        nodeCanvasObject={(node: any, ctx: any, globalScale: any) => {
-          const label = node.label;
+        nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
+          const n = node as GraphNode;
+          const label = n.label;
           const fontSize = 12/globalScale;
           ctx.font = `${fontSize}px Sans-Serif`;
           const textWidth = ctx.measureText(label).width;
-          const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2);
+          const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2); // some padding
 
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-          ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, ...bckgDimensions);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, bckgDimensions[0], bckgDimensions[1]);
 
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillStyle = node.color || '#3ecf8e';
+          ctx.fillStyle = n.color || '#000';
           ctx.fillText(label, node.x, node.y);
 
-          node.__bckgDimensions = bckgDimensions;
+          n.__bckgDimensions = bckgDimensions;
         }}
-        nodePointerAreaPaint={(node: any, color: any, ctx: any) => {
+        nodePointerAreaPaint={(node: any, color: string, ctx: CanvasRenderingContext2D) => {
+          const n = node as GraphNode;
           ctx.fillStyle = color;
-          const bckgDimensions = node.__bckgDimensions;
-          bckgDimensions && ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, ...bckgDimensions);
+          const bckgDimensions = n.__bckgDimensions;
+          if (bckgDimensions) {
+            ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, bckgDimensions[0], bckgDimensions[1]);
+          }
         }}
       />
     </div>

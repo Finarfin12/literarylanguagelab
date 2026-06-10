@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function GET(req: Request) {
   try {
@@ -18,11 +17,13 @@ DO NOT provide any other text, intro, or markdown. Output ONLY a valid JSON obje
   "book": "Book Name"
 }`;
 
+    const config = await getAIConfig("tools");
+    const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: [{ role: "system", content: systemPrompt }],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.9,
-      max_tokens: 200,
+      model: config.model,
+      temperature: config.temperature,
+      max_tokens: config.max_tokens,
     });
 
     const result = completion.choices[0]?.message?.content || "";
@@ -34,6 +35,6 @@ DO NOT provide any other text, intro, or markdown. Output ONLY a valid JSON obje
     const parsed = JSON.parse(result.substring(start, end + 1));
     return NextResponse.json(parsed);
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

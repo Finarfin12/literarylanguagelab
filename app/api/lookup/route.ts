@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const MODES: Record<string, string> = {
   "dictionary": "You are a literary dictionary. Provide the definition of the word/phrase, its grammatical register (e.g., formal, archaic, colloquial), and a brief explanation in Indonesian. Respond in Markdown format. Be concise.",
@@ -24,20 +23,22 @@ export async function POST(req: Request) {
       prompt += `\nFrom: ${title} by ${author}`;
     }
 
+    const config = await getAIConfig("tools");
+    const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: [
         { role: "system", content: MODES[mode] },
         { role: "user", content: prompt }
       ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.3,
-      max_tokens: 1000,
+      model: config.model,
+      temperature: config.temperature,
+      max_tokens: config.max_tokens,
     });
 
     const result = completion.choices[0]?.message?.content || "";
     return NextResponse.json({ result });
   } catch (error: any) {
     console.error("Lookup Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req: Request) {
   try {
     const { text, context } = await req.json();
     if (!text) return NextResponse.json({ error: "Text is required" }, { status: 400 });
 
+    const config = await getAIConfig("tools");
+    const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: [
         {
@@ -25,9 +26,9 @@ Respond in Indonesian for preservation_tips and better_translation. Keep markers
         },
         { role: "user", content: `Sentence: "${text}"\n\nContext: ${context || "(no context provided)"}` },
       ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.4,
-      max_tokens: 600,
+      model: config.model,
+      temperature: config.temperature,
+      max_tokens: config.max_tokens,
       response_format: { type: "json_object" },
     });
 

@@ -2,6 +2,8 @@
 
 import { createClient } from "@/utils/supabase/server";
 
+import { calculateSM2 } from "@/lib/spaced-repetition";
+
 export async function submitReview(
   vocabId: string, 
   grade: number, // 0-5
@@ -10,27 +12,16 @@ export async function submitReview(
   currentEfactor: number
 ) {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authorized");
 
   // SM-2 Algorithm Implementation
-  let nextRepetition = currentRepetition;
-  let nextInterval = currentInterval;
-  let nextEfactor = currentEfactor + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02));
-
-  if (nextEfactor < 1.3) nextEfactor = 1.3;
-
-  if (grade >= 3) {
-    if (currentRepetition === 0) {
-      nextInterval = 1;
-    } else if (currentRepetition === 1) {
-      nextInterval = 6;
-    } else {
-      nextInterval = Math.round(currentInterval * nextEfactor);
-    }
-    nextRepetition++;
-  } else {
-    nextRepetition = 0;
-    nextInterval = 1;
-  }
+  const { repetition: nextRepetition, interval: nextInterval, easeFactor: nextEfactor } = calculateSM2(
+    grade,
+    currentInterval,
+    currentRepetition,
+    currentEfactor
+  );
 
   const nextReviewDate = new Date();
   nextReviewDate.setDate(nextReviewDate.getDate() + nextInterval);
@@ -44,11 +35,12 @@ export async function submitReview(
       next_review_at: nextReviewDate.toISOString(),
       mastery_level: Math.min(5, nextRepetition) // Update mastery level just to reflect in UI
     })
-    .eq("id", vocabId);
+    .eq("id", vocabId)
+    .eq("user_id", user.id);
 
   // Log activity
   await supabase.from("activity_logs").insert({
-    user_id: (await supabase.auth.getUser()).data.user?.id,
+    user_id: user.id,
     action_type: 'reviewed_vocab',
     details: vocabId
   });

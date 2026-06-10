@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const SYSTEM_PROMPT = `You are a Master Translation Analyst. The user will provide an Original English text and a Professional Indonesian Translation.
 Your goal is to reverse-engineer and annotate the translator's decisions line-by-line or phrase-by-phrase.
@@ -23,19 +22,21 @@ export async function POST(req: Request) {
 
     const prompt = `Original Text:\n"${originalText}"\n\nProfessional Translation:\n"${translatedText}"`;
 
+    const config = await getAIConfig("tools");
+    const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: prompt }
       ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.3,
-      max_tokens: 1500,
+      model: config.model,
+      temperature: config.temperature,
+      max_tokens: config.max_tokens,
     });
 
     const result = completion.choices[0]?.message?.content || "";
     return NextResponse.json({ result });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

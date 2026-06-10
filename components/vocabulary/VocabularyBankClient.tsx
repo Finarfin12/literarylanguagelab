@@ -4,8 +4,18 @@ import { useState } from "react";
 import { BookMarked, Search, Filter, Trash2, Edit3, Save, X } from "lucide-react";
 import { deleteVocab, updateNotes } from "@/app/(dashboard)/vocabulary/actions";
 
+export interface VocabItem {
+  id: string;
+  word: string;
+  context_source?: string;
+  mastery_level: number;
+  definition?: string;
+  context_sentence?: string;
+  notes?: string;
+}
+
 interface VocabularyBankClientProps {
-  initialVocab: any[];
+  initialVocab: VocabItem[];
 }
 
 export default function VocabularyBankClient({ initialVocab }: VocabularyBankClientProps) {
@@ -34,7 +44,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
     }
   };
 
-  const startEdit = (item: any) => {
+  const startEdit = (item: VocabItem) => {
     setEditingId(item.id);
     setEditNotes(item.notes || "");
   };

@@ -8,7 +8,7 @@ import {
   ChevronDown, ChevronRight, LogOut, 
   BrainCircuit, Palette, BookMarked, 
   GraduationCap, Library, Briefcase, History, Sun, Moon, Sparkles, User, Settings,
-  Menu, PanelLeftClose, BookOpen, MessageSquare, Trophy, Users
+  Menu, PanelLeftClose, BookOpen, MessageSquare, Trophy, Users, LayoutDashboard
 } from "lucide-react";
 
 interface SidebarProps {
@@ -115,7 +115,7 @@ const MENU_GROUPS = [
   },
   {
     title: "Forum & Community",
-    icon: MessageSquare,
+    icon: Users,
     color: "text-rose-400",
     items: [
       { name: "Discussion Board", path: "/forum" },
@@ -235,7 +235,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             }`}
           >
             <div className="flex items-center gap-3">
-              <BrainCircuit className={`w-5 h-5 ${pathname === '/dashboard' ? 'text-brand' : 'text-brand/70'}`} />
+              <LayoutDashboard className={`w-5 h-5 ${pathname === '/dashboard' ? 'text-brand' : 'text-brand/70'}`} />
               <span className={`font-bold ${pathname === '/dashboard' ? 'text-foreground' : 'text-muted-foreground'}`}>
                 Progress Dashboard
               </span>
@@ -355,14 +355,16 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             <span className="text-xs text-muted-foreground truncate">{userEmail || "Not logged in"}</span>
           </div>
         </Link>
-        <form action="/auth/signout" method="post" className="shrink-0 flex items-center">
+        <div className="shrink-0 flex items-center">
           <Link href="/settings" className="p-2 rounded-xl text-muted-foreground hover:text-brand hover:bg-brand/10 transition-colors" title="Settings">
             <Settings className="w-4 h-4" />
           </Link>
-          <button className="p-2 rounded-xl text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors" title="Sign Out">
-            <LogOut className="w-4 h-4" />
-          </button>
-        </form>
+          <form action="/auth/signout" method="post" className="m-0 p-0 flex">
+            <button type="submit" className="p-2 rounded-xl text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors" title="Sign Out">
+              <LogOut className="w-4 h-4" />
+            </button>
+          </form>
+        </div>
       </div>
     </aside>
     </>

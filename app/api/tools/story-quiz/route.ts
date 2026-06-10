@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import Groq from "groq-sdk";
+import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req: Request) {
   try {
@@ -42,11 +41,13 @@ You MUST output ONLY a valid JSON object matching this exact structure:
   ]
 }`;
 
+    const config = await getAIConfig("tools");
+    const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: [{ role: "system", content: systemPrompt }],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.7,
-      max_tokens: 1500,
+      model: config.model,
+      temperature: config.temperature,
+      max_tokens: config.max_tokens,
     });
 
     const result = completion.choices[0]?.message?.content || "";
@@ -58,6 +59,6 @@ You MUST output ONLY a valid JSON object matching this exact structure:
     return NextResponse.json({ ...parsed, words });
   } catch (error: any) {
     console.error("Story Quiz Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -52,7 +52,7 @@ export default function ReadingCompanionSidebar({ title, author, content, onClos
       setMessages([...newMessages, { role: "assistant", content: data.result }]);
     } catch (error: any) {
       alert("Error: " + error.message);
-      setMessages(messages);
+      // Removed setMessages(messages) to prevent wiping out user input
     } finally {
       setLoading(false);
     }

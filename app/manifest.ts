@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Literary Lab',
     short_name: 'LiteraryLab',
     description: 'Teruskan perjalanan Anda menguasai bahasa Inggris lewat sastra.',
-    start_url: '/dashboard',
+    start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
     theme_color: '#2fa16b',

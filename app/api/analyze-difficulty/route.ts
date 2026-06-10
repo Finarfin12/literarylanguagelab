@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req: Request) {
   try {
@@ -9,6 +8,8 @@ export async function POST(req: Request) {
     if (!text) return NextResponse.json({ error: "Text is required" }, { status: 400 });
 
     const sample = text.slice(0, 3000);
+    const config = await getAIConfig("tools");
+    const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: [
         {
@@ -23,9 +24,9 @@ export async function POST(req: Request) {
         },
         { role: "user", content: sample },
       ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.3,
-      max_tokens: 500,
+      model: config.model,
+      temperature: config.temperature,
+      max_tokens: config.max_tokens,
       response_format: { type: "json_object" },
     });
 

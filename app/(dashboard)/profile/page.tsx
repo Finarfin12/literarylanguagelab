@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { User, BookOpen, Clock, Activity, Loader2, Sparkles, CalendarDays, Flame, TrendingUp, Zap } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 import Link from "next/link";
 
 function getLevel(xp: number) {
@@ -27,7 +28,7 @@ function getLevelProgress(xp: number) {
 export default function ProfilePage() {
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<SupabaseUser | null>(null);
   const [stats, setStats] = useState({ vocabCount: 0, idiomCount: 0, xp: 0, streak: 0, textsCompleted: 0, reviewsThisWeek: 0 });
 
   useEffect(() => {
@@ -76,7 +77,7 @@ export default function ProfilePage() {
 
   const joinDate = new Date(profile.created_at).toLocaleDateString("id-ID", { year: "numeric", month: "long", day: "numeric" });
   const avatarUrl = profile.user_metadata?.avatar_url;
-  const fullName = profile.user_metadata?.full_name || profile.email.split("@")[0];
+  const fullName = profile.user_metadata?.full_name || profile.email?.split("@")[0] || "Anon";
   const aboutMe = profile.user_metadata?.about_me || "Belum ada biografi. Tambahkan di pengaturan.";
   const { level, title, nextXP } = getLevel(stats.xp);
   const progressPct = getLevelProgress(stats.xp);
