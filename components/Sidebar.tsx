@@ -121,7 +121,6 @@ const MENU_GROUPS = [
     items: [
       { name: "Discussion Board", path: "/forum" },
       { name: "Jejaring Pembaca", path: "/community" },
-      { name: "Pesan Langsung", path: "/messages" },
       { name: "Global Leaderboard", path: "/leaderboard" },
       { name: "Shared Annotations", path: "/community-annotations" },
       { name: "Translation Duels", path: "/duels" },
@@ -153,59 +152,14 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const [unreadMessages, setUnreadMessages] = useState(0);
-
   useEffect(() => {
-    let channel: any = null;
-
-    async function initMessages() {
+    async function loadProfile() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-
       setLocalAvatar(user.user_metadata?.avatar_url);
       setLocalName(user.user_metadata?.full_name);
-
-      // Fetch initial unread count
-      const { count, error } = await supabase
-        .from('direct_messages')
-        .select('*', { count: 'exact', head: true })
-        .eq('receiver_id', user.id)
-        .eq('is_read', false);
-
-      if (!error && count !== null) {
-        setUnreadMessages(count);
-      }
-
-      // Subscribe to real-time changes
-      channel = supabase.channel('direct_messages_sidebar')
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'direct_messages',
-            filter: `receiver_id=eq.${user.id}`
-          },
-          (payload: any) => {
-            // Re-fetch count on any change (insert/update)
-            supabase
-              .from('direct_messages')
-              .select('*', { count: 'exact', head: true })
-              .eq('receiver_id', user.id)
-              .eq('is_read', false)
-              .then(({ count }: { count: number | null }) => {
-                if (count !== null) setUnreadMessages(count);
-              });
-          }
-        )
-        .subscribe();
     }
-
-    initMessages();
-
-    return () => {
-      if (channel) supabase.removeChannel(channel);
-    };
+    loadProfile();
   }, []);
 
   // Auto-close sidebar on mobile after navigation
@@ -394,11 +348,6 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
                           }`}
                         >
                           <span className="flex-1">{item.name}</span>
-                          {item.name === "Pesan Langsung" && unreadMessages > 0 && (
-                            <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm shadow-red-500/20 animate-in zoom-in">
-                              {unreadMessages}
-                            </span>
-                          )}
                         </Link>
                       );
                     })}

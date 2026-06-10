@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import Sidebar from "@/components/Sidebar";
-import Link from "next/link";
-import { HelpCircle } from "lucide-react";
+import TopActions from "@/components/TopActions";
 
 export default async function DashboardLayout({
   children,
@@ -29,17 +28,7 @@ export default async function DashboardLayout({
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto relative">
-        {/* Bantuan button - top right, non-floating */}
-        <div className="absolute top-4 right-4 z-30">
-          <Link
-            href="/help"
-            className="flex items-center gap-2 px-3 py-2 bg-card border border-border rounded-xl text-muted-foreground hover:text-foreground hover:border-brand/50 hover:bg-muted transition-all text-sm font-medium shadow-sm"
-            title="Pusat Bantuan"
-          >
-            <HelpCircle className="w-4 h-4" />
-            <span className="hidden sm:inline">Bantuan</span>
-          </Link>
-        </div>
+        <TopActions />
         {children}
       </main>
     </div>
