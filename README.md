@@ -1,6 +1,3 @@
-<div align="center">
-  <img src="public/icon-512x512.png" alt="Literary Language Lab Logo" width="120" height="120" />
-
   # Literary Language Lab
 
   **Platform E-Learning Bahasa Inggris Komprehensif Melalui Mahakarya Sastra Klasik**
