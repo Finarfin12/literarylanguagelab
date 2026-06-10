@@ -87,17 +87,20 @@ export default function SemanticMapViewer({ data }: SemanticMapViewerProps) {
         graphData={data}
         backgroundColor={colors.bg}
         linkColor={() => colors.link}
+        linkWidth={2}
+        linkDirectionalArrowLength={5}
+        linkDirectionalArrowRelPos={1}
         nodeColor={(node: any) => colors.nodeColors[(node.group || 1) % colors.nodeColors.length]}
         nodeCanvasObject={(node: any, ctx, globalScale) => {
-          const label = node.id;
-          const fontSize = 14 / globalScale;
-          ctx.font = `${fontSize}px Sans-Serif`;
+          const label = node.id || "?";
+          const fontSize = 16 / globalScale;
+          ctx.font = `bold ${fontSize}px Sans-Serif`;
           
           // Draw text background
           const textWidth = ctx.measureText(label).width;
           const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2);
           
-          ctx.fillStyle = resolvedTheme === "dark" ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)';
+          ctx.fillStyle = resolvedTheme === "dark" ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)';
           ctx.fillRect(
             node.x - bckgDimensions[0] / 2, 
             node.y - bckgDimensions[1] / 2, 

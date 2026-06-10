@@ -58,24 +58,26 @@ export default function GraphViewer({ data }: { data: string }) {
       <div className="absolute top-4 left-4 z-10 text-xs text-muted-foreground font-mono">Semantic Graph Data</div>
       <ForceGraph2D
         graphData={graphData}
-        nodeLabel="label"
-        nodeAutoColorBy="type"
-        linkDirectionalArrowLength={3.5}
+        nodeLabel={node => node.label || node.id}
+        nodeAutoColorBy={node => node.type || node.group || node.id}
+        linkColor={() => 'rgba(255, 255, 255, 0.5)'}
+        linkWidth={2}
+        linkDirectionalArrowLength={6}
         linkDirectionalArrowRelPos={1}
         nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
           const n = node as GraphNode;
-          const label = n.label;
-          const fontSize = 12/globalScale;
-          ctx.font = `${fontSize}px Sans-Serif`;
+          const label = n.label || n.id || "?";
+          const fontSize = 16/globalScale;
+          ctx.font = `bold ${fontSize}px Sans-Serif`;
           const textWidth = ctx.measureText(label).width;
           const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2); // some padding
 
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
           ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, bckgDimensions[0], bckgDimensions[1]);
 
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillStyle = n.color || '#000';
+          ctx.fillStyle = n.color || '#10b981';
           ctx.fillText(label, node.x, node.y);
 
           n.__bckgDimensions = bckgDimensions;
