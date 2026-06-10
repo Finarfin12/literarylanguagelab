@@ -72,8 +72,6 @@ const MENU_GROUPS = [
     icon: GraduationCap,
     color: "text-blue-400",
     items: [
-      { name: "Translation Workshop", path: "/translation-workshop" },
-      { name: "Translation Memory", path: "/translation-memory" },
       { name: "Side-by-Side Comparator", path: "/tools/comparator" },
       { name: "Difficulty Predictor", path: "/tools/difficulty-analyzer" },
       { name: "Paraphrase Challenge", path: "/tools/paraphrase" },
@@ -92,6 +90,8 @@ const MENU_GROUPS = [
     icon: Languages,
     color: "text-cyan-400",
     items: [
+      { name: "Translation Workshop", path: "/translation-workshop" },
+      { name: "Translation Memory", path: "/translation-memory" },
       { name: "Parallel Text Mode", path: "/tools/parallel-text" },
       { name: "Weekly Challenge", path: "/tools/weekly-challenge" },
       { name: "Translation Timelapse", path: "/tools/translation-timelapse" },
