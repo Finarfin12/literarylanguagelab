@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { Users, Search, UserPlus, UserCheck, Loader2, Trophy } from "lucide-react";
+import { Users, Search, UserPlus, UserCheck, Loader2, Trophy, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import Swal from 'sweetalert2';
 
@@ -128,20 +128,30 @@ export default function CommunityPage() {
               <Trophy className="w-3.5 h-3.5 text-yellow-500" /> {profile.xp} XP • {profile.level}
             </div>
 
-            <button 
-              onClick={() => handleFollowToggle(profile.id, !!profile.is_following)}
-              className={`w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
-                profile.is_following 
-                  ? 'bg-foreground/5 text-foreground hover:bg-red-500/10 hover:text-red-500' 
-                  : 'bg-brand text-background hover:bg-brand-hover hover:scale-105'
-              }`}
-            >
-              {profile.is_following ? (
-                <>Unfollow</>
-              ) : (
-                <><UserPlus className="w-4 h-4" /> Follow</>
-              )}
-            </button>
+            <div className="w-full flex gap-2">
+              <button 
+                onClick={() => handleFollowToggle(profile.id, !!profile.is_following)}
+                className={`flex-1 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+                  profile.is_following 
+                    ? 'bg-foreground/5 text-foreground hover:bg-red-500/10 hover:text-red-500' 
+                    : 'bg-brand text-background hover:bg-brand-hover hover:scale-105'
+                }`}
+              >
+                {profile.is_following ? (
+                  <>Unfollow</>
+                ) : (
+                  <><UserPlus className="w-4 h-4" /> Follow</>
+                )}
+              </button>
+              
+              <Link
+                href={`/messages?user_id=${profile.id}`}
+                className="w-12 h-11 flex items-center justify-center bg-brand/10 text-brand hover:bg-brand hover:text-white rounded-xl transition-all shrink-0"
+                title="Kirim Pesan"
+              >
+                <MessageSquare className="w-5 h-5" />
+              </Link>
+            </div>
           </div>
         ))}
         {filteredProfiles.length === 0 && (

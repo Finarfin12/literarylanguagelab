@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { useSearchParams } from "next/navigation";
 import { Send, Loader2, MessageSquare, Search, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Swal from 'sweetalert2';
@@ -30,6 +31,8 @@ export default function MessagesPage() {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+  const initialUserId = searchParams.get("user_id");
 
   useEffect(() => {
     async function loadInitialData() {
@@ -55,13 +58,35 @@ export default function MessagesPage() {
             .from('profiles')
             .select('id, full_name, avatar_url')
             .in('id', Array.from(contactIds));
-          if (profilesData) setContacts(profilesData);
+            
+          let finalContacts = profilesData || [];
+          
+          if (initialUserId) {
+            const exists = finalContacts.find((p: any) => p.id === initialUserId);
+            if (exists) {
+              setActiveContact(exists);
+            } else {
+              const { data: newContact } = await supabase.from('profiles').select('id, full_name, avatar_url').eq('id', initialUserId).single();
+              if (newContact) {
+                finalContacts = [newContact, ...finalContacts];
+                setActiveContact(newContact);
+              }
+            }
+          }
+          setContacts(finalContacts);
+        } else if (initialUserId) {
+          // No contacts at all, but we have a user_id
+          const { data: newContact } = await supabase.from('profiles').select('id, full_name, avatar_url').eq('id', initialUserId).single();
+          if (newContact) {
+            setContacts([newContact]);
+            setActiveContact(newContact);
+          }
         }
       }
       setLoadingContacts(false);
     }
     loadInitialData();
-  }, []);
+  }, [initialUserId]);
 
   useEffect(() => {
     if (activeContact && currentUser) {
