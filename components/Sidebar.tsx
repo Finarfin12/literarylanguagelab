@@ -88,6 +88,24 @@ const MENU_GROUPS = [
     ]
   },
   {
+    title: "Translation Tools",
+    icon: GraduationCap,
+    color: "text-cyan-400",
+    items: [
+      { name: "Parallel Text Mode", path: "/tools/parallel-text" },
+      { name: "Weekly Challenge", path: "/tools/weekly-challenge" },
+      { name: "Translation Timelapse", path: "/tools/translation-timelapse" },
+    ]
+  },
+  {
+    title: "Annotations",
+    icon: MessageSquare,
+    color: "text-yellow-400",
+    items: [
+      { name: "My Annotations", path: "/tools/annotations" },
+    ]
+  },
+  {
     title: "History",
     icon: History,
     color: "text-foreground",
