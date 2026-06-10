@@ -41,34 +41,34 @@ function FaqAnswer({ text }: { text: string }) {
 }
 
 const FAQ_ITEMS = [
-  { q: "Bagaimana cara hamba menambah perbendaharaan kata baru?", a: "Silakan melangkah ke perpustakaan agung Text Library atau Public Domain Books. Sentuhlah kata yang memikat hati Anda, pilih mode analisisnya, lalu klik 'Simpan Kata'. Niscaya kata tersebut akan terukir abadi di dalam Vocabulary Bank Anda." },
-  { q: "Apakah gerangan Spaced Repetition itu?", a: "Sebuah metode pengulangan memori berbantukan keajaiban algoritma SM-2. Kata yang kerap pudar dari ingatan akan dimunculkan kembali, sementara yang sudah Anda kuasai akan sesekali menyapa. Kunjungilah bilik Spaced Repetition untuk memulainya. Di setiap evaluasi, jujurlah pada ingatan Anda: Lupa Total, Hampir Lupa, Ingat Ragu, atau Sangat Mudah." },
-  { q: "Bagaimana cara menyibak lembaran buku klasik di sini?", a: "Bukalah gerbang Public Domain Books, pilih sang pustakawan (OpenLibrary untuk kecepatan kilat, atau Gutendex sebagai alternatif), lalu ketikkan judul atau nama sang pujangga, dan klik 'Baca Buku Full'. Buku tersebut kelak akan setia menanti Anda meski tanpa sambungan internet. Pembatas buku ajaib kami pun senantiasa menyimpan halaman terakhir Anda." },
-  { q: "Apakah ruang pusaka ini menuntut upeti?", a: "Tidak sama sekali! Tempat bernaung ini 100% tanpa pamrih. Ribuan mahakarya, sihir 25+ perkakas AI, ruang bedah terjemahan, hingga arena adu talenta—semuanya disajikan murni demi kecintaan kita terhadap literatur, tanpa sepeser pun biaya langganan." },
-  { q: "Bagaimana cara menaikkan darjat dan mengumpulkan XP?", a: "Kumpulkanlah butiran XP dengan mengulas kosa kata, merampungkan bacaan, bertarung di Translation Duels (+15 XP), atau menyumbangkan Anotasi Komunitas (+5 XP). Konsistensi kunjungan harian Anda juga akan memanjangkan rentetan api (streak) demi mengangkat nama Anda di puncak Global Leaderboard." },
-  { q: "Apa selisih antara OpenLibrary dan Gutendex?", a: "Keduanya merupakan mata air yang sama dari Project Gutenberg. OpenLibrary adalah sang primadona yang lebih gegas merengkuh data dari peramban Anda, berhias sampul kualitas tinggi. Adapun Gutendex adalah sang penjaga tua yang berfokus secara eksklusif pada 70.000 mahakarya Gutenberg sebagai pelabuhan cadangan." },
-  { q: "Bagaimana cara menggunakan Translation Workshop?", a: "Masukilah ruang Translation Workshop. Anda akan mendapati layar yang terbelah: sisi kiri menyajikan teks asli sang pujangga, sisi kanan menanti ketikan terjemahan Anda. Setelah merampungkannya, mintalah petuah AI melalui empat kacamata kritik: General Feedback, Equivalence Checker, Register Matcher, atau Back-Translation." },
-  { q: "Mantra apa saja yang dikuasai LingoWise AI?", a: "LingoWise mampu membedah sastra lewat 8 keahlian: Dialect Diver (menyelami dialek), Tone & Grammar (memindai tata bahasa), Vibe Translator (menerjemahkan tanpa merusak nuansa), Mood Transformer (menggubah suasana hati), Diction Lab (menimbang pilihan kata), Era Translator (membawa bahasa melintasi zaman), Sentence Architect (membedah kerangka kalimat), serta Rhetorical Spotter (melacak gaya bahasa)." },
-  { q: "Siapakah para bayangan di Alter Ego Chat?", a: "Di sinilah letak keajaiban ruang ini. Anda dapat berbincang langsung dengan roh para maestro: Shakespeare, Jane Austen, Edgar Allan Poe, Hemingway, hingga Pramoedya. AI akan meminjam lisan dan pemikiran mereka untuk meladeni pertanyaan Anda." },
-  { q: "Bagaimana cara mendirikan sebuah Reading Club?", a: "Masuklah ke Reading Clubs dan pilih 'Buat Klub Baru'. Sematkan nama dan tujuan mulia klub Anda. Anda akan dinobatkan sebagai sang pelopor. Undang kawan-kawan sejawat, lalu mulailah simposium sastra dengan menandai bab di setiap untaian pesan." },
-  { q: "Bagaimana cara meredupkan atau menerangkan ruangan (Tema)?", a: "Sentuhlah lambang mentari atau bulan di pilar kiri (dekat lambang Literary Lab). Alam aplikasi akan menyesuaikan kehendak Anda, dan selera Anda ini akan selalu diingat meski Anda pergi dan kembali." },
-  { q: "Bolehkah saya membawa pulang (export) kosa kata saya?", a: "Tentu! Di ruangan Vocabulary Bank, tersedia tombol Export yang akan menenun catatan Anda menjadi gulungan CSV. Gulungan ini kelak bisa dibentangkan di Excel, Google Sheets, atau aplikasi kartu memori lainnya seperti Anki." },
-  { q: "Apa fungsi dari kaca pembesar OCR Lens?", a: "Bukalah OCR Lens dan perlihatkan foto lembaran buku fisik Anda. Secara gaib, AI akan mengenali dan menyalin aksara-aksara di dalamnya. Barisan kalimat tersebut kemudian dapat disemayamkan di Text Library untuk dibedah." },
-  { q: "Apakah gerangan Story Quiz itu?", a: "Sebuah hiburan di Literary Toolkits. AI akan menenun sebuah cerita pendek (dengan genre misteri, romansa, hingga horor) yang sengaja dibumbui kosa kata dari Vocabulary Bank Anda. Setelah menuntaskan cerita, pemahaman Anda akan diuji lewat 5 teka-teki." },
-  { q: "Bagaimana cara menyambung kunci ingatan (reset password)?", a: "Pintu gerbang kami dikawal oleh Supabase. Jika Anda kehilangan kunci masuk, hampiri halaman login dan pilih 'Lupa Password'. Burung merpati kami akan membawa pesan pemulihan ke alamat email Anda." },
-  { q: "Bagaimana cara membumihanguskan akun saya?", a: "Bila Anda benar-benar berniat menghapus jejak, pergilah ke Pengaturan dan cari pusara 'Hapus Akun' di ujung bawah halaman. Ingatlah, tindakan ini bersifat abadi; seluruh kosa kata dan capaian Anda akan lenyap tak berbekas." },
-  { q: "Dapatkah ruang baca ini diakses lewat peranti genggam?", a: "Sangat bisa! Literary Language Lab adalah Progressive Web App. Bukalah lewat peramban genggam Anda, lalu 'Add to Home Screen'. Ia akan menyatu layaknya aplikasi murni di layar utama Anda, dan sanggup menyajikan bacaan walau tanpa jaringan internet." },
-  { q: "Topik apa saja yang bergema di Forum?", a: "Bilik Forum memiliki 5 arena: Literary Interpretation (mengupas makna), Creative Writing & Translation (seni mencipta & menerjemah), AI & Tech (perpaduan literatur & mesin), Games & Challenges (arena tanding), serta General Discussion (bincang santai)." },
-  { q: "Bagaimana panggung Translation Duels berlangsung?", a: "Di arena ini, sebuah naskah asli dibentangkan untuk diterjemahkan. Setiap cendekiawan mengajukan terjemahan terbaik mereka, lalu saling memberikan suara (vote). Anda meraup +15 XP setiap kali maju gelanggang, dan pemenangnya akan diganjar XP ekstra. Terhormat dan mendidik!" },
-  { q: "Apa malapetakanya jika saya mengabaikan ulasan kosa kata?", a: "Kosa kata itu takkan ke mana-mana, namun tanpa Spaced Repetition, ia perlahan pudar dari benak Anda. Metode SM-2 hadir memanggil kembali kata tersebut sesaat sebelum Anda melupakannya. Merawat taman Spaced Repetition adalah rahasia untuk ingatan abadi." },
+  { q: "Bagaimana cara menambah kosa kata baru?", a: "Buka Text Library atau Public Domain Books, klik kata yang ingin dipelajari, lalu pilih mode analisis dan klik 'Simpan Kata'. Kata akan masuk ke Vocabulary Bank." },
+  { q: "Apa itu spaced repetition?", a: "Sistem review cerdas berbasis algoritma SM-2 (SuperMemo 2). Kata yang sering lupa akan muncul lebih sering, kata yang sudah dikuasai muncul lebih jarang. Buka menu Spaced Repetition untuk memulai. Setiap review, kamu menilai diri sendiri: Lupa Total, Hampir Lupa, Ingat Ragu, atau Sangat Mudah." },
+  { q: "Bagaimana cara cari dan baca buku gratis?", a: "Buka menu Public Domain Books, pilih provider (OpenLibrary untuk lebih cepat, Gutendex untuk fallback), ketik judul/penulis, lalu klik 'Baca Buku Full'. Buku otomatis tersimpan offline setelah pertama kali dibuka. Posisi baca juga disimpan — lanjut kapan saja." },
+  { q: "Apakah aplikasi ini gratis?", a: "Iya, 100% GRATIS! Semua fitur tanpa terkecuali: 70.000+ buku, analisis AI 25+ tools, spaced repetition, forum diskusi, klub baca, duel terjemahan, dan semua fitur AI — tidak ada biaya berlangganan sama sekali." },
+  { q: "Bagaimana cara dapat XP dan naik peringkat?", a: "XP didapat dari: review kosa kata (tiap sesi), menyelesaikan bacaan, ikut Translation Duels (+15 XP per submission), dan kontribusi Anotasi Publik (+5 XP). Login harian juga penting — makin panjang streak, makin tinggi peringkat di Global Leaderboard." },
+  { q: "Apa beda OpenLibrary dan Gutendex?", a: "Keduanya sumber buku Project Gutenberg yang sama. OpenLibrary (default) lebih cepat karena fetch langsung dari browser, cover HD, dan jutaan buku termasuk non-Gutenberg. Gutendex lebih ringan, khusus 70.000 buku Gutenberg klasik — tersedia sebagai fallback kalau OpenLibrary lambat." },
+  { q: "Bagaimana cara menggunakan Translation Workshop?", a: "Buka menu Translation Workshop. Layout split-screen: kiri teks English asli, kanan tempat kamu mengetik terjemahan Indonesia. Setelah selesai, pilih mode evaluasi (General Feedback, Equivalence Checker, Register Matcher, atau Back-Translation) dan AI akan menilai terjemahanmu." },
+  { q: "Apa saja 8 mode LingoWise AI?", a: "LingoWise menganalisis teks sastra dengan 8 mode: Dialect Diver (dialek), Tone & Grammar (struktur + level CEFR), Vibe Translator (terjemahan bernuansa), Mood Transformer (ubah mood), Diction Lab (pilihan kata), Era Translator (ubah ke era Victorian/dll), Sentence Architect (struktur kalimat), Rhetorical Spotter (metafora, simile, dll)." },
+  { q: "Apa itu Alter Ego Chat?", a: "Fitur di mana kamu bisa ngobrol langsung dengan penulis legendaris: Shakespeare, Jane Austen, Edgar Allan Poe, Ernest Hemingway, Virginia Woolf, Chinua Achebe, dan Pramoedya Ananta Toer. AI akan merespons dengan persona penulis tersebut." },
+  { q: "Bagaimana cara membuat Reading Club?", a: "Buka menu Reading Clubs, klik 'Buat Klub Baru', isi nama dan deskripsi klub. Kamu otomatis jadi owner. Undang anggota lain, lalu diskusi bisa dimulai dengan tag chapter di setiap pesan. Cocok untuk baca buku bareng dan diskusi sastra." },
+  { q: "Bagaimana cara mengubah tema gelap/terang?", a: "Klik ikon matahari/bulan di sidebar kiri (dekat logo Literary Lab). Tema disimpan otomatis dan akan bertahan meskipun kamu refresh atau tutup browser." },
+  { q: "Bisa export kosa kata ke aplikasi lain?", a: "Bisa! Di halaman Vocabulary Bank, ada tombol Export yang menghasilkan file CSV (bisa dibuka di Excel, Google Sheets, atau import ke Anki/Quizlet). Format: word, definition, context_sentence, register, mastery_level." },
+  { q: "Bagaimana cara menggunakan OCR Lens?", a: "Buka menu OCR Lens, upload foto halaman buku fisik. AI akan men-scan dan mengekstrak teks dari gambar. Teks hasil scan bisa langsung disimpan ke Text Library untuk dibaca." },
+  { q: "Apa itu Story Quiz?", a: "Game di Literary Toolkits. AI membuatkan cerita pendek (genre bisa dipilih: Mystery, Sci-Fi, Romance, Horror, Adventure, Historical) menggunakan kosa kata dari Vocabulary Bank-mu. Setelah baca, ada 5 pertanyaan pilihan ganda untuk menguji pemahaman." },
+  { q: "Bagaimana cara reset password?", a: "Literary Language Lab menggunakan Supabase Auth. Saat ini reset password bisa dilakukan melalui halaman login — akan ada opsi 'Lupa Password' yang mengirim email reset ke alamat email terdaftar. Jika belum muncul, hubungi admin." },
+  { q: "Bagaimana cara menghapus akun?", a: "Untuk menghapus akun dan semua data terkait (vocabulary, reading progress, forum posts, dll), buka menu Pengaturan dan cari opsi 'Hapus Akun' di bagian bawah halaman. Ini permanen dan tidak bisa dibatalkan." },
+  { q: "Apakah aplikasi ini bisa dibuka di HP?", a: "Bisa! Literary Language Lab adalah PWA (Progressive Web App). Buka di browser HP, lalu pilih 'Add to Home Screen' dari menu browser. Aplikasi akan terpasang seperti app native dengan icon sendiri. Mode offline juga berfungsi — buku yang sudah dibaca tetap bisa diakses tanpa internet." },
+  { q: "Apa saja kategori di Forum?", a: "Forum punya 5 kategori: Literary Interpretation (diskusi karya sastra), Creative Writing & Translation (tulis & terjemahan), AI & Technology in Literature, Games & Challenges (kuis & tantangan), dan General Discussion (ngobrol bebas)." },
+  { q: "Bagaimana Translation Duels bekerja?", a: "Di Translation Duels, akan ada teks asli (English) yang harus diterjemahkan. Semua peserta submit terjemahan mereka. Peserta lain bisa vote terjemahan favorit. Setiap submission dapat +15 XP, dan pemenang (vote terbanyak) dapat XP bonus. Kompetitif dan edukatif!" },
+  { q: "Apa yang terjadi kalau tidak review kosa kata?", a: "Kosa kata yang tidak direview akan tetap tersimpan di Vocabulary Bank, tapi tanpa spaced repetition kamu mungkin lupa kata-kata itu. Sistem SM-2 dirancang agar kamu review kata tepat sebelum lupa — jeda review makin panjang kalau kamu konsisten. Rutin review di Spaced Repetition adalah kunci retensi jangka panjang." },
 ];
 
 const SAMPLE_QUESTIONS = [
-  "Bagaimana cara hamba menggunakan Translation Workshop?",
-  "Apakah keistimewaan dari sihir LingoWise AI?",
-  "Bagaimana cara menautkan diri ke dalam Reading Club?",
-  "Bisakah hamba memindahkan kosa kata ini ke Anki?",
-  "Bagaimana cara meredupkan ruangan ini (Tema Gelap)?",
+  "Bagaimana cara menggunakan Translation Workshop?",
+  "Apa itu LingoWise AI?",
+  "Bagaimana cara join Reading Club?",
+  "Bisa export kosa kata ke Anki?",
+  "Bagaimana cara mengubah tema gelap/terang?",
 ];
 
 function LiterAIChat({ onClose }: { onClose: () => void }) {
@@ -141,8 +141,8 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
               <div className="inline-flex p-4 bg-brand/10 rounded-full mb-4">
                 <Bot className="w-8 h-8 text-brand" />
               </div>
-              <h3 className="text-base font-bold text-foreground mb-2">Salam Hangat! Saya Liter AI 👋</h3>
-              <p className="text-xs text-muted-foreground mb-4">Tanyakanlah apa saja mengenai seluk-beluk Literary Language Lab.</p>
+              <h3 className="text-base font-bold text-foreground mb-2">Halo! Saya Liter AI 👋</h3>
+              <p className="text-xs text-muted-foreground mb-4">Tanyakan apa saja tentang Literary Language Lab.</p>
               <div className="flex flex-wrap gap-2 justify-center">
                 {SAMPLE_QUESTIONS.map((q) => (
                   <button key={q} onClick={() => sendMessage(q)} className="px-3 py-1.5 bg-muted border border-border rounded-full text-xs text-muted-foreground hover:text-foreground hover:border-brand/50 transition-colors text-left">
@@ -198,8 +198,8 @@ export default function HelpPage() {
             <BookOpen className="w-6 h-6 md:w-8 md:h-8 text-brand" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground">Pusat Kebijaksanaan & Bantuan</h1>
-            <p className="text-muted-foreground text-xs md:text-sm">Kitab panduan utuh untuk menavigasi lorong-lorong Literary Language Lab</p>
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground">Pusat Bantuan</h1>
+            <p className="text-muted-foreground text-xs md:text-sm">Panduan lengkap Literary Language Lab</p>
           </div>
         </div>
 
@@ -207,7 +207,7 @@ export default function HelpPage() {
         <section className="mb-8 md:mb-10">
           <h2 className="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4 flex items-center gap-2">
             <HelpCircle className="w-4 h-4 md:w-5 md:h-5 text-brand" />
-            Titah & Pertanyaan Umum
+            Pertanyaan Umum
           </h2>
           <div className="space-y-2 md:space-y-3">
             {FAQ_ITEMS.map((item, i) => (
@@ -228,7 +228,7 @@ export default function HelpPage() {
         <section className="mb-8 md:mb-10">
           <h2 className="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4 flex items-center gap-2">
             <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-brand" />
-            Jelajahi Ruang Pusaka
+            Jelajahi Fitur
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
             {[
@@ -253,13 +253,13 @@ export default function HelpPage() {
 
         {/* Quick Tips */}
         <section>
-          <h2 className="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4">Petuah Ringkas</h2>
+          <h2 className="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4">Tips Cepat</h2>
           <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm text-muted-foreground">
-            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">1.</span> Sentuh setiap kata pada bacaan Anda untuk membedahnya dalam 13 mode, lalu abadikan ia ke dalam Vocabulary Bank.</li>
-            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">2.</span> Sorotlah untaian kalimat di ruang baca Gutenberg untuk menyematkan penanda (Bookmark) dan sorotan (Highlight).</li>
-            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">3.</span> Kitab yang usai Anda buka akan terpatri secara magis, mengizinkan Anda membacanya kembali walau dalam keterasingan tanpa internet.</li>
-            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">4.</span> Ziarahi bilik /review secara berkala untuk merawat kelanggengan kosa kata dalam relung ingatan Anda.</li>
-            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">5.</span> Perintahkan malam atau siang menaungi aplikasi ini lewat lambang mentari/bulan di pilar sebelah kiri.</li>
+            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">1.</span> Klik kata di reader untuk analisis 13 mode + simpan ke Vocabulary Bank</li>
+            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">2.</span> Bookmark & Highlight teks dengan select teks di Gutenberg reader</li>
+            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">3.</span> Buku yang sudah dibaca bisa diakses offline — buka sekali, baca selamanya</li>
+            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">4.</span> Review kosa kata rutin di /review untuk memaksimalkan retensi</li>
+            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">5.</span> Ganti tema gelap/terang via ikon matahari/bulan di sidebar kiri</li>
           </ul>
         </section>
       </div>
