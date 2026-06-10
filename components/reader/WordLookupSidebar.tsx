@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, BookOpen, BookmarkPlus, Loader2, Globe, Wind, Sparkles, Languages, Music, Quote, PenTool, GitMerge, Hourglass, Network } from "lucide-react";
+import { X, BookOpen, BookmarkPlus, Loader2, Globe, Wind, Sparkles, Languages, Music, Quote, PenTool, GitMerge, Hourglass, Network, Volume2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 interface WordLookupSidebarProps {
@@ -120,12 +120,30 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
     }
   };
 
+  const speakWord = () => {
+    if (!word || typeof window === "undefined" || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  };
+
   if (!word) return null;
 
   return (
     <div className="flex flex-col h-full bg-background backdrop-blur-xl relative overflow-hidden">
       <div className="p-4 border-b border-border flex items-center justify-between z-10 relative">
-        <h2 className="text-xl font-serif font-bold text-foreground truncate max-w-[200px]">{word}</h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-xl font-serif font-bold text-foreground truncate max-w-[150px]">{word}</h2>
+          <button 
+            onClick={speakWord} 
+            className="p-1.5 bg-brand/10 text-brand rounded-full hover:bg-brand/20 transition-colors"
+            title="Listen to pronunciation"
+          >
+            <Volume2 className="w-4 h-4" />
+          </button>
+        </div>
         <button onClick={onClose} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-full text-muted-foreground transition-colors">
           <X className="w-5 h-5" />
         </button>

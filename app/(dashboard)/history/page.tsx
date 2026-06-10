@@ -143,7 +143,7 @@ export default function HistoryPage() {
               <div key={log.id} className="flex items-center justify-between p-4 bg-muted hover:bg-muted hover:bg-muted/80 transition-colors rounded-xl border border-border">
                 <div className="flex items-center gap-4">
                   <div className="w-2 h-2 rounded-full bg-brand"></div>
-                  <span className="text-foreground font-medium">{log.action}</span>
+                  <span className="text-foreground font-medium">{log.action_type}</span>
                 </div>
                 <span className="text-sm text-muted-foreground">{formatTime(log.created_at)}</span>
               </div>
