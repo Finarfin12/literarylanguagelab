@@ -204,15 +204,15 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
 
   return (
     <div className="max-w-4xl mx-auto bg-card min-h-screen border-x border-border shadow-2xl relative animate-in fade-in duration-1000">
-      <div className="sticky top-0 bg-card/90 backdrop-blur-md border-b border-border p-4 flex items-center justify-between z-10 shadow-sm">
-        <Link href="/gutenberg" className="p-2 bg-muted hover:bg-orange-500 hover:text-white rounded-full transition-colors">
+      <div className="sticky top-0 bg-card/90 backdrop-blur-md border-b border-border p-4 pr-24 sm:pr-32 flex items-center justify-between z-10 shadow-sm">
+        <Link href="/gutenberg" className="p-2 bg-muted hover:bg-orange-500 hover:text-white rounded-full transition-colors shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1 text-center truncate px-4">
           <h1 className="font-serif font-bold text-lg truncate">{bookMeta.title}</h1>
           <p className="text-xs text-muted-foreground uppercase tracking-widest truncate">{bookMeta.author}</p>
         </div>
-        <div className="flex items-center gap-1 mr-28 sm:mr-40">
+        <div className="flex items-center gap-1 shrink-0">
           {cached && <Check className="w-4 h-4 text-brand" />}
           <button onClick={() => setBookmarkOpen(!bookmarkOpen)} className="p-2 bg-muted rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-brand">
             <BookmarkPlus className="w-4 h-4" />
@@ -220,7 +220,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         </div>
       </div>
 
-      <div className="flex-1 relative overflow-hidden flex flex-col h-[calc(100vh-73px)]">
+      <div className="flex-1 relative overflow-hidden flex flex-col h-[calc(100vh-73px)]" ref={containerRef}>
         <TextDisplay 
           textId={`gutenberg_${gutenbergId}`}
           title={bookMeta.title}
@@ -228,6 +228,24 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
           blocks={bookBlocks}
           onTextSelect={handleTextSelect}
         />
+        
+        {selectionCoords && selection && (
+          <div 
+            className="absolute z-50 flex items-center gap-1 bg-card border border-border shadow-lg rounded-xl p-1 animate-in zoom-in-95 duration-200"
+            style={{ 
+              left: Math.max(10, selectionCoords.x - 60), 
+              top: Math.max(10, selectionCoords.y - 50) 
+            }}
+          >
+            <button onClick={addHighlight} className="p-2 hover:bg-muted text-yellow-500 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors" title="Highlight">
+              <Highlighter className="w-4 h-4" /> <span className="hidden sm:inline">Sorot</span>
+            </button>
+            <div className="w-px h-6 bg-border mx-1"></div>
+            <button onClick={addBookmark} className="p-2 hover:bg-muted text-brand rounded-lg flex items-center gap-2 text-sm font-medium transition-colors" title="Bookmark">
+              <BookmarkPlus className="w-4 h-4" /> <span className="hidden sm:inline">Tandai</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {bookmarkOpen && (
