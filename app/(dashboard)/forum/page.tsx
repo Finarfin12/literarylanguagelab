@@ -43,6 +43,12 @@ export default function ForumPage() {
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [loading, setLoading] = useState(true);
   
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [newCatName, setNewCatName] = useState("");
+  const [newCatDesc, setNewCatDesc] = useState("");
+  const [newCatIcon, setNewCatIcon] = useState("message-square");
+  const [addingCat, setAddingCat] = useState(false);
+  
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [currentUserProfile, setCurrentUserProfile] = useState<any>(null);
 
@@ -135,8 +141,33 @@ export default function ForumPage() {
     ? threads.filter(t => t.category_id === activeCategory.id)
     : [];
 
-  // Recent threads for home page (max 3)
-  const recentThreads = threads.slice(0, 3);
+  const announcements = threads.filter((t: any) => t.is_announcement);
+  const recentThreads = threads.filter((t: any) => !t.is_announcement).slice(0, 3);
+
+  const isAdmin = currentUserProfile?.role === 'admin';
+
+  const handleAddCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAddingCat(true);
+    const slug = newCatName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const { data, error } = await supabase.from('forum_categories').insert({
+      name: newCatName,
+      description: newCatDesc,
+      icon: newCatIcon,
+      slug
+    }).select().single();
+
+    if (error) {
+      Swal.fire({ title: "Gagal", text: error.message, icon: "error" });
+    } else if (data) {
+      setCategories([...categories, data]);
+      setShowCategoryModal(false);
+      setNewCatName("");
+      setNewCatDesc("");
+      Swal.fire({ title: "Berhasil", text: "Kategori ditambahkan.", icon: "success", timer: 1500, showConfirmButton: false });
+    }
+    setAddingCat(false);
+  };
 
   const ThreadCard = ({ thread, showCategory = false }: { thread: Thread, showCategory?: boolean }) => {
     const cat = categories.find(c => c.id === thread.category_id);
@@ -168,6 +199,11 @@ export default function ForumPage() {
                 )}
               </div>
               <span className="text-xs font-bold text-muted-foreground">{thread.author?.full_name}</span>
+              {(thread as any).is_announcement && (
+                <span className="flex items-center gap-1 bg-red-500/10 text-red-500 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ml-2">
+                  <Pin className="w-3 h-3" /> PENGUMUMAN
+                </span>
+              )}
             </div>
             <h3 className="text-xl font-bold text-foreground group-hover:text-brand transition-colors">
               {thread.title}
@@ -230,6 +266,21 @@ export default function ForumPage() {
         /* --- FORUM HOME --- */
         <div className="space-y-12">
           
+          {/* Announcements Section */}
+          {announcements.length > 0 && (
+            <section>
+              <div className="flex items-center gap-2 mb-6 border-b border-foreground/10 pb-4">
+                <Pin className="w-6 h-6 text-red-500" />
+                <h2 className="text-2xl font-bold text-foreground font-serif">Pengumuman Admin</h2>
+              </div>
+              <div className="space-y-4">
+                {announcements.map(thread => (
+                  <ThreadCard key={thread.id} thread={thread} showCategory={true} />
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Recent Posts Section */}
           <section>
             <div className="flex items-center gap-2 mb-6 border-b border-foreground/10 pb-4">
@@ -252,9 +303,19 @@ export default function ForumPage() {
 
           {/* Categories Section (Forum Board Layout) */}
           <section>
-            <div className="flex items-center gap-2 mb-6 border-b border-foreground/10 pb-4">
-              <Book className="w-6 h-6 text-brand" />
-              <h2 className="text-2xl font-bold text-foreground font-serif">Kategori Ruang</h2>
+            <div className="flex items-center justify-between mb-6 border-b border-foreground/10 pb-4">
+              <div className="flex items-center gap-2">
+                <Book className="w-6 h-6 text-brand" />
+                <h2 className="text-2xl font-bold text-foreground font-serif">Kategori Ruang</h2>
+              </div>
+              {isAdmin && (
+                <button 
+                  onClick={() => setShowCategoryModal(true)}
+                  className="flex items-center gap-2 bg-brand/10 text-brand px-4 py-2 rounded-xl text-sm font-bold hover:bg-brand/20 transition-colors"
+                >
+                  <Plus className="w-4 h-4" /> Tambah Kategori
+                </button>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -326,6 +387,67 @@ export default function ForumPage() {
                 <ThreadCard key={thread.id} thread={thread} />
               ))
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Admin Category Modal */}
+      {showCategoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-card border border-foreground/10 shadow-2xl rounded-3xl p-8 max-w-md w-full animate-in zoom-in-95">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-foreground font-serif">Tambah Kategori</h3>
+              <button onClick={() => setShowCategoryModal(false)} className="text-muted-foreground hover:text-foreground">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddCategory} className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-1">Nama Kategori</label>
+                <input 
+                  type="text" 
+                  value={newCatName}
+                  onChange={e => setNewCatName(e.target.value)}
+                  className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-1">Deskripsi Singkat</label>
+                <textarea 
+                  value={newCatDesc}
+                  onChange={e => setNewCatDesc(e.target.value)}
+                  className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand resize-none"
+                  rows={3}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-1">Pilih Ikon</label>
+                <select 
+                  value={newCatIcon}
+                  onChange={e => setNewCatIcon(e.target.value)}
+                  className="w-full bg-background border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand"
+                >
+                  <option value="book">Book</option>
+                  <option value="pen-tool">Pen Tool</option>
+                  <option value="coffee">Coffee</option>
+                  <option value="help-circle">Help/Q&A</option>
+                  <option value="gamepad-2">Games</option>
+                  <option value="message-square">Chat</option>
+                </select>
+              </div>
+
+              <div className="pt-4 flex justify-end gap-3">
+                <button type="button" onClick={() => setShowCategoryModal(false)} className="px-6 py-2.5 rounded-xl font-bold text-muted-foreground hover:bg-foreground/5 transition-colors">
+                  Batal
+                </button>
+                <button type="submit" disabled={addingCat} className="px-6 py-2.5 bg-brand text-background rounded-xl font-bold hover:bg-brand/90 transition-colors disabled:opacity-50 flex items-center gap-2">
+                  {addingCat ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Simpan Kategori
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

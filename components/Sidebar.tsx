@@ -119,6 +119,8 @@ const MENU_GROUPS = [
     color: "text-rose-400",
     items: [
       { name: "Discussion Board", path: "/forum" },
+      { name: "Jejaring Pembaca", path: "/community" },
+      { name: "Pesan Langsung", path: "/messages" },
       { name: "Global Leaderboard", path: "/leaderboard" },
       { name: "Shared Annotations", path: "/community-annotations" },
       { name: "Translation Duels", path: "/duels" },

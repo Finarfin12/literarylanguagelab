@@ -58,6 +58,13 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Translation Duels**: Kompetisi menerjemahkan kutipan sastra tersulit, di mana komunitas akan memberikan suara (voting) untuk terjemahan terbaik.
 - **Global Leaderboard & Streak**: Dapatkan poin (XP) dari setiap aktivitas belajar Anda dan tingkatkan konsistensi masuk (Login Streak) harian Anda untuk bersaing di papan peringkat global.
 - **Community Annotations**: Berbagi catatan untuk kutipan sulit dan kumpulkan poin dari dukungan komunitas.
+- **Jejaring Pembaca & Pesan Langsung**: Temukan pembaca lain, ikuti (follow) profil mereka, dan bertukar pikiran secara pribadi melalui fitur Direct Messaging.
+- **Sistem Pengumuman Admin**: Kategori khusus pada forum yang dipasangi pin di atas layar untuk informasi penting.
+
+### 6. Analitik Pembelajaran Lanjut
+- **Waktu Membaca (Time Spent)**: Lacak secara otomatis durasi Anda mempelajari teks (sistem mendeteksi saat Anda aktif membaca).
+- **Deteksi Area Lemah (Weak Area)**: Monitor berapa banyak kosa kata yang masih belum Anda kuasai dengan baik.
+- **Ekspor Data**: Unduh seluruh daftar Vocabulary Bank Anda ke dalam format CSV untuk diintegrasikan dengan Anki atau aplikasi flashcard lainnya.
 
 ---
 

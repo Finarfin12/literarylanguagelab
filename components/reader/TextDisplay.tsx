@@ -29,6 +29,28 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   // Parse paragraphs (only if content is provided as string)
   const paragraphs = content ? content.split("\n").filter((p) => p.trim() !== "") : [];
 
+  // Heartbeat to track time spent
+  useEffect(() => {
+    if (!textId) return;
+
+    const intervalSeconds = 10;
+    const interval = setInterval(() => {
+      // Check if document is visible (user is actually reading)
+      if (document.visibilityState === 'visible') {
+        fetch('/api/reading/heartbeat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text_id: textId,
+            time_spent_seconds: intervalSeconds
+          })
+        }).catch(err => console.error("Heartbeat failed", err));
+      }
+    }, intervalSeconds * 1000);
+
+    return () => clearInterval(interval);
+  }, [textId]);
+
   useEffect(() => {
     const handleSelection = () => {
       const selection = window.getSelection();

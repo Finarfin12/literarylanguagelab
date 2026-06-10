@@ -33,9 +33,17 @@ export default function CreateThreadPage() {
   const [categoryId, setCategoryId] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [isAnnouncement, setIsAnnouncement] = useState(false);
+  const [currentUserProfile, setCurrentUserProfile] = useState<any>(null);
 
   useEffect(() => {
     async function loadCategories() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+        setCurrentUserProfile(profile);
+      }
+
       const { data } = await supabase.from('forum_categories').select('*').order('created_at', { ascending: true });
       if (data && data.length > 0) {
         setCategories(data);
@@ -71,7 +79,8 @@ export default function CreateThreadPage() {
         title,
         content,
         category_id: categoryId,
-        user_id: user.id
+        user_id: user.id,
+        is_announcement: isAnnouncement
       })
       .select()
       .single();
@@ -189,6 +198,20 @@ export default function CreateThreadPage() {
               maxLength={150}
             />
           </div>
+
+          {currentUserProfile?.role === 'admin' && (
+            <div>
+              <label className="flex items-center gap-2 cursor-pointer bg-red-500/10 p-4 rounded-xl border border-red-500/20 w-max">
+                <input 
+                  type="checkbox" 
+                  checked={isAnnouncement}
+                  onChange={e => setIsAnnouncement(e.target.checked)}
+                  className="w-5 h-5 accent-red-500"
+                />
+                <span className="text-sm font-bold text-red-500">Jadikan Pengumuman Admin (Pin di Atas)</span>
+              </label>
+            </div>
+          )}
 
           <div className="flex-1 flex flex-col min-h-[300px]">
             <label className="block text-sm font-bold text-foreground mb-2">Isi Pesan</label>

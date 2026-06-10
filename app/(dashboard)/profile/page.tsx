@@ -30,6 +30,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<SupabaseUser | null>(null);
   const [stats, setStats] = useState({ vocabCount: 0, idiomCount: 0, xp: 0, streak: 0, textsCompleted: 0, reviewsThisWeek: 0 });
+  const [badges, setBadges] = useState<string[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -38,31 +39,36 @@ export default function ProfilePage() {
       if (!user || cancelled) { setLoading(false); return; }
       setProfile(user);
 
-      const [profileRes, vocabRes, idiomRes, sessionsRes, reviewsRes] = await Promise.allSettled([
+      const results = await Promise.allSettled([
         supabase.from("profiles").select("xp, streak").eq("id", user.id).single(),
         supabase.from("vocabulary").select("*", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("idioms").select("*", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("reading_sessions").select("text_id").eq("user_id", user.id),
+        supabase.from("user_badges").select("badge_type").eq("user_id", user.id),
         (async () => {
           const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
           return supabase.from("activity_logs").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("action_type", "reviewed_vocab").gte("created_at", oneWeekAgo.toISOString());
-        })(),
+        })()
       ]);
 
-      const profileData = profileRes.status === "fulfilled" ? profileRes.value.data : null;
-      const vocabCount = vocabRes.status === "fulfilled" ? vocabRes.value.count : 0;
-      const idiomCount = idiomRes.status === "fulfilled" ? idiomRes.value.count : 0;
-      const sessions = sessionsRes.status === "fulfilled" ? sessionsRes.value.data : null;
-      const reviewsThisWeek = reviewsRes.status === "fulfilled" ? reviewsRes.value.count : 0;
+      const profData = results[0].status === "fulfilled" ? results[0].value.data : null;
+      const vCount = results[1].status === "fulfilled" ? results[1].value.count : 0;
+      const iCount = results[2].status === "fulfilled" ? results[2].value.count : 0;
+      const sData = results[3].status === "fulfilled" ? results[3].value.data : null;
+      const bData = results[4].status === "fulfilled" ? results[4].value.data : null;
+      const rCount = results[5].status === "fulfilled" ? results[5].value.count : 0;
 
       if (!cancelled) {
+        if (bData) {
+          setBadges(bData.map((b: any) => b.badge_type));
+        }
         setStats({
-          vocabCount: vocabCount || 0,
-          idiomCount: idiomCount || 0,
-          xp: profileData?.xp || 0,
-          streak: profileData?.streak || 0,
-          textsCompleted: new Set(sessions?.map((s) => s.text_id) || []).size,
-          reviewsThisWeek: reviewsThisWeek || 0,
+          vocabCount: vCount || 0,
+          idiomCount: iCount || 0,
+          xp: profData?.xp || 0,
+          streak: profData?.streak || 0,
+          textsCompleted: new Set(sData?.map((s: any) => s.text_id) || []).size,
+          reviewsThisWeek: rCount || 0,
         });
         setLoading(false);
       }
@@ -146,6 +152,9 @@ export default function ProfilePage() {
                 {stats.streak >= 7 && <span className="px-3 py-1 bg-orange-500/10 text-orange-500 rounded-full text-xs font-bold border border-orange-500/20">7 Hari Streak</span>}
                 {stats.streak >= 30 && <span className="px-3 py-1 bg-rose-500/10 text-rose-400 rounded-full text-xs font-bold border border-rose-500/20">Bulan Penuh</span>}
                 {stats.textsCompleted >= 5 && <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs font-bold border border-blue-500/20">Kutu Buku</span>}
+                {badges.map(b => (
+                  <span key={b} className="px-3 py-1 bg-pink-500/10 text-pink-500 rounded-full text-xs font-bold border border-pink-500/20 capitalize">{b.replace(/_/g, ' ')}</span>
+                ))}
               </div>
             </div>
           </div>
