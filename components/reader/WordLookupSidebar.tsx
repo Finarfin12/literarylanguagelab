@@ -25,6 +25,8 @@ const MODES = [
   { id: "metaphors", label: "Metaphors", icon: PenTool },
   { id: "quote", label: "Quote", icon: Quote },
   { id: "time-traveler", label: "Time Travel", icon: Hourglass },
+  { id: "grammar", label: "Grammar", icon: BookOpen },
+  { id: "phonetics", label: "Phonetics", icon: Volume2 },
   { id: "rhyme", label: "Rhyme", icon: Music },
   { id: "semantic-map", label: "Semantic Map", icon: Network }
 ];
