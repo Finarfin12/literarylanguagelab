@@ -3,7 +3,7 @@
 Tugas ini membutuhkan pembuatan Pusat Dokumentasi lengkap beserta Asisten AI khusus ("Liter AI") yang menguasai seluk-beluk aplikasi.
 
 ## 1. Top-Right "Help" Button
-Saya akan menambahkan tombol bantuan (ikon tanda tanya `?` atau "Help") di sudut **kanan atas layar**. Tombol ini akan mengambang (*floating*) atau diletakkan secara elegan di atas konten utama, sehingga bisa diakses dari halaman *dashboard* mana pun.
+Saya akan menambahkan tombol bantuan (ikon tanda tanya `?` atau "Help") di sudut **kanan atas layar**. Tombol ini akan diletakkan secara elegan di atas konten utama, sehingga bisa diakses dari halaman *dashboard* mana pun.
 
 ## 2. Halaman Dokumentasi `/help`
 Saat tombol ditekan, pengguna akan dibawa ke halaman `/help` yang memiliki desain "Split Screen" (Layar Terbelah):
