@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect, use, useRef, useCallback } from "react";
-import { Loader2, ArrowLeft, Book, BookmarkPlus, Highlighter, Download, Check } from "lucide-react";
+import { Loader2, ArrowLeft, Book, BookmarkPlus, Highlighter, Download, Check, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { saveBookToCache, getCachedBook } from "@/utils/indexeddb";
 import BookmarkSidebar from "@/components/reader/BookmarkSidebar";
 import TextDisplay from "@/components/reader/TextDisplay";
+import SentenceAnalysisSidebar from "@/components/reader/SentenceAnalysisSidebar";
 
 type BookBlock = {
   type: "heading" | "paragraph" | "verse";
@@ -47,6 +48,8 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   const [cached, setCached] = useState(false);
   const [selection, setSelection] = useState<{ text: string; position: number } | null>(null);
   const [selectionCoords, setSelectionCoords] = useState<{ x: number; y: number } | null>(null);
+  const [analysisOpen, setAnalysisOpen] = useState(false);
+  const [analysisSentence, setAnalysisSentence] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem(`gutenberg-progress-${gutenbergId}`);
@@ -187,6 +190,15 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
     window.getSelection()?.removeAllRanges();
   };
 
+  const openAnalysis = () => {
+    if (!selection) return;
+    setAnalysisSentence(selection.text);
+    setAnalysisOpen(true);
+    setSelection(null);
+    setSelectionCoords(null);
+    window.getSelection()?.removeAllRanges();
+  };
+
   const goToPosition = (position: number) => {
     if (!containerRef.current) return;
     containerRef.current.scrollTop = position;
@@ -260,7 +272,23 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
             <button onClick={addBookmark} className="p-2 hover:bg-muted text-brand rounded-lg flex items-center gap-2 text-sm font-medium transition-colors" title="Bookmark">
               <BookmarkPlus className="w-4 h-4" /> <span className="hidden sm:inline">Tandai</span>
             </button>
+            <div className="w-px h-6 bg-border mx-1"></div>
+            <button onClick={openAnalysis} className="p-2 hover:bg-muted text-blue-500 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors" title="Analisis">
+              <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Analisis</span>
+            </button>
           </div>
+        )}
+      </div>
+
+      {/* Sidebar Overlay */}
+      <div className={`absolute top-0 right-0 w-full sm:w-[450px] h-full bg-background backdrop-blur-3xl border-l border-border transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 ${analysisOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        {analysisOpen && (
+          <SentenceAnalysisSidebar
+            sentence={analysisSentence}
+            title={bookMeta.title}
+            author={bookMeta.author}
+            onClose={() => setAnalysisOpen(false)}
+          />
         )}
       </div>
 

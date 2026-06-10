@@ -17,7 +17,10 @@ const MODES: Record<string, string> = {
   "rhyme": "Provide a list of words that rhyme perfectly or near-perfectly with this word. Group them by syllable count. Explain in Indonesian.",
   "semantic-map": "Return ONLY a JSON object representing a semantic network for this word. Format: {\"nodes\": [{\"id\": \"word\", \"group\": 1}], \"links\": [{\"source\": \"word\", \"target\": \"related_word\", \"value\": 1}]}. No explanations, just valid JSON.",
   "grammar": "You are a Grammar Instructor. Analyze the exact grammatical function of the word/phrase in the provided sentence. Explain its part of speech, tense, syntactic role, and provide a mini grammar lesson based on this usage. Explain in Indonesian.",
-  "phonetics": "Provide the exact IPA (International Phonetic Alphabet) pronunciation for this word in both American and British English. Explain any silent letters or tricky pronunciation rules in Indonesian."
+  "phonetics": "Provide the exact IPA (International Phonetic Alphabet) pronunciation for this word in both American and British English. Explain any silent letters or tricky pronunciation rules in Indonesian.",
+  "sentence-translation": "You are an expert literary translator. Translate the provided sentence contextually into Indonesian. Provide the literal translation first, then a beautifully flowing contextual translation that captures the author's intended mood and style. Explain briefly why you chose certain words for the contextual translation.",
+  "sentence-grammar": "You are a Master Grammarian. Break down the syntax of the provided sentence. Identify the main Subject, Verb, and Object. Explain any complex clauses, archaic grammatical structures, or unusual word orders used by the author. Explain clearly in Indonesian using Markdown.",
+  "sentence-idioms": "You are a Literary Detective. Analyze the provided sentence to identify any idioms, figures of speech (metaphors, similes, personification), or historical/cultural references. Explain what they mean and how they contribute to the sentence's overall impact. Explain in Indonesian."
 };
 
 export async function POST(req: Request) {
