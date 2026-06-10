@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Languages, BookOpen, Search } from "lucide-react";
+import { X, Languages, BookOpen, Search, GitMerge } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 interface SentenceAnalysisSidebarProps {
@@ -43,29 +43,52 @@ export default function SentenceAnalysisSidebar({ sentence, title, author, onClo
     setResult(null);
 
     try {
-      const res = await fetch("/api/lookup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          word: targetSentence, // We use 'word' to match the existing API payload structure
-          contextSentence: targetSentence, 
-          title, 
-          author, 
-          mode 
-        }),
-      });
+      if (mode === "sentence-grammar") {
+        const res = await fetch("/api/parse-sentence", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: targetSentence }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        
+        setResult(data as any); // Storing the JSON object
+        setCache(prev => ({ ...prev, [mode]: data }));
+      } else {
+        const res = await fetch("/api/lookup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            word: targetSentence,
+            contextSentence: targetSentence, 
+            title, 
+            author, 
+            mode 
+          }),
+        });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
 
-      setResult(data.result);
-      setCache(prev => ({ ...prev, [mode]: data.result }));
+        setResult(data.result);
+        setCache(prev => ({ ...prev, [mode]: data.result }));
+      }
     } catch (err) {
       console.error(err);
-      setResult("Terjadi kesalahan saat memproses permintaan. Silakan coba lagi.");
+      setResult("Terjadi kesalahan saat memproses permintaan. Silakan coba lagi." as any);
     } finally {
       setLoading(false);
     }
+  };
+
+  const getBadgeColor = (type: string) => {
+    const t = type.toLowerCase();
+    if (t.includes("subject")) return "bg-blue-500/10 text-blue-500 border-blue-500/20";
+    if (t.includes("verb")) return "bg-red-500/10 text-red-500 border-red-500/20";
+    if (t.includes("object")) return "bg-green-500/10 text-green-500 border-green-500/20";
+    if (t.includes("modifier")) return "bg-purple-500/10 text-purple-500 border-purple-500/20";
+    if (t.includes("conjunction")) return "bg-orange-500/10 text-orange-500 border-orange-500/20";
+    return "bg-brand/10 text-brand border-brand/20";
   };
 
   if (!sentence) return null;
@@ -122,7 +145,61 @@ export default function SentenceAnalysisSidebar({ sentence, title, author, onClo
             </div>
             <p className="text-sm font-medium animate-pulse text-muted-foreground">Menganalisis kalimat...</p>
           </div>
-        ) : result ? (
+        ) : activeMode === "sentence-grammar" && result && typeof result === "object" ? (
+          <div className="space-y-6">
+            <h3 className="text-lg font-bold text-foreground flex items-center gap-2 mb-2">
+              <GitMerge className="w-5 h-5 text-brand" /> Dependency Tree
+            </h3>
+            <div className="space-y-4">
+              {(result as any).tree?.map((clause: any, idx: number) => (
+                <div key={idx} className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
+                  {/* Clause Header */}
+                  <div className="bg-muted p-3 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <span className="font-bold text-sm text-foreground inline-flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-brand"></span>
+                      {clause.type}
+                    </span>
+                    <span className="text-xs text-muted-foreground italic truncate max-w-[200px]">"{clause.text}"</span>
+                  </div>
+                  
+                  {/* Clause Children (Nested Cards) */}
+                  <div className="p-3 pl-6 sm:pl-8 flex flex-col gap-2">
+                    {clause.children?.map((child: any, cIdx: number) => {
+                      const isLast = cIdx === clause.children.length - 1;
+                      const isFirst = cIdx === 0;
+                      
+                      return (
+                        <div key={cIdx} className="relative flex items-center gap-3">
+                          {/* Vertical line piece for this child */}
+                          <div className={`absolute left-[-1.2rem] sm:left-[-1.5rem] w-px bg-border ${
+                            isLast 
+                              ? (isFirst ? '-top-3 bottom-1/2' : '-top-2 bottom-1/2')
+                              : (isFirst ? '-top-3 -bottom-2' : '-top-2 -bottom-2')
+                          }`}></div>
+                          
+                          {/* Horizontal branch line */}
+                          <div className="absolute top-1/2 left-[-1.2rem] sm:left-[-1.5rem] w-3 sm:w-4 h-px bg-border"></div>
+                          
+                          <div className="bg-background border border-border rounded-xl p-2 flex-1 flex flex-col sm:flex-row sm:items-center gap-2 hover:bg-muted/50 transition-colors z-10">
+                            <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border shrink-0 ${getBadgeColor(child.type)}`}>
+                              {child.type}
+                            </span>
+                            <span className="text-sm text-foreground">{child.text}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <h3 className="text-lg font-bold text-foreground mt-8 mb-4 border-b border-border pb-2">Penjelasan Tata Bahasa</h3>
+            <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+              <p>Kalimat ini dipecah ke dalam berbagai klausa utama dan klausa pelengkap seperti yang divisualisasikan di atas. Anda bisa mengklik tombol translasi jika ingin memahami terjemahannya per kata atau dalam konteks.</p>
+            </div>
+          </div>
+        ) : typeof result === "string" ? (
           <div className="prose prose-sm dark:prose-invert prose-brand max-w-none">
             <ReactMarkdown>{result}</ReactMarkdown>
           </div>
