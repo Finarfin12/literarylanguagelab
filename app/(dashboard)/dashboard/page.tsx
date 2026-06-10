@@ -39,6 +39,11 @@ export default async function DashboardPage() {
     .eq("user_id", user?.id);
   const completedTexts = new Set(readingSessions?.map(s => s.text_id) || []).size;
 
+  // Trigger login streak update
+  if (user?.id) {
+    await supabase.rpc("update_login_streak", { target_user_id: user.id });
+  }
+
   // 5. Get login-based streak from profiles
   const { data: profileData } = await supabase
     .from("profiles")
@@ -82,7 +87,7 @@ export default async function DashboardPage() {
         <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
             <Flame className="w-5 h-5 text-orange-500" />
-            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Reading Streak</h3>
+            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Login Streak</h3>
           </div>
           <p className="text-4xl font-serif font-bold text-foreground">{streak} <span className="text-xl text-muted-foreground font-sans font-normal">Hari</span></p>
         </div>
