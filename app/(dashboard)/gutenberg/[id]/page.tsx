@@ -212,7 +212,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
           <h1 className="font-serif font-bold text-lg truncate">{bookMeta.title}</h1>
           <p className="text-xs text-muted-foreground uppercase tracking-widest truncate">{bookMeta.author}</p>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 mr-28 sm:mr-40">
           {cached && <Check className="w-4 h-4 text-brand" />}
           <button onClick={() => setBookmarkOpen(!bookmarkOpen)} className="p-2 bg-muted rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-brand">
             <BookmarkPlus className="w-4 h-4" />
