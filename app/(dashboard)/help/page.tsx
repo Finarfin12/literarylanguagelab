@@ -256,7 +256,7 @@ export default function HelpPage() {
           <h2 className="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4">Tips Cepat</h2>
           <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm text-muted-foreground">
             <li className="flex gap-2"><span className="text-brand font-bold shrink-0">1.</span> Klik kata di mana saja pada teks bacaan untuk mengakses 13 mode analisis AI dan menyimpannya ke Vocabulary Bank.</li>
-            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">2.</span> Sorot (select) teks pada halaman pembaca Gutenberg untuk menggunakan fitur Bookmark dan Highlight.</li>
+            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">2.</span> Sorot (select) teks pada halaman pembaca Gutenberg untuk menggunakan fitur Bookmark dan Highlight, atau gunakan tombol "Ask AI Companion" di bagian atas untuk mendiskusikan isi buku secara langsung.</li>
             <li className="flex gap-2"><span className="text-brand font-bold shrink-0">3.</span> Semua buku yang telah Anda buka dapat diakses kembali secara luring (offline)—baca kapan saja, di mana saja.</li>
             <li className="flex gap-2"><span className="text-brand font-bold shrink-0">4.</span> Luangkan waktu di menu /review secara rutin untuk mengoptimalkan retensi memori jangka panjang Anda.</li>
             <li className="flex gap-2"><span className="text-brand font-bold shrink-0">5.</span> Sesuaikan pencahayaan antarmuka (gelap/terang) melalui ikon tema di bagian navigasi.</li>

@@ -41,6 +41,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Rhetorical Spotter**: Mendeteksi gaya bahasa (majas, metafora, ironi).
 
 ### 3. Alat Interaktif & Permainan Edukasi
+- **Reading Companion Pop-up**: Diskusikan teks apa pun secara seketika dengan asisten kecerdasan buatan melalui panel interaktif yang dapat melayang saat membaca.
 - **Alter Ego Chat**: Berbincang langsung dengan agen virtual yang memerankan penulis legendaris.
 - **Story Quiz**: Permainan kuis di mana sistem membuat cerita pendek fiksi dari daftar kosa kata yang sedang Anda pelajari.
 - **Translation Workshop**: Layar terbelah (split-screen) untuk menerjemahkan teks dengan umpan balik otomatis dari kecerdasan buatan (Equivalence, Register, Back-Translation).
