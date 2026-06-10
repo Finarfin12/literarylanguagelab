@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
-import { MessageSquare, Plus, Clock, Users, Book, PenTool, Coffee, HelpCircle, Gamepad2, Search, ArrowLeft, Pin, Sparkles, Trash2 } from "lucide-react";
+import { MessageSquare, Plus, Clock, Users, Book, PenTool, Coffee, HelpCircle, Gamepad2, Search, ArrowLeft, Pin, Sparkles, Trash2, X, Save, Loader2 } from "lucide-react";
 import Swal from 'sweetalert2';
 
 interface Category {
