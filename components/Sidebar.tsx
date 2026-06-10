@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
+import { supabase } from "@/utils/supabase/client";
 import { 
   ChevronDown, ChevronRight, LogOut, 
   BrainCircuit, Palette, BookMarked, 
@@ -146,6 +147,58 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  useEffect(() => {
+    let channel: any = null;
+
+    async function initMessages() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Fetch initial unread count
+      const { count, error } = await supabase
+        .from('direct_messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('receiver_id', user.id)
+        .eq('is_read', false);
+
+      if (!error && count !== null) {
+        setUnreadMessages(count);
+      }
+
+      // Subscribe to real-time changes
+      channel = supabase.channel('direct_messages_sidebar')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'direct_messages',
+            filter: `receiver_id=eq.${user.id}`
+          },
+          (payload) => {
+            // Re-fetch count on any change (insert/update)
+            supabase
+              .from('direct_messages')
+              .select('*', { count: 'exact', head: true })
+              .eq('receiver_id', user.id)
+              .eq('is_read', false)
+              .then(({ count }) => {
+                if (count !== null) setUnreadMessages(count);
+              });
+          }
+        )
+        .subscribe();
+    }
+
+    initMessages();
+
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
   }, []);
 
   // Auto-close sidebar on mobile after navigation
@@ -325,13 +378,20 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
                         <Link 
                           key={item.name} 
                           href={item.path}
-                          className={`block px-4 py-2 text-sm rounded-xl transition-all ${
-                            isActive 
-                              ? `bg-muted hover:bg-muted/80 ${group.color} font-bold` 
-                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          onClick={() => {
+                            if (isMobile) setIsSidebarOpen(false);
+                          }}
+                          className={`flex items-center justify-between text-sm py-2.5 px-4 rounded-xl transition-all duration-200 group ${isActive 
+                            ? `bg-muted hover:bg-muted/80 ${group.color} font-bold` 
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground hover:translate-x-1"
                           }`}
                         >
-                          {item.name}
+                          <span className="flex-1">{item.name}</span>
+                          {item.name === "Pesan Langsung" && unreadMessages > 0 && (
+                            <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm shadow-red-500/20 animate-in zoom-in">
+                              {unreadMessages}
+                            </span>
+                          )}
                         </Link>
                       );
                     })}
