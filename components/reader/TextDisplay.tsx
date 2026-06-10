@@ -18,7 +18,7 @@ interface TextDisplayProps {
   author: string;
   content?: string;
   blocks?: BookBlock[];
-  onTextSelect?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onTextSelect?: () => void;
 }
 
 export default function TextDisplay({ textId, title, author, content, blocks, onTextSelect }: TextDisplayProps) {
@@ -176,8 +176,8 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
       {/* Main Reading Area */}
       <div 
         className={`flex-1 overflow-y-auto transition-all duration-300 relative ${activeSidebar ? 'md:pr-[400px]' : ''}`}
-        onMouseUp={onTextSelect}
-        onTouchEnd={onTextSelect}
+        onMouseUp={() => onTextSelect?.()}
+        onTouchEnd={() => onTextSelect?.()}
       >
         <div className="sticky top-0 bg-background/80 backdrop-blur-md z-30 p-4 border-b border-border flex justify-between items-center shadow-sm">
           <div className="flex-1 truncate flex items-center gap-4 text-sm text-muted-foreground font-medium">
