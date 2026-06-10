@@ -54,7 +54,7 @@ export default function ParallelTextPage() {
           <textarea
             value={english}
             onChange={(e) => setEnglish(e.target.value)}
-            placeholder="It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. She is tolerable, but not handsome enough to tempt me; I am in no humour at present to give consequence to young ladies who are slighted by other men."
+            placeholder="Paste English text here..."
             className="flex-1 p-4 bg-transparent text-foreground font-serif leading-relaxed resize-none focus:outline-none text-sm md:text-base"
           />
         </div>
@@ -66,7 +66,7 @@ export default function ParallelTextPage() {
           <textarea
             value={indonesian}
             onChange={(e) => setIndonesian(e.target.value)}
-            placeholder="Sudah menjadi kebenaran universal bahwa seorang pria lajang yang memiliki kekayaan berlimpah pastilah membutuhkan seorang istri. Ia cukup rupawan, tetapi tidak cukup cantik untuk memikatku; aku sedang tidak berminat untuk memperhatikan gadis-gadis muda yang tidak dipedulikan pria lain."
+            placeholder="Paste Indonesia text here..."
             className="flex-1 p-4 bg-transparent text-foreground leading-relaxed resize-none focus:outline-none text-sm md:text-base"
           />
         </div>
