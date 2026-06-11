@@ -62,22 +62,22 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
 
   return (
     <div className="max-w-2xl mx-auto h-full flex flex-col">
-      <div className="mb-4 flex items-center justify-between text-sm font-medium text-muted-foreground">
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between text-sm font-medium text-muted-foreground gap-3">
         <span>Kata {currentIndex + 1} dari {items.length}</span>
-        <div className="flex gap-1">
+        <div className="flex gap-1 flex-wrap">
           {items.map((_, idx) => (
             <div 
               key={idx} 
-              className={`h-1.5 w-6 rounded-full ${idx < currentIndex ? 'bg-brand' : idx === currentIndex ? 'bg-brand/50' : 'bg-border'}`}
+              className={`h-1.5 w-4 sm:w-6 rounded-full ${idx < currentIndex ? 'bg-brand' : idx === currentIndex ? 'bg-brand/50' : 'bg-border'}`}
             />
           ))}
         </div>
       </div>
 
-      <div className="flex-1 bg-card shadow-sm backdrop-blur-xl border border-border rounded-3xl shadow-2xl flex flex-col items-center justify-center p-8 md:p-12 text-center transition-all relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-50" />
-        <div className="relative z-10 w-full flex flex-col items-center">
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-brand mb-8 drop-shadow-md">{currentItem.word}</h2>
+      <div className="flex-1 bg-card shadow-sm backdrop-blur-xl border border-border rounded-3xl shadow-2xl flex flex-col items-center justify-start sm:justify-center p-6 md:p-12 text-center transition-all relative overflow-y-auto">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-50 pointer-events-none" />
+        <div className="relative z-10 w-full flex flex-col items-center pt-4 sm:pt-0">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-brand mb-6 sm:mb-8 drop-shadow-md break-all">{currentItem.word}</h2>
         
         {!showAnswer ? (
           <button 
@@ -107,30 +107,30 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
                 <button 
                   onClick={() => handleScore(0)}
                   disabled={submitting}
-                  className="py-3 px-2 rounded-lg bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 transition-colors text-sm font-medium disabled:opacity-50"
+                  className="py-3 px-2 rounded-lg bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 transition-colors text-xs sm:text-sm font-medium disabled:opacity-50"
                 >
                   Lupa Total
                 </button>
                 <button 
                   onClick={() => handleScore(2)}
                   disabled={submitting}
-                  className="py-3 px-2 rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/30 hover:bg-orange-500/20 transition-colors text-sm font-medium disabled:opacity-50"
+                  className="py-3 px-2 rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/30 hover:bg-orange-500/20 transition-colors text-xs sm:text-sm font-medium disabled:opacity-50"
                 >
                   Hampir Lupa
                 </button>
                 <button 
                   onClick={() => handleScore(4)}
                   disabled={submitting}
-                  className="py-3 px-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 transition-colors text-sm font-medium disabled:opacity-50"
+                  className="py-3 px-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 transition-colors text-xs sm:text-sm font-medium disabled:opacity-50"
                 >
                   Ingat Ragu
                 </button>
                 <button 
                   onClick={() => handleScore(5)}
                   disabled={submitting}
-                  className="py-3 px-2 rounded-lg bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 transition-colors text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="py-3 px-2 rounded-lg bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 transition-colors text-xs sm:text-sm font-medium disabled:opacity-50 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2"
                 >
-                  {submitting && <Loader2 className="w-4 h-4 animate-spin" />} Sangat Mudah
+                  {submitting && <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />} Sangat Mudah
                 </button>
               </div>
             </div>
