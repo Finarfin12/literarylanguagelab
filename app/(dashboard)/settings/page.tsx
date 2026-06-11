@@ -331,17 +331,17 @@ export default function SettingsPage() {
         )}
 
         {/* Tabs */}
-        <div className="flex flex-wrap items-center gap-2 mb-8 bg-card border border-foreground/10 p-2 rounded-full overflow-x-auto custom-scrollbar">
-          <button onClick={() => setActiveTab("profil")} className={`px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "profil" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
+        <div className="flex flex-nowrap items-center gap-2 mb-8 bg-card border border-foreground/10 p-2 rounded-2xl md:rounded-full overflow-x-auto scrollbar-hide">
+          <button onClick={() => setActiveTab("profil")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "profil" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
             <User className="w-4 h-4" /> Profil
           </button>
-          <button onClick={() => setActiveTab("reading")} className={`px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "reading" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
+          <button onClick={() => setActiveTab("reading")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "reading" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
             <BookOpen className="w-4 h-4" /> Membaca & Kamus
           </button>
-          <button onClick={() => setActiveTab("learning")} className={`px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "learning" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
+          <button onClick={() => setActiveTab("learning")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "learning" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
             <BrainCircuit className="w-4 h-4" /> Kosakata & Belajar
           </button>
-          <button onClick={() => setActiveTab("privacy")} className={`px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "privacy" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
+          <button onClick={() => setActiveTab("privacy")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "privacy" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
             <ShieldAlert className="w-4 h-4" /> Privasi & Sistem
           </button>
         </div>

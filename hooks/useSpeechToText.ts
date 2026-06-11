@@ -83,6 +83,43 @@ export function useSpeechToText(options?: STTOptions) {
           mediaRecorderRef.current = mediaRecorder;
           audioChunksRef.current = [];
 
+          // Voice Activity Detection (VAD)
+          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const source = audioContext.createMediaStreamSource(stream);
+          const analyser = audioContext.createAnalyser();
+          analyser.minDecibels = -45;
+          source.connect(analyser);
+
+          const dataArray = new Uint8Array(analyser.frequencyBinCount);
+          let silenceStart = Date.now();
+          let isSpeakingStarted = false;
+          let animationFrameId: number;
+
+          const checkSilence = () => {
+            analyser.getByteFrequencyData(dataArray);
+            const isSpeaking = dataArray.some(val => val > 5);
+
+            if (isSpeaking) {
+              silenceStart = Date.now();
+              isSpeakingStarted = true;
+            } else {
+              // Jika sudah mulai bicara lalu diam 1.5 detik, auto stop
+              if (isSpeakingStarted && Date.now() - silenceStart > 1500) {
+                if (mediaRecorder.state === "recording") mediaRecorder.stop();
+                return;
+              }
+              // Jika tidak bicara sama sekali selama 5 detik, auto stop
+              if (!isSpeakingStarted && Date.now() - silenceStart > 5000) {
+                 if (mediaRecorder.state === "recording") mediaRecorder.stop();
+                return;
+              }
+            }
+
+            if (mediaRecorder.state === "recording") {
+              animationFrameId = requestAnimationFrame(checkSilence);
+            }
+          };
+
           mediaRecorder.ondataavailable = (e) => {
             if (e.data.size > 0) {
               audioChunksRef.current.push(e.data);
@@ -90,16 +127,21 @@ export function useSpeechToText(options?: STTOptions) {
           };
 
           mediaRecorder.onstop = async () => {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            if (audioContext.state !== "closed") audioContext.close();
+
             const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
             
             // Stop all tracks to release mic
             stream.getTracks().forEach(track => track.stop());
             
+            setIsRecording(false);
             await processWhisper(audioBlob);
           };
 
           mediaRecorder.start();
           setIsRecording(true);
+          checkSilence();
         })
         .catch(err => {
           console.error("Microphone error", err);
