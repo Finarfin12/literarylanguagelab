@@ -178,7 +178,16 @@
 
 ---
 
-## 4. LingoWise AI — 8+ Mode Bedah Sastra
+## 4. All Toolkits Hub & LingoWise AI
+
+### 4.1 All Toolkits Hub (App Drawer)
+- **Halaman:** `/tools`
+- **Deskripsi:** Etalase visual (*App Drawer*) interaktif yang menampung 30+ alat analisis AI mini (seperti *Tone Analyzer, Mood Transformer, Paraphrase Challenge*) di satu layar.
+- **Fitur:** 
+  - **Smart Search Bar**: Mencari alat berdasarkan kata kunci secara *real-time*.
+  - **Category Dropdown Filter**: Menyaring alat berdasarkan kategori spesifik (Targeted Transformers, Analysis Extractors, Interactive & Gamification, Lexicon & Databases).
+
+### 4.2 LingoWise AI — Mode Bedah Sastra
 
 **Halaman Utama:** `/lingowise`
 **API:** `/api/lingowise`, `/api/tools/dynamic`
@@ -315,11 +324,11 @@ LingoWise adalah asisten kecerdasan buatan utama yang dapat membedah teks bahasa
 
 ### 6.10 Glossary Builder
 - **Halaman:** `/glossary`
-- **Deskripsi:** Pembuat glosarium personal untuk mengorganisasi istilah-istilah khusus berdasarkan kategori atau buku yang sedang dibaca.
+- **Deskripsi:** Pembangun glosarium personal untuk mengorganisasi istilah-istilah khusus berdasarkan kategori atau buku yang sedang dibaca. Fitur ini dapat diakses dengan cepat melalui *All Toolkits Hub* di kategori Lexicon & Databases.
 
 ### 6.11 Idiom Library
 - **Halaman:** `/idioms`
-- **Deskripsi:** Perpustakaan idiom yang dikumpulkan dari berbagai sesi membaca.
+- **Deskripsi:** Perpustakaan/direktori idiom bahasa Inggris yang dikumpulkan dari berbagai sesi membaca, lengkap dengan penjelasan dan konteks penggunaannya. Terintegrasi di *All Toolkits Hub*.
 
 ### 6.12 Untranslatables
 - **Halaman:** `/tools/untranslatables`
@@ -330,6 +339,10 @@ LingoWise adalah asisten kecerdasan buatan utama yang dapat membedah teks bahasa
 - **Halaman:** `/tools/lexicon-search`
 - **API:** `/api/lexicon-search`
 - **Deskripsi:** Pencarian kata mendalam dengan mode: Dictionary, Translate, Rhyme, Quote, Lyricism, Metaphors, Etymology, Time Traveler, Semantic Map.
+
+### 6.14 Cultural Context Library
+- **Halaman:** `/tools/cultural-context`
+- **Deskripsi:** Editor khusus dan ensiklopedia budaya tempat pengguna dapat mendaftarkan frasa/referensi mitologi, sejarah, atau literatur kuno. Referensi yang ada di direktori ini akan dilacak dan disorot (*highlight*) secara otomatis oleh *Cultural Text Renderer* saat pengguna membaca buku. Dapat diakses lewat *All Toolkits Hub*.
 
 ---
 
