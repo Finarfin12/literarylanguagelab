@@ -453,9 +453,10 @@ LingoWise adalah asisten kecerdasan buatan utama yang dapat membedah teks bahasa
 - **Halaman:** `/community`
 - **Deskripsi:** Temukan, ikuti (*follow*), dan lihat profil pembaca lain beserta level dan XP mereka.
 
-### 9.3 Global Leaderboard & Streak
+### 9.3 Global Leaderboard & Gamification Tiers
 - **Halaman:** `/leaderboard`
 - **Deskripsi:** Papan peringkat global berdasarkan XP dan konsistensi harian (*streak*).
+- **Gamification Tiers:** Pangkat yang didapat dari akumulasi XP, ditampilkan beserta Level CEFR (misal: *Novice Reader (A1)* hingga *Master of Linguistics (C2)*).
 - **Sumber XP:**
   - Mereview kosa kata (Spaced Repetition)
   - Menyelesaikan bacaan
@@ -483,6 +484,15 @@ LingoWise adalah asisten kecerdasan buatan utama yang dapat membedah teks bahasa
 ### 9.7 Direct Messaging (Pesan Langsung)
 - **Halaman:** `/messages`
 - **Deskripsi:** Fitur pesan antar pengguna secara *real-time*. Pengguna dapat mengirim pesan ke pengguna yang diikuti atau yang mengikuti mereka.
+
+### 9.8 Role System & User Management (Admin)
+- **Halaman:** `/admin/users`
+- **Deskripsi:** Sistem hak akses berjenjang dan panel kontrol khusus Admin.
+- **Tingkatan Peran (Roles):**
+  1. **User (Scholar):** Peran dasar untuk membaca dan berpartisipasi.
+  2. **Curator:** Berhak memverifikasi kualitas teks dan menyetujui terjemahan.
+  3. **Moderator (Archivist):** Menjaga ketertiban forum dan diskusi.
+  4. **Admin (Librarian):** Kendali penuh (*Superuser*) dengan akses ke halaman User Management untuk mempromosikan/menurunkan jabatan pengguna lain secara *real-time*.
 
 ---
 

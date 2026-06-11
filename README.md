@@ -66,10 +66,10 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 ### 5. Komunitas, Forum & Gamifikasi
 - **Reading Clubs**: Bentuk atau gabung klub baca untuk berdiskusi per bab.
 - **Translation Duels**: Kompetisi menerjemahkan kutipan sastra tersulit, di mana komunitas akan memberikan suara (voting) untuk terjemahan terbaik.
-- **Global Leaderboard & Streak**: Dapatkan poin (XP) dari setiap aktivitas belajar Anda dan tingkatkan konsistensi masuk (Login Streak) harian Anda untuk bersaing di papan peringkat global.
+- **Global Leaderboard & Gamification Tiers**: Dapatkan poin (XP) dari aktivitas belajar Anda. Pangkat Anda (misal: *Novice Reader* hingga *Master of Linguistics*) akan digabungkan dengan level CEFR bahasa Anda dan ditampilkan secara publik.
 - **Community Annotations**: Berbagi catatan untuk kutipan sulit dan kumpulkan poin dari dukungan komunitas.
 - **Jejaring Pembaca & Pesan Langsung**: Temukan pembaca lain, ikuti (follow) profil mereka, dan bertukar pikiran secara pribadi melalui fitur Direct Messaging.
-- **Sistem Pengumuman Admin**: Kategori khusus pada forum yang dipasangi pin di atas layar untuk informasi penting.
+- **Role System & User Management**: Sistem hak akses berjenjang (*User, Curator, Moderator, Admin*). Admin memiliki panel kontrol khusus untuk mengangkat staf komunitas secara aman.
 
 ### 6. Analitik Pembelajaran Lanjut & Pengaturan Privasi
 - **Waktu Membaca (Time Spent)**: Lacak secara otomatis durasi Anda mempelajari teks (sistem mendeteksi saat Anda aktif membaca).
