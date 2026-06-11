@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { Search, Volume2, BookMarked, Loader2, Sparkles, AlertCircle } from "lucide-react";
+import { Search, Volume2, BookMarked, Loader2, Sparkles, AlertCircle, Mic, MicOff } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
+import { useSpeechToText } from "@/hooks/useSpeechToText";
 
 function SearchParamHandler({ onSearch }: { onSearch: (w: string) => void }) {
   const params = useSearchParams();
@@ -23,6 +24,13 @@ export default function LexiconSearchPage() {
   const [result, setResult] = useState<any>(null);
   const [saving, setSaving] = useState(false);
   const supabase = createClient();
+
+  const { isRecording, isProcessing, transcript, startRecording, stopRecording } = useSpeechToText({
+    onComplete: (speechText) => {
+      setWord(speechText);
+      performSearch(speechText);
+    }
+  });
 
   const performSearch = async (targetWord: string) => {
     if (!targetWord.trim()) return;
@@ -150,18 +158,32 @@ export default function LexiconSearchPage() {
         </div>
         <input
           type="text"
-          value={word}
+          value={isRecording && transcript ? transcript : word}
           onChange={(e) => setWord(e.target.value)}
-          placeholder="Ketik kata bahasa Inggris di sini..."
-          className="w-full pl-14 pr-32 py-5 bg-card border border-foreground/20 rounded-2xl text-foreground text-xl shadow-md focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all placeholder:text-muted-foreground"
+          placeholder="Ketik atau sebutkan kata bahasa Inggris di sini..."
+          className="w-full pl-14 pr-40 py-5 bg-card border border-foreground/20 rounded-2xl text-foreground text-xl shadow-md focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all placeholder:text-muted-foreground"
         />
-        <button
-          type="submit"
-          disabled={loading || !word.trim()}
-          className="absolute inset-y-2 right-2 px-6 bg-brand hover:bg-brand/90 text-background font-bold rounded-xl transition-all disabled:opacity-50 flex items-center gap-2"
-        >
-          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Cari"}
-        </button>
+        <div className="absolute inset-y-2 right-2 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={isRecording ? stopRecording : startRecording}
+            title="Dikte Kata"
+            className={`p-3 rounded-xl transition-all ${
+              isRecording 
+                ? "bg-red-500 text-white animate-pulse" 
+                : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"
+            }`}
+          >
+            {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+          </button>
+          <button
+            type="submit"
+            disabled={loading || !word.trim() || isRecording || isProcessing}
+            className="px-6 py-3 bg-brand hover:bg-brand/90 text-background font-bold rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 h-full"
+          >
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Cari"}
+          </button>
+        </div>
       </form>
 
       {result && result.dictionary && result.dictionary.length > 0 && (

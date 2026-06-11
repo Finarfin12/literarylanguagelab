@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
-import { ArrowLeft, Send, Loader2, Book, PenTool, Coffee, HelpCircle, Gamepad2, Bold, Italic, Link as LinkIcon, Image as ImageIcon, Heading, Strikethrough, Code, Quote, List, ListOrdered } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Book, PenTool, Coffee, HelpCircle, Gamepad2, Bold, Italic, Link as LinkIcon, Image as ImageIcon, Heading, Strikethrough, Code, Quote, List, ListOrdered, Mic, MicOff } from "lucide-react";
 import Swal from 'sweetalert2';
+import { useSpeechToText } from "@/hooks/useSpeechToText";
 
 interface Category {
   id: string;
@@ -35,6 +36,12 @@ export default function CreateThreadPage() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [isAnnouncement, setIsAnnouncement] = useState(false);
   const [currentUserProfile, setCurrentUserProfile] = useState<any>(null);
+
+  const { isRecording, isProcessing, transcript, startRecording, stopRecording } = useSpeechToText({
+    onComplete: (speechText) => {
+      setContent((prev) => prev + (prev.trim() ? " " : "") + speechText);
+    }
+  });
 
   useEffect(() => {
     async function loadCategories() {
@@ -240,11 +247,28 @@ export default function CreateThreadPage() {
                   {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                 </label>
+
+                <div className="flex-1"></div>
+
+                <button 
+                  type="button" 
+                  onClick={isRecording ? stopRecording : startRecording}
+                  disabled={isProcessing}
+                  title="Dikte Suara (Voice to Text)"
+                  className={`p-2 rounded-lg transition-colors flex items-center gap-2 ${
+                    isRecording 
+                      ? "bg-red-500/10 text-red-500 hover:bg-red-500/20" 
+                      : "text-muted-foreground hover:bg-muted hover:bg-brand/10 hover:text-brand"
+                  }`}
+                >
+                  {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : isRecording ? <MicOff className="w-4 h-4 animate-pulse" /> : <Mic className="w-4 h-4" />}
+                  <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">{isRecording ? "Merekam..." : "Dikte"}</span>
+                </button>
               </div>
               
               <textarea
                 id="content-textarea"
-                value={content}
+                value={content + (isRecording ? (content.trim() ? " " : "") + transcript : "")}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Tuliskan gagasan, pertanyaan, atau karya Anda di sini... (Mendukung Markdown)"
                 className="w-full flex-1 bg-transparent px-5 py-4 text-foreground outline-none placeholder:text-muted-foreground/50 resize-y min-h-[250px] leading-relaxed"

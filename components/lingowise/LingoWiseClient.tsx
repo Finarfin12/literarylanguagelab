@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Glasses, FileText, Wind, Wand2, FlaskConical, Hourglass, Hammer, Search, Loader2 } from "lucide-react";
+import { Sparkles, Glasses, FileText, Wind, Wand2, FlaskConical, Hourglass, Hammer, Search, Loader2, Mic, MicOff } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import Swal from "sweetalert2";
+import { useSpeechToText } from "@/hooks/useSpeechToText";
 
 const TOOLS = [
   { id: "dialect-diver", name: "The Dialect Diver", icon: Glasses, desc: "Pecahkan dialek, aksen, atau slang kuno karakter novel." },
@@ -21,6 +22,12 @@ export default function LingoWiseClient() {
   const [activeMode, setActiveMode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+
+  const { isRecording, isProcessing, transcript, startRecording, stopRecording } = useSpeechToText({
+    onComplete: (speechText) => {
+      setText((prev) => prev + (prev.trim() ? " " : "") + speechText);
+    }
+  });
 
   const handleProcess = async (modeId: string) => {
     if (!text.trim()) {
@@ -55,13 +62,27 @@ export default function LingoWiseClient() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* Left Column: Input & Tools */}
       <div className="lg:col-span-5 space-y-6">
-        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 shadow-xl relative overflow-hidden">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 shadow-xl relative overflow-hidden group">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
-          <h2 className="text-xl font-serif font-bold text-foreground mb-4">Input Teks Sastra</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-serif font-bold text-foreground">Input Teks Sastra</h2>
+            <button
+              onClick={isRecording ? stopRecording : startRecording}
+              disabled={isProcessing}
+              title="Dikte Teks (Voice to Text)"
+              className={`p-2 rounded-xl transition-all ${
+                isRecording 
+                  ? "bg-red-500 text-white animate-pulse" 
+                  : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"
+              }`}
+            >
+              {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+            </button>
+          </div>
           <textarea
-            value={text}
+            value={text + (isRecording ? (text.trim() ? " " : "") + transcript : "")}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Paste teks bahasa Inggris (kutipan novel, puisi, dll) di sini..."
+            placeholder="Paste teks bahasa Inggris (kutipan novel, puisi, dll) di sini, atau tekan ikon Mic untuk mendikte..."
             className="w-full h-48 bg-background border border-border rounded-2xl p-4 text-foreground focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
           ></textarea>
         </div>

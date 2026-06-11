@@ -4,7 +4,11 @@ import { useState, useRef, useCallback } from 'react';
 
 export type STTEngine = 'browser' | 'whisper';
 
-export function useSpeechToText() {
+export interface STTOptions {
+  onComplete?: (text: string) => void;
+}
+
+export function useSpeechToText(options?: STTOptions) {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -43,12 +47,25 @@ export function useSpeechToText() {
 
       recognition.onerror = (event: any) => {
         console.error("Speech recognition error", event.error);
-        setError(`Error: ${event.error}`);
+        let errorMsg = `Error: ${event.error}`;
+        if (event.error === 'not-allowed') {
+          errorMsg = "Akses mikrofon ditolak. Mohon izinkan browser untuk mengakses mikrofon Anda.";
+        } else if (event.error === 'audio-capture') {
+          errorMsg = "Tidak dapat menangkap suara. Pastikan mikrofon Anda terhubung, berfungsi, dan tidak sedang digunakan secara eksklusif oleh aplikasi lain.";
+        } else if (event.error === 'no-speech') {
+          errorMsg = "Tidak ada suara yang terdeteksi.";
+        } else if (event.error === 'network') {
+          errorMsg = "Koneksi jaringan terputus. Native Speech API memerlukan koneksi internet aktif di beberapa browser.";
+        }
+        setError(errorMsg);
         setIsRecording(false);
       };
 
       recognition.onend = () => {
         setIsRecording(false);
+        // Browser Native often sets transcript in chunks, so we rely on the parent having the latest `transcript` state.
+        // However, we can also pass the internal state if needed. But it's tricky because of closures.
+        // We will call onComplete inside a useEffect watching `isRecording` later to ensure we have the final transcript.
       };
 
       recognitionRef.current = recognition;
@@ -120,6 +137,9 @@ export function useSpeechToText() {
 
       const data = await response.json();
       setTranscript(data.text);
+      if (options?.onComplete) {
+        options.onComplete(data.text);
+      }
     } catch (err: any) {
       console.error(err);
       setError(err.message);
@@ -127,6 +147,18 @@ export function useSpeechToText() {
       setIsProcessing(false);
     }
   };
+
+  // Trigger onComplete for Browser API since onend closure is tricky
+  const prevRecording = useRef(false);
+  useEffect(() => {
+    if (prevRecording.current && !isRecording && !isProcessing && transcript) {
+      const engine = (localStorage.getItem('stt_engine') as STTEngine) || 'browser';
+      if (engine === 'browser' && options?.onComplete) {
+        options.onComplete(transcript);
+      }
+    }
+    prevRecording.current = isRecording;
+  }, [isRecording, isProcessing, transcript, options]);
 
   return {
     isRecording,

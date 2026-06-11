@@ -4,9 +4,10 @@ import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
-import { ArrowLeft, MessageSquare, Clock, User, Trash2, Edit, Send, Loader2, Save, X, Bold, Italic, Link as LinkIcon, Image as ImageIcon, ShieldAlert } from "lucide-react";
+import { ArrowLeft, MessageSquare, Clock, User, Trash2, Edit, Send, Loader2, Save, X, Bold, Italic, Link as LinkIcon, Image as ImageIcon, ShieldAlert, Mic, MicOff } from "lucide-react";
 import Swal from 'sweetalert2';
 import ReactMarkdown from "react-markdown";
+import { useSpeechToText } from "@/hooks/useSpeechToText";
 
 interface Thread {
   id: string;
@@ -48,6 +49,12 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const { isRecording, isProcessing, transcript, startRecording, stopRecording } = useSpeechToText({
+    onComplete: (speechText) => {
+      setNewComment((prev) => prev + (prev.trim() ? " " : "") + speechText);
+    }
+  });
 
   // Edit Mode States
   const [isEditing, setIsEditing] = useState(false);
@@ -471,11 +478,26 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       {/* Add Comment Box */}
       <div className="bg-background border border-border rounded-3xl p-6 relative">
         <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 blur-[50px] rounded-full pointer-events-none"></div>
-        <h3 className="font-bold text-foreground mb-4">Tambahkan Komentar</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-bold text-foreground">Tambahkan Komentar</h3>
+          <button 
+            onClick={isRecording ? stopRecording : startRecording}
+            disabled={isProcessing}
+            title="Dikte Balasan (Voice to Text)"
+            className={`p-2 rounded-lg transition-colors flex items-center gap-2 ${
+              isRecording 
+                ? "bg-red-500/10 text-red-500 hover:bg-red-500/20" 
+                : "text-muted-foreground hover:bg-muted hover:bg-brand/10 hover:text-brand"
+            }`}
+          >
+            {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : isRecording ? <MicOff className="w-4 h-4 animate-pulse" /> : <Mic className="w-4 h-4" />}
+            <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">{isRecording ? "Merekam..." : "Dikte"}</span>
+          </button>
+        </div>
         <textarea
-          value={newComment}
+          value={newComment + (isRecording ? (newComment.trim() ? " " : "") + transcript : "")}
           onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Bagikan pemikiran atau balasan Anda..."
+          placeholder="Bagikan pemikiran atau balasan Anda secara tertulis, atau gunakan fitur dikte suara..."
           className="w-full bg-black/20 border border-border rounded-xl px-5 py-4 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all placeholder:text-muted-foreground/50 resize-y min-h-[120px] mb-4 text-sm"
         />
         <div className="flex justify-end">
