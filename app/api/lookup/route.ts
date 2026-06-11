@@ -21,7 +21,8 @@ const MODES: Record<string, string> = {
   "sentence-translation": "You are an expert literary translator. Translate the provided sentence contextually into Indonesian. Provide the literal translation first, then a beautifully flowing contextual translation that captures the author's intended mood and style. Explain briefly why you chose certain words for the contextual translation.",
   "sentence-grammar": "You are a Master Grammarian. Break down the syntax of the provided sentence. Identify the main Subject, Verb, and Object. Explain any complex clauses, archaic grammatical structures, or unusual word orders used by the author. Explain clearly in Indonesian using Markdown.",
   "sentence-idioms": "You are a Literary Detective. Analyze the provided sentence to identify any idioms, figures of speech (metaphors, similes, personification), or historical/cultural references. Explain what they mean and how they contribute to the sentence's overall impact. Explain in Indonesian.",
-  "pictionary": "You are a visual translator. Return exactly ONE emoji that best represents the word/phrase. Do NOT return any text, only the emoji. For example, if the word is 'sword', return ⚔️. If the word is 'sadness', return 😢."
+  "pictionary": "You are a visual translator. Return exactly ONE emoji that best represents the word/phrase. Do NOT return any text, only the emoji. For example, if the word is 'sword', return ⚔️. If the word is 'sadness', return 😢.",
+  "simplify": "You are a Graded Reader engine. Rewrite the provided sentence or paragraph into simple, modern English suitable for a B1 CEFR learner. Remove archaic words, simplify complex clauses, and make it easy to understand. Also, provide a very brief explanation in Indonesian of what changed."
 };
 
 export async function POST(req: Request) {

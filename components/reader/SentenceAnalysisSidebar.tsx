@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Languages, BookOpen, Search, GitMerge } from "lucide-react";
+import { X, Languages, BookOpen, Search, GitMerge, Zap } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 interface SentenceAnalysisSidebarProps {
@@ -15,6 +15,7 @@ const MODES = [
   { id: "sentence-translation", label: "Terjemahan", icon: Languages },
   { id: "sentence-grammar", label: "Tata Bahasa", icon: BookOpen },
   { id: "sentence-idioms", label: "Idiom & Kiasan", icon: Search },
+  { id: "simplify", label: "Simplify (B1)", icon: Zap },
 ];
 
 export default function SentenceAnalysisSidebar({ sentence, title, author, onClose }: SentenceAnalysisSidebarProps) {

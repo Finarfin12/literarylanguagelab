@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { BookMarked, Search, Filter, Trash2, Edit3, Save, X } from "lucide-react";
+import { BookMarked, Search, Filter, Trash2, Edit3, Save, X, BrainCircuit } from "lucide-react";
 import { deleteVocab, updateNotes } from "@/app/(dashboard)/vocabulary/actions";
+import FlashcardMode from "./FlashcardMode";
 
 export interface VocabItem {
   id: string;
@@ -25,6 +26,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
   
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editNotes, setEditNotes] = useState("");
+  const [isFlashcardMode, setIsFlashcardMode] = useState(false);
 
   const filteredVocab = vocab.filter(item => {
     const matchesSearch = item.word.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -59,12 +61,23 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
     }
   };
 
+  if (isFlashcardMode) {
+    return <FlashcardMode vocab={filteredVocab.length > 0 ? filteredVocab : vocab} onExit={() => setIsFlashcardMode(false)} />;
+  }
+
   return (
     <>
       <div className="mb-8 flex flex-col md:flex-row items-end justify-between gap-6">
         <div>
           <h1 className="text-4xl font-serif font-bold text-foreground">Vocabulary Bank</h1>
           <p className="text-muted-foreground mt-2">Kelola kata-kata yang telah Anda simpan dari teks sastra.</p>
+          <button 
+            onClick={() => setIsFlashcardMode(true)}
+            disabled={vocab.length === 0}
+            className="mt-4 px-6 py-2.5 bg-brand text-background font-bold rounded-full flex items-center gap-2 hover:shadow-[0_0_15px_rgba(62,207,142,0.4)] transition-all active:scale-95 disabled:opacity-50"
+          >
+            <BrainCircuit className="w-5 h-5" /> Mulai Belajar (Flashcard)
+          </button>
         </div>
         <div className="flex gap-4 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
