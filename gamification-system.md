@@ -17,17 +17,19 @@ Struktur hak akses pengguna dirancang menyerupai hierarki sebuah perpustakaan ra
 ---
 
 ## 2. Sistem Tiers / Ranks (Peringkat Pembelajar)
-Sistem peringkat ini berbasis poin pengalaman (XP) atau kumulatif aktivitas. XP didapat dari: durasi membaca, jumlah interaksi forum, jumlah kata/idiom yang disimpan. Peringkat ini akan dipamerkan di profil publik pengguna.
+Sistem peringkat ini berbasis poin pengalaman (XP) yang digabungkan secara visual dengan Tingkat Kemahiran Bahasa (CEFR Level) pengguna. Peringkat ini akan dipamerkan di profil publik maupun forum dengan format **[Gelar Gamifikasi] ([Level CEFR])**, misalnya: **Novice Reader (A1)** atau **Bibliophile (B2)**.
 
-1. **Lv. 1 - Novice Reader (Pembaca Pemula)** 
+XP didapat dari: durasi membaca, jumlah interaksi forum, dan jumlah kata/idiom yang disimpan.
+
+1. **Lv. 1 - Novice Reader** *(contoh: Novice Reader (A1))*
    * *Syarat:* Baru mendaftar di platform.
-2. **Lv. 5 - Bibliophile (Pecinta Buku)** 
+2. **Lv. 5 - Bibliophile** *(contoh: Bibliophile (A2))*
    * *Syarat:* Selesai membaca 5 bab/teks dan memiliki setidaknya 50 kata di kamus.
-3. **Lv. 15 - Wordsmith (Perajin Kata)** 
+3. **Lv. 15 - Wordsmith** *(contoh: Wordsmith (B1))*
    * *Syarat:* Berkembang menjadi pembelajar aktif, sering menggunakan LingoWise AI (seperti *Glossary Builder* & *Idiom Library*).
-4. **Lv. 30 - Literary Scholar (Sarjana Sastra)** 
+4. **Lv. 30 - Literary Scholar** *(contoh: Literary Scholar (B2))*
    * *Syarat:* Membaca lintasan genre yang luas dan memiliki partisipasi solid di *Book Club* / *Forum*.
-5. **Lv. 50 - Master of Linguistics (Pakar Bahasa / Sage)** 
+5. **Lv. 50 - Master of Linguistics** *(contoh: Master of Linguistics (C1/C2))*
    * *Syarat:* Tingkat *end-game*. Diberikan kepada pembaca elit dengan rentetan membaca (*streaks*) berbulan-bulan dan wawasan tingkat dewa.
 
 ---
