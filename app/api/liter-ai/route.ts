@@ -52,7 +52,7 @@ Literary Language Lab adalah platform e-learning web yang membantu penutur bahas
 - **Analysis Tools:** Tone Analyzer, Critical Lens, Imagery Sketcher, Sentiment Spectrum, Metaphor Generator
 - **Creative Tools:** Mood Transformer, Era Translator, Vibe Translator, Diction Lab, Sentence Architect
 - **Game Tools:** Story Quiz (AI buat cerita + 5 soal kosa kata), Paraphrase Challenge (dapat skor AI /10)
-- **Study Tools:** Academic Outline, Essay Auditor, Plot Twist Generator, Conflict Mapper, Character Monologue
+- **Study Tools:** Academic Outline, Essay Auditor, Plot Twist Generator, Conflict Mapper, Character Monologue, Pronunciation Clinic (latih & uji pelafalan dengan Voice-to-Text)
 - **Special Tools:** Alter Ego Chat (ngobrol dengan penulis legendaris: Shakespeare, Austen, Poe, Hemingway, dll), Untranslatables Explorer
 
 ### 7. Translation Workshop (/translation-workshop)
