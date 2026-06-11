@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sparkles, Glasses, FileText, Wind, Wand2, FlaskConical, Hourglass, Hammer, Search, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import Swal from "sweetalert2";
 
 const TOOLS = [
   { id: "dialect-diver", name: "The Dialect Diver", icon: Glasses, desc: "Pecahkan dialek, aksen, atau slang kuno karakter novel." },
@@ -23,7 +24,7 @@ export default function LingoWiseClient() {
 
   const handleProcess = async (modeId: string) => {
     if (!text.trim()) {
-      alert("Masukkan teks terlebih dahulu!");
+      Swal.fire("Perhatian", "Masukkan teks terlebih dahulu!", "warning");
       return;
     }
     
@@ -43,7 +44,7 @@ export default function LingoWiseClient() {
 
       setResult(data.result);
     } catch (error: any) {
-      alert(error.message);
+      Swal.fire("Gagal", error.message, "error");
       setActiveMode(null);
     } finally {
       setLoading(false);

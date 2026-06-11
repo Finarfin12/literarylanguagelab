@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { History, Activity, TrendingUp, BookOpen, Clock, Frown } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import Swal from "sweetalert2";
 
 export default function HistoryPage() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -100,7 +101,7 @@ export default function HistoryPage() {
 
   const handleExportCSV = () => {
     if (vocabData.length === 0) {
-      alert("Tidak ada data kosakata untuk diekspor.");
+      Swal.fire("Pemberitahuan", "Tidak ada data kosakata untuk diekspor.", "info");
       return;
     }
 

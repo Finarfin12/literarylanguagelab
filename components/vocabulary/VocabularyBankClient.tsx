@@ -4,6 +4,7 @@ import { useState } from "react";
 import { BookMarked, Search, Filter, Trash2, Edit3, Save, X, BrainCircuit } from "lucide-react";
 import { deleteVocab, updateNotes } from "@/app/(dashboard)/vocabulary/actions";
 import FlashcardMode from "./FlashcardMode";
+import Swal from "sweetalert2";
 
 export interface VocabItem {
   id: string;
@@ -36,12 +37,30 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
   });
 
   const handleDelete = async (id: string) => {
-    if (confirm("Apakah Anda yakin ingin menghapus kata ini dari kamus?")) {
+    const result = await Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Anda akan menghapus kata ini dari kamus!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3ECF8E",
+      cancelButtonColor: "#ef4444",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    });
+
+    if (result.isConfirmed) {
       try {
         await deleteVocab(id);
         setVocab(vocab.filter(v => v.id !== id));
+        Swal.fire({
+          title: "Terhapus!",
+          text: "Kata telah dihapus.",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false
+        });
       } catch (e) {
-        alert("Gagal menghapus kata.");
+        Swal.fire("Gagal", "Terjadi kesalahan saat menghapus kata.", "error");
       }
     }
   };
@@ -57,7 +76,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
       setVocab(vocab.map(v => v.id === id ? { ...v, notes: editNotes } : v));
       setEditingId(null);
     } catch (e) {
-      alert("Gagal menyimpan catatan.");
+      Swal.fire("Gagal", "Terjadi kesalahan saat menyimpan catatan.", "error");
     }
   };
 
@@ -67,7 +86,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
 
   return (
     <>
-      <div className="mb-8 flex flex-col md:flex-row items-end justify-between gap-6">
+      <div className="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <h1 className="text-4xl font-serif font-bold text-foreground">Vocabulary Bank</h1>
           <p className="text-muted-foreground mt-2">Kelola kata-kata yang telah Anda simpan dari teks sastra.</p>
@@ -79,8 +98,8 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
             <BrainCircuit className="w-5 h-5" /> Mulai Belajar (Flashcard)
           </button>
         </div>
-        <div className="flex gap-4 w-full md:w-auto">
-          <div className="relative flex-1 md:w-64">
+        <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+          <div className="relative flex-1 lg:w-64">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               value={searchTerm}

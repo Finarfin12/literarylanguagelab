@@ -101,7 +101,18 @@ export default function AlterEgoChatPage() {
 
   const handleDeleteSession = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    if (!confirm("Hapus sesi obrolan ini?")) return;
+    const result = await Swal.fire({
+      title: "Hapus Sesi?",
+      text: "Riwayat obrolan ini akan dihapus secara permanen.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#3f3f46",
+      confirmButtonText: "Ya, Hapus!",
+      cancelButtonText: "Batal"
+    });
+    
+    if (!result.isConfirmed) return;
     
     await supabase.from('chat_sessions').delete().eq('id', id);
     if (activeSessionId === id) {

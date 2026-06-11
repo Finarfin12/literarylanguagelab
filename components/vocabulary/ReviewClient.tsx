@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CheckCircle2, RotateCcw, Brain, RefreshCcw, Loader2 } from "lucide-react";
+import Swal from "sweetalert2";
 
 interface ReviewClientProps {
   dueVocab: any[];
@@ -54,7 +55,7 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
         setItems([]);
       }
     } catch (error) {
-      alert("Error submitting review");
+      Swal.fire("Gagal", "Error submitting review", "error");
     } finally {
       setSubmitting(false);
     }

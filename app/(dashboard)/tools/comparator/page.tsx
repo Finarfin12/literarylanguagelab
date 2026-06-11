@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { GitCompare, ArrowRight, Loader2, BookOpen } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Scale, Loader2, ArrowRightLeft, Type, Info, CheckCircle2, History, GitCompare, ArrowRight, BookOpen } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import Swal from "sweetalert2";
 
 export default function ComparatorPage() {
   const [originalText, setOriginalText] = useState("");
@@ -29,7 +30,7 @@ export default function ComparatorPage() {
       setResult(data.result);
     } catch (error: any) {
       console.error(error);
-      alert("Error: " + error.message);
+      Swal.fire("Gagal", "Error: " + error.message, "error");
     } finally {
       setLoading(false);
     }

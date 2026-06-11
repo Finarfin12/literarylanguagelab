@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { User, Settings, Save, Upload, Loader2, Mail, ShieldAlert, Globe2, Bell, AlertTriangle, BookOpen, BrainCircuit } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import Swal from "sweetalert2";
 
 interface UserPreferences {
   reading: {
@@ -252,8 +253,19 @@ export default function SettingsPage() {
     }
   };
 
-  const handleDeleteAllData = async () => {
-    if (!confirm("PERINGATAN: Aksi ini akan MENGHAPUS SEMUA Vocabulary dan Riwayat Membaca secara permanen. Apakah Anda yakin?")) return;
+  const deleteAccount = async () => {
+    const result = await Swal.fire({
+      title: "PERINGATAN BERBAHAYA",
+      text: "Aksi ini akan MENGHAPUS SEMUA Vocabulary dan Riwayat Membaca secara permanen. Apakah Anda yakin?",
+      icon: "error",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#3f3f46",
+      confirmButtonText: "Ya, Hapus Permanen!",
+      cancelButtonText: "Batal"
+    });
+
+    if (!result.isConfirmed) return;
     
     setDeleting(true);
     try {
@@ -580,7 +592,7 @@ export default function SettingsPage() {
                     Ekspor Terjemahan (CSV)
                   </button>
                 </div>
-                <button type="button" onClick={handleDeleteAllData} disabled={deleting} className="w-full p-4 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-xl text-red-500 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
+                <button type="button" onClick={deleteAccount} disabled={deleting} className="w-full p-4 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-xl text-red-500 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
                   <AlertTriangle className="w-5 h-5" /> {deleting ? "Menghapus..." : "Hapus Semua Data Belajar & Riwayat"}
                 </button>
               </div>

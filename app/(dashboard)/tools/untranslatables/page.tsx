@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Globe2, ArrowRight, Loader2, Sparkles } from "lucide-react";
+import { Globe2, Search, ArrowRight, Loader2, Library, Info, Lightbulb, Sparkles } from "lucide-react";
+import Swal from "sweetalert2";
 import ReactMarkdown from "react-markdown";
 
 export default function UntranslatablesPage() {
@@ -29,7 +30,7 @@ export default function UntranslatablesPage() {
       setResult(data.result);
     } catch (error: any) {
       console.error(error);
-      alert("Error: " + error.message);
+      Swal.fire("Gagal", "Error: " + error.message, "error");
     } finally {
       setLoading(false);
     }

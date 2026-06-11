@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { User, Bot, Send, Loader2, X, MessageSquareQuote, Minimize2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import Swal from "sweetalert2";
 
 interface Message {
   role: "user" | "assistant";
@@ -52,7 +53,7 @@ export default function ReadingCompanionSidebar({ title, author, content, onClos
 
       setMessages([...newMessages, { role: "assistant", content: data.result }]);
     } catch (error: any) {
-      alert("Error: " + error.message);
+      Swal.fire("Gagal", "Error: " + error.message, "error");
     } finally {
       setLoading(false);
     }

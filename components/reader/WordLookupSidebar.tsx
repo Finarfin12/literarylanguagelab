@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, BookOpen, BookmarkPlus, Loader2, Globe, Wind, Sparkles, Languages, Music, Quote, PenTool, GitMerge, Hourglass, Network, Volume2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import Swal from "sweetalert2";
 import dynamic from "next/dynamic";
 
 const SemanticMapViewer = dynamic(() => import("./SemanticMapViewer"), { ssr: false, loading: () => <div className="h-[350px] flex items-center justify-center bg-foreground/5 rounded-2xl animate-pulse"><Loader2 className="w-6 h-6 animate-spin text-brand" /></div> });
@@ -156,7 +157,8 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
         setSaved(true);
       }
     } catch (error) {
-      alert("Failed to save vocabulary");
+      console.error(error);
+      Swal.fire("Gagal", "Failed to save vocabulary", "error");
     } finally {
       setSaving(false);
     }

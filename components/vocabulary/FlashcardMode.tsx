@@ -4,6 +4,7 @@ import { useState } from "react";
 import { VocabItem } from "./VocabularyBankClient";
 import { X, RotateCw, CheckCircle2, XCircle, BrainCircuit } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import Swal from "sweetalert2";
 
 interface FlashcardModeProps {
   vocab: VocabItem[];
@@ -69,8 +70,7 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
         setFinished(true);
       }
     } catch (e) {
-      console.error(e);
-      alert("Gagal menyimpan progress.");
+      Swal.fire("Gagal", "Gagal menyimpan progress.", "error");
     } finally {
       setUpdating(false);
     }
