@@ -46,6 +46,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Graded Reader Mode (Simplify B1)**: Fitur yang mampu menulis ulang (menyederhanakan) teks sastra kuno menjadi bahasa Inggris modern tingkat menengah yang mudah dipahami pemula.
 - **Pictionary Mode**: Menerjemahkan kata atau frasa sulit menjadi ikon/emoji visual.
 - **Text-to-Speech (Read Aloud)**: Dengarkan pengucapan kalimat/paragraf menggunakan fitur pembaca otomatis untuk melatih *listening*.
+- **Syntax Highlighting (Training Wheels)**: Mewarnai setiap kata dalam paragraf berdasarkan perannya (Subjek, Verba, Objek) untuk memudahkan pemula membedah struktur kalimat.
 - **Comprehension Quizzes**: Kuis pemahaman dinamis yang muncul secara otomatis setiap kali Anda selesai membaca satu bab.
 - **Alter Ego Chat**: Berbincang langsung dengan agen virtual yang memerankan penulis legendaris.
 - **Story Quiz**: Permainan kuis di mana sistem membuat cerita pendek fiksi dari daftar kosa kata yang sedang Anda pelajari.
