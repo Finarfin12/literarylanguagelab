@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { MessageSquareQuote, Clock, Keyboard, Volume2, VolumeX } from "lucide-react";
+import { MessageSquareQuote, Clock, Keyboard, Volume2, VolumeX, BrainCircuit, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
 import { createClient } from "@/utils/supabase/client";
@@ -30,6 +30,13 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const [prefs, setPrefs] = useState<any>(null);
   const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  // Quiz State
+  const [quizData, setQuizData] = useState<any>(null);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [showQuizModal, setShowQuizModal] = useState(false);
+  const [lastQuizHeadingIdx, setLastQuizHeadingIdx] = useState<number>(-1);
+  const [quizAnswered, setQuizAnswered] = useState<number | null>(null);
 
   // Parse paragraphs (only if content is provided as string)
   const paragraphs = content ? content.split("\n").filter((p) => p.trim() !== "") : [];
@@ -153,6 +160,59 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
     window.speechSynthesis.speak(utterance);
   };
 
+  // Quiz Intersection Observer (Detect Chapter Changes)
+  useEffect(() => {
+    if (prefs?.reading?.enable_quizzes === false) return; // Disabled in settings
+    if (!blocks || blocks.length === 0) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const idx = parseInt(entry.target.getAttribute("data-block-idx") || "-1");
+          // If it's a heading, not the very first one, and we haven't quizzed for it yet
+          if (idx > 20 && idx > lastQuizHeadingIdx) { 
+             triggerQuiz(idx);
+          }
+        }
+      });
+    }, { root: contentRef.current, rootMargin: "0px", threshold: 0.1 });
+
+    const headingEls = document.querySelectorAll(".gutenberg-heading");
+    headingEls.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [prefs, lastQuizHeadingIdx, blocks]);
+
+  const triggerQuiz = async (headingIdx: number) => {
+    setLastQuizHeadingIdx(headingIdx); // Prevent triggering again for this heading
+    setQuizLoading(true);
+    setShowQuizModal(true);
+    setQuizData(null);
+    setQuizAnswered(null);
+
+    // Get the text context (last 5-8 blocks before heading)
+    const contextBlocks = blocks ? blocks.slice(Math.max(0, headingIdx - 8), headingIdx) : [];
+    const contextText = contextBlocks.map(b => b.text).join("\n\n");
+
+    try {
+      const res = await fetch("/api/generate-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contextText, title, author })
+      });
+      const data = await res.json();
+      if (res.ok && data.question) {
+        setQuizData(data);
+      } else {
+        setShowQuizModal(false); // Fail silently
+      }
+    } catch (e) {
+      setShowQuizModal(false);
+    } finally {
+      setQuizLoading(false);
+    }
+  };
+
   // Determine dynamic styles based on preferences
   const readPrefs = prefs?.reading || {};
   const displayPrefs = prefs?.display || {};
@@ -243,11 +303,11 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                 const isHeading = block.type === "heading";
                 const isVerse = block.type === "verse";
                 return (
-                  <div key={index} className="flex gap-4 group">
+                  <div key={index} className="flex gap-4 group" data-block-idx={index}>
                     {readPrefs.line_numbers && !isHeading && (
                       <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60" aria-hidden={displayPrefs.screen_reader ? "true" : "false"}>{index + 1}</span>
                     )}
-                    <p className={`flex-1 ${isHeading ? 'mt-14 mb-8 text-center text-3xl font-bold' : isVerse ? 'my-8 whitespace-pre-line text-center italic' : 'my-6 text-left [text-indent:2rem] md:text-justify'}`}>
+                    <p className={`flex-1 ${isHeading ? 'gutenberg-heading mt-14 mb-8 text-center text-3xl font-bold' : isVerse ? 'my-8 whitespace-pre-line text-center italic' : 'my-6 text-left [text-indent:2rem] md:text-justify'}`}>
                       <CulturalTextRenderer text={block.text} references={culturalRefs} />
                     </p>
                     {!isHeading && (
@@ -306,7 +366,98 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
             }} 
           />
         )}
+        {activeSidebar === "companion" && (
+          <ReadingCompanionSidebar
+            textId={textId}
+            title={title}
+            author={author}
+            onClose={() => {
+              setActiveSidebar(null);
+              setShowCompanion(false);
+            }}
+          />
+        )}
       </div>
+
+      {/* Quiz Modal Overlay */}
+      {showQuizModal && (
+        <div className="absolute inset-0 z-[100] bg-background/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
+          <div className="bg-card border border-border shadow-2xl rounded-3xl max-w-lg w-full overflow-hidden">
+            <div className="bg-orange-500 p-6 text-white text-center relative overflow-hidden">
+              <BrainCircuit className="w-24 h-24 absolute -right-4 -top-4 opacity-20" />
+              <h3 className="text-2xl font-bold font-serif relative z-10">Comprehension Checkpoint</h3>
+              <p className="text-orange-100 mt-1 relative z-10 text-sm">Mari pastikan Anda memahami bab sebelumnya!</p>
+            </div>
+            
+            <div className="p-8">
+              {quizLoading ? (
+                <div className="flex flex-col items-center justify-center py-8">
+                  <Loader2 className="w-10 h-10 animate-spin text-orange-500 mb-4" />
+                  <p className="text-muted-foreground animate-pulse">Menyiapkan kuis pemahaman...</p>
+                </div>
+              ) : quizData ? (
+                <div className="space-y-6">
+                  <p className="text-lg font-medium text-foreground">{quizData.question}</p>
+                  
+                  <div className="space-y-3">
+                    {quizData.options.map((opt: string, i: number) => {
+                      const isSelected = quizAnswered === i;
+                      const isCorrect = quizData.correct_index === i;
+                      const showResult = quizAnswered !== null;
+                      
+                      let btnClass = "bg-muted hover:bg-muted/80 text-foreground border-transparent";
+                      if (showResult) {
+                        if (isCorrect) btnClass = "bg-green-500/10 border-green-500 text-green-600 dark:text-green-400";
+                        else if (isSelected) btnClass = "bg-red-500/10 border-red-500 text-red-600 dark:text-red-400";
+                        else btnClass = "bg-muted opacity-50 border-transparent";
+                      }
+
+                      return (
+                        <button 
+                          key={i}
+                          disabled={showResult}
+                          onClick={() => setQuizAnswered(i)}
+                          className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between ${btnClass}`}
+                        >
+                          <span>{opt}</span>
+                          {showResult && isCorrect && <CheckCircle2 className="w-5 h-5" />}
+                          {showResult && isSelected && !isCorrect && <XCircle className="w-5 h-5" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {quizAnswered !== null && (
+                    <div className="pt-6 border-t border-border animate-in fade-in slide-in-from-bottom-2">
+                      <p className="text-sm text-muted-foreground mb-4">{quizData.explanation}</p>
+                      <button 
+                        onClick={() => setShowQuizModal(false)}
+                        className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold shadow-md transition-all active:scale-95"
+                      >
+                        Lanjutkan Membaca
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground mb-4">Gagal memuat kuis.</p>
+                  <button onClick={() => setShowQuizModal(false)} className="px-6 py-2 bg-muted hover:bg-muted/80 rounded-full font-medium">Lanjutkan Membaca</button>
+                </div>
+              )}
+            </div>
+            
+            {/* Close Button (if they want to skip without answering) */}
+            {quizAnswered === null && (
+              <div className="p-4 bg-muted/30 border-t border-border text-center">
+                <button onClick={() => setShowQuizModal(false)} className="text-sm text-muted-foreground hover:text-foreground underline">
+                  Lewati Kuis (Skip)
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Pop-up Area for Reading Companion */}
       {showCompanion && (

@@ -15,6 +15,7 @@ interface UserPreferences {
     highlight_color: string;
     line_numbers: boolean;
     tts_enabled: boolean;
+    enable_quizzes: boolean;
   };
   dictionary: {
     auto_lookup: boolean;
@@ -50,7 +51,7 @@ interface UserPreferences {
 }
 
 const defaultPreferences: UserPreferences = {
-  reading: { font_family: "serif", font_size: 16, line_height: 1.75, text_width: "medium", theme: "light", auto_save: true, highlight_color: "#FFD700", line_numbers: false, tts_enabled: false },
+  reading: { font_family: "serif", font_size: 16, line_height: 1.75, text_width: "medium", theme: "light", auto_save: true, highlight_color: "#FFD700", line_numbers: false, tts_enabled: false, enable_quizzes: true },
   dictionary: { auto_lookup: true, show_register: true, show_etymology: false, def_language: "id" },
   learning: { default_mastery: 0, auto_add_vocab: false, cards_per_session: 20, show_context: true },
   display: { show_reading_time: true, high_contrast: false, screen_reader: false, keyboard_shortcuts: true },
@@ -439,6 +440,13 @@ export default function SettingsPage() {
                   <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
                     <span className="text-sm font-bold">Text-to-Speech (Beta)</span>
                     <input type="checkbox" checked={preferences.reading.tts_enabled} onChange={e => updatePref('reading', 'tts_enabled', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer border-l-4 border-l-orange-500">
+                    <div>
+                      <span className="text-sm font-bold flex items-center gap-2"><BrainCircuit className="w-4 h-4 text-orange-500" /> Kuis Pemahaman Otomatis</span>
+                      <p className="text-xs text-muted-foreground mt-0.5 font-normal">Tampilkan kuis di akhir setiap bab untuk menguji pemahaman.</p>
+                    </div>
+                    <input type="checkbox" checked={preferences.reading.enable_quizzes} onChange={e => updatePref('reading', 'enable_quizzes', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
                   <div className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10">
                     <span className="text-sm font-bold">Warna Highlight Teks</span>
