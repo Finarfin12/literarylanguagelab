@@ -9,7 +9,7 @@ import {
   ChevronDown, ChevronRight, LogOut, 
   BrainCircuit, Palette, BookMarked, 
   GraduationCap, Library, Briefcase, History, Sun, Moon, Sparkles, User, Settings,
-  Menu, PanelLeftClose, BookOpen, MessageSquare, Trophy, Users, LayoutDashboard, Languages
+  Menu, PanelLeftClose, BookOpen, MessageSquare, Trophy, Users, LayoutDashboard, Languages, ShieldAlert
 } from "lucide-react";
 
 interface SidebarProps {
@@ -139,6 +139,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
 
   const [localAvatar, setLocalAvatar] = useState(userAvatar);
   const [localName, setLocalName] = useState(userName);
+  const [isAdmin, setIsAdmin] = useState(false);
   
   // Auto-close sidebar on mobile, open on desktop
   useEffect(() => {
@@ -158,6 +159,11 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
       if (!user) return;
       setLocalAvatar(user.user_metadata?.avatar_url);
       setLocalName(user.user_metadata?.full_name);
+      
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+      if (profile?.role === 'admin') {
+        setIsAdmin(true);
+      }
     }
     loadProfile();
   }, []);
@@ -373,6 +379,24 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
               </div>
             );
           })}
+
+          {isAdmin && (
+            <Link 
+              href="/admin/users"
+              className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
+                pathname.startsWith('/admin/users') 
+                  ? 'bg-red-500/10 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.15)]' 
+                  : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <ShieldAlert className={`w-5 h-5 ${pathname.startsWith('/admin/users') ? 'text-red-400' : 'text-red-500'}`} />
+                <span className={`font-bold ${pathname.startsWith('/admin/users') ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  User Management
+                </span>
+              </div>
+            </Link>
+          )}
         </div>
       </div>
 
