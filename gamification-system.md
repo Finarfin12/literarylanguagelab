@@ -9,7 +9,7 @@ Struktur hak akses pengguna dirancang menyerupai hierarki sebuah perpustakaan ra
 
 | Role | Nama Alias | Hak Akses & Tugas |
 | :--- | :--- | :--- |
-| **Admin** | *Librarian* (Pustakawan Utama) | Kendali penuh (Superuser). Menghapus/mengedit semua teks, menghapus akun spam, mengelola *Role* pengguna lain, dan konfigurasi sistem. |
+| **Admin** | *Librarian* (Pustakawan Utama) | Kendali penuh (Superuser). Memiliki akses ke **User Management Menu** untuk mengangkat Curator/Moderator, menghapus akun spam, mengedit semua teks, dan konfigurasi sistem. |
 | **Moderator** | *Archivist* (Penjaga Arsip) | Menjaga ketertiban *Forum* dan *Book Club*. Berhak menghapus komentar toksik, memberi label (*pin/lock thread*), dan mengarahkan diskusi. |
 | **Curator** | *Curator* (Kurator Sastra) | Kontributor terpercaya. Berhak memverifikasi kualitas *Text Library*, menambahkan *Cultural Context*, dan menyetujui terjemahan. |
 | **User** | *Scholar* (Pembaca Biasa) | Peran default. Bisa membaca buku, memakai semua alat LingoWise AI, menyimpan kosakata, dan memposting di forum. |
@@ -59,5 +59,6 @@ XP didapat dari: durasi membaca, jumlah interaksi forum, dan jumlah kata/idiom y
 
 ## 4. Rencana Implementasi Teknis (Catatan untuk Developer)
 *   **Database:** Memerlukan tabel `user_xp`, `user_badges` (relasi *many-to-many* antara profil dan master *badge*).
+*   **User Management Menu (Admin Only):** Perlu dibuatkan halaman khusus (dashboard) untuk Admin agar bisa memantau daftar pengguna, mengubah *Role* (misal: menunjuk seseorang jadi Curator), dan mengelola peringatan/ban.
 *   **Trigger/Cron:** Evaluasi *streaks* dan XP dapat dijalankan melalui *Supabase Database Webhooks* atau *cron job*.
 *   **Frontend:** Menampilkan lencana (berupa ikon SVG atau Emoji menarik) di halaman `/profile` dan di avatar saat berinteraksi di `/forum`.
