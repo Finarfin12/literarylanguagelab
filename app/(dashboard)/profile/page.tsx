@@ -6,24 +6,19 @@ import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import Link from "next/link";
 
-function getLevel(xp: number, cefrLevel: string = "intermediate") {
-  let cefr = "A1";
-  if (cefrLevel === "beginner") cefr = "A2";
-  if (cefrLevel === "intermediate") cefr = "B1/B2";
-  if (cefrLevel === "advanced") cefr = "C1/C2";
-
-  if (xp < 50) return { level: 1, title: `Novice Reader (${cefr})`, nextXP: 50 };
-  if (xp < 200) return { level: 5, title: `Bibliophile (${cefr})`, nextXP: 200 };
-  if (xp < 500) return { level: 15, title: `Wordsmith (${cefr})`, nextXP: 500 };
-  if (xp < 1000) return { level: 30, title: `Literary Scholar (${cefr})`, nextXP: 1000 };
-  return { level: 50, title: `Master of Linguistics (${cefr})`, nextXP: Infinity };
+function getLevel(xp: number) {
+  if (xp < 500) return { level: 1, title: `Novice Reader (A1)`, nextXP: 500 };
+  if (xp < 2000) return { level: 5, title: `Bibliophile (A2)`, nextXP: 2000 };
+  if (xp < 5000) return { level: 15, title: `Wordsmith (B1)`, nextXP: 5000 };
+  if (xp < 10000) return { level: 30, title: `Literary Scholar (B2)`, nextXP: 10000 };
+  return { level: 50, title: `Master of Linguistics (C1/C2)`, nextXP: Infinity };
 }
 
 function getLevelProgress(xp: number) {
-  if (xp >= 1000) return 100;
-  const thresholds = [0, 50, 200, 500, 1000];
+  if (xp >= 10000) return 100;
+  const thresholds = [0, 500, 2000, 5000, 10000];
   let current = 0;
-  let next = 50;
+  let next = 500;
   for (let i = 0; i < thresholds.length; i++) {
     if (xp < thresholds[i]) {
       current = thresholds[i - 1];
@@ -38,7 +33,7 @@ export default function ProfilePage() {
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<SupabaseUser | null>(null);
-  const [stats, setStats] = useState({ vocabCount: 0, idiomCount: 0, xp: 0, streak: 0, textsCompleted: 0, reviewsThisWeek: 0, cefr: "intermediate" });
+  const [stats, setStats] = useState({ vocabCount: 0, idiomCount: 0, xp: 0, streak: 0, textsCompleted: 0, reviewsThisWeek: 0 });
   const [recentLogs, setRecentLogs] = useState<any[]>([]);
   const [badges, setBadges] = useState<string[]>([]);
 
@@ -50,7 +45,7 @@ export default function ProfilePage() {
       setProfile(user);
 
       const results = await Promise.allSettled([
-        supabase.from("profiles").select("xp, streak, level").eq("id", user.id).single(),
+        supabase.from("profiles").select("xp, streak").eq("id", user.id).single(),
         supabase.from("vocabulary").select("*", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("idioms").select("*", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("reading_sessions").select("text_id").eq("user_id", user.id),
@@ -81,7 +76,6 @@ export default function ProfilePage() {
           streak: profData?.streak || 0,
           textsCompleted: new Set(sData?.map((s: any) => s.text_id) || []).size,
           reviewsThisWeek: rCount || 0,
-          cefr: profData?.level || "intermediate",
         });
         if (logsData) {
           setRecentLogs(logsData);
@@ -101,7 +95,7 @@ export default function ProfilePage() {
   const avatarUrl = profile.user_metadata?.avatar_url;
   const fullName = profile.user_metadata?.full_name || profile.email?.split("@")[0] || "Anon";
   const aboutMe = profile.user_metadata?.about_me || "Belum ada biografi. Tambahkan di pengaturan.";
-  const { level, title, nextXP } = getLevel(stats.xp, stats.cefr);
+  const { level, title, nextXP } = getLevel(stats.xp);
   const progressPct = getLevelProgress(stats.xp);
 
   const statCards = [

@@ -5,25 +5,19 @@ import { ShieldAlert, Users, CalendarDays, Zap, BookOpen } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
-function getGamificationTier(xp: number, cefrLevel: string = "A1") {
-  let title = "Novice Reader";
+function getGamificationTier(xp: number) {
+  let title = "Novice Reader (A1)";
   let level = 1;
 
-  if (xp >= 1000) { title = "Master of Linguistics"; level = 50; }
-  else if (xp >= 500) { title = "Literary Scholar"; level = 30; }
-  else if (xp >= 200) { title = "Wordsmith"; level = 15; }
-  else if (xp >= 50) { title = "Bibliophile"; level = 5; }
-
-  // Map database level to simple CEFR representation for display
-  let cefr = "A1";
-  if (cefrLevel === 'beginner') cefr = "A2";
-  if (cefrLevel === 'intermediate') cefr = "B1/B2";
-  if (cefrLevel === 'advanced') cefr = "C1/C2";
+  if (xp >= 10000) { title = "Master of Linguistics (C1/C2)"; level = 50; }
+  else if (xp >= 5000) { title = "Literary Scholar (B2)"; level = 30; }
+  else if (xp >= 2000) { title = "Wordsmith (B1)"; level = 15; }
+  else if (xp >= 500) { title = "Bibliophile (A2)"; level = 5; }
 
   return {
     title,
     level,
-    display: `${title} (${cefr})`
+    display: title
   };
 }
 
@@ -91,7 +85,7 @@ export default async function AdminUsersPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {users?.map((profile) => {
-                const tierInfo = getGamificationTier(profile.xp || 0, profile.level);
+                const tierInfo = getGamificationTier(profile.xp || 0);
                 const joinDate = new Date(profile.created_at).toLocaleDateString('id-ID', {
                   day: 'numeric',
                   month: 'short',

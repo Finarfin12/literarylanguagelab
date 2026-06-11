@@ -19,18 +19,27 @@ Struktur hak akses pengguna dirancang menyerupai hierarki sebuah perpustakaan ra
 ## 2. Sistem Tiers / Ranks (Peringkat Pembelajar)
 Sistem peringkat ini berbasis poin pengalaman (XP) yang digabungkan secara visual dengan Tingkat Kemahiran Bahasa (CEFR Level) pengguna. Peringkat ini akan dipamerkan di profil publik maupun forum dengan format **[Gelar Gamifikasi] ([Level CEFR])**, misalnya: **Novice Reader (A1)** atau **Bibliophile (B2)**.
 
-XP didapat dari: durasi membaca, jumlah interaksi forum, dan jumlah kata/idiom yang disimpan.
+XP didapat dari: durasi membaca, jumlah interaksi forum, kompetisi, dan jumlah kata/idiom yang disimpan.
+
+### Struktur Pembagian XP
+- **Membaca Aktif:** +1 XP per menit (maksimal cap per hari).
+- **Menyelesaikan Teks/Bab:** +25 XP.
+- **Kosa Kata & Flashcards:** +2 XP per kata disimpan, +3 XP per kata sukses direview.
+- **Diskusi Forum (Pembelajaran/Sastra):** +40 XP.
+- **Diskusi Forum (Biasa/Umum):** +15 XP.
+- **Upvote dari Komunitas:** +2 XP per upvote.
+- **Translation Duels:** +15 XP (Partisipasi), +100 XP (Menang).
 
 1. **Lv. 1 - Novice Reader** *(contoh: Novice Reader (A1))*
-   * *Syarat:* Baru mendaftar di platform.
+   * *Syarat XP:* **0 XP**. Baru mendaftar di platform.
 2. **Lv. 5 - Bibliophile** *(contoh: Bibliophile (A2))*
-   * *Syarat:* Selesai membaca 5 bab/teks dan memiliki setidaknya 50 kata di kamus.
+   * *Syarat XP:* **500 XP**. Bisa dicapai dengan membuat beberapa diskusi dan rutin membaca minggu pertama.
 3. **Lv. 15 - Wordsmith** *(contoh: Wordsmith (B1))*
-   * *Syarat:* Berkembang menjadi pembelajar aktif, sering menggunakan LingoWise AI (seperti *Glossary Builder* & *Idiom Library*).
+   * *Syarat XP:* **2.000 XP**. Berkembang menjadi pembelajar aktif, mulai rutin membalas forum dan sesekali menang duel.
 4. **Lv. 30 - Literary Scholar** *(contoh: Literary Scholar (B2))*
-   * *Syarat:* Membaca lintasan genre yang luas dan memiliki partisipasi solid di *Book Club* / *Forum*.
+   * *Syarat XP:* **5.000 XP**. Membaca lintasan genre yang luas dan memiliki partisipasi solid di *Book Club* / *Forum*.
 5. **Lv. 50 - Master of Linguistics** *(contoh: Master of Linguistics (C1/C2))*
-   * *Syarat:* Tingkat *end-game*. Diberikan kepada pembaca elit dengan rentetan membaca (*streaks*) berbulan-bulan dan wawasan tingkat dewa.
+   * *Syarat XP:* **10.000 XP**. Tingkat *end-game*. Diberikan kepada pembaca elit dengan wawasan tingkat dewa dan dedikasi luar biasa.
 
 ---
 

@@ -278,18 +278,14 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
     return null;
   };
 
-  const renderTierBadge = (xp: number, level: string) => {
+  const renderTierBadge = (xp: number) => {
+    let title = "Novice Reader (A1)";
     let color = "bg-gray-500/20 text-gray-400";
-    let cefr = "A1";
-    if (level === 'beginner') { color = "bg-green-500/20 text-green-400"; cefr = "A2"; }
-    if (level === 'intermediate') { color = "bg-blue-500/20 text-blue-400"; cefr = "B1"; }
-    if (level === 'advanced') { color = "bg-purple-500/20 text-purple-400"; cefr = "C1"; }
     
-    let title = `Novice Reader (${cefr})`;
-    if (xp >= 50) title = `Bibliophile (${cefr})`;
-    if (xp >= 200) title = `Wordsmith (${cefr})`;
-    if (xp >= 500) title = `Literary Scholar (${cefr})`;
-    if (xp >= 1000) title = `Master of Linguistics (${cefr})`;
+    if (xp >= 10000) { title = "Master of Linguistics (C1/C2)"; color = "bg-purple-500/20 text-purple-400"; }
+    else if (xp >= 5000) { title = "Literary Scholar (B2)"; color = "bg-blue-500/20 text-blue-400"; }
+    else if (xp >= 2000) { title = "Wordsmith (B1)"; color = "bg-cyan-500/20 text-cyan-400"; }
+    else if (xp >= 500) { title = "Bibliophile (A2)"; color = "bg-green-500/20 text-green-400"; }
 
     return <span className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold ${color}`}>{title}</span>;
   };
@@ -402,7 +398,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
                 <p className="font-bold text-foreground text-sm flex items-center gap-2 flex-wrap">
                   {threadAuthor.full_name}
                   {renderRoleBadge(threadAuthor.role)}
-                  {renderTierBadge(threadAuthor.xp, threadAuthor.level)}
+                  {renderTierBadge(threadAuthor.xp)}
                 </p>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                   <Clock className="w-3 h-3" />
@@ -455,7 +451,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
                 <p className="font-bold text-foreground text-sm flex items-center gap-2 flex-wrap pr-10">
                   {comment.author.full_name}
                   {renderRoleBadge(comment.author.role)}
-                  {renderTierBadge(comment.author.xp, comment.author.level)}
+                  {renderTierBadge(comment.author.xp)}
                   {comment.user_id === thread?.user_id && (
                     <span className="bg-brand/20 text-brand px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Pembuat</span>
                   )}
