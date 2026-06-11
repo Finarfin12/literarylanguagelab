@@ -53,6 +53,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Translation Workshop**: Layar terbelah (split-screen) untuk menerjemahkan teks dengan umpan balik otomatis dari kecerdasan buatan (Equivalence, Register, Back-Translation).
 - **A-Z Browser & Lexicon Search**: Kamus lengkap dengan sinonim, rima kata, dan konteks budaya.
 - **Paraphrase Challenge**: Uji kemampuan memparafrase kalimat tingkat tinggi.
+- **Pronunciation Clinic**: Latih dan uji pelafalan bahasa Inggris Anda dengan penilaian skor cerdas berbasis teknologi *Voice-to-Text* (mendukung *Browser Native* dan model AI Whisper).
 - **All Toolkits Hub**: Etalase visual (*App Drawer*) interaktif yang menampung 30+ alat analisis AI mini, dilengkapi bilah pencarian pintar (*search bar*) dan filter berbasis kategori (Transformers, Extractors, Gamification, Lexicon).
 
 ### 4. Vocabulary Bank, Lexicon & Spaced Repetition

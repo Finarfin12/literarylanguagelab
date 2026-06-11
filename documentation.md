@@ -393,15 +393,25 @@ LingoWise adalah asisten kecerdasan buatan utama yang dapat membedah teks bahasa
   2. AI membangkitkan cerita pendek menggunakan kata-kata tersebut (pilihan genre: misteri, fiksi ilmiah, roman, dll.).
   3. Di akhir cerita, pengguna menjawab 5 pertanyaan untuk menguji pemahaman.
 
-### 7.9 Plot Twist Generator
+### 7.9 Pronunciation Clinic & Voice Ecosystem
+- **Halaman:** Akses melalui `/tools` (Toolkit: Pronunciation Clinic)
+- **API:** `/api/stt`
+- **Deskripsi:** Klinik latihan pelafalan vokal dengan evaluasi cerdas *Speech-to-Text* (STT) *Dual-Engine*.
+- **Fitur:**
+  - Evaluasi akurasi pelafalan dengan skor persentase matematis (*Levenshtein distance*).
+  - Opsi *Dual-Engine*: Pilih kecepatan instan (Browser Native API) atau akurasi tingkat dewa (Groq Whisper-large-v3) melalui menu `/settings`.
+  - Terintegrasi dengan kustom *React Hook* (`useSpeechToText`) yang dapat diperluas ke berbagai fitur lain di masa mendatang.
+
+### 7.10 Plot Twist Generator
 - **Halaman:** `/tools/plot-twist`
 - **Deskripsi:** Menghasilkan skenario *what-if* — jalan cerita alternatif dari novel yang sedang dibaca beserta analisis dampak pada tema.
 
 ### 7.10 Literary Conflict Mapper
+### 7.11 Literary Conflict Mapper
 - **Halaman:** `/tools/conflict-mapper`
 - **Deskripsi:** Mengategorikan tipe konflik dalam teks (Man vs. Man, Man vs. Self, dll.) + akar masalah + dampak psikologis tokoh.
 
-### 7.11 Critical Lens Applier
+### 7.12 Critical Lens Applier
 - **Halaman:** `/tools/critical-lens`
 - **Deskripsi:** Menganalisis teks menggunakan teori kritis sastra: Feminism, Marxist, Psychoanalytic, Post-Colonial, Ecocriticism.
 

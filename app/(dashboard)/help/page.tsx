@@ -73,7 +73,8 @@ const FAQ_ITEMS = [
   { q: "Apa dampaknya jika saya tidak rutin melakukan Spaced Repetition?", a: "Kosa kata Anda tidak akan hilang dari Vocabulary Bank, namun tanpa pengulangan terstruktur, Anda berisiko melupakannya. Sistem SM-2 dirancang untuk memastikan Anda mereview kata tepat sebelum Anda lupa. Konsistensi dalam mereview adalah kunci utama menguasai bahasa baru." },
   { q: "Bagaimana cara menemukan pengguna lain?", a: "Gunakan menu Jejaring Pembaca (Community) untuk mencari, melihat profil, dan mengikuti (follow) pembaca lain. Anda juga dapat melihat level dan XP mereka." },
   { q: "Apakah ada fitur pesan antar pengguna?", a: "Ya! Melalui menu Pesan Langsung (Direct Messaging), Anda dapat mengirim pesan ke pengguna yang Anda ikuti atau yang mengikuti Anda secara real-time." },
-  { q: "Apa itu fitur Waktu Membaca (Time Spent)?", a: "Sistem secara otomatis melacak durasi membaca Anda di LingoWise. Anda dapat melihat total waktu belajar Anda di halaman Archive & Insights (History)." }
+  { q: "Apa itu fitur Waktu Membaca (Time Spent)?", a: "Sistem secara otomatis melacak durasi membaca Anda di LingoWise. Anda dapat melihat total waktu belajar Anda di halaman Archive & Insights (History)." },
+  { q: "Bagaimana cara menguji pelafalan bahasa Inggris saya?", a: "Buka menu All Toolkits Hub dan cari Pronunciation Clinic. Ketik kalimat yang ingin dilatih, lalu rekam suara Anda. Sistem akan memberikan skor persentase kecocokan. Anda juga dapat mengatur mesin suara Anda (Browser Native atau Groq Whisper) di halaman /settings." }
 ];
 
 const SAMPLE_QUESTIONS = [
