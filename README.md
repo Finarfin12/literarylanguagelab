@@ -41,7 +41,8 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Rhetorical Spotter**: Mendeteksi gaya bahasa (majas, metafora, ironi).
 
 ### 3. Alat Interaktif & Permainan Edukasi
-- **Reading Companion Pop-up**: Diskusikan teks apa pun secara seketika dengan asisten kecerdasan buatan melalui panel interaktif yang dapat melayang saat membaca.
+- **Reading Companion Pop-up**: Diskusikan teks apa pun secara seketika dengan asisten kecerdasan buatan melalui panel interaktif yang melayang saat membaca.
+- **In-Reader Sentence Analysis**: Blok kalimat apa pun saat membaca buku untuk memunculkan popup ✨ Analisis, yang akan langsung membedah Terjemahan, Tata Bahasa (dengan anatomi visual), serta mendeteksi Idiom & Kiasan.
 - **Alter Ego Chat**: Berbincang langsung dengan agen virtual yang memerankan penulis legendaris.
 - **Story Quiz**: Permainan kuis di mana sistem membuat cerita pendek fiksi dari daftar kosa kata yang sedang Anda pelajari.
 - **Translation Workshop**: Layar terbelah (split-screen) untuk menerjemahkan teks dengan umpan balik otomatis dari kecerdasan buatan (Equivalence, Register, Back-Translation).
@@ -61,10 +62,12 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Jejaring Pembaca & Pesan Langsung**: Temukan pembaca lain, ikuti (follow) profil mereka, dan bertukar pikiran secara pribadi melalui fitur Direct Messaging.
 - **Sistem Pengumuman Admin**: Kategori khusus pada forum yang dipasangi pin di atas layar untuk informasi penting.
 
-### 6. Analitik Pembelajaran Lanjut
+### 6. Analitik Pembelajaran Lanjut & Pengaturan Privasi
 - **Waktu Membaca (Time Spent)**: Lacak secara otomatis durasi Anda mempelajari teks (sistem mendeteksi saat Anda aktif membaca).
 - **Deteksi Area Lemah (Weak Area)**: Monitor berapa banyak kosa kata yang masih belum Anda kuasai dengan baik.
-- **Ekspor Data**: Unduh seluruh daftar Vocabulary Bank Anda ke dalam format CSV untuk diintegrasikan dengan Anki atau aplikasi flashcard lainnya.
+- **Ekspor Data Menyeluruh**: Unduh seluruh daftar Vocabulary Bank, Riwayat Bacaan, dan Hasil Terjemahan (Translation Submissions) Anda ke dalam format CSV.
+- **Manajemen Privasi & Hapus Akun**: Kontrol penuh atas data Anda melalui menu Pengaturan Privasi, termasuk kemampuan untuk menghapus akun secara permanen.
+- **Developer Mode**: Fitur tersembunyi khusus Administrator untuk mengakses alat bantu *debugging*.
 
 ---
 
