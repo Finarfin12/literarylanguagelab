@@ -114,20 +114,22 @@ export default function ToolsDashboardPage() {
             className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-2xl text-foreground focus:outline-none focus:ring-2 focus:ring-brand shadow-sm transition-all"
           />
         </div>
-        <div className="flex overflow-x-auto custom-scrollbar pb-2 md:pb-0 gap-2 shrink-0">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-3 rounded-2xl text-sm font-bold whitespace-nowrap transition-all border ${
-                selectedCategory === cat 
-                  ? 'bg-brand text-background border-brand shadow-lg shadow-brand/20' 
-                  : 'bg-card text-muted-foreground border-border hover:bg-muted'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="relative shrink-0 w-full md:w-64">
+          <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand pointer-events-none" />
+          <select 
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="w-full pl-12 pr-10 py-3 bg-card border border-border rounded-2xl text-foreground font-bold text-sm focus:outline-none focus:ring-2 focus:ring-brand shadow-sm appearance-none cursor-pointer transition-all hover:border-brand/50"
+          >
+            {CATEGORIES.map(cat => (
+              <option key={cat} value={cat}>{cat === "All" ? "Semua Kategori" : cat}</option>
+            ))}
+          </select>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+            <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
         </div>
       </div>
 
