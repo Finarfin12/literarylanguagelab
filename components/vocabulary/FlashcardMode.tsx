@@ -91,14 +91,14 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
       </header>
 
       <div className="w-full bg-muted rounded-full h-2 mb-8 overflow-hidden">
-        <div className="bg-brand h-full transition-all duration-500" style={{ width: \`\${(currentIndex / cards.length) * 100}%\` }}></div>
+        <div className="bg-brand h-full transition-all duration-500" style={{ width: `${(currentIndex / cards.length) * 100}%` }}></div>
       </div>
 
       <div className="perspective-1000 w-full min-h-[400px] relative">
-        <div className={\`w-full h-full transition-all duration-700 transform-style-3d \${showAnswer ? 'rotate-y-180' : ''}\`}>
+        <div className={`w-full h-full transition-all duration-700 transform-style-3d ${showAnswer ? 'rotate-y-180' : ''}`}>
           
           {/* Front (Word) */}
-          <div className={\`absolute inset-0 bg-card border-2 border-border shadow-xl rounded-3xl p-10 flex flex-col justify-center items-center text-center backface-hidden \${showAnswer ? 'invisible' : 'visible'}\`}>
+          <div className={`absolute inset-0 bg-card border-2 border-border shadow-xl rounded-3xl p-10 flex flex-col justify-center items-center text-center backface-hidden ${showAnswer ? 'invisible' : 'visible'}`}>
             <h2 className="text-5xl font-serif font-bold text-foreground capitalize mb-8">{currentCard.word}</h2>
             {currentCard.context_sentence && (
               <div className="bg-muted/50 p-6 rounded-xl text-left border-l-4 border-brand max-w-md w-full opacity-80">
@@ -116,7 +116,7 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
           </div>
 
           {/* Back (Definition) */}
-          <div className={\`absolute inset-0 bg-card border-2 border-brand/30 shadow-2xl shadow-brand/10 rounded-3xl p-8 flex flex-col justify-between backface-hidden transform rotate-y-180 \${showAnswer ? 'visible' : 'invisible'}\`}>
+          <div className={`absolute inset-0 bg-card border-2 border-brand/30 shadow-2xl shadow-brand/10 rounded-3xl p-8 flex flex-col justify-between backface-hidden transform rotate-y-180 ${showAnswer ? 'visible' : 'invisible'}`}>
             <div className="overflow-y-auto max-h-[250px] prose prose-sm dark:prose-invert prose-brand flex-1 flex flex-col items-center justify-center text-center mx-auto w-full">
               <h2 className="text-4xl font-serif font-bold text-brand capitalize mb-6">{currentCard.word}</h2>
               <ReactMarkdown>{currentCard.definition || ""}</ReactMarkdown>
