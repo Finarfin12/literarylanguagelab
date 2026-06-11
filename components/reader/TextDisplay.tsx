@@ -6,6 +6,8 @@ import WordLookupSidebar from "./WordLookupSidebar";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
 import { createClient } from "@/utils/supabase/client";
 import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer";
+import InteractiveParagraph from "./InteractiveParagraph";
+import { Search } from "lucide-react";
 
 export interface BookBlock {
   type: "heading" | "paragraph" | "verse";
@@ -30,6 +32,12 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const [prefs, setPrefs] = useState<any>(null);
   const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  // Beginner Features State
+  const [isBeginnerMode, setIsBeginnerMode] = useState(false);
+  const [beginnerLevel, setBeginnerLevel] = useState("B1");
+  const [beginnerLayout, setBeginnerLayout] = useState<"inline" | "below" | "split">("below");
+  const [showSyntax, setShowSyntax] = useState(false);
 
   // Quiz State
   const [quizData, setQuizData] = useState<any>(null);
@@ -169,13 +177,15 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const idx = parseInt(entry.target.getAttribute("data-block-idx") || "-1");
-          // If it's a heading, not the very first one, and we haven't quizzed for it yet
-          if (idx > 20 && idx > lastQuizHeadingIdx) { 
+          // Ensure we actually scrolled to it (from bottom or top) and not just loaded the page
+          // A simple heuristic: if entry time is > 1000ms or if they scrolled far down.
+          // Or just record max index seen so far.
+          if (idx > 20 && idx > lastQuizHeadingIdx && entry.intersectionRatio > 0 && entry.time > 1500) { 
              triggerQuiz(idx);
           }
         }
       });
-    }, { root: contentRef.current, rootMargin: "0px", threshold: 0.1 });
+    }, { root: null, rootMargin: "0px", threshold: 0.1 });
 
     const headingEls = document.querySelectorAll(".gutenberg-heading");
     headingEls.forEach(el => observer.observe(el));
@@ -285,6 +295,28 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           </button>
         </div>
 
+        {/* Global Controls for Beginner Mode */}
+        <div className="bg-muted/30 border-b border-border px-6 py-3 flex flex-wrap items-center justify-center gap-4 text-sm z-20 relative">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={isBeginnerMode} onChange={e => setIsBeginnerMode(e.target.checked)} className="w-4 h-4 accent-brand" />
+            <span className="font-bold">Beginner Mode</span>
+          </label>
+          
+          {isBeginnerMode && (
+            <div className="flex items-center gap-4 animate-in fade-in slide-in-from-left-4">
+              <select value={beginnerLevel} onChange={e => setBeginnerLevel(e.target.value)} className="bg-background border border-border rounded-lg px-2 py-1 text-sm focus:outline-none">
+                <option value="A2">Level A2 (Dasar)</option>
+                <option value="B1">Level B1 (Menengah)</option>
+              </select>
+              <select value={beginnerLayout} onChange={e => setBeginnerLayout(e.target.value as any)} className="bg-background border border-border rounded-lg px-2 py-1 text-sm focus:outline-none">
+                <option value="inline">Ganti Teks (Inline)</option>
+                <option value="below">Berdampingan (Bawah)</option>
+                <option value="split">Layar Belah (Split)</option>
+              </select>
+            </div>
+          )}
+        </div>
+
         <div className={`${widthClass} mx-auto px-6 md:px-8 py-12 transition-all duration-500`}>
           <header className="mb-12 text-center">
             <h1 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: dyslexicStyle.fontFamily ? dyslexicStyle.fontFamily : 'inherit' }}>{title}</h1>
@@ -308,16 +340,32 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                       <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60" aria-hidden={displayPrefs.screen_reader ? "true" : "false"}>{index + 1}</span>
                     )}
                     <p className={`flex-1 ${isHeading ? 'gutenberg-heading mt-14 mb-8 text-center text-3xl font-bold' : isVerse ? 'my-8 whitespace-pre-line text-center italic' : 'my-6 text-left [text-indent:2rem] md:text-justify'}`}>
-                      <CulturalTextRenderer text={block.text} references={culturalRefs} />
+                      <InteractiveParagraph 
+                        text={block.text} 
+                        culturalRefs={culturalRefs}
+                        isBeginnerMode={isBeginnerMode}
+                        beginnerLevel={beginnerLevel}
+                        beginnerLayout={beginnerLayout}
+                        showSyntax={showSyntax}
+                      />
                     </p>
                     {!isHeading && (
-                      <div className="w-10 pt-2 shrink-0 flex justify-end">
+                      <div className="w-10 pt-2 shrink-0 flex flex-col gap-2 items-center justify-start">
+                        {readPrefs.tts_enabled !== false && (
+                          <button 
+                            onClick={() => toggleSpeech(block.text, index)}
+                            className={`p-2 rounded-full transition-all ${speakingIndex === index ? 'opacity-100 bg-brand/20 text-brand animate-pulse' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand'}`}
+                            title={speakingIndex === index ? "Stop Reading" : "Read Aloud"}
+                          >
+                            {speakingIndex === index ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                          </button>
+                        )}
                         <button 
-                          onClick={() => toggleSpeech(block.text, index)}
-                          className={`p-2 rounded-full transition-all ${speakingIndex === index ? 'opacity-100 bg-brand/20 text-brand animate-pulse' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand'}`}
-                          title={speakingIndex === index ? "Stop Reading" : "Read Aloud"}
+                          onClick={() => setShowSyntax(!showSyntax)}
+                          className={`p-2 rounded-full transition-all ${showSyntax ? 'opacity-100 bg-blue-500/20 text-blue-500' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500'}`}
+                          title={showSyntax ? "Tutup Bedah Sintaksis" : "Bedah Sintaksis"}
                         >
-                          {speakingIndex === index ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                          <Search className="w-4 h-4" />
                         </button>
                       </div>
                     )}
@@ -331,15 +379,31 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                     <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60" aria-hidden={displayPrefs.screen_reader ? "true" : "false"}>{idx + 1}</span>
                   )}
                   <p className="flex-1 my-6 text-left [text-indent:2rem] md:text-justify">
-                    <CulturalTextRenderer text={p} references={culturalRefs} />
+                    <InteractiveParagraph 
+                        text={p} 
+                        culturalRefs={culturalRefs}
+                        isBeginnerMode={isBeginnerMode}
+                        beginnerLevel={beginnerLevel}
+                        beginnerLayout={beginnerLayout}
+                        showSyntax={showSyntax}
+                      />
                   </p>
-                  <div className="w-10 pt-2 shrink-0 flex justify-end">
+                  <div className="w-10 pt-2 shrink-0 flex flex-col gap-2 items-center justify-start">
+                    {readPrefs.tts_enabled !== false && (
+                      <button 
+                        onClick={() => toggleSpeech(p, idx)}
+                        className={`p-2 rounded-full transition-all ${speakingIndex === idx ? 'opacity-100 bg-brand/20 text-brand animate-pulse' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand'}`}
+                        title={speakingIndex === idx ? "Stop Reading" : "Read Aloud"}
+                      >
+                        {speakingIndex === idx ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                      </button>
+                    )}
                     <button 
-                      onClick={() => toggleSpeech(p, idx)}
-                      className={`p-2 rounded-full transition-all ${speakingIndex === idx ? 'opacity-100 bg-brand/20 text-brand animate-pulse' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand'}`}
-                      title={speakingIndex === idx ? "Stop Reading" : "Read Aloud"}
+                      onClick={() => setShowSyntax(!showSyntax)}
+                      className={`p-2 rounded-full transition-all ${showSyntax ? 'opacity-100 bg-blue-500/20 text-blue-500' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500'}`}
+                      title={showSyntax ? "Tutup Bedah Sintaksis" : "Bedah Sintaksis"}
                     >
-                      {speakingIndex === idx ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                      <Search className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
