@@ -45,18 +45,23 @@ export async function addText(formData: FormData) {
 export async function deleteText(textId: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authorized");
+  if (!user) return { success: false, error: "Not authorized" };
 
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
   if (profile?.role !== 'admin') {
-    throw new Error("Admin privileges required");
+    return { success: false, error: "Admin privileges required" };
   }
+
+  // Delete dependencies first since schema doesn't have ON DELETE CASCADE for text_id
+  await supabase.from("reading_sessions").delete().eq("text_id", textId);
+  await supabase.from("translations").delete().eq("text_id", textId);
 
   const { error } = await supabase.from("texts").delete().eq("id", textId);
   if (error) {
     console.error("deleteText error:", error);
-    throw new Error(error.message);
+    return { success: false, error: error.message };
   }
 
   revalidatePath("/library");
+  return { success: true };
 }

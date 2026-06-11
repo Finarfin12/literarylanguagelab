@@ -26,10 +26,15 @@ export default function DeleteTextButton({ textId, title }: { textId: string, ti
     if (result.isConfirmed) {
       setDeleting(true);
       try {
-        await deleteText(textId);
-        Swal.fire('Terhapus!', 'Teks telah dihapus.', 'success');
+        const res = await deleteText(textId);
+        if (res?.error) {
+          Swal.fire('Gagal!', res.error, 'error');
+        } else {
+          Swal.fire('Terhapus!', 'Teks telah dihapus.', 'success');
+        }
       } catch (error: any) {
         Swal.fire('Gagal!', error.message || "Terjadi kesalahan", 'error');
+      } finally {
         setDeleting(false);
       }
     }

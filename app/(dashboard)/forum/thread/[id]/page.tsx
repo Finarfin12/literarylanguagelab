@@ -22,6 +22,7 @@ interface UserProfile {
   role: string;
   level: string;
   avatar_url?: string;
+  xp: number;
 }
 
 interface Comment {
@@ -42,7 +43,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
   const [comments, setComments] = useState<Comment[]>([]);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [currentUserProfile, setCurrentUserProfile] = useState<UserProfile | null>(null);
-  const [threadAuthor, setThreadAuthor] = useState<UserProfile>({ full_name: "Penulis", role: "user", level: "intermediate" });
+  const [threadAuthor, setThreadAuthor] = useState<UserProfile>({ full_name: "Penulis", role: "user", level: "intermediate", xp: 0 });
   
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -100,14 +101,15 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       
       const uniqueUserIds = [...new Set(userIdsToFetch)];
       
-      const { data: profiles } = await supabase.from('profiles').select('id, full_name, role, level, avatar_url').in('id', uniqueUserIds);
+      const { data: profiles } = await supabase.from('profiles').select('id, full_name, role, level, avatar_url, xp').in('id', uniqueUserIds);
       if (profiles) {
          profiles.forEach(p => {
            userMap[p.id] = {
              full_name: p.full_name || 'Penulis Rahasia',
              role: p.role || 'user',
              level: p.level || 'intermediate',
-             avatar_url: p.avatar_url
+             avatar_url: p.avatar_url,
+             xp: p.xp || 0
            };
          });
       }
@@ -116,12 +118,12 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
         setCurrentUserProfile(userMap[user.id]);
       }
 
-      setThreadAuthor(userMap[threadData.user_id] || { full_name: "Penulis", role: "user", level: "intermediate" });
+      setThreadAuthor(userMap[threadData.user_id] || { full_name: "Penulis", role: "user", level: "intermediate", xp: 0 });
 
       if (commentsData) {
         const formattedComments = commentsData.map((c: any) => ({
           ...c,
-          author: userMap[c.user_id] || { full_name: "Penulis", role: "user", level: "intermediate" }
+          author: userMap[c.user_id] || { full_name: "Penulis", role: "user", level: "intermediate", xp: 0 }
         }));
         setComments(formattedComments);
       }
@@ -162,7 +164,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
     if (error) {
       Swal.fire({ title: "Gagal", text: error.message, icon: "error", confirmButtonColor: "#2fa16b" });
     } else if (data) {
-      const myProfile = currentUserProfile || { full_name: currentUser.user_metadata?.full_name || "Saya", role: "user", level: "intermediate", avatar_url: currentUser.user_metadata?.avatar_url };
+      const myProfile = currentUserProfile || { full_name: currentUser.user_metadata?.full_name || "Saya", role: "user", level: "intermediate", avatar_url: currentUser.user_metadata?.avatar_url, xp: 0 };
       setComments([...comments, { ...data, author: myProfile }]);
       setNewComment("");
     }
@@ -269,13 +271,27 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
     setUploadingImage(false);
   };
 
-  const renderTierBadge = (level: string) => {
+  const renderRoleBadge = (role: string) => {
+    if (role === 'admin') return <span className="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Librarian (Admin)</span>;
+    if (role === 'moderator') return <span className="bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Archivist (Mod)</span>;
+    if (role === 'curator') return <span className="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Curator</span>;
+    return null;
+  };
+
+  const renderTierBadge = (xp: number, level: string) => {
     let color = "bg-gray-500/20 text-gray-400";
-    if (level === 'beginner') color = "bg-green-500/20 text-green-400";
-    if (level === 'intermediate') color = "bg-blue-500/20 text-blue-400";
-    if (level === 'advanced') color = "bg-purple-500/20 text-purple-400";
+    let cefr = "A1";
+    if (level === 'beginner') { color = "bg-green-500/20 text-green-400"; cefr = "A2"; }
+    if (level === 'intermediate') { color = "bg-blue-500/20 text-blue-400"; cefr = "B1"; }
+    if (level === 'advanced') { color = "bg-purple-500/20 text-purple-400"; cefr = "C1"; }
     
-    return <span className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold ${color}`}>{level}</span>;
+    let title = `Novice Reader (${cefr})`;
+    if (xp >= 50) title = `Bibliophile (${cefr})`;
+    if (xp >= 200) title = `Wordsmith (${cefr})`;
+    if (xp >= 500) title = `Literary Scholar (${cefr})`;
+    if (xp >= 1000) title = `Master of Linguistics (${cefr})`;
+
+    return <span className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold ${color}`}>{title}</span>;
   };
 
   if (loading) {
@@ -385,8 +401,8 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
               <div>
                 <p className="font-bold text-foreground text-sm flex items-center gap-2 flex-wrap">
                   {threadAuthor.full_name}
-                  {threadAuthor.role === 'admin' && <span className="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Admin</span>}
-                  {renderTierBadge(threadAuthor.level)}
+                  {renderRoleBadge(threadAuthor.role)}
+                  {renderTierBadge(threadAuthor.xp, threadAuthor.level)}
                 </p>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                   <Clock className="w-3 h-3" />
@@ -438,8 +454,8 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
               <div>
                 <p className="font-bold text-foreground text-sm flex items-center gap-2 flex-wrap pr-10">
                   {comment.author.full_name}
-                  {comment.author.role === 'admin' && <span className="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Admin</span>}
-                  {renderTierBadge(comment.author.level)}
+                  {renderRoleBadge(comment.author.role)}
+                  {renderTierBadge(comment.author.xp, comment.author.level)}
                   {comment.user_id === thread?.user_id && (
                     <span className="bg-brand/20 text-brand px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Pembuat</span>
                   )}
