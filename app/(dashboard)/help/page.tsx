@@ -177,7 +177,7 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
           )}
 
           {messages.map((msg, i) => (
-            <div key={i} className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
+            <div key={i} className={`flex gap-2 items-start ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
               <div className={`p-1.5 rounded-lg shrink-0 ${msg.role === "assistant" ? "bg-brand/10" : "bg-muted"}`}>
                 {msg.role === "assistant" ? <Bot className="w-3.5 h-3.5 text-brand" /> : <User className="w-3.5 h-3.5 text-muted-foreground" />}
               </div>
@@ -192,7 +192,7 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
           ))}
 
           {loading && (
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-start">
               <div className="p-1.5 rounded-lg bg-brand/10 shrink-0"><Bot className="w-3.5 h-3.5 text-brand" /></div>
               <div className="bg-muted rounded-2xl px-4 py-3"><Loader2 className="w-4 h-4 animate-spin text-brand" /></div>
             </div>
