@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Groq } from "groq-sdk";
+import { config } from "@/app/api/config";
 
 export async function POST(req: Request) {
   try {
@@ -31,7 +32,7 @@ IMPORTANT: Only output valid JSON without markdown wrapping or extra commentary.
         { role: "system", content: systemPrompt },
         { role: "user", content: text }
       ],
-      model: "llama-3.1-8b-instant",
+      model: config.model,
       temperature: 0.1,
       response_format: { type: "json_object" },
     });

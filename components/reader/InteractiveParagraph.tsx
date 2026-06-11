@@ -32,6 +32,9 @@ export default function InteractiveParagraph({
   const [loadingSimplified, setLoadingSimplified] = useState(false);
   const [loadingSyntax, setLoadingSyntax] = useState(false);
   
+  const [errorSimplified, setErrorSimplified] = useState<string | null>(null);
+  const [errorSyntax, setErrorSyntax] = useState<string | null>(null);
+  
   const simplifiedRef = useRef(false);
   const loadingSimplifiedRef = useRef(false);
   const syntaxTokensRef = useRef(false);
@@ -74,9 +77,12 @@ export default function InteractiveParagraph({
         if (isMounted && data.simplifiedText) {
           simplifiedRef.current = true;
           setSimplifiedText(data.simplifiedText);
+        } else if (isMounted) {
+          setErrorSimplified("Gagal menyederhanakan teks. Server sibuk.");
         }
       } catch (e) {
         console.error("Failed to simplify text", e);
+        if (isMounted) setErrorSimplified("Gagal menyederhanakan teks.");
       } finally {
         if (isMounted) setLoadingSimplified(false);
       }
@@ -103,9 +109,12 @@ export default function InteractiveParagraph({
         if (isMounted && data.tokens) {
           syntaxTokensRef.current = true;
           setSyntaxTokens(data.tokens);
+        } else if (isMounted) {
+          setErrorSyntax("Gagal membedah sintaksis. Server sibuk.");
         }
       } catch (e) {
         console.error("Failed to fetch syntax", e);
+        if (isMounted) setErrorSyntax("Gagal membedah sintaksis.");
       } finally {
         if (isMounted) {
           setLoadingSyntax(false);
@@ -124,6 +133,10 @@ export default function InteractiveParagraph({
         {loadingSyntax ? (
           <div className="flex items-center gap-2 text-muted-foreground italic">
             <Loader2 className="w-4 h-4 animate-spin" /> Membedah sintaksis...
+          </div>
+        ) : errorSyntax ? (
+          <div className="text-red-500 italic">
+            {errorSyntax} <CulturalTextRenderer text={text} references={culturalRefs} />
           </div>
         ) : syntaxTokens ? (
           <div className="leading-loose">
@@ -155,6 +168,17 @@ export default function InteractiveParagraph({
           {beginnerLayout !== "inline" && <CulturalTextRenderer text={text} references={culturalRefs} />}
           <div className="flex items-center gap-2 text-brand italic mt-2 text-sm bg-brand/5 p-2 rounded-lg">
             <Loader2 className="w-4 h-4 animate-spin" /> Menyederhanakan teks ({beginnerLevel})...
+          </div>
+        </div>
+      );
+    }
+    
+    if (errorSimplified) {
+      return (
+        <div ref={containerRef} className="relative">
+          {beginnerLayout !== "inline" && <CulturalTextRenderer text={text} references={culturalRefs} />}
+          <div className="text-red-500 italic mt-2 text-sm bg-red-500/5 p-2 rounded-lg">
+            {errorSimplified}
           </div>
         </div>
       );

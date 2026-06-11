@@ -317,6 +317,16 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           )}
         </div>
 
+        {/* Legend Bedah Sintaksis */}
+        {activeSyntaxIndex !== null && (
+          <div className="bg-blue-500/10 border-b border-blue-500/20 px-6 py-2 flex flex-wrap items-center justify-center gap-6 text-sm z-20 relative animate-in fade-in slide-in-from-top-2">
+            <span className="font-bold flex items-center gap-2"><Search className="w-4 h-4 text-blue-500" /> Legenda Sintaksis:</span>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 bg-blue-500/50 border border-blue-500 rounded-sm"></span> Subjek</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 bg-red-500/50 border border-red-500 rounded-sm"></span> Verba / Predikat</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 bg-yellow-500/50 border border-yellow-500 rounded-sm"></span> Objek</div>
+          </div>
+        )}
+
         <div className={`${widthClass} mx-auto px-6 md:px-8 py-12 transition-all duration-500`}>
           <header className="mb-12 text-center">
             <h1 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: dyslexicStyle.fontFamily ? dyslexicStyle.fontFamily : 'inherit' }}>{title}</h1>

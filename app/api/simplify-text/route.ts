@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Groq } from "groq-sdk";
+import { config } from "@/app/api/config";
 
 export async function POST(req: Request) {
   try {
@@ -23,7 +24,7 @@ Keep the core meaning, emotions, and plot intact. Do not summarize, just rewrite
         { role: "system", content: systemPrompt },
         { role: "user", content: text }
       ],
-      model: "llama3-8b-8192",
+      model: config.model,
       temperature: 0.3,
       max_tokens: 1024,
     });
