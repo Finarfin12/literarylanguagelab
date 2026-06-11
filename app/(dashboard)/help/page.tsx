@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Send, Loader2, Bot, User, MessageCircle, BookOpen, Sparkles, BrainCircuit, GraduationCap, Globe, Gamepad2, HelpCircle, ArrowRight, X, MessageSquare } from "lucide-react";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -139,7 +140,7 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
       <div className="fixed inset-0 bg-black/40 z-40 md:hidden" onClick={onClose} />
 
       {/* Chat panel */}
-      <div className="fixed inset-0 z-50 md:relative md:inset-auto md:z-auto flex flex-col bg-card md:rounded-2xl md:border md:border-border">
+      <div className="fixed inset-0 z-50 md:bottom-24 md:right-8 md:w-[450px] md:h-[600px] md:top-auto md:left-auto flex flex-col bg-card md:rounded-2xl md:shadow-2xl md:border md:border-border overflow-hidden">
         {/* Header */}
         <div className="p-4 border-b border-border shrink-0 flex items-center justify-between bg-card/90 backdrop-blur-md">
           <div className="flex items-center gap-3">
@@ -180,8 +181,12 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
               <div className={`p-1.5 rounded-lg shrink-0 ${msg.role === "assistant" ? "bg-brand/10" : "bg-muted"}`}>
                 {msg.role === "assistant" ? <Bot className="w-3.5 h-3.5 text-brand" /> : <User className="w-3.5 h-3.5 text-muted-foreground" />}
               </div>
-              <div className={`rounded-2xl px-3 py-2 max-w-[85%] text-xs leading-relaxed ${msg.role === "assistant" ? "bg-muted text-foreground" : "bg-brand text-white"}`}>
-                {msg.content}
+              <div className={`rounded-2xl px-4 py-3 max-w-[85%] text-sm leading-relaxed overflow-x-auto ${msg.role === "assistant" ? "bg-muted text-foreground prose-p:my-1 prose-strong:text-brand prose-strong:font-bold prose-ul:pl-4 prose-ul:list-disc prose-ol:pl-4 prose-ol:list-decimal" : "bg-brand text-white"}`}>
+                {msg.role === "assistant" ? (
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                ) : (
+                  msg.content
+                )}
               </div>
             </div>
           ))}
