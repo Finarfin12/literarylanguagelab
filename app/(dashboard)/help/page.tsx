@@ -24,6 +24,11 @@ function FaqAnswer({ text }: { text: string }) {
     "/settings": { label: "Pengaturan", href: "/settings" },
     "/forum": { label: "Forum & Community", href: "/forum" },
     "/duels": { label: "Translation Duels", href: "/duels" },
+    "/english-lab/grammar-clinic": { label: "Grammar Clinic", href: "/english-lab/grammar-clinic" },
+    "/english-lab/flashcard": { label: "English Lab Flashcard", href: "/english-lab/flashcard" },
+    "/english-lab/dialogue-simulator": { label: "Dialogue Simulator", href: "/english-lab/dialogue-simulator" },
+    "/english-lab/listening-test": { label: "Listening Test", href: "/english-lab/listening-test" },
+    "/english-lab/slang-decoder": { label: "Slang Decoder", href: "/english-lab/slang-decoder" },
   };
 
   const parts = text.split(/(\/[a-z/\-]+)/g);
@@ -74,7 +79,10 @@ const FAQ_ITEMS = [
   { q: "Bagaimana cara menemukan pengguna lain?", a: "Gunakan menu Jejaring Pembaca (Community) untuk mencari, melihat profil, dan mengikuti (follow) pembaca lain. Anda juga dapat melihat level dan XP mereka." },
   { q: "Apakah ada fitur pesan antar pengguna?", a: "Ya! Melalui menu Pesan Langsung (Direct Messaging), Anda dapat mengirim pesan ke pengguna yang Anda ikuti atau yang mengikuti Anda secara real-time." },
   { q: "Apa itu fitur Waktu Membaca (Time Spent)?", a: "Sistem secara otomatis melacak durasi membaca Anda di LingoWise. Anda dapat melihat total waktu belajar Anda di halaman Archive & Insights (History)." },
-  { q: "Bagaimana cara menguji pelafalan bahasa Inggris saya?", a: "Buka menu All Toolkits Hub dan cari Pronunciation Clinic. Ketik kalimat yang ingin dilatih, lalu rekam suara Anda. Sistem akan memberikan skor persentase kecocokan. Anda juga dapat mengatur mesin suara Anda (Browser Native atau Groq Whisper) di halaman /settings." }
+  { q: "Bagaimana cara menguji pelafalan bahasa Inggris saya?", a: "Buka menu All Toolkits Hub dan cari Pronunciation Clinic. Ketik kalimat yang ingin dilatih, lalu rekam suara Anda. Sistem akan memberikan skor persentase kecocokan. Anda juga dapat mengatur mesin suara Anda (Browser Native atau Groq Whisper) di halaman /settings." },
+  { q: "Apa itu fitur English Lab?", a: "English Lab adalah kumpulan fitur baru untuk melatih bahasa Inggris sehari-hari (General English) tanpa elemen sastra berat. Ini mencakup Grammar Clinic, Flashcard SRS interaktif, Dialogue Simulator, Listening Test, dan Modern Slang Decoder." },
+  { q: "Bagaimana cara menggunakan Dialogue Simulator?", a: "Buka menu /english-lab/dialogue-simulator , pilih skenario (misalnya: wawancara kerja), lalu berbicaralah menggunakan mikrofon Anda. AI akan merespons secara lisan. Di akhir sesi, klik 'Akhiri & Feedback' untuk mendapatkan penilaian kelancaran dan tata bahasa Anda." },
+  { q: "Bisakah saya mengunggah audio sendiri di Listening Test?", a: "Ya! Di halaman /english-lab/listening-test , Anda bisa menekan tombol 'Unggah Audio Manual' untuk mengunggah file MP3/WAV milik Anda sendiri dan melatih pendengaran di mode Dikte." }
 ];
 
 const SAMPLE_QUESTIONS = [

@@ -180,6 +180,7 @@ export default function SettingsPage() {
 
       setAvatarUrl(finalAvatarUrl);
       localStorage.setItem('stt_engine', sttEngine);
+      localStorage.setItem('tts_engine', preferences.reading.tts_provider || "browser");
       
       Swal.fire({
         icon: 'success',

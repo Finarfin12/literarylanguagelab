@@ -9,7 +9,7 @@ import {
   ChevronDown, ChevronRight, LogOut, 
   BrainCircuit, Palette, BookMarked, 
   GraduationCap, Library, Briefcase, History, Sun, Moon, Sparkles, User, Settings,
-  Menu, PanelLeftClose, BookOpen, MessageSquare, Trophy, Users, LayoutDashboard, Languages, ShieldAlert
+  Menu, PanelLeftClose, BookOpen, MessageSquare, Trophy, Users, LayoutDashboard, Languages, ShieldAlert, Headphones
 } from "lucide-react";
 
 interface SidebarProps {
@@ -84,6 +84,18 @@ const MENU_GROUPS = [
       { name: "Plot Twist", path: "/tools/plot-twist" },
       { name: "Conflict Mapper", path: "/tools/conflict-mapper" },
       { name: "Critical Lens", path: "/tools/critical-lens" },
+    ]
+  },
+  {
+    title: "English Lab",
+    icon: Headphones,
+    color: "text-emerald-400",
+    items: [
+      { name: "Grammar Clinic", path: "/english-lab/grammar-clinic" },
+      { name: "Flashcard SRS", path: "/english-lab/flashcard" },
+      { name: "Dialogue Simulator", path: "/english-lab/dialogue-simulator" },
+      { name: "Listening Test", path: "/english-lab/listening-test" },
+      { name: "Slang Decoder", path: "/english-lab/slang-decoder" },
     ]
   },
   {

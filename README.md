@@ -79,6 +79,14 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Manajemen Privasi & Hapus Akun**: Kontrol penuh atas data Anda melalui menu Pengaturan Privasi, termasuk kemampuan untuk menghapus akun secara permanen.
 - **Developer Mode**: Fitur tersembunyi khusus Administrator untuk mengakses alat bantu *debugging*.
 
+### 7. English Lab (General English Learning)
+Fitur pembelajaran bahasa Inggris umum yang dirancang bagi mereka yang ingin berlatih bahasa Inggris sehari-hari tanpa harus selalu membaca sastra berat.
+- **Everyday Grammar Clinic**: Tempelkan teks apa pun (email, obrolan santai, tugas) dan AI akan menganalisis kesalahan tata bahasa Anda dengan skor 0-100 dan penjelasan bahasa Indonesia yang mudah dimengerti. Mendukung input suara (Voice Dictation).
+- **Interactive Flashcards (SRS)**: Belajar menghafal kosakata yang Anda kumpulkan dari bacaan menggunakan tiga mode kuis interaktif (Tebak Arti, Tebak Kata, dan Dikte) yang ditenagai oleh algoritma Spaced Repetition (Leitner Box).
+- **Dialogue Simulator**: Berlatih berbicara langsung dengan AI dalam 8 skenario dunia nyata (seperti wawancara kerja, memesan kopi, check-in bandara, dsb). Menyediakan skor kelancaran, grammar, dan saran peningkatan kosa kata di akhir percakapan.
+- **Listening Comprehension Test**: Menguji kemampuan pendengaran dengan mode kuis pilihan ganda dan dikte (mengetik teks dari audio). Anda bisa mengatur level kesulitan (CEFR A1-B2) atau bahkan mengunggah file audio manual Anda sendiri.
+- **Modern Slang Decoder**: Membantu memecahkan dan menerjemahkan kalimat gaul, singkatan internet, atau referensi budaya pop (Gen Z lingo) ke dalam bahasa Indonesia sehari-hari, lengkap dengan tingkat formalitas dan contoh penggunaannya.
+
 ---
 
 ## Tech Stack & Arsitektur

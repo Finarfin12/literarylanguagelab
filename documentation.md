@@ -22,6 +22,7 @@
 10. [Analitik & Riwayat Pembelajaran](#10-analitik--riwayat-pembelajaran)
 11. [Pengaturan & Personalisasi](#11-pengaturan--personalisasi)
 12. [Infrastruktur & Arsitektur Teknis](#12-infrastruktur--arsitektur-teknis)
+13. [English Lab (Pembelajaran Bahasa Inggris Umum)](#13-english-lab-pembelajaran-bahasa-inggris-umum)
 
 ---
 
@@ -666,6 +667,65 @@ LingoWise adalah asisten kecerdasan buatan utama yang dapat membedah teks bahasa
 - **Halaman:** `/help`
 - **Deskripsi:** Halaman FAQ lengkap dengan 25+ pertanyaan umum yang dilengkapi tautan langsung ke fitur terkait.
 - **Liter AI Chatbot:** Tombol melayang di pojok kanan bawah halaman Help untuk bertanya secara interaktif tentang cara penggunaan platform.
+
+---
+
+## 13. English Lab (Pembelajaran Bahasa Inggris Umum)
+
+Kumpulan fitur yang khusus didesain bagi mereka yang ingin berlatih bahasa Inggris dalam konteks kehidupan nyata, percakapan sehari-hari, dan kemampuan dasar di luar sastra klasik. Terletak di menu sidebar **"English Lab"**.
+
+### 13.1 Everyday Grammar Clinic
+- **Halaman:** `/english-lab/grammar-clinic`
+- **API:** `/api/grammar-clinic`
+- **Deskripsi:** AI yang akan membedah kesalahan tata bahasa pada tulisan pengguna (seperti draft email, chat, atau esai pendek).
+- **Fitur:**
+  - Input teks bebas atau Input Suara (Voice Dictation).
+  - Skor Grammar dari 0-100 dengan visualisasi cincin (progress ring).
+  - Penjelasan tiap kesalahan dalam Bahasa Indonesia yang ramah pemula.
+  - Tiga fokus utama: Grammar, Ejaan, dan Pilihan Kata.
+
+### 13.2 Interactive Flashcard & SRS (Spaced Repetition System)
+- **Halaman:** `/english-lab/flashcard`
+- **Deskripsi:** Alat hafalan kosa kata interaktif yang menarik kata-kata simpanan pengguna dari *Vocabulary Bank*.
+- **Fitur:**
+  - **Tebak Arti**: Menampilkan kata bahasa Inggris, pengguna membalik kartu untuk melihat maknanya.
+  - **Tebak Kata**: Menampilkan definisi, pengguna mengetikkan kata yang dimaksud.
+  - **Dikte (Listening)**: Mengujikan pendengaran dan penulisan (*spelling*) menggunakan TTS dan Input Suara.
+  - **Algoritma Leitner Box (SM-2):** Mengatur interval kemunculan kartu menjadi 1, 2, 4, 7, atau 14 hari berdasarkan ketepatan jawaban.
+
+### 13.3 Everyday Dialogue Simulator
+- **Halaman:** `/english-lab/dialogue-simulator`
+- **API:** `/api/dialogue-simulator`, `/api/dialogue-simulator/feedback`
+- **Deskripsi:** Modul roleplay (bermain peran) interaktif bersama agen AI untuk melatih percakapan bahasa Inggris lisan (Speaking).
+- **Fitur:**
+  - 8 Skenario Dunia Nyata: Memesan Kopi, Wawancara Kerja, Check-in Bandara, dll.
+  - Obrolan waktu-nyata bergaya perpesanan (*WhatsApp bubble style*).
+  - Dukungan penuh Text-to-Speech (TTS) dan Speech-to-Text (STT/Mic).
+  - Skor Kelancaran (Fluency), Koreksi Grammar, Saran Kosa Kata (Vocabulary Suggestions), dan Tips Budaya (Cultural Tips) di akhir sesi percakapan.
+  - Histori otomatis tersimpan ke tabel `dialogue_sessions`.
+
+### 13.4 Listening Comprehension Test
+- **Halaman:** `/english-lab/listening-test`
+- **API:** `/api/listening-test/generate`
+- **Deskripsi:** Menguji kemampuan pemahaman audio bahasa Inggris sesuai standar CEFR.
+- **Fitur:**
+  - **Mode Kuis**: Mendengarkan audio lalu menjawab soal pilihan ganda.
+  - **Mode Dikte**: Mendengarkan kalimat lalu mengetik ulang persis seperti yang diucapkan.
+  - Pemilihan tingkat kesulitan (A1, A2, B1, B2).
+  - **Audio Player Interaktif**: Pengaturan kecepatan pemutaran (0.75x, 1x, 1.25x).
+  - **Unggah Audio Manual**: Mengizinkan pengguna mengunggah file `mp3/wav` sendiri untuk bahan latihan dikte (tanpa batasan sistem).
+  - Terhubung dengan pengaturan mesin TTS pengguna (Groq AI atau Browser Native).
+
+### 13.5 Modern Slang & Idiom Decoder
+- **Halaman:** `/english-lab/slang-decoder`
+- **API:** `/api/slang-decoder`
+- **Deskripsi:** Membantu pengguna menerjemahkan teks gaul (slang), singkatan internet, atau istilah Gen Z ke dalam bahasa Indonesia sehari-hari.
+- **Fitur:**
+  - Terjemahan frasa spesifik beserta asal-usul konteksnya (Misal: "No Cap", "Rizz", "Lowkey").
+  - Skor Tingkat Formalitas (1-5, Sangat Kasual hingga Formal).
+  - Padanan kata bahasa Inggris formal (*Formal Equivalent*).
+  - Simpan frasa unik langsung ke perpustakaan Idiom pribadi.
+  - Etalase "Trending Slang".
 
 ---
 
