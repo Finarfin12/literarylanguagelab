@@ -309,6 +309,23 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             </div>
           </Link>
 
+          {/* Standalone Toolkits Hub Link */}
+          <Link 
+            href="/tools"
+            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
+              pathname === '/tools' 
+                ? 'bg-purple-500/10 border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.15)]' 
+                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <Sparkles className={`w-5 h-5 ${pathname === '/tools' ? 'text-purple-400' : 'text-purple-500'}`} />
+              <span className={`font-bold ${pathname === '/tools' ? 'text-foreground' : 'text-muted-foreground'}`}>
+                All Toolkits Hub
+              </span>
+            </div>
+          </Link>
+
           {MENU_GROUPS.map((group) => {
             const Icon = group.icon;
             const isOpen = openGroups[group.title];
