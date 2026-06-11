@@ -143,29 +143,76 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   }, [prefs?.display?.keyboard_shortcuts]);
 
   // Text-to-Speech logic
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   useEffect(() => {
     return () => {
       window.speechSynthesis.cancel();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     };
   }, []);
 
-  const toggleSpeech = (text: string, index: number) => {
+  const toggleSpeech = async (text: string, index: number) => {
     if (speakingIndex === index) {
       window.speechSynthesis.cancel();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
       setSpeakingIndex(null);
       return;
     }
     
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    utterance.rate = 0.85; // Slightly slower for beginners
-    
-    utterance.onend = () => setSpeakingIndex(null);
-    utterance.onerror = () => setSpeakingIndex(null);
-    
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
     setSpeakingIndex(index);
-    window.speechSynthesis.speak(utterance);
+    
+    const provider = prefs?.reading?.tts_provider || "browser";
+
+    if (provider === "groq") {
+      try {
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+        if (!res.ok) throw new Error("TTS failed");
+        
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audioRef.current = audio;
+        
+        audio.onended = () => {
+          setSpeakingIndex(null);
+          URL.revokeObjectURL(url);
+        };
+        audio.onerror = () => {
+          setSpeakingIndex(null);
+          URL.revokeObjectURL(url);
+        };
+        
+        await audio.play();
+      } catch (err) {
+        console.error("Groq TTS Error:", err);
+        setSpeakingIndex(null);
+      }
+    } else {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.85; // Slightly slower for beginners
+      
+      utterance.onend = () => setSpeakingIndex(null);
+      utterance.onerror = () => setSpeakingIndex(null);
+      
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   // Quiz Intersection Observer (Detect Chapter Changes)

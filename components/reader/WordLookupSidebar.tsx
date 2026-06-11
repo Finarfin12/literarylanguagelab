@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, BookOpen, BookmarkPlus, Loader2, Globe, Wind, Sparkles, Languages, Music, Quote, PenTool, GitMerge, Hourglass, Network, Volume2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import Swal from "sweetalert2";
@@ -164,13 +164,71 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
     }
   };
 
-  const speakWord = () => {
-    if (!word || typeof window === "undefined" || !window.speechSynthesis) return;
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  const speakWord = async () => {
+    if (!word || typeof window === "undefined") return;
+    
+    let ttsProvider = "browser";
+    try {
+      const saved = localStorage.getItem("user_preferences");
+      if (saved) {
+        const p = JSON.parse(saved);
+        if (p.reading?.tts_provider) ttsProvider = p.reading.tts_provider;
+      }
+    } catch(e) {}
+
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(word);
-    utterance.lang = "en-US";
-    utterance.rate = 0.9;
-    window.speechSynthesis.speak(utterance);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+
+    if (ttsProvider === "groq") {
+      try {
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: word })
+        });
+        if (!res.ok) throw new Error("TTS failed");
+        
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audioRef.current = audio;
+        
+        audio.onended = () => URL.revokeObjectURL(url);
+        audio.onerror = () => URL.revokeObjectURL(url);
+        
+        await audio.play();
+      } catch (err) {
+        console.error("Groq TTS Error:", err);
+        if (window.speechSynthesis) {
+          const utterance = new SpeechSynthesisUtterance(word);
+          utterance.lang = "en-US";
+          utterance.rate = 0.9;
+          window.speechSynthesis.speak(utterance);
+        }
+      }
+    } else {
+      if (window.speechSynthesis) {
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = "en-US";
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
   };
 
   if (!word) return null;
