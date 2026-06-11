@@ -95,6 +95,7 @@ const MENU_GROUPS = [
       { name: "Flashcard SRS", path: "/english-lab/flashcard" },
       { name: "Dialogue Simulator", path: "/english-lab/dialogue-simulator" },
       { name: "Listening Test", path: "/english-lab/listening-test" },
+      { name: "Pronunciation Clinic", path: "/tools/pronunciation-clinic" },
       { name: "Slang Decoder", path: "/english-lab/slang-decoder" },
     ]
   },
