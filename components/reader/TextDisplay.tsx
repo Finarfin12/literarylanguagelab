@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { MessageSquareQuote, Clock, Keyboard } from "lucide-react";
+import { MessageSquareQuote, Clock, Keyboard, Volume2, VolumeX } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
 import { createClient } from "@/utils/supabase/client";
@@ -28,6 +28,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const [showCompanion, setShowCompanion] = useState(false);
   const [culturalRefs, setCulturalRefs] = useState<CulturalReference[]>([]);
   const [prefs, setPrefs] = useState<any>(null);
+  const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Parse paragraphs (only if content is provided as string)
@@ -126,6 +127,32 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
     }
   }, [prefs?.display?.keyboard_shortcuts]);
 
+  // Text-to-Speech logic
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  const toggleSpeech = (text: string, index: number) => {
+    if (speakingIndex === index) {
+      window.speechSynthesis.cancel();
+      setSpeakingIndex(null);
+      return;
+    }
+    
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.85; // Slightly slower for beginners
+    
+    utterance.onend = () => setSpeakingIndex(null);
+    utterance.onerror = () => setSpeakingIndex(null);
+    
+    setSpeakingIndex(index);
+    window.speechSynthesis.speak(utterance);
+  };
+
   // Determine dynamic styles based on preferences
   const readPrefs = prefs?.reading || {};
   const displayPrefs = prefs?.display || {};
@@ -223,6 +250,17 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                     <p className={`flex-1 ${isHeading ? 'mt-14 mb-8 text-center text-3xl font-bold' : isVerse ? 'my-8 whitespace-pre-line text-center italic' : 'my-6 text-left [text-indent:2rem] md:text-justify'}`}>
                       <CulturalTextRenderer text={block.text} references={culturalRefs} />
                     </p>
+                    {!isHeading && (
+                      <div className="w-10 pt-2 shrink-0 flex justify-end">
+                        <button 
+                          onClick={() => toggleSpeech(block.text, index)}
+                          className={`p-2 rounded-full transition-all ${speakingIndex === index ? 'opacity-100 bg-brand/20 text-brand animate-pulse' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand'}`}
+                          title={speakingIndex === index ? "Stop Reading" : "Read Aloud"}
+                        >
+                          {speakingIndex === index ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })
@@ -235,6 +273,15 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                   <p className="flex-1 my-6 text-left [text-indent:2rem] md:text-justify">
                     <CulturalTextRenderer text={p} references={culturalRefs} />
                   </p>
+                  <div className="w-10 pt-2 shrink-0 flex justify-end">
+                    <button 
+                      onClick={() => toggleSpeech(p, idx)}
+                      className={`p-2 rounded-full transition-all ${speakingIndex === idx ? 'opacity-100 bg-brand/20 text-brand animate-pulse' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand'}`}
+                      title={speakingIndex === idx ? "Stop Reading" : "Read Aloud"}
+                    >
+                      {speakingIndex === idx ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
               ))
             )}

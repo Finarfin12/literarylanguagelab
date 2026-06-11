@@ -42,15 +42,34 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
   const [result, setResult] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [emoji, setEmoji] = useState<string | null>(null);
 
   const [cache, setCache] = useState<Record<string, string>>({});
+
+  const fetchEmoji = async (targetWord: string) => {
+    try {
+      const res = await fetch("/api/lookup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ word: targetWord, mode: "pictionary", contextSentence, title, author }),
+      });
+      const data = await res.json();
+      if (res.ok && data.result) {
+        setEmoji(data.result);
+      }
+    } catch (e) {
+      // ignore
+    }
+  };
 
   useEffect(() => {
     if (word) {
       setCache({});
       setResult(null);
       setSaved(false);
+      setEmoji(null);
       fetchAnalysis(word, "literary-focus", true);
+      fetchEmoji(word);
     }
   }, [word]);
 
@@ -158,7 +177,10 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
     <div className="flex flex-col h-full bg-background backdrop-blur-xl relative overflow-hidden">
       <div className="p-4 border-b border-border flex items-center justify-between z-10 relative">
         <div className="flex items-center gap-3">
-          <h2 className="text-xl font-serif font-bold text-foreground truncate max-w-[150px]">{word}</h2>
+          <h2 className="text-xl font-serif font-bold text-foreground truncate max-w-[150px] flex items-center gap-2">
+            {word}
+            {emoji && <span className="text-2xl ml-1">{emoji}</span>}
+          </h2>
           <button 
             onClick={speakWord} 
             className="p-1.5 bg-brand/10 text-brand rounded-full hover:bg-brand/20 transition-colors"
