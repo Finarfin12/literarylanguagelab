@@ -160,14 +160,6 @@ export const TOOLS: ToolConfig[] = [
     systemPrompt: "You are a literary thesaurus. Provide 5 highly literary, poetic, or archaic synonyms for the given word/phrase. Explain the subtle nuance of each synonym. Provide all your explanations and results in BOTH English and Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   },
   {
-    id: "cultural-context",
-    title: "Cultural Context Decoder",
-    description: "Pahami referensi budaya di balik teks.",
-    icon: "Globe",
-    type: "textarea",
-    systemPrompt: "Analyze the text and decode any hidden cultural, historical, or mythological references. Explain what they meant to the people of that era. Provide all your explanations and results in BOTH English and Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
-  },
-  {
     id: "nuance-detector",
     title: "Nuance Detector",
     description: "Deteksi nuansa tersembunyi dari sebuah kalimat.",
