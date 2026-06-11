@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         model: "canopylabs/orpheus-v1-english",
         input: text,
         voice: voice,
-        response_format: "mp3"
+        response_format: "wav"
       })
     });
 
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     
     return new NextResponse(audioBuffer, {
       headers: {
-        'Content-Type': 'audio/mpeg',
+        'Content-Type': 'audio/wav',
         'Cache-Control': 'public, max-age=86400',
       },
     });
