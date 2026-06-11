@@ -32,6 +32,11 @@ export default function InteractiveParagraph({
   const [loadingSimplified, setLoadingSimplified] = useState(false);
   const [loadingSyntax, setLoadingSyntax] = useState(false);
   
+  const simplifiedRef = useRef(false);
+  const loadingSimplifiedRef = useRef(false);
+  const syntaxTokensRef = useRef(false);
+  const loadingSyntaxRef = useRef(false);
+  
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -53,10 +58,11 @@ export default function InteractiveParagraph({
 
   // Fetch Simplified Text
   useEffect(() => {
-    if (!isBeginnerMode || !isVisible || simplifiedText || loadingSimplified || text.split(" ").length < 5) return;
+    if (!isBeginnerMode || !isVisible || simplifiedRef.current || loadingSimplifiedRef.current || text.split(" ").length < 5) return;
     
     let isMounted = true;
     const fetchSimplified = async () => {
+      loadingSimplifiedRef.current = true;
       setLoadingSimplified(true);
       try {
         const res = await fetch("/api/simplify-text", {
@@ -66,6 +72,7 @@ export default function InteractiveParagraph({
         });
         const data = await res.json();
         if (isMounted && data.simplifiedText) {
+          simplifiedRef.current = true;
           setSimplifiedText(data.simplifiedText);
         }
       } catch (e) {
@@ -76,14 +83,15 @@ export default function InteractiveParagraph({
     };
     fetchSimplified();
     return () => { isMounted = false; };
-  }, [isBeginnerMode, isVisible, beginnerLevel, simplifiedText, loadingSimplified, text]);
+  }, [isBeginnerMode, isVisible, beginnerLevel, text]); // removed loadingSimplified and simplifiedText to prevent infinite loops
 
   // Fetch Syntax
   useEffect(() => {
-    if (!showSyntax || syntaxTokens || loadingSyntax || text.split(" ").length < 2) return;
+    if (!showSyntax || syntaxTokensRef.current || loadingSyntaxRef.current || text.split(" ").length < 2) return;
     
     let isMounted = true;
     const fetchSyntax = async () => {
+      loadingSyntaxRef.current = true;
       setLoadingSyntax(true);
       try {
         const res = await fetch("/api/highlight-syntax", {
@@ -93,17 +101,21 @@ export default function InteractiveParagraph({
         });
         const data = await res.json();
         if (isMounted && data.tokens) {
+          syntaxTokensRef.current = true;
           setSyntaxTokens(data.tokens);
         }
       } catch (e) {
         console.error("Failed to fetch syntax", e);
       } finally {
-        if (isMounted) setLoadingSyntax(false);
+        if (isMounted) {
+          setLoadingSyntax(false);
+          loadingSyntaxRef.current = false;
+        }
       }
     };
     fetchSyntax();
     return () => { isMounted = false; };
-  }, [showSyntax, syntaxTokens, loadingSyntax, text]);
+  }, [showSyntax, text]); // removed loadingSyntax and syntaxTokens to prevent infinite loops
 
   // Render Syntax Mode
   if (showSyntax) {
