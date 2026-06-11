@@ -366,17 +366,6 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
             }} 
           />
         )}
-        {activeSidebar === "companion" && (
-          <ReadingCompanionSidebar
-            textId={textId}
-            title={title}
-            author={author}
-            onClose={() => {
-              setActiveSidebar(null);
-              setShowCompanion(false);
-            }}
-          />
-        )}
       </div>
 
       {/* Quiz Modal Overlay */}
