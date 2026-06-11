@@ -43,6 +43,10 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 ### 3. Alat Interaktif & Permainan Edukasi
 - **Reading Companion Pop-up**: Diskusikan teks apa pun secara seketika dengan asisten kecerdasan buatan melalui panel interaktif yang melayang saat membaca.
 - **In-Reader Sentence Analysis**: Blok kalimat apa pun saat membaca buku untuk memunculkan popup ✨ Analisis, yang akan langsung membedah Terjemahan, Tata Bahasa (dengan anatomi visual), serta mendeteksi Idiom & Kiasan.
+- **Graded Reader Mode (Simplify B1)**: Fitur yang mampu menulis ulang (menyederhanakan) teks sastra kuno menjadi bahasa Inggris modern tingkat menengah yang mudah dipahami pemula.
+- **Pictionary Mode**: Menerjemahkan kata atau frasa sulit menjadi ikon/emoji visual.
+- **Text-to-Speech (Read Aloud)**: Dengarkan pengucapan kalimat/paragraf menggunakan fitur pembaca otomatis untuk melatih *listening*.
+- **Comprehension Quizzes**: Kuis pemahaman dinamis yang muncul secara otomatis setiap kali Anda selesai membaca satu bab.
 - **Alter Ego Chat**: Berbincang langsung dengan agen virtual yang memerankan penulis legendaris.
 - **Story Quiz**: Permainan kuis di mana sistem membuat cerita pendek fiksi dari daftar kosa kata yang sedang Anda pelajari.
 - **Translation Workshop**: Layar terbelah (split-screen) untuk menerjemahkan teks dengan umpan balik otomatis dari kecerdasan buatan (Equivalence, Register, Back-Translation).
@@ -51,6 +55,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 
 ### 4. Vocabulary Bank & Spaced Repetition
 - Simpan kosa kata apa pun yang Anda temui saat membaca buku.
+- **Interactive Flashcards**: Sistem kartu *flashcard* 3D interaktif (bolak-balik) untuk menguji ingatan Anda atas kosa kata yang dikumpulkan.
 - **Spaced Repetition Algorithm**: Sistem pengulangan cerdas yang akan mengingatkan Anda untuk mengulang (review) suatu kata tepat sebelum Anda hampir melupakannya.
 - Pantau statistik dan grafik pertumbuhan penguasaan kosa kata.
 
