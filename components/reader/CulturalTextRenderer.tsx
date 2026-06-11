@@ -89,22 +89,22 @@ function CulturalTooltip({ reference, text }: { reference: CulturalReference, te
       </span>
       
       {show && (
-        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 z-50 animate-in fade-in zoom-in-95 duration-200">
-          <span className="block bg-card text-foreground text-sm border border-border shadow-xl rounded-2xl p-4 text-left leading-relaxed font-sans">
+        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-80 z-[100] animate-in fade-in zoom-in-95 duration-200">
+          <span className="block bg-background dark:bg-zinc-900 text-foreground text-sm border border-border shadow-2xl rounded-2xl p-5 text-left leading-relaxed font-sans">
             <span className="flex items-center gap-2 mb-2 text-amber-600 font-bold">
               <BookOpen className="w-4 h-4" /> Cultural Context
             </span>
             <span className="block mb-2 font-serif text-base">{reference.explanation}</span>
             {reference.indonesian_equivalent && (
-              <span className="block pt-2 mt-2 border-t border-border">
+              <span className="block pt-3 mt-3 border-t border-border">
                 <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">Padanan Indonesia</span>
                 <span className="font-medium text-emerald-600">"{reference.indonesian_equivalent}"</span>
               </span>
             )}
-            <span className="block mt-2 text-xs text-muted-foreground italic">Origin: {reference.origin}</span>
+            <span className="block mt-3 text-xs text-muted-foreground italic">Origin: {reference.origin}</span>
           </span>
-          <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-8 border-transparent border-t-border border-b-0" />
-          <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-[2px] border-8 border-transparent border-t-card border-b-0" />
+          <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-[10px] border-transparent border-t-border border-b-0" />
+          <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-[2px] border-[10px] border-transparent border-t-background dark:border-t-zinc-900 border-b-0" />
         </span>
       )}
     </span>
