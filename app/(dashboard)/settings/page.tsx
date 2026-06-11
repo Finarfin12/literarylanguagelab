@@ -178,8 +178,15 @@ export default function SettingsPage() {
       }
 
       setAvatarUrl(finalAvatarUrl);
-      if (!message) setMessage("Pengaturan berhasil disimpan!");
       
+      Swal.fire({
+        icon: 'success',
+        title: 'Tersimpan!',
+        text: 'Pengaturan berhasil disimpan.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+      setMessage("");
     } catch (err: any) {
       console.error(err);
       setMessage(`Gagal menyimpan: ${err.message}`);
@@ -679,7 +686,7 @@ export default function SettingsPage() {
 
           {/* Action Footer */}
           <div className="pt-4 border-t border-foreground/10 flex justify-end">
-            <button type="submit" disabled={saving} className="px-6 py-3 bg-brand hover:bg-brand/90 text-brand-foreground rounded-xl font-medium transition-colors flex items-center gap-2 disabled:opacity-50 shadow-md">
+            <button type="button" onClick={handleSave} disabled={saving} className="px-6 py-3 bg-brand hover:bg-brand/90 text-brand-foreground rounded-xl font-medium transition-colors flex items-center gap-2 disabled:opacity-50 shadow-md">
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
               {saving ? "Menyimpan..." : "Simpan Pengaturan"}
             </button>

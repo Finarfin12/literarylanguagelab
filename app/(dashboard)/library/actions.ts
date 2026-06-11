@@ -41,3 +41,22 @@ export async function addText(formData: FormData) {
   revalidatePath("/library");
   redirect("/library");
 }
+
+export async function deleteText(textId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authorized");
+
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+  if (profile?.role !== 'admin') {
+    throw new Error("Admin privileges required");
+  }
+
+  const { error } = await supabase.from("texts").delete().eq("id", textId);
+  if (error) {
+    console.error("deleteText error:", error);
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/library");
+}

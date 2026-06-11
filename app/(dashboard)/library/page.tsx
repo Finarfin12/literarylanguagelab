@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { BookOpen, Plus, Sparkles, Search, Library as LibraryIcon } from "lucide-react";
 import TopActions from "@/components/TopActions";
+import DeleteTextButton from "@/components/library/DeleteTextButton";
 
 export default async function LibraryPage({ searchParams }: { searchParams: { q?: string } }) {
   const supabase = await createClient();
@@ -19,6 +20,15 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
   }
 
   const { data: texts, error, count } = await queryBuilder;
+
+  let isAdmin = false;
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    if (profile?.role === 'admin') {
+      isAdmin = true;
+    }
+  }
 
   return (
     <div className="p-8 max-w-5xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -66,11 +76,13 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {texts?.map((text) => (
-            <Link href={`/read/${text.id}`} key={text.id}>
-              <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 hover:bg-card shadow-sm hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand/10 transition-all duration-500 group relative overflow-hidden flex flex-col h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative z-10 flex-1 flex flex-col">
-                  <h2 className="text-2xl font-serif font-bold text-foreground group-hover:text-brand transition-colors line-clamp-2">{text.title}</h2>
+            <div key={text.id} className="relative group">
+              {isAdmin && <DeleteTextButton textId={text.id} title={text.title} />}
+              <Link href={`/read/${text.id}`} className="block h-full">
+                <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 hover:bg-card shadow-sm hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand/10 transition-all duration-500 relative overflow-hidden flex flex-col h-full">
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative z-10 flex-1 flex flex-col">
+                    <h2 className="text-2xl font-serif font-bold text-foreground group-hover:text-brand transition-colors line-clamp-2 pr-10">{text.title}</h2>
                   <p className="text-muted-foreground mt-2 italic flex-1">{text.author}</p>
                   
                   <div className="flex flex-wrap gap-2 mt-4">
@@ -88,7 +100,8 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
                   </div>
                 </div>
               </div>
-            </Link>
+              </Link>
+            </div>
           ))}
         </div>
       )}
