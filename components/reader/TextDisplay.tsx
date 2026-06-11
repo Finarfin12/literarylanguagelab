@@ -37,7 +37,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const [isBeginnerMode, setIsBeginnerMode] = useState(false);
   const [beginnerLevel, setBeginnerLevel] = useState("B1");
   const [beginnerLayout, setBeginnerLayout] = useState<"inline" | "below" | "split">("below");
-  const [showSyntax, setShowSyntax] = useState(false);
+  const [activeSyntaxIndex, setActiveSyntaxIndex] = useState<number | null>(null);
 
   // Quiz State
   const [quizData, setQuizData] = useState<any>(null);
@@ -346,7 +346,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                         isBeginnerMode={isBeginnerMode}
                         beginnerLevel={beginnerLevel}
                         beginnerLayout={beginnerLayout}
-                        showSyntax={showSyntax}
+                        showSyntax={activeSyntaxIndex === index}
                       />
                     </p>
                     {!isHeading && (
@@ -361,9 +361,9 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                           </button>
                         )}
                         <button 
-                          onClick={() => setShowSyntax(!showSyntax)}
-                          className={`p-2 rounded-full transition-all ${showSyntax ? 'opacity-100 bg-blue-500/20 text-blue-500' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500'}`}
-                          title={showSyntax ? "Tutup Bedah Sintaksis" : "Bedah Sintaksis"}
+                          onClick={() => setActiveSyntaxIndex(activeSyntaxIndex === index ? null : index)}
+                          className={`p-2 rounded-full transition-all ${activeSyntaxIndex === index ? 'opacity-100 bg-blue-500/20 text-blue-500' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500'}`}
+                          title={activeSyntaxIndex === index ? "Tutup Bedah Sintaksis" : "Bedah Sintaksis"}
                         >
                           <Search className="w-4 h-4" />
                         </button>
@@ -385,7 +385,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                         isBeginnerMode={isBeginnerMode}
                         beginnerLevel={beginnerLevel}
                         beginnerLayout={beginnerLayout}
-                        showSyntax={showSyntax}
+                        showSyntax={activeSyntaxIndex === idx}
                       />
                   </p>
                   <div className="w-10 pt-2 shrink-0 flex flex-col gap-2 items-center justify-start">
@@ -399,9 +399,9 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                       </button>
                     )}
                     <button 
-                      onClick={() => setShowSyntax(!showSyntax)}
-                      className={`p-2 rounded-full transition-all ${showSyntax ? 'opacity-100 bg-blue-500/20 text-blue-500' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500'}`}
-                      title={showSyntax ? "Tutup Bedah Sintaksis" : "Bedah Sintaksis"}
+                      onClick={() => setActiveSyntaxIndex(activeSyntaxIndex === idx ? null : idx)}
+                      className={`p-2 rounded-full transition-all ${activeSyntaxIndex === idx ? 'opacity-100 bg-blue-500/20 text-blue-500' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500'}`}
+                      title={activeSyntaxIndex === idx ? "Tutup Bedah Sintaksis" : "Bedah Sintaksis"}
                     >
                       <Search className="w-4 h-4" />
                     </button>
