@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { Groq } from "groq-sdk";
-import { config } from "@/app/api/config";
+import { getAIClient, getAIConfig } from "@/lib/ai-config";
 
 export async function POST(req: Request) {
   try {
@@ -10,9 +9,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No text provided" }, { status: 400 });
     }
 
-    const groq = new Groq({
-      apiKey: process.env.GROQ_API_KEY,
-    });
+    const config = await getAIConfig("tools");
+    const groq = await getAIClient("tools");
 
     const targetLevel = level || "B1";
 
