@@ -178,9 +178,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
         if (entry.isIntersecting) {
           const idx = parseInt(entry.target.getAttribute("data-block-idx") || "-1");
           // Ensure we actually scrolled to it (from bottom or top) and not just loaded the page
-          // A simple heuristic: if entry time is > 1000ms or if they scrolled far down.
-          // Or just record max index seen so far.
-          if (idx > 20 && idx > lastQuizHeadingIdx && entry.intersectionRatio > 0 && entry.time > 1500) { 
+          if (idx > 10 && idx > lastQuizHeadingIdx && entry.intersectionRatio > 0) { 
              triggerQuiz(idx);
           }
         }
@@ -349,7 +347,10 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                     {readPrefs.line_numbers && !isHeading && (
                       <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60" aria-hidden={displayPrefs.screen_reader ? "true" : "false"}>{index + 1}</span>
                     )}
-                    <p className={`flex-1 ${isHeading ? 'gutenberg-heading mt-14 mb-8 text-center text-3xl font-bold' : isVerse ? 'my-8 whitespace-pre-line text-center italic' : 'my-6 text-left [text-indent:2rem] md:text-justify'}`}>
+                    <p 
+                      className={`flex-1 ${isHeading ? 'gutenberg-heading mt-14 mb-8 text-center text-3xl font-bold' : isVerse ? 'my-8 whitespace-pre-line text-center italic' : 'my-6 text-left [text-indent:2rem] md:text-justify'}`}
+                      data-block-idx={index}
+                    >
                       <InteractiveParagraph 
                         text={block.text} 
                         culturalRefs={culturalRefs}
