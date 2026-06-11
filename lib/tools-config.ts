@@ -40,6 +40,14 @@ export const TOOLS: ToolConfig[] = [
   
   // Textarea Tools
   {
+    id: "pronunciation-clinic",
+    title: "Pronunciation Clinic",
+    description: "Uji keakuratan pelafalan (pronunciation) kalimat atau kata bahasa Inggris Anda.",
+    icon: "Mic",
+    type: "textarea",
+    systemPrompt: "" // Not used directly, custom UI handles logic
+  },
+  {
     id: "dialect-diver",
     title: "Dialect Diver",
     description: "Terjemahkan dialek/slang karakter novel ke Standard English & jelaskan dampaknya.",

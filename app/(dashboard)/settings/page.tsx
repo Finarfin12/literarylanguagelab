@@ -79,6 +79,7 @@ export default function SettingsPage() {
   const [languagePref, setLanguagePref] = useState("id");
   const [notificationPref, setNotificationPref] = useState(true);
   const [userRole, setUserRole] = useState("student");
+  const [sttEngine, setSttEngine] = useState("browser");
 
   // Preferences State
   const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
@@ -178,6 +179,7 @@ export default function SettingsPage() {
       }
 
       setAvatarUrl(finalAvatarUrl);
+      localStorage.setItem('stt_engine', sttEngine);
       
       Swal.fire({
         icon: 'success',
@@ -598,6 +600,18 @@ export default function SettingsPage() {
           {activeTab === "privacy" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
               
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-4">Voice & Audio Preferences</h3>
+                <div className="space-y-1 p-4 bg-foreground/5 rounded-xl border border-foreground/10">
+                  <label className="text-sm font-bold text-foreground">Speech-to-Text Engine</label>
+                  <p className="text-xs text-muted-foreground mb-3">Pilih mesin pendeteksi suara untuk dikte dan tes pelafalan.</p>
+                  <select value={sttEngine} onChange={e => setSttEngine(e.target.value)} className="w-full bg-background border border-foreground/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand">
+                    <option value="browser">Browser Native (Offline, Sangat Cepat)</option>
+                    <option value="whisper">Groq Whisper AI (Sangat Akurat)</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
                 <h3 className="text-lg font-bold text-foreground mb-4">Manajemen Data</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">

@@ -7,6 +7,7 @@ import { Loader2, ArrowLeft, Play, Copy, Volume2, VolumeX, Download } from "luci
 import ReactMarkdown from "react-markdown";
 import { TOOLS } from "@/lib/tools-config";
 import GraphViewer from "@/components/GraphViewer";
+import PronunciationLab from "@/components/PronunciationLab";
 
 export default function ToolExecutionPage() {
   const { id } = useParams();
@@ -100,7 +101,10 @@ export default function ToolExecutionPage() {
         <p className="text-muted-foreground mt-2 text-lg">{tool.description}</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-8">
+      {tool.id === "pronunciation-clinic" ? (
+        <PronunciationLab />
+      ) : (
+        <div className="grid grid-cols-1 gap-8">
         <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
           
@@ -172,6 +176,7 @@ export default function ToolExecutionPage() {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }
