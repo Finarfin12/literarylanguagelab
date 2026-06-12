@@ -138,8 +138,8 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
-          <div className="bg-card shadow-sm backdrop-blur-md border border-brand/20 rounded-3xl p-6 shadow-lg relative overflow-hidden group flex-1 flex flex-col justify-center">
+        <div className="flex flex-col gap-4 h-full">
+          <div className="bg-card shadow-sm backdrop-blur-md border border-brand/20 rounded-3xl p-6 shadow-lg relative overflow-hidden group flex flex-col justify-center min-h-[180px]">
             <div className="absolute inset-0 bg-gradient-to-br from-brand/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="relative z-10 text-center">
               <RefreshCcw className="w-12 h-12 text-brand mx-auto mb-4" />
