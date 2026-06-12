@@ -31,6 +31,13 @@ If the text has no errors, return score 100 with empty corrections array. Always
 
 export async function POST(req: Request) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { text } = await req.json();
 
     if (!text || !text.trim()) {

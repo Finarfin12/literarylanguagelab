@@ -1,5 +1,6 @@
 import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
 import { NextResponse } from "next/server";
+import { createClient } from "@/utils/supabase/server";
 
 
 const APP_DOCS = `
@@ -124,6 +125,13 @@ Literary Language Lab adalah platform e-learning web yang membantu penutur bahas
 
 export async function POST(req: Request) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { messages } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {

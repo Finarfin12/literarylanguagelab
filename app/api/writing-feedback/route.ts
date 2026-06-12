@@ -44,6 +44,13 @@ Provide all explanations and feedback in Indonesian, but keep the original and c
 
 export async function POST(req: Request) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { text } = await req.json();
 
     if (!text || text.trim() === "") {

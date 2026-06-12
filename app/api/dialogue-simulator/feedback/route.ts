@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { createClient } from "@/utils/supabase/server";
 
 const FEEDBACK_PROMPT = `You are an expert English language tutor analyzing a student's spoken English from a roleplay conversation. The student is an Indonesian learner.
 
@@ -31,6 +32,13 @@ Response format:
 
 export async function POST(req: Request) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { scenario, userMessages } = await req.json();
 
     if (!userMessages || userMessages.length === 0) {
