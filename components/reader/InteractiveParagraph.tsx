@@ -226,23 +226,24 @@ export default function InteractiveParagraph({
 
   // Render Inspect Mode
   if (isInspectMode && onSentenceInspect) {
-    // Split text into sentences using basic punctuation
-    // This regex looks for punctuation followed by space, or end of string
-    const sentences = text.match(/[^.!?]+[.!?]+(\s|$)|[^.!?]+$/g) || [text];
+    // Split text into sentences safely using lookbehind to avoid dropping text
+    const sentences = text.split(/(?<=[.!?]["']?)\s+/).filter(Boolean);
     
     return (
       <div ref={containerRef}>
         {sentences.map((sentence, idx) => (
-          <span 
-            key={idx} 
-            onClick={(e) => {
-              e.stopPropagation();
-              onSentenceInspect(sentence.trim());
-            }}
-            className="cursor-pointer hover:bg-brand/20 active:bg-brand/30 transition-colors rounded-md decoration-brand/30 underline decoration-dotted underline-offset-4"
-            title="Inspect Sentence"
-          >
-            <CulturalTextRenderer text={sentence} references={culturalRefs} />
+          <span key={idx}>
+            <span 
+              onClick={(e) => {
+                e.stopPropagation();
+                onSentenceInspect(sentence.trim());
+              }}
+              className="cursor-pointer hover:bg-brand/20 active:bg-brand/30 transition-colors rounded-md decoration-brand/30 underline decoration-dotted underline-offset-4"
+              title="Inspect Sentence"
+            >
+              <CulturalTextRenderer text={sentence} references={culturalRefs} />
+            </span>
+            {idx < sentences.length - 1 ? ' ' : ''}
           </span>
         ))}
       </div>
