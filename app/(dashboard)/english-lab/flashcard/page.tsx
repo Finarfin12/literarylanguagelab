@@ -11,9 +11,10 @@ interface VocabCard {
   word: string;
   definition: string;
   context_sentence: string | null;
-  srs_box: number;
-  srs_next_review: string;
-  srs_correct_streak: number;
+  repetition_count: number;
+  next_review_at: string;
+  interval: number;
+  efactor: number;
   is_collocation: boolean;
   text_id: string | null;
   position_offset: number | null;
@@ -55,21 +56,22 @@ export default function FlashcardSRSPage() {
 
     const { data: allVocab } = await supabase
       .from("vocabulary")
-      .select("id, word, definition, context_sentence, srs_box, srs_next_review, srs_correct_streak, is_collocation, text_id, position_offset")
+      .select("id, word, definition, context_sentence, repetition_count, next_review_at, interval, efactor, is_collocation, text_id, position_offset")
       .eq("user_id", user.id);
 
     if (allVocab) {
       const mapped = allVocab.map(v => ({
         ...v,
-        srs_box: v.srs_box ?? 0,
-        srs_next_review: v.srs_next_review ?? new Date().toISOString(),
-        srs_correct_streak: v.srs_correct_streak ?? 0,
+        repetition_count: v.repetition_count ?? 0,
+        next_review_at: v.next_review_at ?? new Date().toISOString(),
+        interval: v.interval ?? 0,
+        efactor: v.efactor ?? 2.5,
       }));
       setAllCards(mapped);
 
       const now = new Date();
-      const due = mapped.filter(c => new Date(c.srs_next_review) <= now)
-        .sort((a, b) => a.srs_box - b.srs_box)
+      const due = mapped.filter(c => new Date(c.next_review_at) <= now)
+        .sort((a, b) => a.repetition_count - b.repetition_count)
         .slice(0, 15);
       setDueCards(due);
     }
@@ -151,19 +153,33 @@ export default function FlashcardSRSPage() {
     setShowResult(true);
     setStats(prev => correct ? { ...prev, correct: prev.correct + 1 } : { ...prev, wrong: prev.wrong + 1 });
 
-    // Update SRS in Supabase
+    // Update SRS via API
     setUpdating(true);
-    const newBox = correct ? Math.min(current.srs_box + 1, 4) : 0;
-    const newStreak = correct ? current.srs_correct_streak + 1 : 0;
-    const intervalDays = BOX_INTERVALS[newBox];
-    const nextReview = new Date();
-    nextReview.setDate(nextReview.getDate() + intervalDays);
+    let quality = 0;
+    if (correct) {
+      // Dikte mode harder => higher quality if correct
+      if (mode === "dictation" || mode === "guess-meaning") quality = 4;
+      else if (mode === "guess-word" || mode === "collocation") quality = 5;
+      else quality = 3;
+    } else {
+      quality = 1;
+    }
 
-    await supabase.from("vocabulary").update({
-      srs_box: newBox,
-      srs_correct_streak: newStreak,
-      srs_next_review: nextReview.toISOString(),
-    }).eq("id", current.id);
+    try {
+      await fetch('/api/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vocabId: current.id,
+          quality,
+          lastInterval: current.interval,
+          lastRepetition: current.repetition_count,
+          lastEaseFactor: current.efactor
+        })
+      });
+    } catch (e) {
+      console.error(e);
+    }
     setUpdating(false);
   };
 
@@ -204,7 +220,7 @@ export default function FlashcardSRSPage() {
         <div className="bg-card border border-border rounded-2xl p-6 text-left max-w-md mx-auto">
           <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2"><Brain className="w-4 h-4" /> Distribusi Kata</h3>
           {BOX_LABELS.map((label, i) => {
-            const count = allCards.filter(c => c.srs_box === i).length;
+            const count = allCards.filter(c => Math.min(c.repetition_count, 4) === i).length;
             const pct = allCards.length > 0 ? (count / allCards.length) * 100 : 0;
             return (
               <div key={i} className="flex items-center gap-3 mb-2">

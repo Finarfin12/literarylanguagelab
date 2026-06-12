@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BookOpen, BookMarked, RefreshCcw, Flame, CheckCircle2, TrendingUp } from "lucide-react";
 import VocabChart from "@/components/dashboard/VocabChart";
 import JourneyWidget from "@/components/dashboard/JourneyWidget";
+import DailyPracticeWidget from "@/components/dashboard/DailyPracticeWidget";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -119,6 +120,10 @@ export default async function DashboardPage() {
       </div>
 
       {/* Reading Journey Widget */}
+      <div className="mb-8">
+        <DailyPracticeWidget />
+      </div>
+
       <div className="mb-8">
         <JourneyWidget />
       </div>

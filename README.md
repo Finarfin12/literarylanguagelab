@@ -61,7 +61,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - Simpan kosa kata apa pun yang Anda temui saat membaca buku.
 - **Idiom Library & Glossary Builder**: Direktori khusus penyimpan daftar idiom bahasa Inggris beserta terjemahan kontekstualnya, serta alat pembangun glosarium kustom per buku bacaan.
 - **Cultural Context Library**: Ensiklopedia tempat pengguna dapat mengelola referensi sejarah dan mitologi klasik yang dapat dilacak secara otomatis di dalam teks bacaan.
-- **Interactive Flashcards**: Sistem kartu *flashcard* 3D interaktif (bolak-balik) untuk menguji ingatan Anda atas kosa kata yang dikumpulkan.
+- **Interactive Flashcards & SRS Unification**: Sistem kartu *flashcard* 3D terpadu menggunakan algoritma Spaced Repetition SM-2 untuk menguji ingatan Anda atas kosa kata yang dikumpulkan. Terintegrasi langsung dengan 4 mode belajar: Standard, Context, Dictation, dan Listening.
 - **Contextual Review Mode**: Mengingat kata dengan lebih baik melalui mode flashcard yang menampilkan kembali paragraf sastra utuh (lengkap dengan fitur Deep Link "Re-read Chapter") secara real-time.
 - **Spaced Repetition Algorithm**: Sistem pengulangan cerdas yang akan mengingatkan Anda untuk mengulang (review) suatu kata tepat sebelum Anda hampir melupakannya.
 - Pantau statistik dan grafik pertumbuhan penguasaan kosa kata.
@@ -80,6 +80,10 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Ekspor Data Menyeluruh**: Unduh seluruh daftar Vocabulary Bank, Riwayat Bacaan, dan Hasil Terjemahan (Translation Submissions) Anda ke dalam format CSV.
 - **Manajemen Privasi & Hapus Akun**: Kontrol penuh atas data Anda melalui menu Pengaturan Privasi, termasuk kemampuan untuk menghapus akun secara permanen.
 - **Developer Mode**: Fitur tersembunyi khusus Administrator untuk mengakses alat bantu *debugging*.
+
+### 11. Profile & Gamification
+- **Dashboard (/dashboard):** statistik (streak, teks selesai, review mingguan, total kosa kata), grafik pertumbuhan. Termasuk fitur **Daily Practice** yang menampilkan 3 misi mikro harian: *Word of the Day*, *Grammar Byte* (berdasarkan pola kelemahan personal), dan *Review Nudge*.
+- **Profile (/profile):** avatar, XP, streak, vocab count, achievements
 
 ### 7. English Lab (General English Learning)
 Fitur pembelajaran bahasa Inggris umum yang dirancang bagi mereka yang ingin berlatih bahasa Inggris sehari-hari tanpa harus selalu membaca sastra berat.

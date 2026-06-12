@@ -80,16 +80,16 @@ Literary Language Lab adalah platform e-learning web yang membantu penutur bahas
 - **Idiom Library (/idioms):** koleksi idiom sastra dengan arti, asal-usul, contoh kalimat
 
 ### 11. Profile & Gamification
-- **Dashboard (/dashboard):** statistik (streak, teks selesai, review mingguan, total kosa kata), grafik pertumbuhan
+- **Dashboard (/dashboard):** statistik (streak, teks selesai, review mingguan, total kosa kata), grafik pertumbuhan. Terdapat juga fitur "Daily Practice" yang menampilkan 3 misi harian: Word of the Day, Grammar Byte (berdasarkan kelemahan user), dan Review Nudge.
 - **Profile (/profile):** avatar, XP, streak, vocab count, achievements
 - **Public Portfolio (/p/:username):** profil publik dengan showcase terjemahan
 - **History (/history):** log aktivitas lengkap
-- **Settings (/settings):** edit profil, upload avatar
+- **Settings (/settings):** edit profil, upload avatar, toggle fitur seperti Writing Challenge.
 
 ### 12. English Lab (General English)
 - Kumpulan fitur untuk berlatih bahasa Inggris sehari-hari.
 - **Grammar Clinic (/english-lab/grammar-clinic):** Cek grammar teks dengan skor & penjelasan.
-- **Flashcard SRS (/english-lab/flashcard):** Hafalkan kosa kata dengan metode Leitner Box interaktif.
+- **Flashcard SRS (/english-lab/flashcard):** Hafalkan kosa kata dengan metode SM-2 tersinkronisasi. Dilengkapi mode Standard, Context (review paragraf asli dari buku), Dictation, dan Listening.
 - **Dialogue Simulator (/english-lab/dialogue-simulator):** Berlatih ngobrol langsung dengan AI di berbagai skenario kehidupan nyata.
 - **Listening Test (/english-lab/listening-test):** Uji pendengaran (kuis & dikte) dengan audio AI atau upload manual.
 - **Slang Decoder (/english-lab/slang-decoder):** Terjemahkan bahasa gaul internet / Gen Z ke bahasa Indonesia kasual.
