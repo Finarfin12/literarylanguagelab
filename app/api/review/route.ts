@@ -62,11 +62,15 @@ export async function POST(req: Request) {
 
     if (error) throw error;
 
-    // Award XP for review
+    // Award XP and Log Activity for review
     const { data: profile } = await supabase.from("profiles").select("xp").eq("id", user.id).single();
     if (profile) {
       await supabase.from("profiles").update({ xp: profile.xp + 2 }).eq("id", user.id);
     }
+    await supabase.from("activity_logs").insert({
+      user_id: user.id,
+      action_type: "reviewed_vocab",
+    });
 
     // Auto-complete Quests
     try {
