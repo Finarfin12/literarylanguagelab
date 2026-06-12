@@ -18,6 +18,34 @@ export function useSpeechToText(options?: STTOptions) {
   const audioChunksRef = useRef<Blob[]>([]);
   const recognitionRef = useRef<any>(null);
 
+  const processWhisper = useCallback(async (audioBlob: Blob) => {
+    setIsProcessing(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', audioBlob, 'audio.webm');
+
+      const response = await fetch('/api/stt', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Gagal memproses audio di server');
+      }
+
+      const data = await response.json();
+      setTranscript(data.text);
+      if (options?.onComplete) {
+        options.onComplete(data.text);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [options]);
+
   const startRecording = useCallback(() => {
     setError(null);
     setTranscript('');
@@ -148,7 +176,7 @@ export function useSpeechToText(options?: STTOptions) {
           setError("Gagal mengakses mikrofon. Pastikan Anda memberikan izin akses.");
         });
     }
-  }, []);
+  }, [processWhisper]);
 
   const stopRecording = useCallback(() => {
     const engine = (localStorage.getItem('stt_engine') as STTEngine) || 'browser';
@@ -161,34 +189,6 @@ export function useSpeechToText(options?: STTOptions) {
     
     setIsRecording(false);
   }, [isRecording]);
-
-  const processWhisper = async (audioBlob: Blob) => {
-    setIsProcessing(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', audioBlob, 'audio.webm');
-
-      const response = await fetch('/api/stt', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Gagal memproses audio di server');
-      }
-
-      const data = await response.json();
-      setTranscript(data.text);
-      if (options?.onComplete) {
-        options.onComplete(data.text);
-      }
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
 
   // Trigger onComplete for Browser API since onend closure is tricky
   const prevRecording = useRef(false);
