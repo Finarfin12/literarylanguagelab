@@ -5,63 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HelpCircle, MessageSquare } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 export default function TopActions({ className }: { className?: string }) {
   const supabase = createClient();
   const pathname = usePathname();
-  const [unreadMessages, setUnreadMessages] = useState(0);
-
-  useEffect(() => {
-    let channel: any = null;
-
-    async function initMessages() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      // Fetch initial unread count
-      const { count, error } = await supabase
-        .from('direct_messages')
-        .select('*', { count: 'exact', head: true })
-        .eq('receiver_id', user.id)
-        .eq('is_read', false);
-
-      if (!error && count !== null) {
-        setUnreadMessages(count);
-      }
-
-      // Subscribe to real-time changes with a unique channel name per instance
-      const channelName = `direct_messages_topactions_${Math.random().toString(36).substring(2)}`;
-      
-      channel = supabase.channel(channelName)
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'direct_messages',
-            filter: `receiver_id=eq.${user.id}`
-          },
-          (payload) => {
-            // Re-fetch count on any change (insert/update)
-            supabase
-              .from('direct_messages')
-              .select('*', { count: 'exact', head: true })
-              .eq('receiver_id', user.id)
-              .eq('is_read', false)
-              .then(({ count }) => {
-                if (count !== null) setUnreadMessages(count);
-              });
-          }
-        )
-        .subscribe();
-    }
-
-    initMessages();
-
-    return () => {
-      if (channel) supabase.removeChannel(channel);
-    };
-  }, []);
+  const unreadMessages = useUnreadMessages();
 
   // Hide global TopActions on specific pages that manually place it
   if (!className && pathname && (pathname.startsWith('/library') || pathname.match(/^\/gutenberg\/.+/))) {
@@ -69,7 +18,7 @@ export default function TopActions({ className }: { className?: string }) {
   }
 
   return (
-    <div className={className || "absolute top-4 right-4 z-30 flex items-center gap-3"}>
+    <div className={className || "hidden lg:flex absolute top-4 right-4 z-30 items-center gap-3"}>
       {/* Messages Inbox Button */}
       <Link
         href="/messages"

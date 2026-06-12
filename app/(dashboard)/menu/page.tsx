@@ -3,13 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { MENU_GROUPS } from "@/lib/menu-config";
-import { User, Settings, LogOut, ChevronRight } from "lucide-react";
+import { User, Settings, LogOut, ChevronRight, HelpCircle, MessageSquare } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import AnimatedPage from "@/components/AnimatedPage";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 export default function MobileMenuPage() {
   const [userProfile, setUserProfile] = useState<any>(null);
   const supabase = createClient();
+  const unreadMessages = useUnreadMessages();
 
   useEffect(() => {
     async function loadUser() {
@@ -43,9 +45,23 @@ export default function MobileMenuPage() {
             )}
           </div>
           <div>
-            <h2 className="font-bold text-lg text-foreground leading-tight">
-              {userProfile?.name || "Loading..."}
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="font-bold text-lg text-foreground leading-tight">
+                {userProfile?.name || "Loading..."}
+              </h2>
+              <Link
+                href="/messages"
+                className="relative flex items-center justify-center w-8 h-8 bg-muted rounded-full text-muted-foreground hover:text-brand hover:bg-brand/10 transition-colors"
+                title="Inbox Pesan"
+              >
+                <MessageSquare className="w-4 h-4" />
+                {unreadMessages > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white shadow-sm ring-2 ring-card animate-in zoom-in">
+                    {unreadMessages > 99 ? '99+' : unreadMessages}
+                  </span>
+                )}
+              </Link>
+            </div>
             <p className="text-sm text-muted-foreground">
               {userProfile?.email || "..."}
             </p>
@@ -87,14 +103,18 @@ export default function MobileMenuPage() {
       </div>
 
       {/* Footer Actions */}
-      <div className="mt-8 grid grid-cols-2 gap-4">
+      <div className="mt-8 grid grid-cols-2 gap-3 pb-8">
         <Link href="/settings" className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
           <Settings className="w-4 h-4" />
           Settings
         </Link>
+        <Link href="/help" className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
+          <HelpCircle className="w-4 h-4" />
+          Bantuan
+        </Link>
         <button 
           onClick={handleSignOut}
-          className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-rose-500/20 bg-rose-500/10 text-rose-500 font-medium hover:bg-rose-500 hover:text-white transition-colors"
+          className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-rose-500/20 bg-rose-500/10 text-rose-500 font-medium hover:bg-rose-500 hover:text-white transition-colors col-span-2"
         >
           <LogOut className="w-4 h-4" />
           Logout
