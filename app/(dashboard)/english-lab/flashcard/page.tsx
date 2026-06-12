@@ -321,8 +321,8 @@ export default function FlashcardSRSPage() {
 
         {/* Box indicator */}
         <div className="flex items-center justify-between mb-6">
-          <span className={`text-[10px] font-bold px-3 py-1 rounded-full ${BOX_COLORS[currentCard.srs_box]} text-white uppercase tracking-wider`}>
-            Box {currentCard.srs_box} — {BOX_LABELS[currentCard.srs_box]}
+          <span className={`text-[10px] font-bold px-3 py-1 rounded-full ${BOX_COLORS[Math.min(currentCard.repetition_count, 4)]} text-white uppercase tracking-wider`}>
+            Level {Math.min(currentCard.repetition_count, 4)} — {BOX_LABELS[Math.min(currentCard.repetition_count, 4)]}
           </span>
           <div className="flex items-center gap-2">
             {currentCard.context_sentence && (
@@ -488,7 +488,7 @@ export default function FlashcardSRSPage() {
         <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2"><Brain className="w-3 h-3" /> Distribusi Kata Anda</h3>
         <div className="flex items-center gap-1">
           {BOX_LABELS.map((label, i) => {
-            const count = allCards.filter(c => c.srs_box === i).length;
+            const count = allCards.filter(c => Math.min(c.repetition_count, 4) === i).length;
             const pct = allCards.length > 0 ? Math.max((count / allCards.length) * 100, 2) : 0;
             return (
               <div key={i} className="flex-1 text-center group relative" title={`${label}: ${count} kata`}>
