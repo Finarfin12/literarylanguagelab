@@ -57,7 +57,20 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Writing Prompts (Input → Output Loop)**: Melengkapi siklus membaca dengan tantangan merangkum cerita menggunakan kosakata yang baru dipelajari, dievaluasi langsung oleh AI (Grammar, Vocab, Coherence).
 - **All Toolkits Hub**: Etalase visual (*App Drawer*) interaktif yang menampung 30+ alat analisis AI mini, dilengkapi bilah pencarian pintar (*search bar*) dan filter berbasis kategori (Transformers, Extractors, Gamification, Lexicon).
 
-### 4. Vocabulary Bank, Lexicon & Spaced Repetition
+### 4. Bantuan & Panduan Otomatis (Settings)
+- Semua pengaturan preferensi bacaan, tampilan antarmuka (termasuk micro-animations), dan akses bantuan sudah disinkronisasi secara **otomatis**.
+- UI/UX responsif yang dapat menyesuaikan diri sesuai ukuran layar (penggunaan Bottom Navigation Bar otomatis di *mobile*).
+
+### 5. Liter AI (Reading Companion & Asisten Otomatis)
+- Asisten Liter AI bekerja sepenuhnya secara **otomatis** di setiap halaman bacaan. 
+- Mampu memberikan penjelasan kontekstual (Pop-up Companion) tanpa perlu menyalin teks secara manual.
+- Evaluasi penulisan dan analisis tata bahasa dilakukan seketika (otomatis) di latar belakang.
+
+### 6. Path Journey (Peta Pembelajaran Otomatis)
+- Sistem akan merekomendasikan jalur pembelajaran secara **otomatis** berdasarkan tes penempatan (Placement Test).
+- Semua progress dari latihan mikro (*Daily Practice*, kuis cerita) dilacak secara otomatis ke dalam *Journey Widget* tanpa perlu pembaruan manual.
+
+### 7. Vocabulary Bank, Lexicon & Spaced Repetition
 - Simpan kosa kata apa pun yang Anda temui saat membaca buku.
 - **Idiom Library & Glossary Builder**: Direktori khusus penyimpan daftar idiom bahasa Inggris beserta terjemahan kontekstualnya, serta alat pembangun glosarium kustom per buku bacaan.
 - **Cultural Context Library**: Ensiklopedia tempat pengguna dapat mengelola referensi sejarah dan mitologi klasik yang dapat dilacak secara otomatis di dalam teks bacaan.
@@ -95,9 +108,9 @@ Fitur pembelajaran bahasa Inggris umum yang dirancang bagi mereka yang ingin ber
 - **Listening Comprehension Test**: Menguji kemampuan pendengaran dengan mode kuis pilihan ganda dan dikte (mengetik teks dari audio). Anda bisa mengatur level kesulitan (CEFR A1-B2) atau bahkan mengunggah file audio manual Anda sendiri.
 - **Modern Slang Decoder**: Membantu memecahkan dan menerjemahkan kalimat gaul, singkatan internet, atau referensi budaya pop (Gen Z lingo) ke dalam bahasa Indonesia sehari-hari, lengkap dengan tingkat formalitas dan contoh penggunaannya.
 
-### 8. Reading Journey & Placement Test (Learning Path)
+### 10. Reading Journey & Placement Test (Learning Path)
 - **Placement Test**: Tes adaptif singkat untuk mengukur kemampuan bahasa Inggris (Reading, Listening, Grammar, Vocabulary) dan mendapatkan rekomendasi level CEFR secara otomatis.
-- **Reading Journey**: Jalur pembelajaran gamifikasi terstruktur (opsional/non-blocking) dari level A1 hingga C2. Menyediakan serangkaian "Quest" menggunakan berbagai alat di dalam Literary Lab untuk memandu pengguna mengembangkan kemahiran bahasanya secara bertahap.
+- **Reading Journey (Path Otomatis)**: Jalur pembelajaran gamifikasi terstruktur yang secara **otomatis** diperbarui berdasarkan penyelesaian tugas mikro Anda. Dari level A1 hingga C2, sistem melacak "Quest" dan menyajikan alat yang tepat tanpa navigasi membingungkan.
 
 ---
 

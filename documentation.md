@@ -141,13 +141,13 @@
   4. Klik lagi untuk menghentikan pemutaran.
 - **Catatan:** Fitur ini dapat dinonaktifkan sepenuhnya melalui Pengaturan → Reading Experience → Text-to-Speech. Jika dimatikan, ikon speaker tidak akan muncul.
 
-### 2.8 Listening Challenge from Literature
+### 2.8 Listening Challenge & Evaluasi Otomatis (Liter AI)
 - **Halaman:** `/read/[id]`
 - **Deskripsi:** Evaluasi komprehensif pendengaran (*listening*) dan berbicara (*speaking*) yang muncul otomatis setelah menyelesaikan setiap bab bacaan.
 - **Fitur:**
   - AI membacakan 3 pertanyaan pemahaman seputar plot cerita di bab yang baru saja dibaca.
   - Pengguna menjawab menggunakan mikrofon (*Voice STT*).
-  - AI memberikan penilaian (0-100) dan *feedback* dalam Bahasa Indonesia untuk akurasi jawaban dan kejelasan bahasa Inggris lisan pengguna.
+  - Evaluasi seketika (otomatis) dari **Liter AI** memberikan penilaian akurasi jawaban dan kejelasan (*pronunciation*).
   - Dapat diakses dengan mengeklik tombol "Listening Challenge" di modal kuis antar-bab, dan dapat dinonaktifkan di Pengaturan.
 
 ---
@@ -464,9 +464,15 @@ LingoWise adalah asisten kecerdasan buatan utama yang dapat membedah teks bahasa
 
 ---
 
-## 9. Komunitas, Forum & Gamifikasi
+## 9. Komunitas, Forum, Path Journey & Gamifikasi
 
-### 9.1 Discussion Board (Forum)
+Sistem ini didesain agar tidak hanya berfokus pada alat individu, tetapi juga mendorong keterlibatan, menjaga motivasi pembelajar secara konsisten, dan memandu progress secara otomatis (Path Journey).
+
+### 9.1 Path Journey & Penempatan Otomatis
+- **Placement Test:** Uji coba dinamis untuk menilai kemampuan pengguna (A1 - C2). Hasil tes secara **otomatis** mengatur peta jalan (*learning path*).
+- **Journey Widget (Peta Otomatis):** Jalur navigasi yang dipandu sepenuhnya secara sistem. Saat pengguna merampungkan tugas mikro, progress (*XP*, *Quest*) di *Dashboard* bergeser secara otomatis dan membuka level materi selanjutnya tanpa klik manual.
+
+### 9.2 Discussion Board (Forum)
 - **Halaman:** `/forum`
 - **Deskripsi:** Forum diskusi komunitas dengan 5 kategori:
   - **Literary Interpretation**: Diskusi makna sastra.
@@ -608,6 +614,15 @@ LingoWise adalah asisten kecerdasan buatan utama yang dapat membedah teks bahasa
 | High Contrast Mode | On/Off |
 | Screen Reader Support | On/Off |
 | Keyboard Shortcuts | On/Off |
+
+### 11.2 Pengaturan Preferensi, Tampilan, & Bantuan (Otomatis)
+- **Endpoint API:** `/api/profile/preferences`
+- **Tabel:** `profiles.preferences` (Kolom JSONB)
+- **Bantuan & UI/UX Otomatis:**
+  - **Animasi Otomatis:** Preferensi tampilan (`display.enable_animations`) dikendalikan secara tersentralisasi. Menyala/matikan di Settings secara otomatis akan mengubah respon UI seperti efek transisi `AnimatedPage` dan sentuhan *micro-animations*.
+  - **Integrasi Responsif:** UI merespons perangkat secara otomatis, menghapus sidebar di mobile dan menggunakan *Bottom Navigation Bar*, serta mengubah *sidebar* pembaca menjadi *Bottom Sheet*.
+  - **Asisten Liter AI Terpadu:** Bantuan cerdas (*Reading Companion*) bekerja sepenuhnya otomatis tanpa konfigurasi rumit, langsung menempel pada konteks teks yang Anda baca.
+  - **Sinkronisasi Bantuan:** Panduan awal dan dukungan teknis terkelola secara otomatis via menu *Settings / Help*.
 | Offline Mode (PWA) | On/Off |
 
 #### Developer Mode

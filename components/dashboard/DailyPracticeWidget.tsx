@@ -141,7 +141,7 @@ export default function DailyPracticeWidget() {
 
   return (
     <>
-      <div className="bg-gradient-to-br from-brand/10 to-transparent border border-brand/20 rounded-3xl p-6 shadow-sm relative overflow-hidden">
+      <div className="bg-gradient-to-br from-brand/10 to-transparent border border-brand/20 rounded-3xl p-6 shadow-sm relative overflow-hidden hover:-translate-y-1 hover:shadow-brand/20 transition-all duration-300">
         {allDone && (
           <div className="absolute -top-10 -right-10 opacity-20 rotate-12">
             <PartyPopper className="w-48 h-48 text-brand" />
@@ -165,7 +165,7 @@ export default function DailyPracticeWidget() {
           <button 
             onClick={handleStartWotd}
             disabled={activity?.wotd_completed}
-            className={`p-5 rounded-2xl border text-left transition-all ${activity?.wotd_completed ? 'bg-muted/50 border-transparent opacity-70' : 'bg-background border-border hover:border-brand/50 hover:shadow-md cursor-pointer'}`}
+            className={`p-5 rounded-2xl border text-left transition-all duration-300 ${activity?.wotd_completed ? 'bg-muted/50 border-transparent opacity-70' : 'bg-background border-border hover:border-brand/50 hover:shadow-md hover:-translate-y-1 cursor-pointer active:scale-[0.98]'}`}
           >
             <div className="flex items-center justify-between mb-3">
               <div className={`p-2 rounded-lg ${activity?.wotd_completed ? 'bg-emerald-500/10 text-emerald-500' : 'bg-blue-500/10 text-blue-500'}`}>
@@ -181,7 +181,7 @@ export default function DailyPracticeWidget() {
           <button 
             onClick={handleStartGrammar}
             disabled={activity?.grammar_completed}
-            className={`p-5 rounded-2xl border text-left transition-all ${activity?.grammar_completed ? 'bg-muted/50 border-transparent opacity-70' : 'bg-background border-border hover:border-brand/50 hover:shadow-md cursor-pointer'}`}
+            className={`p-5 rounded-2xl border text-left transition-all duration-300 ${activity?.grammar_completed ? 'bg-muted/50 border-transparent opacity-70' : 'bg-background border-border hover:border-brand/50 hover:shadow-md hover:-translate-y-1 cursor-pointer active:scale-[0.98]'}`}
           >
             <div className="flex items-center justify-between mb-3">
               <div className={`p-2 rounded-lg ${activity?.grammar_completed ? 'bg-emerald-500/10 text-emerald-500' : 'bg-orange-500/10 text-orange-500'}`}>
@@ -196,7 +196,7 @@ export default function DailyPracticeWidget() {
           {/* Activity 3: Review Nudge */}
           <Link 
             href="/english-lab/flashcard"
-            className={`p-5 rounded-2xl border text-left transition-all block ${activity?.review_completed ? 'bg-muted/50 border-transparent opacity-70' : 'bg-background border-border hover:border-brand/50 hover:shadow-md'}`}
+            className={`p-5 rounded-2xl border text-left transition-all duration-300 block ${activity?.review_completed ? 'bg-muted/50 border-transparent opacity-70' : 'bg-background border-border hover:border-brand/50 hover:shadow-md hover:-translate-y-1 active:scale-[0.98]'}`}
             onClick={() => {
               if (!activity?.review_completed) {
                 // We mark it completed optimistically when they click it

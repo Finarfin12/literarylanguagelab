@@ -147,7 +147,7 @@ export default function JourneyWidget() {
   const remaining = data.totalQuests - data.completedCount;
 
   return (
-    <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
+    <div className="bg-card border border-border rounded-3xl p-6 shadow-sm hover:-translate-y-1 hover:shadow-brand/20 transition-all duration-300">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -203,7 +203,7 @@ export default function JourneyWidget() {
             {quest.completed ? (
               <CheckCircle2 className="w-5 h-5 text-brand shrink-0" />
             ) : quest.id === nextQuest?.id ? (
-              <Link href={quest.toolPath} className="px-3 py-1.5 bg-brand text-white text-xs font-bold rounded-xl hover:shadow-md transition-all shrink-0 flex items-center gap-1">
+              <Link href={quest.toolPath} className="px-3 py-1.5 bg-brand text-white text-xs font-bold rounded-xl hover:shadow-md transition-all shrink-0 flex items-center gap-1 active:scale-[0.98]">
                 Mulai <ArrowRight className="w-3 h-3" />
               </Link>
             ) : (

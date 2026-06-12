@@ -5,6 +5,7 @@ import VocabChart from "@/components/dashboard/VocabChart";
 import JourneyWidget from "@/components/dashboard/JourneyWidget";
 import DailyPracticeWidget from "@/components/dashboard/DailyPracticeWidget";
 import WritingChallengeWidget from "@/components/dashboard/WritingChallengeWidget";
+import AnimatedPage from "@/components/AnimatedPage";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -75,7 +76,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="p-8 max-w-7xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <AnimatedPage className="p-4 lg:p-8 max-w-7xl mx-auto pb-24">
       <div className="mb-10">
         <h1 className="text-4xl font-serif font-bold text-foreground">
           Welcome back, {user?.user_metadata?.full_name || "Scholar"}
@@ -85,35 +86,35 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* Main Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
+      {/* Top Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm hover:-translate-y-1 hover:shadow-brand/20 transition-all duration-300 group">
           <div className="flex items-center gap-3 mb-3">
-            <Flame className="w-5 h-5 text-orange-500" />
+            <Flame className="w-5 h-5 text-orange-500 group-hover:animate-pulse" />
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Login Streak</h3>
           </div>
-          <p className="text-4xl font-serif font-bold text-foreground">{streak} <span className="text-xl text-muted-foreground font-sans font-normal">Hari</span></p>
+          <p className="text-4xl font-serif font-bold text-foreground">{streak} <span className="text-lg font-sans text-muted-foreground font-normal">Hari</span></p>
         </div>
-        
-        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
+
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm hover:-translate-y-1 hover:shadow-emerald-500/20 transition-all duration-300 group">
           <div className="flex items-center gap-3 mb-3">
-            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+            <CheckCircle2 className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Teks Selesai</h3>
           </div>
           <p className="text-4xl font-serif font-bold text-foreground">{completedTexts}</p>
         </div>
 
-        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm hover:-translate-y-1 hover:shadow-brand/20 transition-all duration-300 group">
           <div className="flex items-center gap-3 mb-3">
-            <TrendingUp className="w-5 h-5 text-brand" />
+            <TrendingUp className="w-5 h-5 text-brand group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Review Minggu Ini</h3>
           </div>
           <p className="text-4xl font-serif font-bold text-foreground">{reviewedThisWeek || 0}</p>
         </div>
 
-        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm hover:-translate-y-1 hover:shadow-purple-500/20 transition-all duration-300 group">
           <div className="flex items-center gap-3 mb-3">
-            <BookMarked className="w-5 h-5 text-purple-500" />
+            <BookMarked className="w-5 h-5 text-purple-500 group-hover:rotate-12 transition-transform" />
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Total Kosa Kata</h3>
           </div>
           <p className="text-4xl font-serif font-bold text-foreground">{vocabCount || 0}</p>
@@ -131,7 +132,7 @@ export default async function DashboardPage() {
 
       {/* Chart & Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-        <div className="lg:col-span-2 bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col min-h-[300px]">
+        <div className="lg:col-span-2 bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col min-h-[300px] hover:-translate-y-1 hover:shadow-brand/10 transition-all duration-300">
           <h3 className="text-lg font-bold text-foreground mb-6">Vocabulary Growth (7 Hari Terakhir)</h3>
           <div className="flex-1">
             <VocabChart data={chartData} />
@@ -139,13 +140,13 @@ export default async function DashboardPage() {
         </div>
 
         <div className="flex flex-col gap-4 h-full">
-          <div className="bg-card shadow-sm backdrop-blur-md border border-brand/20 rounded-3xl p-6 shadow-lg relative overflow-hidden group flex flex-col justify-center min-h-[180px]">
+          <div className="bg-card shadow-sm backdrop-blur-md border border-brand/20 rounded-3xl p-6 shadow-lg relative overflow-hidden group flex flex-col justify-center min-h-[180px] hover:-translate-y-1 hover:shadow-brand/30 transition-all duration-300">
             <div className="absolute inset-0 bg-gradient-to-br from-brand/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="relative z-10 text-center">
-              <RefreshCcw className="w-12 h-12 text-brand mx-auto mb-4" />
+              <RefreshCcw className="w-12 h-12 text-brand mx-auto mb-4 group-hover:rotate-180 transition-transform duration-700 ease-in-out" />
               <h3 className="text-xl font-bold text-foreground mb-2">Review Queue</h3>
               <p className="text-3xl font-serif font-bold text-foreground mb-4">{dueCount || 0} <span className="text-sm font-sans font-normal text-muted-foreground">kata menunggu</span></p>
-              <Link href="/review" className="block w-full py-3 bg-brand text-background font-bold rounded-xl hover:shadow-[0_0_15px_rgba(62,207,142,0.4)] transition-all">
+              <Link href="/review" className="block w-full py-3 bg-brand text-background font-bold rounded-xl hover:shadow-[0_0_15px_rgba(62,207,142,0.4)] transition-all active:scale-[0.98]">
                 Mulai Review
               </Link>
             </div>
@@ -165,6 +166,6 @@ export default async function DashboardPage() {
           <WritingChallengeWidget />
         </div>
       </div>
-    </div>
+    </AnimatedPage>
   );
 }

@@ -668,7 +668,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
       </div>
 
       {/* Sidebar Area for Word Lookup */}
-      <div className={`absolute top-0 right-0 w-full sm:w-[400px] h-full bg-background backdrop-blur-3xl border-l border-border transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 ${activeSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`fixed inset-x-0 bottom-0 h-[85vh] rounded-t-3xl md:absolute md:inset-auto md:top-0 md:right-0 md:w-[400px] md:h-full md:rounded-none bg-background backdrop-blur-3xl md:border-l border-t md:border-t-0 border-border transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_-10px_50px_rgba(0,0,0,0.5)] md:shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 ${activeSidebar ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}`}>
         {activeSidebar === "lookup" && (
           <WordLookupSidebar 
             word={selectedWord} 

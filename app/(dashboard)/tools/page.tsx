@@ -23,6 +23,8 @@ const CATEGORIES = [
   "Lexicon & Databases"
 ];
 
+import AnimatedPage from "@/components/AnimatedPage";
+
 export default function ToolsDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -93,7 +95,7 @@ export default function ToolsDashboardPage() {
   }, {} as Record<string, typeof allTools>);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto min-h-full animate-in fade-in duration-500">
+    <AnimatedPage className="p-4 lg:p-8 max-w-7xl mx-auto pb-24">
       <div className="mb-10">
         <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
           <Wrench className="w-8 h-8 text-brand" />
@@ -157,7 +159,7 @@ export default function ToolsDashboardPage() {
                       <Link 
                         key={tool.id} 
                         href={tool.path} 
-                        className={`bg-card shadow-sm backdrop-blur-md border border-border rounded-2xl p-6 hover:bg-muted transition-all group ${tool.borderClass}`}
+                        className={`bg-card shadow-sm backdrop-blur-md border border-border rounded-2xl p-6 hover:bg-muted transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98] group ${tool.borderClass}`}
                       >
                         <div className={`${tool.bgClass} w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                           <Icon className={`w-6 h-6 ${tool.colorClass}`} />
@@ -173,6 +175,6 @@ export default function ToolsDashboardPage() {
           })}
         </div>
       )}
-    </div>
+    </AnimatedPage>
   );
 }

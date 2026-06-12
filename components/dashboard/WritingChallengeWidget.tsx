@@ -39,7 +39,7 @@ export default function WritingChallengeWidget() {
   return (
     <Link 
       href="/english-lab/writing-challenge"
-      className="group block bg-card border border-border rounded-3xl p-6 hover:bg-muted transition-all relative overflow-hidden flex flex-col justify-center min-h-[140px]"
+      className="group block bg-card border border-border rounded-3xl p-6 hover:bg-muted transition-all relative overflow-hidden flex flex-col justify-center min-h-[140px] hover:-translate-y-1 hover:shadow-orange-500/20 duration-300 active:scale-[0.98]"
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">

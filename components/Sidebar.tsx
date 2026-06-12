@@ -215,14 +215,14 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
       {!isSidebarOpen && (
         <button 
           onClick={() => setIsSidebarOpen(true)}
-          className="fixed top-6 left-6 z-50 p-2.5 bg-card shadow-sm backdrop-blur-xl border border-border rounded-xl shadow-lg hover:bg-muted hover:bg-muted/80 transition-colors group"
+          className="hidden lg:flex fixed top-6 left-6 z-50 p-2.5 bg-card shadow-sm backdrop-blur-xl border border-border rounded-xl shadow-lg hover:bg-muted hover:bg-muted/80 transition-colors group"
           title="Buka Menu"
         >
           <Menu className="w-5 h-5 text-foreground group-hover:text-brand transition-colors" />
         </button>
       )}
 
-      <aside className={`transition-all duration-300 ease-in-out border-r border-border bg-background backdrop-blur-2xl flex flex-col shadow-2xl relative z-40 h-full ${
+      <aside className={`hidden lg:flex transition-all duration-300 ease-in-out border-r border-border bg-background backdrop-blur-2xl flex-col shadow-2xl relative z-40 h-full ${
         isSidebarOpen ? "w-80 translate-x-0" : "w-0 -translate-x-full opacity-0 overflow-hidden border-none"
       }`}>
         <div className="p-6 shrink-0 flex items-center justify-between">

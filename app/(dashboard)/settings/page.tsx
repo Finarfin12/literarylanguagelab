@@ -39,6 +39,7 @@ interface UserPreferences {
     high_contrast: boolean;
     screen_reader: boolean;
     keyboard_shortcuts: boolean;
+    enable_animations: boolean;
   };
   privacy: {
     allow_analytics: boolean;
@@ -59,7 +60,7 @@ const defaultPreferences: UserPreferences = {
   reading: { font_family: "serif", font_size: 16, line_height: 1.75, text_width: "medium", theme: "light", auto_save: true, highlight_color: "#FFD700", line_numbers: false, tts_enabled: false, tts_provider: "browser", enable_quizzes: true, enable_writing_prompts: true, enable_vocab_preview: true, enable_listening_challenge: true },
   dictionary: { auto_lookup: true, show_register: true, show_etymology: false, def_language: "id" },
   learning: { default_mastery: 0, auto_add_vocab: false, cards_per_session: 20, show_context: true },
-  display: { show_reading_time: true, high_contrast: false, screen_reader: false, keyboard_shortcuts: true },
+  display: { show_reading_time: true, high_contrast: false, screen_reader: false, keyboard_shortcuts: true, enable_animations: true },
   privacy: { allow_analytics: true, share_anonymous_data: true, public_profile: false, show_in_leaderboard: false },
   performance: { offline_mode: false, preload_next_text: true },
   developer: { debug_mode: false }
@@ -576,6 +577,13 @@ export default function SettingsPage() {
                       <span className="text-xs text-muted-foreground">Gunakan tombol angka (1-9) untuk navigasi cepat</span>
                     </div>
                     <input type="checkbox" checked={preferences.display?.keyboard_shortcuts ?? true} onChange={e => updatePref('display', 'keyboard_shortcuts', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer border-l-4 border-l-emerald-500">
+                    <div>
+                      <span className="text-sm font-bold block">Micro-Animations</span>
+                      <span className="text-xs text-muted-foreground">Aktifkan efek transisi halaman dan hover animasi yang mulus</span>
+                    </div>
+                    <input type="checkbox" checked={preferences.display?.enable_animations ?? true} onChange={e => updatePref('display', 'enable_animations', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
                 </div>
               </div>
