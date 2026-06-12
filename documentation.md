@@ -729,5 +729,28 @@ Kumpulan fitur yang khusus didesain bagi mereka yang ingin berlatih bahasa Inggr
 
 ---
 
+## 14. Reading Journey & Placement Test (Learning Path)
+
+### 14.1 Placement Test
+- **Halaman:** `/english-lab/placement-test`
+- **API:** `/api/placement-test`
+- **Deskripsi:** Tes adaptif singkat untuk mengukur kemampuan bahasa Inggris dan mendapatkan rekomendasi level CEFR.
+- **Fitur:**
+  - Mengujikan 4 keterampilan: Reading, Grammar, Vocabulary, Listening.
+  - Soal digenerate secara dinamis (adaptif) oleh AI menyesuaikan dengan akurasi jawaban sebelumnya.
+  - Menyediakan hasil persentase skor dan rekomendasi CEFR (A1-C2).
+  - Opsi untuk melompati tes dan memilih level secara manual.
+
+### 14.2 Reading Journey
+- **API:** `/api/journey`
+- **Deskripsi:** Jalur pembelajaran (*guided path*) berbasis gamifikasi yang mengintegrasikan seluruh fitur di dalam ekosistem Literary Lab.
+- **Fitur:**
+  - Terdiri dari 6 Level Perjalanan sesuai standar CEFR (A1 hingga C2).
+  - Setiap level memiliki 8 Quest unik yang memanfaatkan *tools* berbeda (dari Flashcard dasar hingga Analisis Dialek kompleks).
+  - Sistem *auto-tracking* yang otomatis menyelesaikan quest saat pengguna beraktivitas di dalam platform tanpa perlu klik tombol "Selesai" secara manual.
+  - Widget interaktif di *Dashboard* yang menampilkan bilah progres (*progress bar*) dan daftar tugas (Quests).
+  - Penghargaan (*Badges*) dan bonus XP setiap kali menyelesaikan satu level perjalanan.
+  - Sifatnya non-blocking: Pengguna bebas mengubah level perjalanan kapan saja.
+
 > **Literary Language Lab** — *Dibangun untuk Komunitas Sastra dan Pelajar Bahasa Inggris.*  
 > [Coba Aplikasi Sekarang →](https://www.literarylanguagelab.my.id)

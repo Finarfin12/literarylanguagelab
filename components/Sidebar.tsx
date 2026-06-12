@@ -97,6 +97,7 @@ const MENU_GROUPS = [
       { name: "Listening Test", path: "/english-lab/listening-test" },
       { name: "Pronunciation Clinic", path: "/tools/pronunciation-clinic" },
       { name: "Slang Decoder", path: "/english-lab/slang-decoder" },
+      { name: "Placement Test", path: "/english-lab/placement-test" },
     ]
   },
   {

@@ -93,6 +93,11 @@ Literary Language Lab adalah platform e-learning web yang membantu penutur bahas
 - **Dialogue Simulator (/english-lab/dialogue-simulator):** Berlatih ngobrol langsung dengan AI di berbagai skenario kehidupan nyata.
 - **Listening Test (/english-lab/listening-test):** Uji pendengaran (kuis & dikte) dengan audio AI atau upload manual.
 - **Slang Decoder (/english-lab/slang-decoder):** Terjemahkan bahasa gaul internet / Gen Z ke bahasa Indonesia kasual.
+- **Placement Test (/english-lab/placement-test):** Tes adaptif singkat untuk mengetahui level CEFR pengguna.
+
+### 13. Reading Journey
+- Fitur *guided learning path* non-blocking yang menyatukan semua tools menjadi petualangan belajar yang terstruktur dari level A1 hingga C2.
+- Pengguna bisa mengecek progress di Progress Dashboard, dan mengubah level manual kapan saja.
 
 ## Sistem XP & Gamification
 - XP didapat dari: review kosa kata, menyelesaikan teks, ikut duel terjemahan, kontribusi anotasi komunitas

@@ -80,6 +80,7 @@ export default function SettingsPage() {
   const [notificationPref, setNotificationPref] = useState(true);
   const [userRole, setUserRole] = useState("student");
   const [sttEngine, setSttEngine] = useState("browser");
+  const [cefrLevel, setCefrLevel] = useState("A1");
 
   // Preferences State
   const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
@@ -107,6 +108,7 @@ export default function SettingsPage() {
           setLanguagePref(profile.language_preference ?? "id");
           setNotificationPref(profile.notification_preference ?? true);
           setUserRole(profile.role ?? "student");
+          setCefrLevel(profile.cefr_level ?? "A1");
           
           if (profile.preferences) {
             // Merge existing preferences with default to avoid undefined errors
@@ -168,13 +170,16 @@ export default function SettingsPage() {
       if (error) throw error;
 
       if (currentUser) {
+        const journeyLevel = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6 }[cefrLevel] || 1;
         await supabase.from('profiles').update({
           full_name: fullName,
           avatar_url: finalAvatarUrl,
           is_public: isPublic,
           language_preference: languagePref,
           notification_preference: notificationPref,
-          preferences: preferences
+          preferences: preferences,
+          cefr_level: cefrLevel,
+          journey_level: journeyLevel
         }).eq('id', currentUser.id);
       }
 
@@ -591,6 +596,32 @@ export default function SettingsPage() {
                   <div className="p-3 bg-brand/5 border border-brand/20 rounded-xl text-xs text-muted-foreground mt-2">
                     <p className="font-bold text-brand mb-1">Algoritma Penjadwalan: SM-2 (SuperMemo-2)</p>
                     Algoritma default terbaik yang menghitung kapan Anda akan lupa sebuah kosakata berdasarkan skor memori masa lalu Anda.
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-4">Reading Journey & CEFR Level</h3>
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium">Level Kemampuan Bahasa Inggris (CEFR)</label>
+                    <select value={cefrLevel} onChange={e => setCefrLevel(e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm">
+                      <option value="A1">A1 - Beginner (Pemula)</option>
+                      <option value="A2">A2 - Elementary (Dasar)</option>
+                      <option value="B1">B1 - Intermediate (Menengah)</option>
+                      <option value="B2">B2 - Upper Intermediate (Menengah Atas)</option>
+                      <option value="C1">C1 - Advanced (Mahir)</option>
+                      <option value="C2">C2 - Mastery (Sangat Mahir)</option>
+                    </select>
+                  </div>
+                  <div className="p-3 bg-muted/50 rounded-xl flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Placement Test</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">Ikuti tes singkat untuk mengetahui level CEFR Anda secara otomatis.</p>
+                    </div>
+                    <a href="/english-lab/placement-test" className="px-4 py-2 bg-brand text-white text-sm font-bold rounded-lg hover:shadow-md transition-all whitespace-nowrap">
+                      Ulang Tes
+                    </a>
                   </div>
                 </div>
               </div>

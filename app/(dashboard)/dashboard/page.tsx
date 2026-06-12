@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { BookOpen, BookMarked, RefreshCcw, Flame, CheckCircle2, TrendingUp } from "lucide-react";
 import VocabChart from "@/components/dashboard/VocabChart";
+import JourneyWidget from "@/components/dashboard/JourneyWidget";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -115,6 +116,11 @@ export default async function DashboardPage() {
           </div>
           <p className="text-4xl font-serif font-bold text-foreground">{vocabCount || 0}</p>
         </div>
+      </div>
+
+      {/* Reading Journey Widget */}
+      <div className="mb-8">
+        <JourneyWidget />
       </div>
 
       {/* Chart & Actions */}

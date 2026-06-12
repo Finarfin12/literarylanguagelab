@@ -87,6 +87,10 @@ Fitur pembelajaran bahasa Inggris umum yang dirancang bagi mereka yang ingin ber
 - **Listening Comprehension Test**: Menguji kemampuan pendengaran dengan mode kuis pilihan ganda dan dikte (mengetik teks dari audio). Anda bisa mengatur level kesulitan (CEFR A1-B2) atau bahkan mengunggah file audio manual Anda sendiri.
 - **Modern Slang Decoder**: Membantu memecahkan dan menerjemahkan kalimat gaul, singkatan internet, atau referensi budaya pop (Gen Z lingo) ke dalam bahasa Indonesia sehari-hari, lengkap dengan tingkat formalitas dan contoh penggunaannya.
 
+### 8. Reading Journey & Placement Test (Learning Path)
+- **Placement Test**: Tes adaptif singkat untuk mengukur kemampuan bahasa Inggris (Reading, Listening, Grammar, Vocabulary) dan mendapatkan rekomendasi level CEFR secara otomatis.
+- **Reading Journey**: Jalur pembelajaran gamifikasi terstruktur (opsional/non-blocking) dari level A1 hingga C2. Menyediakan serangkaian "Quest" menggunakan berbagai alat di dalam Literary Lab untuk memandu pengguna mengembangkan kemahiran bahasanya secara bertahap.
+
 ---
 
 ## Tech Stack & Arsitektur

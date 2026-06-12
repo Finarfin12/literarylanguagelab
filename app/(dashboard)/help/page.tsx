@@ -83,7 +83,8 @@ const FAQ_ITEMS = [
   { q: "Bagaimana cara menguji pelafalan bahasa Inggris saya?", a: "Buka menu All Toolkits Hub dan cari Pronunciation Clinic. Ketik kalimat yang ingin dilatih, lalu rekam suara Anda. Sistem akan memberikan skor persentase kecocokan. Anda juga dapat mengatur mesin suara Anda (Browser Native atau Groq Whisper) di halaman /settings." },
   { q: "Apa itu fitur English Lab?", a: "English Lab adalah kumpulan fitur baru untuk melatih bahasa Inggris sehari-hari (General English) tanpa elemen sastra berat. Ini mencakup Grammar Clinic, Flashcard SRS interaktif, Dialogue Simulator, Listening Test, dan Modern Slang Decoder." },
   { q: "Bagaimana cara menggunakan Dialogue Simulator?", a: "Buka menu /english-lab/dialogue-simulator , pilih skenario (misalnya: wawancara kerja), lalu berbicaralah menggunakan mikrofon Anda. AI akan merespons secara lisan. Di akhir sesi, klik 'Akhiri & Feedback' untuk mendapatkan penilaian kelancaran dan tata bahasa Anda." },
-  { q: "Bisakah saya mengunggah audio sendiri di Listening Test?", a: "Ya! Di halaman /english-lab/listening-test , Anda bisa menekan tombol 'Unggah Audio Manual' untuk mengunggah file MP3/WAV milik Anda sendiri dan melatih pendengaran di mode Dikte." }
+  { q: "Bisakah saya mengunggah audio sendiri di Listening Test?", a: "Ya! Di halaman /english-lab/listening-test , Anda bisa menekan tombol 'Unggah Audio Manual' untuk mengunggah file MP3/WAV milik Anda sendiri dan melatih pendengaran di mode Dikte." },
+  { q: "Apa itu Reading Journey dan Placement Test?", a: "Reading Journey adalah panduan belajar langkah-demi-langkah dari level A1 hingga C2 yang menggabungkan seluruh fitur Literary Lab. Anda bisa mengikuti Placement Test di /english-lab/placement-test untuk mengetahui level awal Anda (CEFR), atau memilih level secara manual. Fitur ini bersifat opsional (non-blocking) dan progres Anda akan terlacak otomatis saat Anda beraktivitas." }
 ];
 
 const SAMPLE_QUESTIONS = [
