@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { MessageSquareQuote, Clock, Keyboard, Volume2, VolumeX, BrainCircuit, Loader2, CheckCircle2, XCircle, BookOpen, Mic, Square, Play, Headphones } from "lucide-react";
+import { MessageSquareQuote, Clock, Keyboard, Volume2, VolumeX, BrainCircuit, Loader2, CheckCircle2, XCircle, BookOpen, Mic, Square, Play, Headphones, Wand2, X } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
 import { createClient } from "@/utils/supabase/client";
@@ -33,6 +33,11 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const [prefs, setPrefs] = useState<any>(null);
   const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  
+  // Inspect Mode State
+  const [isInspectMode, setIsInspectMode] = useState(false);
+  const [inspectedSentence, setInspectedSentence] = useState<string | null>(null);
+  const [inspectModalSpeechActive, setInspectModalSpeechActive] = useState(false);
 
   // Beginner Features State
   const [isBeginnerMode, setIsBeginnerMode] = useState(false);
@@ -501,6 +506,43 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
     lineHeight: readPrefs.line_height ? readPrefs.line_height : undefined,
   };
 
+  const handleSentenceInspect = (sentence: string) => {
+    setInspectedSentence(sentence);
+  };
+
+  const playInspectAudio = async (text: string) => {
+    const provider = prefs?.reading?.tts_provider || "browser";
+    setInspectModalSpeechActive(true);
+    if (provider === "groq") {
+      try {
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+        if (res.ok) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const audio = new Audio(url);
+          audio.onended = () => {
+            URL.revokeObjectURL(url);
+            setInspectModalSpeechActive(false);
+          };
+          await audio.play();
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    // Fallback or Browser provider
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.onend = () => setInspectModalSpeechActive(false);
+    utterance.onerror = () => setInspectModalSpeechActive(false);
+    window.speechSynthesis.speak(utterance);
+  };
+
   return (
     <div className={`flex h-full relative overflow-hidden ${themeClass}`}>
       {readPrefs.highlight_color && (
@@ -601,6 +643,8 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                         beginnerLevel={beginnerLevel}
                         beginnerLayout={beginnerLayout}
                         showSyntax={activeSyntaxIndex === index}
+                        isInspectMode={isInspectMode}
+                        onSentenceInspect={handleSentenceInspect}
                       />
                     </p>
                     {!isHeading && (
@@ -640,6 +684,8 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                         beginnerLevel={beginnerLevel}
                         beginnerLayout={beginnerLayout}
                         showSyntax={activeSyntaxIndex === idx}
+                        isInspectMode={isInspectMode}
+                        onSentenceInspect={handleSentenceInspect}
                       />
                   </p>
                   <div className="w-10 pt-2 shrink-0 flex flex-col gap-2 items-center justify-start">
@@ -971,6 +1017,65 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           content={content || blocks?.map(b => b.text).join("\n") || ""}
           onClose={() => setShowCompanion(false)}
         />
+      )}
+
+      {/* Floating Action Button for Inspect Mode */}
+      <button
+        onClick={() => {
+          setIsInspectMode(!isInspectMode);
+          if (isInspectMode) setInspectedSentence(null);
+        }}
+        className={`fixed bottom-24 right-4 md:bottom-8 md:left-8 md:right-auto z-[90] p-4 rounded-full shadow-lg transition-all flex items-center justify-center gap-2 group ${isInspectMode ? 'bg-brand text-white shadow-[0_0_20px_rgba(168,85,247,0.4)] animate-pulse' : 'bg-card border border-border text-foreground hover:bg-muted'}`}
+        title={isInspectMode ? "Matikan Tongkat Ajaib" : "Aktifkan Tongkat Ajaib"}
+      >
+        <Wand2 className="w-6 h-6" />
+      </button>
+
+      {/* Inspect Mode Bottom Sheet */}
+      {isInspectMode && inspectedSentence && (
+        <div className="fixed inset-x-0 bottom-0 md:inset-auto md:bottom-8 md:left-1/2 md:-translate-x-1/2 z-[100] bg-background/95 backdrop-blur-3xl border-t md:border border-border rounded-t-3xl md:rounded-3xl shadow-2xl p-6 md:w-[600px] animate-in slide-in-from-bottom-8">
+          <div className="flex justify-between items-start mb-4">
+            <h3 className="font-bold text-foreground flex items-center gap-2">
+              <Wand2 className="w-5 h-5 text-brand" />
+              Mode Inspeksi
+            </h3>
+            <button onClick={() => setInspectedSentence(null)} className="p-2 bg-muted rounded-full text-muted-foreground hover:text-foreground">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="bg-muted/50 p-4 rounded-2xl mb-6">
+            <p className="text-lg font-serif italic text-foreground leading-relaxed">
+              "{inspectedSentence}"
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <button
+              onClick={() => playInspectAudio(inspectedSentence)}
+              disabled={inspectModalSpeechActive}
+              className="w-full py-3 bg-brand/10 hover:bg-brand/20 text-brand rounded-xl font-bold transition-all flex justify-center items-center gap-2 disabled:opacity-50"
+            >
+              {inspectModalSpeechActive ? <Loader2 className="w-5 h-5 animate-spin" /> : <Volume2 className="w-5 h-5" />}
+              {inspectModalSpeechActive ? "Memutar..." : "Read Aloud"}
+            </button>
+
+            <div className="border border-border rounded-xl p-4">
+              <h4 className="text-sm font-bold text-muted-foreground mb-3 flex items-center gap-2">
+                <Search className="w-4 h-4" />
+                Bedah Sintaksis
+              </h4>
+              <InteractiveParagraph 
+                text={inspectedSentence}
+                culturalRefs={culturalRefs}
+                isBeginnerMode={false}
+                beginnerLevel="B1"
+                beginnerLayout="inline"
+                showSyntax={true}
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
