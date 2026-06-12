@@ -67,6 +67,13 @@
   - Informasi etimologi (asal-usul kata).
   - Contoh penggunaan dalam konteks sastra.
 
+### 1.5 Pre-Reading Vocabulary Preview
+- **Halaman:** `/preview/[id]`
+- **Deskripsi:** Fitur yang secara otomatis mengekstraksi 8-12 kata kunci (kosa kata) tingkat lanjut dari teks menggunakan AI sebelum pengguna membacanya. Bertujuan untuk mengurangi beban kognitif (*schema activation*).
+- **Fitur:**
+  - **Toggle Setting**: Bisa dinonaktifkan di menu Pengaturan.
+  - **Pre-Learn Flashcard**: Pengguna bisa memilih "Pelajari Dulu" untuk berlatih kosa kata secara instan dalam bentuk *flashcard* temporer. Dilengkapi dengan opsi penyisipan ke *Vocabulary Bank* secara manual.
+
 ---
 
 ## 2. Pengalaman Membaca (Reading Experience)
@@ -684,7 +691,16 @@ Kumpulan fitur yang khusus didesain bagi mereka yang ingin berlatih bahasa Inggr
   - Penjelasan tiap kesalahan dalam Bahasa Indonesia yang ramah pemula.
   - Tiga fokus utama: Grammar, Ejaan, dan Pilihan Kata.
 
-### 13.2 Interactive Flashcard & SRS (Spaced Repetition System)
+### 13.2 Weekly Writing Streak Challenges
+- **Halaman:** `/english-lab/writing-challenge`
+- **API:** `/api/writing-challenge`
+- **Deskripsi:** Tantangan menulis mingguan untuk membentuk kebiasaan berlatih *output* dalam bahasa Inggris. Pengguna diminta menulis respons ~100 kata terhadap *prompt* yang berganti setiap minggu.
+- **Fitur:**
+  - Skor AI 0-100 dengan metrik khusus untuk Pilihan Kosakata dan Grammar.
+  - **Streak Tracker** yang memonitor konsistensi dan menghitung XP mingguan.
+  - Opsi *Toggle* integrasi (Reading prompts) dari halaman Pengaturan (Settings).
+
+### 13.3 Interactive Flashcard & SRS (Spaced Repetition System)
 - **Halaman:** `/english-lab/flashcard`
 - **Deskripsi:** Alat hafalan kosa kata interaktif yang menarik kata-kata simpanan pengguna dari *Vocabulary Bank*.
 - **Fitur:**

@@ -22,11 +22,13 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
   const { data: texts, error, count } = await queryBuilder;
 
   let isAdmin = false;
+  let enablePreview = true; // default to true
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-    if (profile?.role === 'admin') {
-      isAdmin = true;
+    const { data: profile } = await supabase.from('profiles').select('role, preferences').eq('id', user.id).single();
+    if (profile) {
+      if (profile.role === 'admin') isAdmin = true;
+      if (profile.preferences?.reading?.enable_vocab_preview === false) enablePreview = false;
     }
   }
 
@@ -78,7 +80,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
           {texts?.map((text) => (
             <div key={text.id} className="relative group">
               {isAdmin && <DeleteTextButton textId={text.id} title={text.title} />}
-              <Link href={`/read/${text.id}`} className="block h-full">
+              <Link href={enablePreview ? `/preview/${text.id}` : `/read/${text.id}`} className="block h-full">
                 <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 hover:bg-card shadow-sm hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand/10 transition-all duration-500 relative overflow-hidden flex flex-col h-full">
                   <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="relative z-10 flex-1 flex flex-col">
@@ -95,7 +97,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
                       Level {text.difficulty}
                     </span>
                     <span className="text-xs text-muted-foreground flex items-center gap-1 group-hover:text-foreground transition-colors">
-                      <BookOpen className="w-3 h-3" /> Read
+                      <BookOpen className="w-3 h-3" /> {enablePreview ? "Preview" : "Read"}
                     </span>
                   </div>
                 </div>

@@ -63,6 +63,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Cultural Context Library**: Ensiklopedia tempat pengguna dapat mengelola referensi sejarah dan mitologi klasik yang dapat dilacak secara otomatis di dalam teks bacaan.
 - **Interactive Flashcards & SRS Unification**: Sistem kartu *flashcard* 3D terpadu menggunakan algoritma Spaced Repetition SM-2 untuk menguji ingatan Anda atas kosa kata yang dikumpulkan. Terintegrasi langsung dengan 4 mode belajar: Standard, Context, Dictation, dan Listening.
 - **Contextual Review Mode**: Mengingat kata dengan lebih baik melalui mode flashcard yang menampilkan kembali paragraf sastra utuh (lengkap dengan fitur Deep Link "Re-read Chapter") secara real-time.
+- **Pre-Reading Vocabulary Preview**: Tampilkan dan pelajari 8-12 kata kunci krusial (skema kosakata) sebelum membaca teks sastra untuk memudahkan pemahaman bacaan Anda (dapat diaktifkan/nonaktifkan dari pengaturan).
 - **Spaced Repetition Algorithm**: Sistem pengulangan cerdas yang akan mengingatkan Anda untuk mengulang (review) suatu kata tepat sebelum Anda hampir melupakannya.
 - Pantau statistik dan grafik pertumbuhan penguasaan kosa kata.
 
@@ -88,6 +89,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 ### 7. English Lab (General English Learning)
 Fitur pembelajaran bahasa Inggris umum yang dirancang bagi mereka yang ingin berlatih bahasa Inggris sehari-hari tanpa harus selalu membaca sastra berat.
 - **Everyday Grammar Clinic**: Tempelkan teks apa pun (email, obrolan santai, tugas) dan AI akan menganalisis kesalahan tata bahasa Anda dengan skor 0-100 dan penjelasan bahasa Indonesia yang mudah dimengerti. Mendukung input suara (Voice Dictation).
+- **Weekly Writing Challenge**: Tantangan menulis mingguan dengan pelacak *Writing Streak* untuk membentuk kebiasaan bahasa Inggris yang aktif. Dilengkapi evaluasi komprehensif dari AI (skor, pujian kosakata, dan perbaikan grammar).
 - **Interactive Flashcards (SRS)**: Belajar menghafal kosakata yang Anda kumpulkan dari bacaan menggunakan tiga mode kuis interaktif (Tebak Arti, Tebak Kata, dan Dikte) yang ditenagai oleh algoritma Spaced Repetition (Leitner Box).
 - **Dialogue Simulator**: Berlatih berbicara langsung dengan AI dalam 8 skenario dunia nyata (seperti wawancara kerja, memesan kopi, check-in bandara, dsb). Menyediakan skor kelancaran, grammar, dan saran peningkatan kosa kata di akhir percakapan.
 - **Listening Comprehension Test**: Menguji kemampuan pendengaran dengan mode kuis pilihan ganda dan dikte (mengetik teks dari audio). Anda bisa mengatur level kesulitan (CEFR A1-B2) atau bahkan mengunggah file audio manual Anda sendiri.

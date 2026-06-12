@@ -4,6 +4,7 @@ import { BookOpen, BookMarked, RefreshCcw, Flame, CheckCircle2, TrendingUp } fro
 import VocabChart from "@/components/dashboard/VocabChart";
 import JourneyWidget from "@/components/dashboard/JourneyWidget";
 import DailyPracticeWidget from "@/components/dashboard/DailyPracticeWidget";
+import WritingChallengeWidget from "@/components/dashboard/WritingChallengeWidget";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -160,6 +161,8 @@ export default async function DashboardPage() {
             </h2>
             <p className="text-sm text-muted-foreground">Buka Text Library</p>
           </Link>
+          
+          <WritingChallengeWidget />
         </div>
       </div>
     </div>

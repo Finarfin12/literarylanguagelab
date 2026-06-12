@@ -15,6 +15,7 @@ Literary Language Lab adalah platform e-learning web yang membantu penutur bahas
 - Tambah teks via AI generator (tulis prompt, AI buatkan cerita) atau manual entry
 - OCR Lens: upload foto halaman buku, AI scan teksnya
 - Reader: baca teks dengan Word Lookup (klik kata untuk analisis 13 mode) dan Reading Companion (chat AI tentang teks)
+- Pre-Reading Vocab Preview: belajar 8-12 kosa kata krusial via AI sebelum mulai membaca (bisa diaktifkan/matikan di Settings).
 
 ### 2. Public Domain Books (/gutenberg)
 - 70.000+ buku klasik GRATIS dari Project Gutenberg
@@ -89,6 +90,7 @@ Literary Language Lab adalah platform e-learning web yang membantu penutur bahas
 ### 12. English Lab (General English)
 - Kumpulan fitur untuk berlatih bahasa Inggris sehari-hari.
 - **Grammar Clinic (/english-lab/grammar-clinic):** Cek grammar teks dengan skor & penjelasan.
+- **Writing Challenge (/english-lab/writing-challenge):** Tantangan menulis mingguan dengan Streak Tracker dan evaluasi mendalam dari AI (skor, pujian kosakata, dan perbaikan grammar).
 - **Flashcard SRS (/english-lab/flashcard):** Hafalkan kosa kata dengan metode SM-2 tersinkronisasi. Dilengkapi mode Standard, Context (review paragraf asli dari buku), Dictation, dan Listening.
 - **Dialogue Simulator (/english-lab/dialogue-simulator):** Berlatih ngobrol langsung dengan AI di berbagai skenario kehidupan nyata.
 - **Listening Test (/english-lab/listening-test):** Uji pendengaran (kuis & dikte) dengan audio AI atau upload manual.

@@ -45,7 +45,7 @@ export const JOURNEY_LEVELS: JourneyLevel[] = [
       { id: 'a2_speak', title: 'Confident Speaker', description: 'Uji pelafalan 10 kalimat dengan rata-rata skor ≥60%.', icon: '🗣️', tool: 'Pronunciation Clinic', toolPath: '/tools/pronunciation-clinic' },
       { id: 'a2_slang', title: 'Street Smart', description: 'Decode 5 ekspresi slang di Slang Decoder.', icon: '🧩', tool: 'Slang Decoder', toolPath: '/english-lab/slang-decoder' },
       { id: 'a2_dialogue', title: 'Conversationalist', description: 'Selesaikan 2 skenario berbeda di Dialogue Simulator.', icon: '💬', tool: 'Dialogue Simulator', toolPath: '/english-lab/dialogue-simulator' },
-      { id: 'a2_writing', title: 'First Draft', description: 'Selesaikan 1 Writing Challenge dari bacaan.', icon: '✍️', tool: 'Writing Challenge', toolPath: '/gutenberg' },
+      { id: 'a2_writing', title: 'First Draft', description: 'Selesaikan 1 Weekly Writing Challenge.', icon: '✍️', tool: 'Writing Challenge', toolPath: '/english-lab/writing-challenge' },
     ],
     milestone: { badge: '📘 Finding Your Voice', xpBonus: 150 }
   },
@@ -60,7 +60,7 @@ export const JOURNEY_LEVELS: JourneyLevel[] = [
       { id: 'b1_translate', title: 'Translator\'s Path', description: 'Terjemahkan 2 paragraf dan dapatkan evaluasi AI.', icon: '✍️', tool: 'Translation Workshop', toolPath: '/translation-workshop' },
       { id: 'b1_alter_ego', title: 'Meet the Author', description: 'Ngobrol dengan 1 penulis legendaris di Alter Ego Chat.', icon: '🎭', tool: 'Alter Ego Chat', toolPath: '/tools/alter-ego' },
       { id: 'b1_paraphrase', title: 'Paraphrase Pro', description: 'Selesaikan 1 Paraphrase Challenge dengan skor ≥6/10.', icon: '🔄', tool: 'Paraphrase Challenge', toolPath: '/tools/paraphrase' },
-      { id: 'b1_writing', title: 'Avid Writer', description: 'Selesaikan 3 Writing Challenge dari bacaan.', icon: '✍️', tool: 'Writing Challenge', toolPath: '/gutenberg' },
+      { id: 'b1_writing', title: 'Avid Writer', description: 'Selesaikan 3 Weekly Writing Challenge.', icon: '✍️', tool: 'Writing Challenge', toolPath: '/english-lab/writing-challenge' },
     ],
     milestone: { badge: '📙 Between the Lines', xpBonus: 200 }
   },
