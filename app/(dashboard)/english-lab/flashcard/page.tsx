@@ -200,7 +200,7 @@ export default function FlashcardSRSPage() {
 
   if (allCards.length === 0) {
     return (
-      <div className="p-8 max-w-2xl mx-auto text-center mt-20 animate-in fade-in slide-in-from-bottom-4">
+      <div className="p-4 sm:p-8 max-w-2xl mx-auto text-center mt-20 animate-in fade-in slide-in-from-bottom-4">
         <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
         <h1 className="text-3xl font-serif font-bold text-foreground mb-4">Kamus Anda Masih Kosong</h1>
         <p className="text-muted-foreground text-lg mb-6">Simpan beberapa kata terlebih dahulu dari <strong>Lexicon Search</strong> atau <strong>Text Library</strong> untuk memulai latihan flashcard!</p>
@@ -210,7 +210,7 @@ export default function FlashcardSRSPage() {
 
   if (dueCards.length === 0) {
     return (
-      <div className="p-8 max-w-2xl mx-auto text-center mt-20 animate-in fade-in slide-in-from-bottom-4">
+      <div className="p-4 sm:p-8 max-w-2xl mx-auto text-center mt-20 animate-in fade-in slide-in-from-bottom-4">
         <div className="w-24 h-24 bg-brand/20 text-brand rounded-full flex items-center justify-center mx-auto mb-6">
           <Trophy className="w-12 h-12" />
         </div>
@@ -243,7 +243,7 @@ export default function FlashcardSRSPage() {
     const total = stats.correct + stats.wrong;
     const scorePct = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
     return (
-      <div className="p-8 max-w-2xl mx-auto text-center mt-12 animate-in fade-in slide-in-from-bottom-4">
+      <div className="p-4 sm:p-8 max-w-2xl mx-auto text-center mt-12 animate-in fade-in slide-in-from-bottom-4">
         <div className="w-24 h-24 bg-brand/20 text-brand rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-12 h-12" />
         </div>
@@ -325,7 +325,7 @@ export default function FlashcardSRSPage() {
       </div>
 
       {/* Card */}
-      <div className="bg-card border border-border rounded-3xl p-8 shadow-lg relative overflow-hidden mb-6">
+      <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 shadow-lg relative overflow-hidden mb-6">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0 opacity-50" />
 
         {/* Box indicator */}

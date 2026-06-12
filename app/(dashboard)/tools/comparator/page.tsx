@@ -37,7 +37,7 @@ export default function ComparatorPage() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 sm:p-8 max-w-7xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
         <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
           <GitCompare className="w-8 h-8 text-rose-500" />
@@ -48,24 +48,24 @@ export default function ComparatorPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Original Text */}
-        <div className="bg-card shadow-sm border border-border rounded-3xl p-6 shadow-xl flex flex-col">
+        <div className="bg-card shadow-sm border border-border rounded-3xl p-4 sm:p-6 shadow-xl flex flex-col">
           <h2 className="text-sm font-bold text-rose-400 mb-4 uppercase tracking-wider">Original Text (English)</h2>
           <textarea
             value={originalText}
             onChange={(e) => setOriginalText(e.target.value)}
             placeholder='Contoh: "It is a truth universally acknowledged..."'
-            className="w-full flex-1 min-h-[250px] bg-background border border-border rounded-2xl p-5 text-foreground font-serif text-lg leading-relaxed focus:ring-1 focus:ring-rose-500 focus:outline-none resize-none"
+            className="w-full flex-1 min-h-[250px] bg-background border border-border rounded-2xl p-3 sm:p-5 text-foreground font-serif text-lg leading-relaxed focus:ring-1 focus:ring-rose-500 focus:outline-none resize-none"
           ></textarea>
         </div>
 
         {/* Professional Translation */}
-        <div className="bg-card shadow-sm border border-border rounded-3xl p-6 shadow-xl flex flex-col">
+        <div className="bg-card shadow-sm border border-border rounded-3xl p-4 sm:p-6 shadow-xl flex flex-col">
           <h2 className="text-sm font-bold text-brand mb-4 uppercase tracking-wider">Professional Translation (Indonesian)</h2>
           <textarea
             value={translatedText}
             onChange={(e) => setTranslatedText(e.target.value)}
             placeholder='Contoh: "Adalah kebenaran yang diakui secara universal..."'
-            className="w-full flex-1 min-h-[250px] bg-background border border-border rounded-2xl p-5 text-foreground font-serif text-lg leading-relaxed focus:ring-1 focus:ring-brand focus:outline-none resize-none"
+            className="w-full flex-1 min-h-[250px] bg-background border border-border rounded-2xl p-3 sm:p-5 text-foreground font-serif text-lg leading-relaxed focus:ring-1 focus:ring-brand focus:outline-none resize-none"
           ></textarea>
         </div>
       </div>
@@ -85,7 +85,7 @@ export default function ComparatorPage() {
       </div>
 
       {result && (
-        <div className="bg-card shadow-sm border border-rose-500/30 rounded-3xl p-8 lg:p-12 shadow-2xl relative overflow-hidden mb-12 animate-in fade-in slide-in-from-bottom-8">
+        <div className="bg-card shadow-sm border border-rose-500/30 rounded-3xl p-5 sm:p-8 lg:p-12 shadow-2xl relative overflow-hidden mb-12 animate-in fade-in slide-in-from-bottom-8">
           <div className="absolute top-0 right-0 p-8 opacity-5">
             <BookOpen className="w-64 h-64 text-rose-500" />
           </div>

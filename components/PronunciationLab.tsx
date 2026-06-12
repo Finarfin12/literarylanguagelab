@@ -74,7 +74,7 @@ export default function PronunciationLab() {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-card border border-border rounded-3xl p-8 shadow-xl relative overflow-hidden">
+      <div className="bg-card border border-border rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden">
         <div className="mb-6">
           <label className="block text-sm font-bold text-foreground uppercase tracking-wider mb-3">Teks Target (English)</label>
           <textarea
@@ -128,7 +128,7 @@ export default function PronunciationLab() {
       </div>
 
       {(transcript || isProcessing) && (
-        <div className="bg-card border border-border rounded-3xl p-8 shadow-xl relative overflow-hidden">
+        <div className="bg-card border border-border rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden">
           <h2 className="text-xl font-bold mb-6 border-b border-border pb-4">Hasil Evaluasi</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -158,7 +158,7 @@ export default function PronunciationLab() {
             </div>
 
             {score !== null && !isProcessing && (
-              <div className={`p-8 rounded-2xl border flex flex-col items-center justify-center text-center ${getScoreColor(score)}`}>
+              <div className={`p-6 sm:p-8 rounded-2xl border flex flex-col items-center justify-center text-center ${getScoreColor(score)}`}>
                 <div className="text-6xl font-bold mb-4">{score}%</div>
                 <p className="font-medium">{getScoreMessage(score)}</p>
               </div>

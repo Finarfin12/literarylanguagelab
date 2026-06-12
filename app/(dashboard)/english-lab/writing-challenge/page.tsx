@@ -69,7 +69,7 @@ export default function WritingChallengePage() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-background p-8 lg:p-12 animate-in fade-in zoom-in-95 duration-500">
+    <div className="flex-1 overflow-y-auto bg-background p-4 sm:p-8 lg:p-12 animate-in fade-in zoom-in-95 duration-500">
       <div className="max-w-4xl mx-auto">
         
         {/* Header */}
@@ -88,7 +88,7 @@ export default function WritingChallengePage() {
         </div>
 
         {/* Prompt Card */}
-        <div className="bg-card border-2 border-brand/20 shadow-lg rounded-3xl p-8 mb-8 relative overflow-hidden">
+        <div className="bg-card border-2 border-brand/20 shadow-lg rounded-3xl p-4 sm:p-8 mb-8 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0" />
           <p className="text-sm font-bold text-brand uppercase tracking-widest mb-4">Prompt Minggu Ini</p>
           <p className="text-2xl font-serif text-foreground leading-relaxed">
@@ -98,7 +98,7 @@ export default function WritingChallengePage() {
 
         {/* Submission Area */}
         {submission ? (
-          <div className="bg-card border border-border rounded-3xl p-8 shadow-sm">
+          <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-6">
               <CheckCircle2 className="w-8 h-8 text-emerald-500" />
               <div>
@@ -134,7 +134,7 @@ export default function WritingChallengePage() {
             </div>
           </div>
         ) : (
-          <div className="bg-card border border-border rounded-3xl p-8 shadow-sm">
+          <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 shadow-sm">
             <h3 className="text-xl font-bold text-foreground mb-4">Tulis Respon Anda</h3>
             <textarea
               value={response}

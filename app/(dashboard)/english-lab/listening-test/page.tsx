@@ -257,7 +257,7 @@ export default function ListeningTestPage() {
 
       {/* Configuration Panel */}
       {!testData && !loading && (
-        <div className="bg-card border border-border rounded-3xl p-8 shadow-sm relative overflow-hidden max-w-2xl mx-auto">
+        <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 shadow-sm relative overflow-hidden max-w-2xl mx-auto">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
           
           <div className="mb-6">
@@ -445,7 +445,7 @@ export default function ListeningTestPage() {
 
           {/* Results Area */}
           {showResults && (
-            <div className="bg-card border border-border rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4">
+            <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 animate-in fade-in slide-in-from-bottom-4">
               <div className="text-center mb-8">
                 <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full mb-4 ${score >= 80 ? "bg-emerald-500/20 text-emerald-500" : score >= 60 ? "bg-amber-500/20 text-amber-500" : "bg-red-500/20 text-red-500"}`}>
                   <Trophy className="w-12 h-12" />

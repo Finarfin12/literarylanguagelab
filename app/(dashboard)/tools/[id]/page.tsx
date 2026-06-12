@@ -91,7 +91,7 @@ export default function ToolExecutionPage() {
   };
 
   return (
-    <div className="p-8 max-w-5xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 sm:p-8 max-w-5xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <button onClick={() => router.push("/tools")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors">
         <ArrowLeft className="w-4 h-4" /> Kembali ke Toolkits
       </button>
@@ -105,7 +105,7 @@ export default function ToolExecutionPage() {
         <PronunciationLab />
       ) : (
         <div className="grid grid-cols-1 gap-8">
-        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl relative overflow-hidden">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
           
           {tool.type === "dropdown" && tool.options && (
@@ -129,7 +129,7 @@ export default function ToolExecutionPage() {
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Paste the target text here..."
-              className="w-full h-48 bg-background border border-border rounded-2xl p-4 text-foreground font-serif focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
+              className="w-full h-48 bg-background border border-border rounded-2xl p-3 sm:p-4 text-foreground font-serif focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
             ></textarea>
           </div>
 
@@ -146,7 +146,7 @@ export default function ToolExecutionPage() {
         </div>
 
         {result && (
-          <div className="bg-card shadow-sm backdrop-blur-2xl border border-border rounded-3xl p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="bg-card shadow-sm backdrop-blur-2xl border border-border rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
             <div className="flex items-center justify-between mb-6 border-b border-border pb-4">
               <h2 className="text-2xl font-serif font-bold text-brand">Analysis Result</h2>
               <div className="flex items-center gap-2">

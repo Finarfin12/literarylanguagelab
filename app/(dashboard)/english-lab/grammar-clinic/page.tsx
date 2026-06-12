@@ -323,7 +323,7 @@ export default function GrammarClinicPage() {
         </h2>
         
         {statsLoading ? (
-          <div className="flex items-center justify-center p-8"><Loader2 className="w-8 h-8 animate-spin text-brand" /></div>
+          <div className="flex items-center justify-center p-4 sm:p-8"><Loader2 className="w-8 h-8 animate-spin text-brand" /></div>
         ) : stats && stats.totalErrors > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-card border border-border rounded-3xl p-6 shadow-sm col-span-1 md:col-span-1 flex flex-col justify-center text-center">
@@ -364,7 +364,7 @@ export default function GrammarClinicPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-card border border-border rounded-3xl p-8 text-center">
+          <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 text-center">
             <p className="text-muted-foreground">Belum ada cukup data. Terus gunakan Grammar Clinic untuk memetakan pola kesalahan Anda!</p>
           </div>
         )}
