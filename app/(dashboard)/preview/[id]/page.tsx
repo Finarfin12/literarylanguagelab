@@ -174,52 +174,53 @@ export default function PreviewPage() {
   const isSaved = savedWords.has(currentWord.word);
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-8 bg-background relative animate-in fade-in">
+    <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 bg-background relative animate-in fade-in">
       <button 
         onClick={handleStartReading}
-        className="absolute top-8 right-8 px-4 py-2 text-sm font-bold bg-muted text-muted-foreground rounded-full hover:bg-border transition-colors flex items-center gap-2"
+        className="absolute top-4 right-4 sm:top-8 sm:right-8 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold bg-muted text-muted-foreground rounded-full hover:bg-border transition-colors flex items-center gap-2 z-50"
       >
         Keluar ke Reader <ArrowRight className="w-4 h-4" />
       </button>
 
-      <div className="text-center mb-8">
-        <p className="text-sm font-bold text-muted-foreground tracking-widest uppercase mb-2">Pre-Learn Flashcard</p>
-        <p className="text-foreground font-bold">Kata {cardIndex + 1} dari {vocabList.length}</p>
-        <div className="flex gap-1 justify-center mt-3">
+      <div className="text-center mb-6 sm:mb-8 mt-12 sm:mt-0">
+        <p className="text-xs sm:text-sm font-bold text-muted-foreground tracking-widest uppercase mb-1 sm:mb-2">Pre-Learn Flashcard</p>
+        <p className="text-foreground font-bold text-sm sm:text-base">Kata {cardIndex + 1} dari {vocabList.length}</p>
+        <div className="flex gap-1 justify-center mt-2 sm:mt-3">
           {vocabList.map((_, i) => (
-            <div key={i} className={`h-1.5 w-6 rounded-full ${i === cardIndex ? 'bg-brand' : i < cardIndex ? 'bg-brand/30' : 'bg-muted'}`} />
+            <div key={i} className={`h-1 sm:h-1.5 w-4 sm:w-6 rounded-full ${i === cardIndex ? 'bg-brand' : i < cardIndex ? 'bg-brand/30' : 'bg-muted'}`} />
           ))}
         </div>
       </div>
 
       <div 
-        className="w-full max-w-2xl aspect-[3/2] [perspective:1000px] cursor-pointer group"
+        className="w-full max-w-2xl min-h-[300px] sm:min-h-0 sm:aspect-[3/2] [perspective:1000px] cursor-pointer group"
         onClick={() => setShowAnswer(!showAnswer)}
       >
         <div className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${showAnswer ? "[transform:rotateY(180deg)]" : ""}`}>
           
           {/* Front */}
-          <div className="absolute inset-0 [backface-visibility:hidden] bg-card border border-border shadow-xl rounded-3xl p-10 flex flex-col items-center justify-center text-center">
-            <h2 className="text-5xl font-serif font-bold text-foreground mb-6">{currentWord.word}</h2>
-            <p className="text-muted-foreground flex items-center gap-2 text-sm"><BrainCircuit className="w-4 h-4" /> Klik untuk melihat arti</p>
+          <div className="absolute inset-0 [backface-visibility:hidden] bg-card border border-border shadow-xl rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center">
+            <h2 className="text-4xl sm:text-5xl font-serif font-bold text-foreground mb-4 sm:mb-6 break-all">{currentWord.word}</h2>
+            <p className="text-muted-foreground flex items-center gap-2 text-xs sm:text-sm"><BrainCircuit className="w-4 h-4" /> Klik untuk melihat arti</p>
           </div>
 
           {/* Back */}
-          <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 shadow-[0_0_30px_rgba(62,207,142,0.15)] rounded-3xl p-10 flex flex-col items-center justify-center text-center">
-            <h2 className="text-3xl font-serif font-bold text-foreground mb-4">{currentWord.word}</h2>
-            <p className="text-xl text-brand font-medium mb-6">{currentWord.definition}</p>
-            <div className="bg-muted/50 p-4 rounded-xl text-sm italic text-muted-foreground border-l-4 border-l-brand">
+          <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 shadow-[0_0_30px_rgba(62,207,142,0.15)] rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center overflow-y-auto">
+            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground mb-2 sm:mb-4 pt-8 sm:pt-0">{currentWord.word}</h2>
+            <p className="text-lg sm:text-xl text-brand font-medium mb-4 sm:mb-6">{currentWord.definition}</p>
+            <div className="bg-muted/50 p-3 sm:p-4 rounded-xl text-xs sm:text-sm italic text-muted-foreground border-l-4 border-l-brand w-full overflow-hidden">
               "{currentWord.example}"
             </div>
 
-            <div className="absolute top-6 right-6">
+            <div className="absolute top-4 sm:top-6 right-4 sm:right-6">
               <button 
                 onClick={(e) => { e.stopPropagation(); handleSaveToVocab(currentWord); }}
                 disabled={isSaved || savingWord === currentWord.word}
-                className={`p-2 rounded-full border transition-all flex items-center gap-2 text-xs font-bold px-4 ${isSaved ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-500' : 'bg-background border-border hover:bg-muted text-muted-foreground'}`}
+                className={`p-1.5 sm:p-2 rounded-full border transition-all flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold px-2 sm:px-4 ${isSaved ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-500' : 'bg-background border-border hover:bg-muted text-muted-foreground'}`}
               >
-                {savingWord === currentWord.word ? <Loader2 className="w-4 h-4 animate-spin" /> : isSaved ? <CheckCircle2 className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-                {isSaved ? "Tersimpan" : "Save to Vocab Bank"}
+                {savingWord === currentWord.word ? <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" /> : isSaved ? <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" /> : <Save className="w-3 h-3 sm:w-4 sm:h-4" />}
+                <span className="hidden sm:inline">{isSaved ? "Tersimpan" : "Save to Vocab Bank"}</span>
+                <span className="sm:hidden">{isSaved ? "Saved" : "Save"}</span>
               </button>
             </div>
           </div>
