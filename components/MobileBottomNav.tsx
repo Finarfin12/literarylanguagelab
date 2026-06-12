@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Library, BookOpen, Sparkles, User } from "lucide-react";
+import { LayoutDashboard, Library, BookOpen, Sparkles, User, Menu } from "lucide-react";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
@@ -12,7 +12,7 @@ export default function MobileBottomNav() {
     { name: "Library", path: "/library", icon: Library },
     { name: "Books", path: "/gutenberg", icon: BookOpen },
     { name: "Tools", path: "/tools", icon: Sparkles },
-    { name: "Profile", path: "/profile", icon: User },
+    { name: "Menu", path: "/menu", icon: Menu },
   ];
 
   return (

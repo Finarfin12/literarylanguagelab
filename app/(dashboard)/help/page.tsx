@@ -296,7 +296,7 @@ export default function HelpPage() {
 
       {/* Floating Liter AI button (only on help page) */}
       {!showChat && (
-        <button onClick={() => setShowChat(true)} className="fixed bottom-6 right-6 z-40 p-3.5 md:p-4 bg-brand text-white rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center gap-2 group">
+        <button onClick={() => setShowChat(true)} className="fixed bottom-24 right-4 md:bottom-6 md:right-6 z-40 p-3.5 md:p-4 bg-brand text-white rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center gap-2 group">
           <MessageSquare className="w-5 h-5 md:w-6 md:h-6" />
           <span className="max-w-0 overflow-hidden group-hover:max-w-[80px] transition-all duration-300 whitespace-nowrap text-xs md:text-sm font-bold">Liter AI</span>
         </button>

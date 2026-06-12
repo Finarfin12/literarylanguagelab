@@ -70,7 +70,7 @@ export default function ReadingCompanionSidebar({ title, author, content, onClos
     return (
       <button 
         onClick={() => setIsMinimized(false)}
-        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all hover:scale-110 flex items-center justify-center group animate-in slide-in-from-bottom-8"
+        className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-[100] bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all hover:scale-110 flex items-center justify-center group animate-in slide-in-from-bottom-8"
         title="Open Reading Companion"
       >
         <MessageSquareQuote className="w-6 h-6" />
