@@ -14,9 +14,10 @@ interface VocabCard {
   srs_box: number;
   srs_next_review: string;
   srs_correct_streak: number;
+  is_collocation: boolean;
 }
 
-type QuizMode = "guess-meaning" | "guess-word" | "dictation";
+type QuizMode = "guess-meaning" | "guess-word" | "dictation" | "collocation";
 
 const BOX_INTERVALS = [1, 2, 4, 7, 14]; // days
 const BOX_LABELS = ["Baru", "Familiar", "Belajar", "Review", "Mahir"];
@@ -51,7 +52,7 @@ export default function FlashcardSRSPage() {
 
     const { data: allVocab } = await supabase
       .from("vocabulary")
-      .select("id, word, definition, context_sentence, srs_box, srs_next_review, srs_correct_streak")
+      .select("id, word, definition, context_sentence, srs_box, srs_next_review, srs_correct_streak, is_collocation")
       .eq("user_id", user.id);
 
     if (allVocab) {
@@ -79,9 +80,20 @@ export default function FlashcardSRSPage() {
     if (dueCards.length === 0 || currentIndex >= dueCards.length) return;
     const current = dueCards[currentIndex];
 
+    // Auto switch mode if it's a collocation
+    if (current.is_collocation) {
+      setMode("collocation");
+      setShowResult(false);
+      setSelectedOption(null);
+      setUserAnswer("");
+      return;
+    } else if (mode === "collocation") {
+      setMode("guess-meaning"); // Fallback if next card is not collocation
+    }
+
     if (mode === "guess-meaning") {
       const wrongOptions = allCards
-        .filter(c => c.id !== current.id && c.definition)
+        .filter(c => c.id !== current.id && c.definition && !c.is_collocation)
         .sort(() => Math.random() - 0.5)
         .slice(0, 3)
         .map(c => c.definition);
@@ -89,7 +101,7 @@ export default function FlashcardSRSPage() {
       setOptions(allOpts.length >= 2 ? allOpts : [current.definition]);
     } else if (mode === "guess-word") {
       const wrongOptions = allCards
-        .filter(c => c.id !== current.id)
+        .filter(c => c.id !== current.id && !c.is_collocation)
         .sort(() => Math.random() - 0.5)
         .slice(0, 3)
         .map(c => c.word);
@@ -122,6 +134,10 @@ export default function FlashcardSRSPage() {
     } else if (mode === "guess-word") {
       correct = answer === current.word;
       setSelectedOption(answer);
+    } else if (mode === "collocation") {
+      const targetWordMatch = current.definition.match(/Collocation for: (.*)/);
+      const targetWord = targetWordMatch ? targetWordMatch[1].toLowerCase().trim() : current.word.toLowerCase().trim();
+      correct = answer.toLowerCase().trim() === targetWord;
     } else {
       // Dictation: compare lowercased
       correct = answer.toLowerCase().trim() === current.word.toLowerCase().trim();
@@ -262,10 +278,10 @@ export default function FlashcardSRSPage() {
       {/* Mode Selector */}
       <div className="flex items-center justify-center gap-2 mb-6">
         {([
-          { id: "guess-meaning" as QuizMode, label: "Tebak Arti" },
-          { id: "guess-word" as QuizMode, label: "Tebak Kata" },
-          { id: "dictation" as QuizMode, label: "Dengar & Tulis" },
-        ]).map(m => (
+          { id: "guess-meaning" as QuizMode, label: "Tebak Arti", hideIfCollocation: true },
+          { id: "guess-word" as QuizMode, label: "Tebak Kata", hideIfCollocation: true },
+          { id: "dictation" as QuizMode, label: "Dengar & Tulis", hideIfCollocation: true },
+        ]).filter(m => !(currentCard?.is_collocation && m.hideIfCollocation)).map(m => (
           <button
             key={m.id}
             onClick={() => { setMode(m.id); setShowResult(false); setSelectedOption(null); setUserAnswer(""); }}
@@ -274,6 +290,9 @@ export default function FlashcardSRSPage() {
             {m.label}
           </button>
         ))}
+        {currentCard?.is_collocation && (
+          <span className="px-4 py-2 rounded-full text-sm font-bold bg-brand text-white">Fill-in-the-blank (Collocation)</span>
+        )}
       </div>
 
       {/* Card */}
@@ -317,6 +336,19 @@ export default function FlashcardSRSPage() {
           </div>
         )}
 
+        {mode === "collocation" && (
+          <div className="text-center mb-8">
+            <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Lengkapi frasa kolokasi berikut:</p>
+            {(() => {
+              const targetWordMatch = currentCard.definition.match(/Collocation for: (.*)/);
+              const targetWord = targetWordMatch ? targetWordMatch[1] : currentCard.word;
+              // replace targetWord in currentCard.word with blanks, case insensitive
+              const displayWord = currentCard.word.replace(new RegExp(targetWord, 'gi'), "____");
+              return <p className="text-4xl font-serif font-bold text-foreground">{displayWord}</p>;
+            })()}
+          </div>
+        )}
+
         {/* Answers Area */}
         {(mode === "guess-meaning" || mode === "guess-word") && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -345,23 +377,25 @@ export default function FlashcardSRSPage() {
           </div>
         )}
 
-        {mode === "dictation" && !showResult && (
+        {(mode === "dictation" || mode === "collocation") && !showResult && (
           <div className="flex items-center gap-2">
             <input
               type="text"
               value={userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && userAnswer.trim()) handleAnswer(userAnswer); }}
-              placeholder="Ketik kata yang Anda dengar..."
+              placeholder={mode === "dictation" ? "Ketik kata yang Anda dengar..." : "Isi kata yang rumpang..."}
               className="flex-1 bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:ring-1 focus:ring-brand outline-none"
             />
-            <button
-              onClick={isRecording ? stopRecording : startRecording}
-              disabled={isProcessing}
-              className={`p-3 rounded-xl transition-all ${isRecording ? "bg-red-500 text-white animate-pulse" : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"}`}
-            >
-              {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-            </button>
+            {mode === "dictation" && (
+              <button
+                onClick={isRecording ? stopRecording : startRecording}
+                disabled={isProcessing}
+                className={`p-3 rounded-xl transition-all ${isRecording ? "bg-red-500 text-white animate-pulse" : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"}`}
+              >
+                {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+              </button>
+            )}
             <button
               onClick={() => { if (userAnswer.trim()) handleAnswer(userAnswer); }}
               disabled={!userAnswer.trim()}
@@ -372,10 +406,19 @@ export default function FlashcardSRSPage() {
           </div>
         )}
 
-        {mode === "dictation" && showResult && (
+        {(mode === "dictation" || mode === "collocation") && showResult && (
           <div className={`p-4 rounded-xl border text-center ${isCorrect ? "bg-emerald-500/10 border-emerald-500/30" : "bg-red-500/10 border-red-500/30"}`}>
             <p className="text-sm text-muted-foreground mb-1">Jawaban Anda: <span className="font-bold text-foreground">{userAnswer}</span></p>
-            <p className="text-sm text-muted-foreground">Jawaban benar: <span className="font-bold text-brand">{currentCard.word}</span></p>
+            <p className="text-sm text-muted-foreground">
+              Jawaban benar: <span className="font-bold text-brand">
+                {mode === "collocation" 
+                  ? (() => {
+                      const targetWordMatch = currentCard.definition.match(/Collocation for: (.*)/);
+                      return targetWordMatch ? targetWordMatch[1] : currentCard.word;
+                    })()
+                  : currentCard.word}
+              </span>
+            </p>
           </div>
         )}
 

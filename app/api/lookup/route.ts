@@ -22,7 +22,8 @@ const MODES: Record<string, string> = {
   "sentence-grammar": "You are a Master Grammarian. Break down the syntax of the provided sentence. Identify the main Subject, Verb, and Object. Explain any complex clauses, archaic grammatical structures, or unusual word orders used by the author. Explain clearly in Indonesian using Markdown.",
   "sentence-idioms": "You are a Literary Detective. Analyze the provided sentence to identify any idioms, figures of speech (metaphors, similes, personification), or historical/cultural references. Explain what they mean and how they contribute to the sentence's overall impact. Explain in Indonesian.",
   "pictionary": "You are a visual translator. Return exactly ONE emoji that best represents the word/phrase. Do NOT return any text, only the emoji. For example, if the word is 'sword', return ⚔️. If the word is 'sadness', return 😢.",
-  "simplify": "You are a Graded Reader engine. Rewrite the provided sentence or paragraph into simple, modern English suitable for a B1 CEFR learner. Remove archaic words, simplify complex clauses, and make it easy to understand. Also, provide a very brief explanation in Indonesian of what changed."
+  "simplify": "You are a Graded Reader engine. Rewrite the provided sentence or paragraph into simple, modern English suitable for a B1 CEFR learner. Remove archaic words, simplify complex clauses, and make it easy to understand. Also, provide a very brief explanation in Indonesian of what changed.",
+  "collocations": "You are a Lexical Expert. For the given word, provide 3 to 5 common literary or natural collocations (word partnerships) that frequently appear in English literature. Format your response STRICTLY as a JSON array of strings. Example: [\"bitter cold\", \"cast a spell\", \"deep gloom\"]. Do not include any markdown formatting, markdown blocks, or explanations."
 };
 
 export async function POST(req: Request) {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { createClient } from "@/utils/supabase/server";
 
 const SYSTEM_PROMPT = `You are an expert English grammar tutor for Indonesian learners. The user will give you a piece of English text (could be an email, chat message, essay, or any text). Your job is to:
 
@@ -65,6 +66,27 @@ export async function POST(req: Request) {
         tips: ["Maaf, AI gagal menganalisis teks ini. Silakan coba lagi."],
         raw_response: raw
       };
+    }
+
+    // Save session to Supabase
+    try {
+      const supabase = await createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user && parsed.corrections) {
+        // Extract unique categories
+        const categories = Array.from(new Set(parsed.corrections.map((c: any) => c.category).filter(Boolean)));
+        
+        await supabase.from("grammar_sessions").insert({
+          user_id: user.id,
+          original_text: text,
+          corrected_text: parsed.corrected_text || text,
+          score: parsed.score || 0,
+          corrections: parsed.corrections,
+          error_categories: categories
+        });
+      }
+    } catch (dbError) {
+      console.error("Failed to save grammar session:", dbError);
     }
 
     return NextResponse.json(parsed);

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { CheckCircle, XCircle, AlertTriangle, Loader2, Mic, MicOff, Sparkles, ArrowRight, Lightbulb, Copy, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { CheckCircle, XCircle, AlertTriangle, Loader2, Mic, MicOff, Sparkles, ArrowRight, Lightbulb, Copy, Check, BarChart3, Brain, Play } from "lucide-react";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import Swal from "sweetalert2";
 
@@ -65,6 +65,36 @@ export default function GrammarClinicPage() {
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
 
+  // Stats State
+  const [stats, setStats] = useState<any>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  // Mini Lesson State
+  const [miniLessonLoading, setMiniLessonLoading] = useState(false);
+  const [miniLessonData, setMiniLessonData] = useState<any>(null);
+  const [showMiniLesson, setShowMiniLesson] = useState(false);
+  const [quizAnswers, setQuizAnswers] = useState<Record<number, string>>({});
+  const [quizChecked, setQuizChecked] = useState(false);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      setStatsLoading(true);
+      const res = await fetch("/api/grammar-clinic/stats");
+      if (res.ok) {
+        const data = await res.json();
+        setStats(data);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
   const { isRecording, isProcessing, transcript, startRecording, stopRecording } = useSpeechToText({
     onComplete: (speechText) => {
       setText((prev) => prev + (prev.trim() ? " " : "") + speechText);
@@ -91,11 +121,45 @@ export default function GrammarClinicPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Gagal menganalisis");
       setResult(data);
+      // Refresh stats after analysis
+      fetchStats();
     } catch (err: any) {
       Swal.fire({ title: "Gagal", text: err.message, icon: "error", confirmButtonColor: "#2fa16b" });
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleOpenMiniLesson = async (weakness: any) => {
+    setMiniLessonLoading(true);
+    setShowMiniLesson(true);
+    setMiniLessonData(null);
+    setQuizAnswers({});
+    setQuizChecked(false);
+
+    try {
+      const res = await fetch("/api/grammar-clinic/mini-lesson", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category: weakness.category,
+          percentage: weakness.percentage,
+          examples: weakness.examples
+        })
+      });
+      if (!res.ok) throw new Error("Gagal mengambil materi");
+      const data = await res.json();
+      setMiniLessonData(data);
+    } catch (e: any) {
+      setShowMiniLesson(false);
+      Swal.fire("Gagal", e.message, "error");
+    } finally {
+      setMiniLessonLoading(false);
+    }
+  };
+
+  const checkQuiz = () => {
+    setQuizChecked(true);
   };
 
   const handleCopyCorrected = () => {
@@ -251,6 +315,144 @@ export default function GrammarClinicPage() {
           ) : null}
         </div>
       </div>
+
+      {/* Grammar Pattern Dashboard */}
+      <div className="mt-8 border-t border-border pt-8">
+        <h2 className="text-2xl font-serif font-bold text-foreground mb-6 flex items-center gap-3">
+          <BarChart3 className="w-6 h-6 text-brand" /> Grammar Error Pattern
+        </h2>
+        
+        {statsLoading ? (
+          <div className="flex items-center justify-center p-8"><Loader2 className="w-8 h-8 animate-spin text-brand" /></div>
+        ) : stats && stats.totalErrors > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-card border border-border rounded-3xl p-6 shadow-sm col-span-1 md:col-span-1 flex flex-col justify-center text-center">
+              <p className="text-sm text-muted-foreground uppercase tracking-wider font-bold mb-2">Total Sesi</p>
+              <p className="text-5xl font-serif font-bold text-foreground">{stats.totalSessions}</p>
+              <p className="text-sm text-muted-foreground mt-4">Total Kesalahan: <strong>{stats.totalErrors}</strong></p>
+              <p className="text-sm text-muted-foreground mt-1">Skor Rata-rata: <strong>{stats.averageScore}</strong></p>
+            </div>
+
+            <div className="bg-card border border-border rounded-3xl p-6 shadow-sm col-span-1 md:col-span-2">
+              <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-400" /> Top 3 Kelemahan Anda
+              </h3>
+              <div className="space-y-4">
+                {stats.topWeaknesses.map((weakness: any, i: number) => (
+                  <div key={i} className="bg-muted/50 border border-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${CATEGORY_COLORS[weakness.category] || "bg-muted text-muted-foreground border-border"}`}>
+                          {weakness.category}
+                        </span>
+                        <span className="text-sm font-bold text-foreground">{weakness.percentage}%</span>
+                      </div>
+                      <div className="w-full h-2 bg-background rounded-full overflow-hidden">
+                        <div className="h-full bg-brand rounded-full" style={{ width: `${weakness.percentage}%` }} />
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2 italic">Contoh salah: "{weakness.examples[0]?.original}"</p>
+                    </div>
+                    <button 
+                      onClick={() => handleOpenMiniLesson(weakness)}
+                      className="shrink-0 px-4 py-2 bg-brand/10 text-brand font-bold rounded-lg hover:bg-brand/20 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Brain className="w-4 h-4" /> Pelajari
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-card border border-border rounded-3xl p-8 text-center">
+            <p className="text-muted-foreground">Belum ada cukup data. Terus gunakan Grammar Clinic untuk memetakan pola kesalahan Anda!</p>
+          </div>
+        )}
+      </div>
+
+      {/* Mini Lesson Modal */}
+      {showMiniLesson && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-card border border-border rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            <div className="sticky top-0 bg-card/90 backdrop-blur-md p-4 border-b border-border flex justify-between items-center z-10">
+              <h2 className="text-lg font-serif font-bold text-foreground flex items-center gap-2">
+                <Brain className="w-5 h-5 text-brand" /> {miniLessonData?.title || "Mini-Lesson"}
+              </h2>
+              <button onClick={() => setShowMiniLesson(false)} className="p-2 hover:bg-muted rounded-full transition-colors"><XCircle className="w-5 h-5 text-muted-foreground" /></button>
+            </div>
+
+            <div className="p-6">
+              {miniLessonLoading ? (
+                <div className="flex flex-col items-center justify-center py-12 text-brand">
+                  <Loader2 className="w-10 h-10 animate-spin mb-4" />
+                  <p className="animate-pulse">AI sedang menyusun materi pelajaran khusus untuk Anda...</p>
+                </div>
+              ) : miniLessonData ? (
+                <div className="space-y-6">
+                  <div className="prose prose-sm dark:prose-invert prose-brand max-w-none">
+                    <p className="text-foreground/90 leading-relaxed text-base">{miniLessonData.lesson_text}</p>
+                  </div>
+                  
+                  <div className="bg-brand/5 border border-brand/20 rounded-2xl p-6">
+                    <h3 className="font-bold text-foreground mb-4 uppercase tracking-wider text-sm flex items-center gap-2"><Play className="w-4 h-4 text-brand" /> Latihan Isian Rumpang</h3>
+                    <div className="space-y-6">
+                      {miniLessonData.quiz.map((q: any, idx: number) => {
+                        const parts = q.sentence.split("____");
+                        const answered = quizAnswers[idx];
+                        const isCorrect = answered === q.answer;
+                        
+                        return (
+                          <div key={idx} className="space-y-2">
+                            <p className="text-foreground font-serif text-lg">
+                              {parts[0]}
+                              <span className={`inline-block border-b-2 font-sans text-sm mx-2 min-w-[80px] text-center font-bold ${quizChecked ? (isCorrect ? 'border-emerald-500 text-emerald-500' : 'border-red-500 text-red-500') : 'border-brand text-brand'}`}>
+                                {answered || "____"}
+                              </span>
+                              {parts[1] || ""}
+                            </p>
+                            
+                            <div className="flex gap-2 flex-wrap">
+                              {q.options.map((opt: string, oIdx: number) => (
+                                <button
+                                  key={oIdx}
+                                  onClick={() => !quizChecked && setQuizAnswers(prev => ({ ...prev, [idx]: opt }))}
+                                  disabled={quizChecked}
+                                  className={`px-3 py-1.5 rounded-lg text-sm transition-colors border ${
+                                    answered === opt 
+                                      ? "bg-brand text-background border-brand" 
+                                      : "bg-background text-foreground border-border hover:border-brand/50"
+                                  } ${quizChecked && opt === q.answer && answered !== opt ? "ring-2 ring-emerald-500 ring-offset-1 ring-offset-background" : ""}`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                            {quizChecked && !isCorrect && (
+                              <p className="text-xs text-red-400 mt-1">Jawaban benar: <strong>{q.answer}</strong></p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="mt-6 text-center">
+                      {!quizChecked ? (
+                        <button onClick={checkQuiz} disabled={Object.keys(quizAnswers).length < miniLessonData.quiz.length} className="px-6 py-2.5 bg-brand text-background font-bold rounded-xl disabled:opacity-50 transition-all hover:shadow-[0_0_15px_rgba(62,207,142,0.3)]">
+                          Cek Jawaban
+                        </button>
+                      ) : (
+                        <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold">
+                          <CheckCircle className="w-5 h-5" /> Selesai! Tetap semangat berlatih.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

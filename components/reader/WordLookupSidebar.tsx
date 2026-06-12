@@ -34,7 +34,8 @@ const MODES = [
   { id: "grammar", label: "Grammar", icon: BookOpen },
   { id: "phonetics", label: "Phonetics", icon: Volume2 },
   { id: "rhyme", label: "Rhyme", icon: Music },
-  { id: "semantic-map", label: "Semantic Map", icon: Network }
+  { id: "semantic-map", label: "Semantic Map", icon: Network },
+  { id: "collocations", label: "Collocations", icon: BookmarkPlus }
 ];
 
 export default function WordLookupSidebar({ word, contextSentence, textId, title, author, dictionaryPrefs, learningPrefs, onClose }: WordLookupSidebarProps) {
@@ -102,7 +103,7 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      // Simple parsing if it's semantic map
+      // Simple parsing if it's semantic map or collocations
       let finalResult = data.result;
       let parsedMapData = null;
       if (mode === "semantic-map") {
@@ -115,6 +116,17 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
           }
         } catch (e) {
           console.error("Failed to parse map data", e);
+        }
+      } else if (mode === "collocations") {
+        try {
+          const start = finalResult.indexOf('[');
+          const end = finalResult.lastIndexOf(']');
+          if (start !== -1 && end !== -1) {
+            const parsedArray = JSON.parse(finalResult.substring(start, end + 1));
+            finalResult = JSON.stringify(parsedArray);
+          }
+        } catch (e) {
+          console.error("Failed to parse collocations data", e);
         }
       }
 
@@ -141,20 +153,37 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
     
     setSaving(true);
     try {
-      const res = await fetch("/api/vocabulary", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          word,
-          definition: finalDefinition,
-          contextSentence,
-          contextSource: `${title} by ${author}`,
-          masteryLevel: learningPrefs?.default_mastery || 0
-        })
-      });
-      
-      if (res.ok) {
-        setSaved(true);
+      // Handle bulk saving for collocations
+      if (activeMode === "collocations") {
+        let cols = [];
+        try { cols = JSON.parse(result || "[]"); } catch(e) {}
+        if (cols.length === 0) throw new Error("No collocations to save");
+
+        const res = await fetch("/api/vocabulary", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            word,
+            collocations: cols,
+            contextSentence,
+            contextSource: `${title} by ${author}`,
+            masteryLevel: learningPrefs?.default_mastery || 0
+          })
+        });
+        if (res.ok) setSaved(true);
+      } else {
+        const res = await fetch("/api/vocabulary", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            word,
+            definition: finalDefinition,
+            contextSentence,
+            contextSource: `${title} by ${author}`,
+            masteryLevel: learningPrefs?.default_mastery || 0
+          })
+        });
+        if (res.ok) setSaved(true);
       }
     } catch (error) {
       console.error(error);
@@ -294,6 +323,15 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
               <div className="mt-4">
                 <SemanticMapViewer data={result ? JSON.parse(result) : null} />
                 <p className="text-xs text-center text-muted-foreground mt-4 italic">Bisa di-*drag*, *zoom*, dan digeser.</p>
+              </div>
+            ) : activeMode === "collocations" ? (
+              <div className="space-y-3 mt-4">
+                <p className="text-sm font-medium text-foreground mb-4">Literary Collocations for <strong>{word}</strong>:</p>
+                {result && JSON.parse(result).map((col: string, idx: number) => (
+                  <div key={idx} className="p-3 bg-brand/5 border border-brand/20 rounded-xl text-brand font-serif text-lg text-center">
+                    {col}
+                  </div>
+                ))}
               </div>
             ) : (
               <div className="prose prose-sm dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:text-brand prose-headings:font-serif">

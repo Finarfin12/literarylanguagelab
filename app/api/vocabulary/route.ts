@@ -10,28 +10,53 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { word, definition, contextSentence, contextSource, masteryLevel } = await req.json();
+    const { word, definition, contextSentence, contextSource, masteryLevel, collocations } = await req.json();
 
     if (!word) {
       return NextResponse.json({ error: "Word is required" }, { status: 400 });
     }
 
-    const { error } = await supabase.from("vocabulary").upsert({
-      user_id: user.id,
-      word: word.trim(),
-      definition: definition || "",
-      context_sentence: contextSentence || null,
-      context_source: contextSource || null,
-      mastery_level: masteryLevel || 0,
-      next_review_at: new Date().toISOString(),
-      interval: 0,
-      repetition_count: 0,
-      efactor: 2.5,
-    }, { onConflict: "user_id,word" });
+    if (collocations && Array.isArray(collocations) && collocations.length > 0) {
+      const groupId = crypto.randomUUID();
+      const records = collocations.map(col => ({
+        user_id: user.id,
+        word: col.trim(),
+        definition: `Collocation for: ${word}`, // We use definition field simply as reference
+        context_sentence: contextSentence || null,
+        context_source: contextSource || null,
+        mastery_level: masteryLevel || 0,
+        next_review_at: new Date().toISOString(),
+        interval: 0,
+        repetition_count: 0,
+        efactor: 2.5,
+        is_collocation: true,
+        collocation_group_id: groupId
+      }));
+      
+      const { error } = await supabase.from("vocabulary").upsert(records, { onConflict: "user_id,word" });
+      if (error) {
+        console.error("Vocabulary save collocations error:", error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
+    } else {
+      const { error } = await supabase.from("vocabulary").upsert({
+        user_id: user.id,
+        word: word.trim(),
+        definition: definition || "",
+        context_sentence: contextSentence || null,
+        context_source: contextSource || null,
+        mastery_level: masteryLevel || 0,
+        next_review_at: new Date().toISOString(),
+        interval: 0,
+        repetition_count: 0,
+        efactor: 2.5,
+        is_collocation: false,
+      }, { onConflict: "user_id,word" });
 
-    if (error) {
-      console.error("Vocabulary save error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      if (error) {
+        console.error("Vocabulary save error:", error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
     }
 
     // Award XP + sync vocab_count
@@ -48,7 +73,7 @@ export async function POST(req: Request) {
     try {
       await supabase.from("activity_logs").insert({
         user_id: user.id,
-        action_type: `Saved word: ${word.trim()}`,
+        action_type: collocations ? `Saved collocations for: ${word.trim()}` : `Saved word: ${word.trim()}`,
       });
     } catch (logError) {
       console.error("Failed to log vocabulary activity:", logError);
