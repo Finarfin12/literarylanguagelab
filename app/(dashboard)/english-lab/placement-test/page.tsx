@@ -71,7 +71,7 @@ export default function PlacementTestPage() {
   const totalQuestions = SECTIONS.reduce((sum, s) => sum + s.questions, 0);
   const answeredQuestions = SECTIONS.slice(0, currentSectionIdx).reduce((sum, s) => sum + s.questions, 0) + currentQuestionIdx;
 
-  const fetchQuestion = useCallback(async () => {
+  const fetchQuestion = async () => {
     setLoading(true);
     setSelectedAnswer(null);
     setShowFeedback(false);
@@ -80,7 +80,7 @@ export default function PlacementTestPage() {
       const res = await fetch('/api/placement-test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'generate', section: currentSection.id, currentEstimate }),
+        body: JSON.stringify({ action: 'generate', section: SECTIONS[currentSectionIdx].id, currentEstimate }),
       });
       const data = await res.json();
       if (data.question) {
@@ -92,13 +92,14 @@ export default function PlacementTestPage() {
     } finally {
       setLoading(false);
     }
-  }, [currentSection?.id, currentEstimate]);
+  };
 
   useEffect(() => {
-    if (phase === 'testing' && currentSection) {
+    if (phase === 'testing' && SECTIONS[currentSectionIdx]) {
       fetchQuestion();
     }
-  }, [phase, currentSectionIdx, currentQuestionIdx, fetchQuestion]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, currentSectionIdx, currentQuestionIdx]);
 
   const speakText = (text: string) => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
