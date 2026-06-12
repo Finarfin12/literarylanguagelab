@@ -193,19 +193,19 @@ export default function PreviewPage() {
       </div>
 
       <div 
-        className={`w-full max-w-2xl aspect-[3/2] perspective-1000 cursor-pointer group`}
+        className="w-full max-w-2xl aspect-[3/2] [perspective:1000px] cursor-pointer group"
         onClick={() => setShowAnswer(!showAnswer)}
       >
-        <div className={`relative w-full h-full transition-all duration-500 transform-style-3d ${showAnswer ? "rotate-y-180" : ""}`}>
+        <div className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${showAnswer ? "[transform:rotateY(180deg)]" : ""}`}>
           
           {/* Front */}
-          <div className="absolute inset-0 backface-hidden bg-card border border-border shadow-xl rounded-3xl p-10 flex flex-col items-center justify-center text-center">
+          <div className="absolute inset-0 [backface-visibility:hidden] bg-card border border-border shadow-xl rounded-3xl p-10 flex flex-col items-center justify-center text-center">
             <h2 className="text-5xl font-serif font-bold text-foreground mb-6">{currentWord.word}</h2>
             <p className="text-muted-foreground flex items-center gap-2 text-sm"><BrainCircuit className="w-4 h-4" /> Klik untuk melihat arti</p>
           </div>
 
           {/* Back */}
-          <div className="absolute inset-0 backface-hidden bg-card border-2 border-brand/50 shadow-[0_0_30px_rgba(62,207,142,0.15)] rounded-3xl p-10 flex flex-col items-center justify-center text-center rotate-y-180">
+          <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 shadow-[0_0_30px_rgba(62,207,142,0.15)] rounded-3xl p-10 flex flex-col items-center justify-center text-center">
             <h2 className="text-3xl font-serif font-bold text-foreground mb-4">{currentWord.word}</h2>
             <p className="text-xl text-brand font-medium mb-6">{currentWord.definition}</p>
             <div className="bg-muted/50 p-4 rounded-xl text-sm italic text-muted-foreground border-l-4 border-l-brand">
