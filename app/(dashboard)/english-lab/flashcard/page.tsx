@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { BookOpen, RefreshCw, CheckCircle, XCircle, Loader2, Volume2, Trophy, ArrowRight, Brain, Zap, Mic, MicOff } from "lucide-react";
 import Swal from "sweetalert2";
+import Link from "next/link";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 
 interface VocabCard {
@@ -264,12 +265,20 @@ export default function FlashcardSRSPage() {
           </div>
         </div>
 
-        <button
-          onClick={() => { fetchCards(); setCurrentIndex(0); setStats({ correct: 0, wrong: 0 }); }}
-          className="px-8 py-4 bg-muted hover:bg-muted/80 text-foreground font-bold rounded-xl transition-all flex items-center gap-2 mx-auto"
-        >
-          <RefreshCw className="w-5 h-5" /> Ulangi Sesi
-        </button>
+        <div className="flex flex-col gap-3 max-w-xs mx-auto">
+          <button
+            onClick={() => { fetchCards(); setCurrentIndex(0); setStats({ correct: 0, wrong: 0 }); }}
+            className="w-full py-4 bg-brand text-white hover:bg-brand/90 font-bold rounded-xl transition-all flex items-center justify-center gap-2"
+          >
+            <RefreshCw className="w-5 h-5" /> Ulangi Sesi
+          </button>
+          <Link
+            href="/dashboard"
+            className="w-full py-4 bg-muted hover:bg-muted/80 text-foreground font-bold rounded-xl transition-all flex items-center justify-center gap-2"
+          >
+            Keluar
+          </Link>
+        </div>
       </div>
     );
   }

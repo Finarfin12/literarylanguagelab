@@ -219,8 +219,8 @@ export default function DailyPracticeWidget() {
       {/* WOTD Modal */}
       {showWotd && (
         <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-card border border-border shadow-2xl rounded-3xl w-full max-w-md overflow-hidden animate-in zoom-in-95">
-            <div className="p-6">
+          <div className="bg-card border border-border shadow-2xl rounded-3xl w-full max-w-md overflow-hidden animate-in zoom-in-95 flex flex-col max-h-[90vh]">
+            <div className="p-6 overflow-y-auto flex-1">
               {wotdLoading ? (
                 <div className="flex flex-col items-center justify-center py-10">
                   <Loader2 className="w-8 h-8 animate-spin text-blue-500 mb-4" />
@@ -303,8 +303,8 @@ export default function DailyPracticeWidget() {
       {/* Grammar Byte Modal */}
       {showGrammar && (
         <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-card border border-border shadow-2xl rounded-3xl w-full max-w-md overflow-hidden animate-in zoom-in-95">
-            <div className="p-6">
+          <div className="bg-card border border-border shadow-2xl rounded-3xl w-full max-w-md overflow-hidden animate-in zoom-in-95 flex flex-col max-h-[90vh]">
+            <div className="p-6 overflow-y-auto flex-1">
               {grammarLoading ? (
                 <div className="flex flex-col items-center justify-center py-10">
                   <Loader2 className="w-8 h-8 animate-spin text-orange-500 mb-4" />
