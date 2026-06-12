@@ -128,6 +128,10 @@ export default function SettingsPage() {
           }
         }
       }
+      if (typeof window !== 'undefined') {
+        const localStt = localStorage.getItem('stt_engine');
+        if (localStt) setSttEngine(localStt);
+      }
       setLoading(false);
     }
     loadProfile();
