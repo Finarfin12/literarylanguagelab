@@ -8,7 +8,7 @@ import { createClient } from "@/utils/supabase/client";
 import { 
   ChevronDown, ChevronRight, LogOut, 
   Library, Briefcase, Sun, Moon, Sparkles, User, Settings,
-  Menu, PanelLeftClose, BookOpen, Trophy, LayoutDashboard, ShieldAlert
+  Menu, PanelLeftClose, BookOpen, Trophy, LayoutDashboard, ShieldAlert, BrainCircuit
 } from "lucide-react";
 import { MENU_GROUPS } from "@/lib/menu-config";
 
