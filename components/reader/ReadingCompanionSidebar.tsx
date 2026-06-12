@@ -79,9 +79,9 @@ export default function ReadingCompanionSidebar({ title, author, content, onClos
   }
 
   return (
-    <div className="fixed bottom-4 right-4 left-4 md:left-auto md:bottom-8 md:right-8 md:w-[450px] h-[75vh] max-h-[800px] bg-background/95 backdrop-blur-3xl border border-border rounded-3xl shadow-2xl flex flex-col overflow-hidden z-[100] animate-in slide-in-from-bottom-8 zoom-in-95">
+    <div className="fixed bottom-4 right-4 left-4 md:left-auto md:bottom-8 md:right-8 md:w-[450px] h-[75vh] max-h-[800px] bg-card md:bg-background/95 md:backdrop-blur-3xl border border-border rounded-3xl shadow-2xl flex flex-col overflow-hidden z-[100] animate-in slide-in-from-bottom-8 zoom-in-95">
       {/* Header */}
-      <div className="p-4 md:p-5 border-b border-border flex items-center justify-between z-10 bg-background/80">
+      <div className="p-4 md:p-5 border-b border-border flex items-center justify-between z-10 bg-card md:bg-background/80">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
             <MessageSquareQuote className="w-5 h-5" />
@@ -140,7 +140,7 @@ export default function ReadingCompanionSidebar({ title, author, content, onClos
       </div>
 
       {/* Input Box */}
-      <div className="p-3 md:p-4 border-t border-border bg-background z-10">
+      <div className="p-3 md:p-4 border-t border-border bg-card md:bg-background z-10">
         <div className="flex items-end gap-2 bg-muted/50 rounded-2xl p-1 border border-border focus-within:ring-1 focus-within:ring-purple-500 transition-shadow">
           <textarea
             value={input}
