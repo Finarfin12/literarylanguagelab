@@ -316,13 +316,14 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         )}
       </div>
 
-      <BookmarkSidebar
-        isOpen={bookmarkOpen}
-        onClose={() => setBookmarkOpen(false)}
-        bookmarks={bookmarks}
-        onNavigate={goToPosition}
-        onDelete={deleteBookmark}
-      />
+      {bookmarkOpen && (
+        <BookmarkSidebar
+          onClose={() => setBookmarkOpen(false)}
+          bookmarks={bookmarks}
+          onGoTo={goToPosition}
+          onDelete={deleteBookmark}
+        />
+      )}
 
       {vocabContextText && (
         <VocabFlashcardModal 
