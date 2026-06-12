@@ -18,11 +18,11 @@ export function useSpeechToText(options?: STTOptions) {
   const audioChunksRef = useRef<Blob[]>([]);
   const recognitionRef = useRef<any>(null);
 
-  const processWhisper = useCallback(async (audioBlob: Blob) => {
+  const processWhisper = useCallback(async (audioBlob: Blob, extension: string = 'webm') => {
     setIsProcessing(true);
     try {
       const formData = new FormData();
-      formData.append('file', audioBlob, 'audio.webm');
+      formData.append('file', audioBlob, `audio.${extension}`);
 
       const response = await fetch('/api/stt', {
         method: 'POST',
@@ -158,13 +158,21 @@ export function useSpeechToText(options?: STTOptions) {
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             if (audioContext.state !== "closed") audioContext.close();
 
-            const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+            const mimeType = mediaRecorder.mimeType || 'audio/webm';
+            const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+            
+            // Determine extension based on MIME type
+            let extension = 'webm';
+            if (mimeType.includes('mp4')) extension = 'mp4';
+            else if (mimeType.includes('ogg')) extension = 'ogg';
+            else if (mimeType.includes('mp3')) extension = 'mp3';
+            else if (mimeType.includes('wav')) extension = 'wav';
             
             // Stop all tracks to release mic
             stream.getTracks().forEach(track => track.stop());
             
             setIsRecording(false);
-            await processWhisper(audioBlob);
+            await processWhisper(audioBlob, extension);
           };
 
           mediaRecorder.start();
