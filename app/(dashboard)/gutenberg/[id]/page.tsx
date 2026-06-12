@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, use, useRef, useCallback } from "react";
-import { Loader2, ArrowLeft, Book, BookmarkPlus, Highlighter, Download, Check, Sparkles } from "lucide-react";
+import { Loader2, ArrowLeft, Book, BookmarkPlus, Highlighter, Download, Check, Sparkles, BrainCircuit } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { saveBookToCache, getCachedBook } from "@/utils/indexeddb";
@@ -9,6 +9,7 @@ import BookmarkSidebar from "@/components/reader/BookmarkSidebar";
 import TextDisplay from "@/components/reader/TextDisplay";
 import SentenceAnalysisSidebar from "@/components/reader/SentenceAnalysisSidebar";
 import TopActions from "@/components/TopActions";
+import VocabFlashcardModal from "@/components/reader/VocabFlashcardModal";
 
 type BookBlock = {
   type: "heading" | "paragraph" | "verse";
@@ -51,6 +52,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   const [selectionCoords, setSelectionCoords] = useState<{ x: number; y: number } | null>(null);
   const [analysisOpen, setAnalysisOpen] = useState(false);
   const [analysisSentence, setAnalysisSentence] = useState<string | null>(null);
+  const [vocabContextText, setVocabContextText] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem(`gutenberg-progress-${gutenbergId}`);
@@ -210,6 +212,23 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
     setBookmarks((prev) => prev.filter((b) => b.id !== id));
   };
 
+  const handleGenerateVocab = () => {
+    if (!containerRef.current || bookBlocks.length === 0) return;
+    
+    // Estimate current block index based on scroll
+    const container = containerRef.current;
+    const scrollRatio = container.scrollTop / Math.max(1, container.scrollHeight - container.clientHeight);
+    
+    // Grab ~50 blocks around the current position
+    const approxIndex = Math.floor(scrollRatio * bookBlocks.length);
+    const startIndex = Math.max(0, approxIndex - 5);
+    const endIndex = Math.min(bookBlocks.length, startIndex + 50);
+    
+    // Join text and truncate to avoid overwhelming API limits
+    const textSample = bookBlocks.slice(startIndex, endIndex).map(b => b.text).join('\n').substring(0, 10000);
+    setVocabContextText(textSample);
+  };
+
   if (loading) {
     return (
       <div className="min-h-[80vh] flex flex-col justify-center items-center gap-4">
@@ -244,6 +263,9 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         <div className="flex items-center gap-1 shrink-0">
           <TopActions className="hidden sm:flex items-center gap-1 mr-2" />
           {cached && <Check className="w-4 h-4 text-brand" />}
+          <button onClick={handleGenerateVocab} className="p-2 bg-brand/10 text-brand rounded-xl hover:bg-brand/20 transition-colors" title="Generate Chapter Vocab">
+            <BrainCircuit className="w-4 h-4" />
+          </button>
           <button onClick={() => setBookmarkOpen(!bookmarkOpen)} className="p-2 bg-muted rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-brand">
             <BookmarkPlus className="w-4 h-4" />
           </button>
@@ -294,8 +316,20 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         )}
       </div>
 
-      {bookmarkOpen && (
-        <BookmarkSidebar bookmarks={bookmarks} onGoTo={goToPosition} onDelete={deleteBookmark} onClose={() => setBookmarkOpen(false)} />
+      <BookmarkSidebar
+        isOpen={bookmarkOpen}
+        onClose={() => setBookmarkOpen(false)}
+        bookmarks={bookmarks}
+        onNavigate={goToPosition}
+        onDelete={deleteBookmark}
+      />
+
+      {vocabContextText && (
+        <VocabFlashcardModal 
+          textContext={vocabContextText} 
+          textId={`gutenberg-${gutenbergId}`} 
+          onClose={() => setVocabContextText(null)} 
+        />
       )}
     </div>
   );
