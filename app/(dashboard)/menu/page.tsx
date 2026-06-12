@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 import { MENU_GROUPS } from "@/lib/menu-config";
-import { User, Settings, LogOut, ChevronRight, HelpCircle, MessageSquare } from "lucide-react";
+import { User, Settings, LogOut, ChevronRight, HelpCircle, MessageSquare, Sun, Moon } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import AnimatedPage from "@/components/AnimatedPage";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
@@ -12,6 +13,12 @@ export default function MobileMenuPage() {
   const [userProfile, setUserProfile] = useState<any>(null);
   const supabase = createClient();
   const unreadMessages = useUnreadMessages();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     async function loadUser() {
@@ -103,18 +110,25 @@ export default function MobileMenuPage() {
       </div>
 
       {/* Footer Actions */}
-      <div className="mt-8 grid grid-cols-2 gap-3 pb-8">
-        <Link href="/settings" className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
-          <Settings className="w-4 h-4" />
-          Settings
+      <div className="mt-8 grid grid-cols-3 gap-3 pb-8">
+        <Link href="/settings" className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
+          <Settings className="w-5 h-5" />
+          <span className="text-xs">Settings</span>
         </Link>
-        <Link href="/help" className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
-          <HelpCircle className="w-4 h-4" />
-          Bantuan
+        <Link href="/help" className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
+          <HelpCircle className="w-5 h-5" />
+          <span className="text-xs">Bantuan</span>
         </Link>
         <button 
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors"
+        >
+          {mounted ? (theme === "dark" ? <Sun className="w-5 h-5 text-amber-500" /> : <Moon className="w-5 h-5 text-blue-500" />) : <Moon className="w-5 h-5" />}
+          <span className="text-xs">Tema</span>
+        </button>
+        <button 
           onClick={handleSignOut}
-          className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-rose-500/20 bg-rose-500/10 text-rose-500 font-medium hover:bg-rose-500 hover:text-white transition-colors col-span-2"
+          className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-rose-500/20 bg-rose-500/10 text-rose-500 font-medium hover:bg-rose-500 hover:text-white transition-colors col-span-3"
         >
           <LogOut className="w-4 h-4" />
           Logout

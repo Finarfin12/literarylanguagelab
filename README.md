@@ -42,7 +42,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 
 ### 3. Alat Interaktif & Permainan Edukasi
 - **Reading Companion Pop-up**: Diskusikan teks apa pun secara seketika dengan asisten kecerdasan buatan melalui panel interaktif yang melayang saat membaca.
-- **In-Reader Sentence Analysis**: Blok kalimat apa pun saat membaca buku untuk memunculkan popup ✨ Analisis, yang akan langsung membedah Terjemahan, Tata Bahasa (dengan anatomi visual), serta mendeteksi Idiom & Kiasan.
+- **In-Reader Sentence Analysis**: Blok kalimat apa pun saat membaca buku di Desktop, atau gunakan **Magic Wand (Inspect Mode)** di versi Mobile untuk memunculkan popup ✨ Analisis. Ini akan langsung membedah Terjemahan, Tata Bahasa (dengan anatomi visual), serta mendeteksi Idiom & Kiasan tanpa perlu repot melakukan seleksi teks (hover) di layar sentuh.
 - **Graded Reader Mode (Simplify B1)**: Fitur yang mampu menulis ulang (menyederhanakan) teks sastra kuno menjadi bahasa Inggris modern tingkat menengah yang mudah dipahami pemula.
 - **Pictionary Mode**: Menerjemahkan kata atau frasa sulit menjadi ikon/emoji visual.
 - **Text-to-Speech (Read Aloud)**: Dengarkan pengucapan kalimat/paragraf menggunakan fitur pembaca otomatis untuk melatih *listening*.
