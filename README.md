@@ -54,6 +54,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **A-Z Browser & Lexicon Search**: Kamus lengkap dengan sinonim, rima kata, dan konteks budaya.
 - **Paraphrase Challenge**: Uji kemampuan memparafrase kalimat tingkat tinggi.
 - **Pronunciation Clinic**: Latih dan uji pelafalan bahasa Inggris Anda dengan penilaian skor cerdas berbasis teknologi *Voice-to-Text* (mendukung *Browser Native* dan model AI Whisper).
+- **Writing Prompts (Input → Output Loop)**: Melengkapi siklus membaca dengan tantangan merangkum cerita menggunakan kosakata yang baru dipelajari, dievaluasi langsung oleh AI (Grammar, Vocab, Coherence).
 - **All Toolkits Hub**: Etalase visual (*App Drawer*) interaktif yang menampung 30+ alat analisis AI mini, dilengkapi bilah pencarian pintar (*search bar*) dan filter berbasis kategori (Transformers, Extractors, Gamification, Lexicon).
 
 ### 4. Vocabulary Bank, Lexicon & Spaced Repetition
@@ -61,6 +62,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Idiom Library & Glossary Builder**: Direktori khusus penyimpan daftar idiom bahasa Inggris beserta terjemahan kontekstualnya, serta alat pembangun glosarium kustom per buku bacaan.
 - **Cultural Context Library**: Ensiklopedia tempat pengguna dapat mengelola referensi sejarah dan mitologi klasik yang dapat dilacak secara otomatis di dalam teks bacaan.
 - **Interactive Flashcards**: Sistem kartu *flashcard* 3D interaktif (bolak-balik) untuk menguji ingatan Anda atas kosa kata yang dikumpulkan.
+- **Contextual Review Mode**: Mengingat kata dengan lebih baik melalui mode flashcard yang menampilkan kembali paragraf sastra utuh (lengkap dengan fitur Deep Link "Re-read Chapter") secara real-time.
 - **Spaced Repetition Algorithm**: Sistem pengulangan cerdas yang akan mengingatkan Anda untuk mengulang (review) suatu kata tepat sebelum Anda hampir melupakannya.
 - Pantau statistik dan grafik pertumbuhan penguasaan kosa kata.
 

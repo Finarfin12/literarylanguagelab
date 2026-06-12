@@ -12,6 +12,7 @@ interface WordLookupSidebarProps {
   word: string | null;
   contextSentence: string | null;
   textId: string;
+  positionOffset?: number | null;
   title: string;
   author: string;
   dictionaryPrefs?: any;
@@ -38,7 +39,7 @@ const MODES = [
   { id: "collocations", label: "Collocations", icon: BookmarkPlus }
 ];
 
-export default function WordLookupSidebar({ word, contextSentence, textId, title, author, dictionaryPrefs, learningPrefs, onClose }: WordLookupSidebarProps) {
+export default function WordLookupSidebar({ word, contextSentence, textId, positionOffset, title, author, dictionaryPrefs, learningPrefs, onClose }: WordLookupSidebarProps) {
   const [activeMode, setActiveMode] = useState("literary-focus");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -167,7 +168,9 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
             collocations: cols,
             contextSentence,
             contextSource: `${title} by ${author}`,
-            masteryLevel: learningPrefs?.default_mastery || 0
+            masteryLevel: learningPrefs?.default_mastery || 0,
+            text_id: textId,
+            position_offset: positionOffset
           })
         });
         if (res.ok) setSaved(true);
@@ -180,7 +183,9 @@ export default function WordLookupSidebar({ word, contextSentence, textId, title
             definition: finalDefinition,
             contextSentence,
             contextSource: `${title} by ${author}`,
-            masteryLevel: learningPrefs?.default_mastery || 0
+            masteryLevel: learningPrefs?.default_mastery || 0,
+            text_id: textId,
+            position_offset: positionOffset
           })
         });
         if (res.ok) setSaved(true);

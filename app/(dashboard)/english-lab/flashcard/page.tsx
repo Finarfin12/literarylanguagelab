@@ -15,6 +15,8 @@ interface VocabCard {
   srs_next_review: string;
   srs_correct_streak: number;
   is_collocation: boolean;
+  text_id: string | null;
+  position_offset: number | null;
 }
 
 type QuizMode = "guess-meaning" | "guess-word" | "dictation" | "collocation";
@@ -36,6 +38,7 @@ export default function FlashcardSRSPage() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [stats, setStats] = useState({ correct: 0, wrong: 0 });
   const [updating, setUpdating] = useState(false);
+  const [showContext, setShowContext] = useState(false);
 
   const supabase = createClient();
 
@@ -52,7 +55,7 @@ export default function FlashcardSRSPage() {
 
     const { data: allVocab } = await supabase
       .from("vocabulary")
-      .select("id, word, definition, context_sentence, srs_box, srs_next_review, srs_correct_streak, is_collocation")
+      .select("id, word, definition, context_sentence, srs_box, srs_next_review, srs_correct_streak, is_collocation, text_id, position_offset")
       .eq("user_id", user.id);
 
     if (allVocab) {
@@ -111,6 +114,7 @@ export default function FlashcardSRSPage() {
     setShowResult(false);
     setSelectedOption(null);
     setUserAnswer("");
+    setShowContext(false); // Reset context mode for new card
   }, [currentIndex, mode, dueCards, allCards]);
 
   const playAudio = (word: string) => {
@@ -304,10 +308,33 @@ export default function FlashcardSRSPage() {
           <span className={`text-[10px] font-bold px-3 py-1 rounded-full ${BOX_COLORS[currentCard.srs_box]} text-white uppercase tracking-wider`}>
             Box {currentCard.srs_box} — {BOX_LABELS[currentCard.srs_box]}
           </span>
-          <button onClick={() => playAudio(currentCard.word)} className="p-2 hover:bg-muted rounded-full transition-colors text-brand" title="Dengarkan">
-            <Volume2 className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {currentCard.context_sentence && (
+              <button onClick={() => setShowContext(!showContext)} className={`px-3 py-1 text-xs font-bold rounded-full transition-colors border ${showContext ? 'bg-brand text-white border-brand' : 'bg-transparent text-muted-foreground border-border hover:bg-muted'}`} title="Tampilkan Konteks Asli">
+                Context Mode
+              </button>
+            )}
+            <button onClick={() => playAudio(currentCard.word)} className="p-2 hover:bg-muted rounded-full transition-colors text-brand" title="Dengarkan">
+              <Volume2 className="w-5 h-5" />
+            </button>
+          </div>
         </div>
+
+        {/* Context Mode Display */}
+        {showContext && currentCard.context_sentence && (
+          <div className="mb-6 p-4 bg-muted/30 rounded-xl border border-border border-l-4 border-l-brand animate-in fade-in slide-in-from-top-2">
+            <p className="text-sm font-serif leading-relaxed text-foreground">
+              {currentCard.context_sentence.split(new RegExp(`(${currentCard.word})`, 'gi')).map((part, i) => 
+                part.toLowerCase() === currentCard.word.toLowerCase() ? <span key={i} className="bg-brand/20 text-brand font-bold px-1 rounded">{part}</span> : part
+              )}
+            </p>
+            {currentCard.text_id && (
+              <a href={`/read/${currentCard.text_id}${currentCard.position_offset !== null ? `#block-${currentCard.position_offset}` : ''}`} target="_blank" className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-brand hover:underline">
+                <BookOpen className="w-3 h-3" /> Re-read Chapter
+              </a>
+            )}
+          </div>
+        )}
 
         {/* Question */}
         {mode === "guess-meaning" && (

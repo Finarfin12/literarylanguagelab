@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { word, definition, contextSentence, contextSource, masteryLevel, collocations } = await req.json();
+    const { word, definition, contextSentence, contextSource, masteryLevel, collocations, text_id, position_offset } = await req.json();
 
     if (!word) {
       return NextResponse.json({ error: "Word is required" }, { status: 400 });
@@ -30,7 +30,9 @@ export async function POST(req: Request) {
         repetition_count: 0,
         efactor: 2.5,
         is_collocation: true,
-        collocation_group_id: groupId
+        collocation_group_id: groupId,
+        text_id: text_id || null,
+        position_offset: position_offset !== undefined ? position_offset : null
       }));
       
       const { error } = await supabase.from("vocabulary").upsert(records, { onConflict: "user_id,word" });
@@ -51,6 +53,8 @@ export async function POST(req: Request) {
         repetition_count: 0,
         efactor: 2.5,
         is_collocation: false,
+        text_id: text_id || null,
+        position_offset: position_offset !== undefined ? position_offset : null
       }, { onConflict: "user_id,word" });
 
       if (error) {

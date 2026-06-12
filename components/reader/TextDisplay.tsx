@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { MessageSquareQuote, Clock, Keyboard, Volume2, VolumeX, BrainCircuit, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { MessageSquareQuote, Clock, Keyboard, Volume2, VolumeX, BrainCircuit, Loader2, CheckCircle2, XCircle, BookOpen } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
 import { createClient } from "@/utils/supabase/client";
@@ -26,6 +26,7 @@ interface TextDisplayProps {
 export default function TextDisplay({ textId, title, author, content, blocks, onTextSelect }: TextDisplayProps) {
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [contextSentence, setContextSentence] = useState<string | null>(null);
+  const [positionOffset, setPositionOffset] = useState<number | null>(null);
   const [activeSidebar, setActiveSidebar] = useState<"lookup" | null>(null);
   const [showCompanion, setShowCompanion] = useState(false);
   const [culturalRefs, setCulturalRefs] = useState<CulturalReference[]>([]);
@@ -45,6 +46,13 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const [showQuizModal, setShowQuizModal] = useState(false);
   const [lastQuizHeadingIdx, setLastQuizHeadingIdx] = useState<number>(-1);
   const [quizAnswered, setQuizAnswered] = useState<number | null>(null);
+
+  // Writing Prompt State
+  const [showWritingPrompt, setShowWritingPrompt] = useState(false);
+  const [writingPromptVocab, setWritingPromptVocab] = useState<string[]>([]);
+  const [writingResponse, setWritingResponse] = useState("");
+  const [writingEvaluating, setWritingEvaluating] = useState(false);
+  const [writingResult, setWritingResult] = useState<any>(null);
 
   // Parse paragraphs (only if content is provided as string)
   const paragraphs = content ? content.split("\n").filter((p) => p.trim() !== "") : [];
@@ -91,6 +99,24 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
     return () => clearInterval(interval);
   }, [textId]);
 
+  // Handle hash scrolling for contextual review
+  useEffect(() => {
+    if (window.location.hash && (blocks?.length || content)) {
+      const id = window.location.hash.substring(1);
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Highlight it temporarily
+          el.classList.add('bg-brand/10', 'transition-colors', 'duration-1000', 'rounded-lg', 'p-2');
+          setTimeout(() => {
+            el.classList.remove('bg-brand/10', 'p-2');
+          }, 3000);
+        }
+      }, 300); // small delay to allow DOM to paint
+    }
+  }, [blocks, content]);
+
   useEffect(() => {
     const handleSelection = () => {
       const selection = window.getSelection();
@@ -106,8 +132,19 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
         sentence = anchorNode.parentElement.textContent || text;
       }
 
+      let offset = null;
+      let el = anchorNode?.parentElement;
+      while (el && el !== document.body) {
+        if (el.hasAttribute('data-block-idx')) {
+          offset = parseInt(el.getAttribute('data-block-idx') || "-1");
+          break;
+        }
+        el = el.parentElement;
+      }
+
       setSelectedWord(text);
       setContextSentence(sentence);
+      setPositionOffset(offset);
       setActiveSidebar("lookup");
     };
 
@@ -237,6 +274,33 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
 
     return () => observer.disconnect();
   }, [prefs, lastQuizHeadingIdx, blocks]);
+
+  const handleCloseQuiz = async () => {
+    setShowQuizModal(false);
+    if (prefs?.reading?.enable_writing_prompts) {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: vocab } = await supabase.from('vocabulary')
+            .select('word')
+            .eq('user_id', user.id)
+            .eq('text_id', textId)
+            .limit(10);
+            
+          if (vocab && vocab.length >= 3) {
+            const words = vocab.map(v => v.word).sort(() => Math.random() - 0.5).slice(0, 5);
+            setWritingPromptVocab(words);
+            setWritingResponse("");
+            setWritingResult(null);
+            setShowWritingPrompt(true);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
 
   const triggerQuiz = async (headingIdx: number) => {
     setLastQuizHeadingIdx(headingIdx); // Prevent triggering again for this heading
@@ -390,7 +454,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                 const isHeading = block.type === "heading";
                 const isVerse = block.type === "verse";
                 return (
-                  <div key={index} className="flex gap-4 group" data-block-idx={index}>
+                  <div key={index} id={`block-${index}`} className="flex gap-4 group" data-block-idx={index}>
                     {readPrefs.line_numbers && !isHeading && (
                       <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60" aria-hidden={displayPrefs.screen_reader ? "true" : "false"}>{index + 1}</span>
                     )}
@@ -432,7 +496,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
               })
             ) : (
               paragraphs.map((p, idx) => (
-                <div key={idx} className="flex gap-4 group">
+                <div key={idx} id={`block-${idx}`} className="flex gap-4 group">
                   {readPrefs.line_numbers && (
                     <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60" aria-hidden={displayPrefs.screen_reader ? "true" : "false"}>{idx + 1}</span>
                   )}
@@ -480,6 +544,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
             title={title}
             author={author}
             textId={textId}
+            positionOffset={positionOffset}
             dictionaryPrefs={prefs?.dictionary}
             learningPrefs={prefs?.learning}
             onClose={() => {
@@ -542,7 +607,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                     <div className="pt-6 border-t border-border animate-in fade-in slide-in-from-bottom-2">
                       <p className="text-sm text-muted-foreground mb-4">{quizData.explanation}</p>
                       <button 
-                        onClick={() => setShowQuizModal(false)}
+                        onClick={handleCloseQuiz}
                         className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold shadow-md transition-all active:scale-95"
                       >
                         Lanjutkan Membaca
@@ -561,8 +626,117 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
             {/* Close Button (if they want to skip without answering) */}
             {quizAnswered === null && (
               <div className="p-4 bg-muted/30 border-t border-border text-center">
-                <button onClick={() => setShowQuizModal(false)} className="text-sm text-muted-foreground hover:text-foreground underline">
+                <button onClick={handleCloseQuiz} className="text-sm text-muted-foreground hover:text-foreground underline">
                   Lewati Kuis (Skip)
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Writing Prompt Overlay */}
+      {showWritingPrompt && (
+        <div className="absolute inset-0 z-[100] bg-background/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
+          <div className="bg-card border border-border shadow-2xl rounded-3xl max-w-2xl w-full overflow-hidden">
+            <div className="bg-blue-600 p-6 text-white text-center relative overflow-hidden">
+              <BookOpen className="w-24 h-24 absolute -right-4 -top-4 opacity-20" />
+              <h3 className="text-2xl font-bold font-serif relative z-10">Writing Challenge</h3>
+              <p className="text-blue-100 mt-1 relative z-10 text-sm">Rangkum bab ini dalam 3-5 kalimat!</p>
+            </div>
+            
+            <div className="p-8">
+              {!writingResult ? (
+                <div className="space-y-6">
+                  <p className="text-muted-foreground text-sm mb-4">Gunakan kata-kata berikut yang telah Anda pelajari dari bab ini:</p>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {writingPromptVocab.map(word => (
+                      <span key={word} className={`px-3 py-1 rounded-full text-xs font-bold border ${writingResponse.toLowerCase().includes(word.toLowerCase()) ? 'bg-green-500/20 text-green-600 border-green-500' : 'bg-muted text-muted-foreground border-border'}`}>
+                        {word} {writingResponse.toLowerCase().includes(word.toLowerCase()) && '✓'}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  <textarea 
+                    value={writingResponse}
+                    onChange={(e) => setWritingResponse(e.target.value)}
+                    placeholder="Contoh: The melancholy atmosphere settled over the house..."
+                    className="w-full h-32 bg-background border border-border rounded-xl p-4 text-foreground focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                    disabled={writingEvaluating}
+                  />
+
+                  <button 
+                    onClick={async () => {
+                      setWritingEvaluating(true);
+                      try {
+                        const res = await fetch("/api/writing-challenge/evaluate", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            textId,
+                            textTitle: title,
+                            prompt: "Rangkum bab ini dalam 3-5 kalimat.",
+                            response: writingResponse,
+                            requiredVocab: writingPromptVocab
+                          })
+                        });
+                        const data = await res.json();
+                        if (res.ok) setWritingResult(data.scores);
+                      } catch (e) {
+                        console.error(e);
+                      } finally {
+                        setWritingEvaluating(false);
+                      }
+                    }}
+                    disabled={writingResponse.trim().length < 10 || writingEvaluating}
+                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2"
+                  >
+                    {writingEvaluating ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Kirim Tulisan'}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-center gap-6 mb-6">
+                    <div className="text-center">
+                      <p className="text-3xl font-bold text-blue-500">{writingResult.grammar}</p>
+                      <p className="text-xs uppercase text-muted-foreground font-bold">Grammar</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-3xl font-bold text-green-500">{writingResult.vocabulary}</p>
+                      <p className="text-xs uppercase text-muted-foreground font-bold">Vocab</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-3xl font-bold text-purple-500">{writingResult.coherence}</p>
+                      <p className="text-xs uppercase text-muted-foreground font-bold">Kohesi</p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-muted/30 p-4 rounded-xl border border-border">
+                    <p className="text-sm font-bold text-foreground mb-2">Feedback AI:</p>
+                    <p className="text-sm text-muted-foreground">{writingResult.feedback}</p>
+                  </div>
+                  
+                  {writingResult.corrected_text && writingResult.corrected_text !== writingResponse && (
+                     <div className="bg-green-500/10 p-4 rounded-xl border border-green-500/30 mt-4">
+                       <p className="text-sm font-bold text-green-600 mb-2">Koreksi:</p>
+                       <p className="text-sm text-foreground italic">"{writingResult.corrected_text}"</p>
+                     </div>
+                  )}
+
+                  <button 
+                    onClick={() => setShowWritingPrompt(false)}
+                    className="w-full py-3 bg-muted hover:bg-muted/80 text-foreground rounded-xl font-bold transition-all"
+                  >
+                    Selesai & Lanjutkan
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {!writingEvaluating && !writingResult && (
+              <div className="p-4 bg-muted/30 border-t border-border text-center">
+                <button onClick={() => setShowWritingPrompt(false)} className="text-sm text-muted-foreground hover:text-foreground underline">
+                  Lewati Tantangan
                 </button>
               </div>
             )}
