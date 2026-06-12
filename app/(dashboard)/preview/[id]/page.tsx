@@ -193,7 +193,7 @@ export default function PreviewPage() {
       </div>
 
       <div 
-        className="w-full max-w-2xl min-h-[300px] sm:min-h-0 sm:aspect-[3/2] [perspective:1000px] cursor-pointer group"
+        className="w-full max-w-2xl h-[350px] sm:h-auto sm:aspect-[3/2] [perspective:1000px] cursor-pointer group"
         onClick={() => setShowAnswer(!showAnswer)}
       >
         <div className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${showAnswer ? "[transform:rotateY(180deg)]" : ""}`}>
