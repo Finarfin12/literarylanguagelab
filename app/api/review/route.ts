@@ -17,13 +17,30 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    // Fetch current vocabulary details for Phase 12
+    const { data: vocab } = await supabase.from('vocabulary').select('error_modifier, consecutive_correct').eq('id', vocabId).single();
+    let error_modifier = vocab?.error_modifier ?? 1.0;
+    let consecutive_correct = vocab?.consecutive_correct ?? 0;
+
+    if (quality >= 4) {
+      consecutive_correct += 1;
+      if (consecutive_correct >= 3) {
+        error_modifier = 1.0;
+      }
+    } else {
+      consecutive_correct = 0;
+    }
+
     // Calculate next review using SM-2
-    const { interval, repetition, easeFactor } = calculateSM2(
+    let { interval, repetition, easeFactor } = calculateSM2(
       quality, 
       lastInterval || 0, 
       lastRepetition || 0, 
       lastEaseFactor || 2.5
     );
+
+    // Apply error_modifier to interval
+    interval = Math.max(1, Math.round(interval * error_modifier));
 
     const nextReview = new Date();
     nextReview.setDate(nextReview.getDate() + interval);
@@ -36,7 +53,9 @@ export async function POST(req: Request) {
         next_review_at: nextReview.toISOString(),
         interval: interval,
         repetition_count: repetition,
-        efactor: easeFactor
+        efactor: easeFactor,
+        error_modifier: error_modifier,
+        consecutive_correct: consecutive_correct
       })
       .eq("id", vocabId)
       .eq("user_id", user.id);

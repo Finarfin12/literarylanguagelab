@@ -31,7 +31,8 @@ Evaluate their response and return ONLY a raw JSON object (no markdown, no quote
   "vocabulary_score": (0-100, based on usage of required words),
   "coherence_score": (0-100, how well it summarizes/answers the prompt),
   "feedback": "Short constructive feedback in Indonesian",
-  "corrected_text": "The response with corrected grammar (if any)"
+  "corrected_text": "The response with corrected grammar (if any)",
+  "grammar_issues": ["list", "of", "original", "wrong", "words", "used"]
 }`;
 
     const { text: evaluationJSON } = await generateText({
@@ -65,6 +66,24 @@ Evaluate their response and return ONLY a raw JSON object (no markdown, no quote
 
     if (dbError) {
       console.error("Failed to save submission", dbError);
+    }
+
+    // Phase 12: Personalized Error-Based Vocabulary Priority
+    if (scores.grammar_issues && Array.isArray(scores.grammar_issues) && scores.grammar_issues.length > 0) {
+      const originalWords = scores.grammar_issues.map((w: string) => w.toLowerCase());
+      const { data: userVocab } = await supabase.from('vocabulary').select('id, word').eq('user_id', user.id);
+      
+      if (userVocab && userVocab.length > 0) {
+        const errorVocabIds = userVocab
+          .filter(v => originalWords.includes(v.word.toLowerCase()))
+          .map(v => v.id);
+        
+        if (errorVocabIds.length > 0) {
+          await supabase.from('vocabulary')
+            .update({ error_modifier: 0.7, consecutive_correct: 0 })
+            .in('id', errorVocabIds);
+        }
+      }
     }
 
     // Award XP

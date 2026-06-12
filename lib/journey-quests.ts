@@ -46,6 +46,8 @@ export const JOURNEY_LEVELS: JourneyLevel[] = [
       { id: 'a2_slang', title: 'Street Smart', description: 'Decode 5 ekspresi slang di Slang Decoder.', icon: '🧩', tool: 'Slang Decoder', toolPath: '/english-lab/slang-decoder' },
       { id: 'a2_dialogue', title: 'Conversationalist', description: 'Selesaikan 2 skenario berbeda di Dialogue Simulator.', icon: '💬', tool: 'Dialogue Simulator', toolPath: '/english-lab/dialogue-simulator' },
       { id: 'a2_writing', title: 'First Draft', description: 'Selesaikan 1 Weekly Writing Challenge.', icon: '✍️', tool: 'Writing Challenge', toolPath: '/english-lab/writing-challenge' },
+      { id: 'a2_vocab_preview', title: 'Prepared Reader', description: 'Gunakan Pre-Reading Vocab Preview sebelum membaca 1 buku.', icon: '👁️', tool: 'Vocab Preview', toolPath: '/library' },
+      { id: 'a2_listening_challenge', title: 'Vocal Reader', description: 'Selesaikan 1 Listening Challenge Lisan setelah membaca bab.', icon: '🎤', tool: 'Listening Challenge', toolPath: '/library' },
     ],
     milestone: { badge: '📘 Finding Your Voice', xpBonus: 150 }
   },

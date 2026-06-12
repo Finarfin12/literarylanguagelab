@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { MessageSquareQuote, Clock, Keyboard, Volume2, VolumeX, BrainCircuit, Loader2, CheckCircle2, XCircle, BookOpen } from "lucide-react";
+import { MessageSquareQuote, Clock, Keyboard, Volume2, VolumeX, BrainCircuit, Loader2, CheckCircle2, XCircle, BookOpen, Mic, Square, Play, Headphones } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
 import { createClient } from "@/utils/supabase/client";
@@ -53,6 +53,17 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const [writingResponse, setWritingResponse] = useState("");
   const [writingEvaluating, setWritingEvaluating] = useState(false);
   const [writingResult, setWritingResult] = useState<any>(null);
+
+  // Listening Challenge State
+  const [showListeningModal, setShowListeningModal] = useState(false);
+  const [listeningLoading, setListeningLoading] = useState(false);
+  const [listeningQuestions, setListeningQuestions] = useState<any[]>([]);
+  const [currentListeningIdx, setCurrentListeningIdx] = useState(0);
+  const [listeningAnswers, setListeningAnswers] = useState<{question: string, expected_answer: string, user_transcript: string}[]>([]);
+  const [listeningResult, setListeningResult] = useState<any>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTranscript, setRecordingTranscript] = useState("");
+  const recognitionRef = useRef<any>(null);
 
   // Parse paragraphs (only if content is provided as string)
   const paragraphs = content ? content.split("\n").filter((p) => p.trim() !== "") : [];
@@ -298,6 +309,127 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
         }
       } catch (e) {
         console.error(e);
+      }
+    }
+  };
+
+  const initSpeechRecognition = () => {
+    if (typeof window !== "undefined") {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = "en-US";
+        recognition.interimResults = true;
+        recognition.continuous = true;
+        recognition.onresult = (event: any) => {
+          let finalTranscript = "";
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            }
+          }
+          if (finalTranscript) {
+            setRecordingTranscript((prev) => prev + " " + finalTranscript);
+          }
+        };
+        recognition.onerror = () => setIsRecording(false);
+        recognition.onend = () => setIsRecording(false);
+        recognitionRef.current = recognition;
+      }
+    }
+  };
+
+  useEffect(() => {
+    initSpeechRecognition();
+  }, []);
+
+  const triggerListeningChallenge = async (headingIdx: number) => {
+    setShowQuizModal(false);
+    setListeningLoading(true);
+    setShowListeningModal(true);
+    setListeningQuestions([]);
+    setCurrentListeningIdx(0);
+    setListeningAnswers([]);
+    setListeningResult(null);
+
+    const contextBlocks = blocks ? blocks.slice(Math.max(0, headingIdx - 8), headingIdx) : [];
+    const contextText = contextBlocks.map(b => b.text).join("\n\n");
+
+    try {
+      const res = await fetch("/api/generate-listening-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: contextText, title, author })
+      });
+      const data = await res.json();
+      if (res.ok && data.questions) {
+        setListeningQuestions(data.questions);
+      } else {
+        setShowListeningModal(false);
+      }
+    } catch (e) {
+      setShowListeningModal(false);
+    } finally {
+      setListeningLoading(false);
+    }
+  };
+
+  const playListeningAudio = async (text: string) => {
+    const provider = prefs?.reading?.tts_provider || "browser";
+    if (provider === "groq") {
+      try {
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+        if (res.ok) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const audio = new Audio(url);
+          audio.onended = () => URL.revokeObjectURL(url);
+          await audio.play();
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const submitListeningAnswer = async () => {
+    if (!recordingTranscript.trim()) return;
+    
+    const newAnswers = [...listeningAnswers, {
+      question: listeningQuestions[currentListeningIdx].question,
+      expected_answer: listeningQuestions[currentListeningIdx].expected_answer,
+      user_transcript: recordingTranscript.trim()
+    }];
+    setListeningAnswers(newAnswers);
+    setRecordingTranscript("");
+    
+    if (currentListeningIdx < listeningQuestions.length - 1) {
+      setCurrentListeningIdx(c => c + 1);
+    } else {
+      // Evaluate
+      setListeningLoading(true);
+      try {
+        const res = await fetch("/api/evaluate-listening", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ answers: newAnswers, textId, chapter: 1 })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setListeningResult(data);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setListeningLoading(false);
       }
     }
   };
@@ -625,10 +757,97 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
             
             {/* Close Button (if they want to skip without answering) */}
             {quizAnswered === null && (
-              <div className="p-4 bg-muted/30 border-t border-border text-center">
-                <button onClick={handleCloseQuiz} className="text-sm text-muted-foreground hover:text-foreground underline">
+              <div className="flex flex-col border-t border-border">
+                {prefs?.reading?.enable_listening_challenge !== false && (
+                  <button onClick={() => triggerListeningChallenge(lastQuizHeadingIdx)} className="p-4 text-sm text-foreground hover:bg-muted font-medium flex items-center justify-center gap-2 border-b border-border">
+                    <Headphones className="w-4 h-4 text-brand" /> Atau ikuti Listening Challenge (Lisan)
+                  </button>
+                )}
+                <button onClick={handleCloseQuiz} className="p-4 text-sm text-muted-foreground hover:text-foreground underline bg-muted/30 text-center">
                   Lewati Kuis (Skip)
                 </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Listening Modal Overlay */}
+      {showListeningModal && (
+        <div className="absolute inset-0 z-[100] bg-background/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
+          <div className="bg-card border border-border shadow-2xl rounded-3xl max-w-lg w-full overflow-hidden">
+            <div className="bg-brand p-6 text-white text-center relative overflow-hidden">
+              <Headphones className="w-24 h-24 absolute -right-4 -top-4 opacity-20" />
+              <h3 className="text-2xl font-bold font-serif relative z-10">Listening Challenge</h3>
+              <p className="text-brand-100 mt-1 relative z-10 text-sm">Dengarkan pertanyaan dan jawab secara lisan.</p>
+            </div>
+            
+            <div className="p-8">
+              {listeningLoading && !listeningResult ? (
+                <div className="flex flex-col items-center justify-center py-8">
+                  <Loader2 className="w-10 h-10 animate-spin text-brand mb-4" />
+                  <p className="text-muted-foreground animate-pulse">{listeningAnswers.length === listeningQuestions.length ? "Mengevaluasi jawaban..." : "Menyiapkan audio..."}</p>
+                </div>
+              ) : listeningResult ? (
+                <div className="space-y-6">
+                  <div className="text-center mb-6">
+                    <p className="text-5xl font-bold text-brand">{listeningResult.score}</p>
+                    <p className="text-xs uppercase text-muted-foreground font-bold">Skor Listening</p>
+                  </div>
+                  <div className="bg-muted/30 p-4 rounded-xl border border-border">
+                    <p className="text-sm font-bold text-foreground mb-2">Feedback AI:</p>
+                    <p className="text-sm text-muted-foreground">{listeningResult.feedback}</p>
+                  </div>
+                  <div className="space-y-4 mt-4 max-h-40 overflow-y-auto pr-2">
+                    {listeningResult.evaluations?.map((ev: any, i: number) => (
+                      <div key={i} className={`p-3 rounded-xl border text-sm ${ev.is_correct ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                        <p className="font-bold flex items-center gap-2">Q{ev.question_number} {ev.is_correct ? <CheckCircle2 className="w-4 h-4 text-green-500"/> : <XCircle className="w-4 h-4 text-red-500"/>}</p>
+                        <p className="text-muted-foreground mt-1">{ev.feedback}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={handleCloseQuiz} className="w-full py-3 bg-brand hover:bg-brand/90 text-white rounded-xl font-bold transition-all mt-4">Selesai & Lanjutkan</button>
+                </div>
+              ) : listeningQuestions.length > 0 ? (
+                <div className="space-y-6 text-center">
+                  <p className="text-sm text-muted-foreground font-bold uppercase tracking-wider">Pertanyaan {currentListeningIdx + 1} dari {listeningQuestions.length}</p>
+                  <button onClick={() => playListeningAudio(listeningQuestions[currentListeningIdx].question)} className="mx-auto w-16 h-16 rounded-full bg-brand/10 text-brand flex items-center justify-center hover:bg-brand/20 transition-all shadow-lg border border-brand/20 animate-bounce">
+                    <Volume2 className="w-8 h-8 ml-1" />
+                  </button>
+                  <p className="text-sm text-foreground">Klik ikon speaker untuk mendengarkan pertanyaan.</p>
+                  
+                  <div className="pt-6 border-t border-border">
+                    <div className="min-h-16 mb-4 p-4 rounded-xl border border-border bg-muted/30 text-sm italic text-muted-foreground">
+                      {recordingTranscript || "Jawaban lisan Anda akan muncul di sini..."}
+                    </div>
+                    
+                    {!isRecording ? (
+                      <button onClick={() => { setIsRecording(true); recognitionRef.current?.start(); }} className="w-full py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
+                        <Mic className="w-5 h-5" /> Mulai Merekam Jawaban
+                      </button>
+                    ) : (
+                      <div className="flex gap-2">
+                        <button onClick={() => { setIsRecording(false); recognitionRef.current?.stop(); }} className="flex-1 py-3 bg-muted text-foreground hover:bg-border rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
+                          <Square className="w-5 h-5" /> Stop
+                        </button>
+                        <button onClick={submitListeningAnswer} className="flex-1 py-3 bg-brand hover:bg-brand/90 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
+                          <CheckCircle2 className="w-5 h-5" /> Kirim
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Gagal memuat kuis listening.</p>
+                  <button onClick={() => setShowListeningModal(false)} className="px-6 py-2 mt-4 bg-muted hover:bg-muted/80 rounded-full font-medium">Batal</button>
+                </div>
+              )}
+            </div>
+            
+            {listeningAnswers.length < listeningQuestions.length && !listeningResult && (
+              <div className="p-4 bg-muted/30 border-t border-border text-center">
+                <button onClick={handleCloseQuiz} className="text-sm text-muted-foreground hover:text-foreground underline">Keluar</button>
               </div>
             )}
           </div>

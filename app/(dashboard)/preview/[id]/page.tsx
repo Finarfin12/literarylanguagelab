@@ -67,7 +67,7 @@ export default function PreviewPage() {
       });
       if (res.ok) {
         setSavedWords(new Set([...savedWords, wordObj.word]));
-        Swal.toast({
+        Swal.fire({
           title: "Tersimpan",
           icon: "success",
           toast: true,

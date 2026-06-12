@@ -160,6 +160,23 @@ Respond ONLY with valid JSON format:
        return NextResponse.json({ error: "Failed to save to database" }, { status: 500 });
     }
 
+    // Phase 12: Personalized Error-Based Vocabulary Priority
+    if (parsedScores.grammar_issues && Array.isArray(parsedScores.grammar_issues) && parsedScores.grammar_issues.length > 0) {
+      const { data: userVocab } = await supabase.from('vocabulary').select('id, word').eq('user_id', user.id);
+      
+      if (userVocab && userVocab.length > 0) {
+        const errorVocabIds = userVocab
+          .filter(v => parsedScores.grammar_issues.some((issue: string) => issue.toLowerCase().includes(v.word.toLowerCase())))
+          .map(v => v.id);
+        
+        if (errorVocabIds.length > 0) {
+          await supabase.from('vocabulary')
+            .update({ error_modifier: 0.7, consecutive_correct: 0 })
+            .in('id', errorVocabIds);
+        }
+      }
+    }
+
     // Award XP
     const { data: profile } = await supabase.from('profiles').select('xp').eq('id', user.id).single();
     if (profile) {

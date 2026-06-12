@@ -47,7 +47,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Pictionary Mode**: Menerjemahkan kata atau frasa sulit menjadi ikon/emoji visual.
 - **Text-to-Speech (Read Aloud)**: Dengarkan pengucapan kalimat/paragraf menggunakan fitur pembaca otomatis untuk melatih *listening*.
 - **Syntax Highlighting (Training Wheels)**: Mewarnai setiap kata dalam paragraf berdasarkan perannya (Subjek, Verba, Objek) untuk memudahkan pemula membedah struktur kalimat.
-- **Comprehension Quizzes**: Kuis pemahaman dinamis yang muncul secara otomatis setiap kali Anda selesai membaca satu bab.
+- **Comprehension Quizzes & Listening Challenge**: Kuis pemahaman dinamis dan tes lisan interaktif (STT/TTS) yang muncul secara otomatis setiap kali Anda selesai membaca satu bab.
 - **Alter Ego Chat**: Berbincang langsung dengan agen virtual yang memerankan penulis legendaris.
 - **Story Quiz**: Permainan kuis di mana sistem membuat cerita pendek fiksi dari daftar kosa kata yang sedang Anda pelajari.
 - **Translation Workshop**: Layar terbelah (split-screen) untuk menerjemahkan teks dengan umpan balik otomatis dari kecerdasan buatan (Equivalence, Register, Back-Translation).
@@ -61,7 +61,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - Simpan kosa kata apa pun yang Anda temui saat membaca buku.
 - **Idiom Library & Glossary Builder**: Direktori khusus penyimpan daftar idiom bahasa Inggris beserta terjemahan kontekstualnya, serta alat pembangun glosarium kustom per buku bacaan.
 - **Cultural Context Library**: Ensiklopedia tempat pengguna dapat mengelola referensi sejarah dan mitologi klasik yang dapat dilacak secara otomatis di dalam teks bacaan.
-- **Interactive Flashcards & SRS Unification**: Sistem kartu *flashcard* 3D terpadu menggunakan algoritma Spaced Repetition SM-2 untuk menguji ingatan Anda atas kosa kata yang dikumpulkan. Terintegrasi langsung dengan 4 mode belajar: Standard, Context, Dictation, dan Listening.
+- **Interactive Flashcards & SRS Unification**: Sistem kartu *flashcard* 3D terpadu menggunakan algoritma Spaced Repetition SM-2 untuk menguji ingatan Anda atas kosa kata yang dikumpulkan. Terintegrasi langsung dengan 4 mode belajar: Standard, Context, Dictation, dan Listening. Dilengkapi algoritma **Personalized Error-Based Priority** yang otomatis menyesuaikan interval kata yang sering salah digunakan pada sesi *grammar/writing*.
 - **Contextual Review Mode**: Mengingat kata dengan lebih baik melalui mode flashcard yang menampilkan kembali paragraf sastra utuh (lengkap dengan fitur Deep Link "Re-read Chapter") secara real-time.
 - **Pre-Reading Vocabulary Preview**: Tampilkan dan pelajari 8-12 kata kunci krusial (skema kosakata) sebelum membaca teks sastra untuk memudahkan pemahaman bacaan Anda (dapat diaktifkan/nonaktifkan dari pengaturan).
 - **Spaced Repetition Algorithm**: Sistem pengulangan cerdas yang akan mengingatkan Anda untuk mengulang (review) suatu kata tepat sebelum Anda hampir melupakannya.

@@ -141,6 +141,15 @@
   4. Klik lagi untuk menghentikan pemutaran.
 - **Catatan:** Fitur ini dapat dinonaktifkan sepenuhnya melalui Pengaturan → Reading Experience → Text-to-Speech. Jika dimatikan, ikon speaker tidak akan muncul.
 
+### 2.8 Listening Challenge from Literature
+- **Halaman:** `/read/[id]`
+- **Deskripsi:** Evaluasi komprehensif pendengaran (*listening*) dan berbicara (*speaking*) yang muncul otomatis setelah menyelesaikan setiap bab bacaan.
+- **Fitur:**
+  - AI membacakan 3 pertanyaan pemahaman seputar plot cerita di bab yang baru saja dibaca.
+  - Pengguna menjawab menggunakan mikrofon (*Voice STT*).
+  - AI memberikan penilaian (0-100) dan *feedback* dalam Bahasa Indonesia untuk akurasi jawaban dan kejelasan bahasa Inggris lisan pengguna.
+  - Dapat diakses dengan mengeklik tombol "Listening Challenge" di modal kuis antar-bab, dan dapat dinonaktifkan di Pengaturan.
+
 ---
 
 ## 3. Fitur Ramah Pemula (Beginner Features)
@@ -708,6 +717,7 @@ Kumpulan fitur yang khusus didesain bagi mereka yang ingin berlatih bahasa Inggr
   - **Tebak Kata**: Menampilkan definisi, pengguna mengetikkan kata yang dimaksud.
   - **Dikte (Listening)**: Mengujikan pendengaran dan penulisan (*spelling*) menggunakan TTS dan Input Suara.
   - **Algoritma Leitner Box (SM-2):** Mengatur interval kemunculan kartu menjadi 1, 2, 4, 7, atau 14 hari berdasarkan ketepatan jawaban.
+  - **Personalized Error-Based Priority**: Algoritma SM-2 secara otomatis memprioritaskan kata yang baru saja salah digunakan dalam tugas grammar atau writing dengan mengurangi interval interval ulasan sebesar 30% (`error_modifier = 0.7`) hingga pengguna menjawab benar berturut-turut.
 
 ### 13.3 Everyday Dialogue Simulator
 - **Halaman:** `/english-lab/dialogue-simulator`

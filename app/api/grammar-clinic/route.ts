@@ -84,6 +84,24 @@ export async function POST(req: Request) {
           corrections: parsed.corrections,
           error_categories: categories
         });
+
+        // Phase 12: Personalized Error-Based Vocabulary Priority
+        if (parsed.corrections && parsed.corrections.length > 0) {
+          const originalWords = parsed.corrections.map((c: any) => (c.original || "").toLowerCase().split(/\W+/)).flat().filter(Boolean);
+          const { data: userVocab } = await supabase.from('vocabulary').select('id, word').eq('user_id', user.id);
+          
+          if (userVocab && userVocab.length > 0) {
+            const errorVocabIds = userVocab
+              .filter(v => originalWords.includes(v.word.toLowerCase()))
+              .map(v => v.id);
+            
+            if (errorVocabIds.length > 0) {
+              await supabase.from('vocabulary')
+                .update({ error_modifier: 0.7, consecutive_correct: 0 })
+                .in('id', errorVocabIds);
+            }
+          }
+        }
       }
     } catch (dbError) {
       console.error("Failed to save grammar session:", dbError);

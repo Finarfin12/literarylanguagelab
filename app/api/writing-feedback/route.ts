@@ -82,6 +82,24 @@ export async function POST(req: Request) {
           user_id: user.id,
           action_type: `Tool Used: AI Writing Assistant`,
         });
+
+        // Phase 12: Personalized Error-Based Vocabulary Priority
+        if (parsedResult.grammar_corrections && Array.isArray(parsedResult.grammar_corrections) && parsedResult.grammar_corrections.length > 0) {
+          const originalWords = parsedResult.grammar_corrections.map((c: any) => (c.original || "").toLowerCase().split(/\W+/)).flat().filter(Boolean);
+          const { data: userVocab } = await supabase.from('vocabulary').select('id, word').eq('user_id', user.id);
+          
+          if (userVocab && userVocab.length > 0) {
+            const errorVocabIds = userVocab
+              .filter(v => originalWords.includes(v.word.toLowerCase()))
+              .map(v => v.id);
+            
+            if (errorVocabIds.length > 0) {
+              await supabase.from('vocabulary')
+                .update({ error_modifier: 0.7, consecutive_correct: 0 })
+                .in('id', errorVocabIds);
+            }
+          }
+        }
       }
     } catch (logError) {
       console.error("Failed to log activity:", logError);
