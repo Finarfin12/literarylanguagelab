@@ -33,7 +33,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
   }
 
   return (
-    <div className="p-8 max-w-5xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-8 max-w-5xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
         <div>
           <h1 className="text-4xl font-serif font-bold text-foreground">Text Library</h1>

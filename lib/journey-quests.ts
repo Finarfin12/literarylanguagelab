@@ -23,7 +23,7 @@ export const JOURNEY_LEVELS: JourneyLevel[] = [
   {
     level: 1, cefr: 'A1', title: 'The First Page', subtitle: 'Langkah pertama dalam dunia bahasa Inggris.',
     quests: [
-      { id: 'a1_read', title: 'First Story', description: 'Baca 1 cerita/buku pendek dari perpustakaan.', icon: '📖', tool: 'Public Domain Books', toolPath: '/gutenberg' },
+      { id: 'a1_read', title: 'First Story', description: 'Baca 1 chapter atau paragraf pendek dari Library.', icon: '📖', tool: 'Public Domain Books', toolPath: '/gutenberg' },
       { id: 'a1_grammar', title: 'Grammar Check', description: 'Analisis teks dengan Grammar Clinic, skor ≥40.', icon: '📝', tool: 'Grammar Clinic', toolPath: '/english-lab/grammar-clinic' },
       { id: 'a1_vocab', title: 'Word Collector', description: 'Simpan 10 kata baru ke Vocabulary Bank.', icon: '🃏', tool: 'Vocabulary Bank', toolPath: '/vocabulary' },
       { id: 'a1_flashcard', title: 'Memory Training', description: 'Review 10 kata dengan Flashcard SRS.', icon: '🧠', tool: 'Flashcard SRS', toolPath: '/english-lab/flashcard' },
@@ -37,7 +37,7 @@ export const JOURNEY_LEVELS: JourneyLevel[] = [
   {
     level: 2, cefr: 'A2', title: 'Finding Your Voice', subtitle: 'Mulai menemukan suara Anda dalam bahasa Inggris.',
     quests: [
-      { id: 'a2_read', title: 'Avid Reader', description: 'Baca 2 cerita/buku dari perpustakaan.', icon: '📖', tool: 'Public Domain Books', toolPath: '/gutenberg' },
+      { id: 'a2_read', title: 'Avid Reader', description: 'Baca 2 chapter cerita pendek dari Library.', icon: '📖', tool: 'Public Domain Books', toolPath: '/gutenberg' },
       { id: 'a2_grammar', title: 'Grammar Builder', description: 'Analisis 2 teks dengan Grammar Clinic, rata-rata skor ≥55.', icon: '📝', tool: 'Grammar Clinic', toolPath: '/english-lab/grammar-clinic' },
       { id: 'a2_vocab', title: 'Word Hoarder', description: 'Kumpulkan total 30 kata di Vocabulary Bank.', icon: '🃏', tool: 'Vocabulary Bank', toolPath: '/vocabulary' },
       { id: 'a2_flashcard', title: 'SRS Streak', description: 'Review 25 kata dengan Flashcard SRS.', icon: '🧠', tool: 'Flashcard SRS', toolPath: '/english-lab/flashcard' },
@@ -54,7 +54,7 @@ export const JOURNEY_LEVELS: JourneyLevel[] = [
   {
     level: 3, cefr: 'B1', title: 'Between the Lines', subtitle: 'Mulai membaca di antara baris — memahami makna tersirat.',
     quests: [
-      { id: 'b1_read', title: 'Literary Explorer', description: 'Baca 3 teks sastra dan selesaikan 1 kuis pemahaman.', icon: '📖', tool: 'Public Domain Books', toolPath: '/gutenberg' },
+      { id: 'b1_read', title: 'Literary Explorer', description: 'Baca 1 cerita pendek (cerpen) dan selesaikan 1 kuis pemahaman.', icon: '📖', tool: 'Public Domain Books', toolPath: '/gutenberg' },
       { id: 'b1_lingowise', title: 'AI Analyst', description: 'Gunakan LingoWise AI (mode apa saja) pada 2 teks berbeda.', icon: '🔍', tool: 'LingoWise AI', toolPath: '/lingowise' },
       { id: 'b1_grammar', title: 'Grammar Master', description: 'Dapatkan skor ≥70 di Grammar Clinic.', icon: '📝', tool: 'Grammar Clinic', toolPath: '/english-lab/grammar-clinic' },
       { id: 'b1_vocab', title: 'Vocabulary Builder', description: 'Kumpulkan total 60 kata, review 40 dengan SRS.', icon: '🃏', tool: 'Flashcard SRS', toolPath: '/english-lab/flashcard' },
