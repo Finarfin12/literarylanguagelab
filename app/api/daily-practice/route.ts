@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+
 export async function GET() {
   try {
     const supabase = await createClient();
@@ -10,11 +12,16 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
     // Get today's date in YYYY-MM-DD
     const today = new Date().toISOString().split('T')[0];
 
     // Get or create today's record
-    let { data: activity } = await supabase
+    let { data: activity } = await supabaseAdmin
       .from('daily_activities')
       .select('*')
       .eq('user_id', user.id)
@@ -22,7 +29,7 @@ export async function GET() {
       .single();
 
     if (!activity) {
-      const { data: newActivity, error } = await supabase
+      const { data: newActivity, error } = await supabaseAdmin
         .from('daily_activities')
         .insert({ user_id: user.id, date: today })
         .select()
@@ -50,6 +57,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
     const { type } = await req.json(); // "wotd" | "grammar" | "review"
     if (!["wotd", "grammar", "review"].includes(type)) {
       return NextResponse.json({ error: "Invalid type" }, { status: 400 });
@@ -58,7 +70,7 @@ export async function POST(req: Request) {
     const today = new Date().toISOString().split('T')[0];
     const column = `${type}_completed`;
 
-    const { data: updated, error } = await supabase
+    const { data: updated, error } = await supabaseAdmin
       .from('daily_activities')
       .update({ [column]: true })
       .eq('user_id', user.id)
@@ -73,13 +85,13 @@ export async function POST(req: Request) {
     // Check if all completed
     if (updated.wotd_completed && updated.grammar_completed && updated.review_completed) {
       // Award 25 XP
-      const { data: profile } = await supabase.from('profiles').select('xp').eq('id', user.id).single();
+      const { data: profile } = await supabaseAdmin.from('profiles').select('xp').eq('id', user.id).single();
       if (profile) {
-        await supabase.from('profiles').update({ xp: profile.xp + 25 }).eq('id', user.id);
+        await supabaseAdmin.from('profiles').update({ xp: profile.xp + 25 }).eq('id', user.id);
       }
       
       // Log activity
-      await supabase.from('activity_logs').insert({
+      await supabaseAdmin.from('activity_logs').insert({
         user_id: user.id,
         action_type: 'Completed Daily Practice'
       });
