@@ -145,7 +145,7 @@ export default function DialogueSimulatorPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {DIALOGUE_SCENARIOS.filter(s => s.category === cat).map(scenario => {
                 const Icon = ICON_MAP[scenario.icon] || MessageSquare;
-                const diffColor = scenario.difficulty === "beginner" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" : scenario.difficulty === "intermediate" ? "bg-amber-500/10 text-amber-400 border-amber-500/30" : "bg-red-500/10 text-red-400 border-red-500/30";
+                const diffColor = ["A1", "A2"].includes(scenario.difficulty) ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" : ["B1", "B2"].includes(scenario.difficulty) ? "bg-amber-500/10 text-amber-400 border-amber-500/30" : "bg-red-500/10 text-red-400 border-red-500/30";
                 return (
                   <button key={scenario.id} onClick={() => startScenario(scenario)} className="bg-card border border-border rounded-2xl p-6 text-left hover:border-brand/50 hover:-translate-y-1 hover:shadow-xl transition-all group">
                     <div className="flex items-center gap-3 mb-3">
