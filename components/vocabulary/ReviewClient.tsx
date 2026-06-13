@@ -13,7 +13,7 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
   const [items, setItems] = useState(dueVocab);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState<number | null>(null);
 
   const currentItem = items[currentIndex];
 
@@ -30,7 +30,7 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
   }
 
   const handleScore = async (quality: number) => {
-    setSubmitting(true);
+    setSubmitting(quality);
     try {
       const res = await fetch("/api/review", {
         method: "POST",
@@ -57,7 +57,7 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
     } catch (error) {
       Swal.fire("Gagal", "Error submitting review", "error");
     } finally {
-      setSubmitting(false);
+      setSubmitting(null);
     }
   };
 
@@ -107,31 +107,31 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <button 
                   onClick={() => handleScore(0)}
-                  disabled={submitting}
-                  className="py-3 px-2 rounded-lg bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 transition-colors text-xs sm:text-sm font-medium disabled:opacity-50"
+                  disabled={submitting !== null}
+                  className="py-3 px-2 rounded-lg bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 transition-colors text-xs sm:text-sm font-medium disabled:opacity-50 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2"
                 >
-                  Lupa Total
+                  {submitting === 0 && <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />} Lupa Total
                 </button>
                 <button 
                   onClick={() => handleScore(2)}
-                  disabled={submitting}
-                  className="py-3 px-2 rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/30 hover:bg-orange-500/20 transition-colors text-xs sm:text-sm font-medium disabled:opacity-50"
+                  disabled={submitting !== null}
+                  className="py-3 px-2 rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/30 hover:bg-orange-500/20 transition-colors text-xs sm:text-sm font-medium disabled:opacity-50 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2"
                 >
-                  Hampir Lupa
+                  {submitting === 2 && <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />} Hampir Lupa
                 </button>
                 <button 
                   onClick={() => handleScore(4)}
-                  disabled={submitting}
-                  className="py-3 px-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 transition-colors text-xs sm:text-sm font-medium disabled:opacity-50"
+                  disabled={submitting !== null}
+                  className="py-3 px-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 transition-colors text-xs sm:text-sm font-medium disabled:opacity-50 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2"
                 >
-                  Ingat Ragu
+                  {submitting === 4 && <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />} Ingat Ragu
                 </button>
                 <button 
                   onClick={() => handleScore(5)}
-                  disabled={submitting}
+                  disabled={submitting !== null}
                   className="py-3 px-2 rounded-lg bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 transition-colors text-xs sm:text-sm font-medium disabled:opacity-50 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2"
                 >
-                  {submitting && <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />} Sangat Mudah
+                  {submitting === 5 && <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />} Sangat Mudah
                 </button>
               </div>
             </div>
