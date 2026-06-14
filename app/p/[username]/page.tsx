@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
-import { User, Star, Zap, Library, Quote } from "lucide-react";
-import Sidebar from "@/components/Sidebar";
+import { User, Star, Zap, Library, Quote, Users } from "lucide-react";
+import ProfileActions from "@/components/community/ProfileActions";
 
 export default async function PublicPortfolioPage({ params }: { params: { username: string } }) {
   const supabase = await createClient();
@@ -23,6 +23,33 @@ export default async function PublicPortfolioPage({ params }: { params: { userna
     .eq("user_id", profile.id)
     .order("created_at", { ascending: false })
     .limit(20);
+
+  // Get social stats
+  const { count: followersCount } = await supabase
+    .from("user_follows")
+    .select("*", { count: 'exact', head: true })
+    .eq("following_id", profile.id);
+
+  const { count: followingCount } = await supabase
+    .from("user_follows")
+    .select("*", { count: 'exact', head: true })
+    .eq("follower_id", profile.id);
+
+  // Check current user status
+  const { data: { user } } = await supabase.auth.getUser();
+  const isLoggedIn = !!user;
+  const isOwnProfile = user?.id === profile.id;
+  let isFollowing = false;
+
+  if (user && !isOwnProfile) {
+    const { data: followData } = await supabase
+      .from("user_follows")
+      .select("follower_id")
+      .eq("follower_id", user.id)
+      .eq("following_id", profile.id)
+      .single();
+    if (followData) isFollowing = true;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
@@ -46,11 +73,36 @@ export default async function PublicPortfolioPage({ params }: { params: { userna
               )}
             </div>
             
-            <div className="relative z-10 flex-1">
-              <h1 className="text-4xl font-serif font-bold text-foreground mb-2">{profile.full_name || "Anon Translator"}</h1>
-              <p className="text-xl text-muted-foreground mb-6">@{profile.username}</p>
+            <div className="relative z-10 flex-1 w-full">
+              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
+                <div>
+                  <h1 className="text-4xl font-serif font-bold text-foreground mb-1">{profile.full_name || "Anon Translator"}</h1>
+                  <p className="text-xl text-muted-foreground">@{profile.username}</p>
+                </div>
+                
+                <ProfileActions 
+                  targetUserId={profile.id} 
+                  initialIsFollowing={isFollowing} 
+                  isOwnProfile={isOwnProfile}
+                  isLoggedIn={isLoggedIn}
+                />
+              </div>
               
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
+                <div className="bg-muted px-4 py-2 rounded-xl flex items-center gap-3">
+                  <Users className="w-5 h-5 text-brand" />
+                  <div>
+                    <p className="text-xs font-bold text-muted-foreground uppercase">Followers</p>
+                    <p className="font-bold text-lg">{followersCount || 0}</p>
+                  </div>
+                </div>
+                <div className="bg-muted px-4 py-2 rounded-xl flex items-center gap-3">
+                  <Users className="w-5 h-5 text-brand" />
+                  <div>
+                    <p className="text-xs font-bold text-muted-foreground uppercase">Following</p>
+                    <p className="font-bold text-lg">{followingCount || 0}</p>
+                  </div>
+                </div>
                 <div className="bg-muted px-4 py-2 rounded-xl flex items-center gap-3">
                   <Star className="w-5 h-5 text-amber-500" />
                   <div>
