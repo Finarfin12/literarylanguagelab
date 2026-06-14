@@ -33,7 +33,7 @@ export default function ProfilePage() {
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<SupabaseUser | null>(null);
-  const [stats, setStats] = useState({ vocabCount: 0, idiomCount: 0, xp: 0, streak: 0, textsCompleted: 0, reviewsThisWeek: 0 });
+  const [stats, setStats] = useState({ vocabCount: 0, idiomCount: 0, xp: 0, streak: 0, textsCompleted: 0, reviewsThisWeek: 0, followersCount: 0, followingCount: 0 });
   const [recentLogs, setRecentLogs] = useState<any[]>([]);
   const [badges, setBadges] = useState<string[]>([]);
 
@@ -54,7 +54,9 @@ export default function ProfilePage() {
           const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
           return supabase.from("activity_logs").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("action_type", "reviewed_vocab").gte("created_at", oneWeekAgo.toISOString());
         })(),
-        supabase.from("activity_logs").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5)
+        supabase.from("activity_logs").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5),
+        supabase.from("user_follows").select("*", { count: "exact", head: true }).eq("following_id", user.id),
+        supabase.from("user_follows").select("*", { count: "exact", head: true }).eq("follower_id", user.id)
       ]);
 
       const profData = results[0].status === "fulfilled" ? results[0].value.data : null;
@@ -64,6 +66,8 @@ export default function ProfilePage() {
       const bData = results[4].status === "fulfilled" ? results[4].value.data : null;
       const rCount = results[5].status === "fulfilled" ? results[5].value.count : 0;
       const logsData = results[6].status === "fulfilled" ? results[6].value.data : null;
+      const followersC = results[7].status === "fulfilled" ? results[7].value.count : 0;
+      const followingC = results[8].status === "fulfilled" ? results[8].value.count : 0;
 
       if (!cancelled) {
         if (bData) {
@@ -76,6 +80,8 @@ export default function ProfilePage() {
           streak: profData?.streak || 0,
           textsCompleted: new Set(sData?.map((s: any) => s.text_id) || []).size,
           reviewsThisWeek: rCount || 0,
+          followersCount: followersC || 0,
+          followingCount: followingC || 0,
         });
         if (logsData) {
           setRecentLogs(logsData);
@@ -120,6 +126,16 @@ export default function ProfilePage() {
           <div className="flex-1 mb-2">
             <h1 className="text-4xl font-serif font-bold text-foreground">{fullName}</h1>
             <p className="text-muted-foreground flex items-center gap-2 mt-1"><CalendarDays className="w-4 h-4" /> Bergabung sejak {joinDate}</p>
+            <div className="flex items-center gap-6 mt-4">
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold text-foreground">{stats.followersCount}</span>
+                <span className="text-sm text-muted-foreground">Followers</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold text-foreground">{stats.followingCount}</span>
+                <span className="text-sm text-muted-foreground">Following</span>
+              </div>
+            </div>
           </div>
           <Link href="/settings" className="mb-2 px-6 py-2.5 bg-muted hover:bg-muted/80 border border-border rounded-xl transition-colors font-medium">Edit Profil</Link>
         </div>
