@@ -110,9 +110,14 @@ export default async function AdminUsersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold text-foreground">{tierInfo.display}</span>
-                        <span className="text-xs text-brand font-medium">Level {tierInfo.level} ({profile.xp || 0} XP)</span>
+                      <div className="flex flex-col gap-1">
+                        <div>
+                          <span className="text-sm font-bold text-foreground">{tierInfo.display}</span>
+                          <p className="text-xs text-brand font-medium">Level {tierInfo.level} ({profile.xp || 0} XP)</p>
+                        </div>
+                        <div className="bg-brand/10 border border-brand/20 rounded-md px-2 py-0.5 inline-block w-fit mt-1">
+                          <span className="text-[10px] font-bold text-brand uppercase tracking-wider">CEFR: {profile.cefr_level || 'A1'}</span>
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
