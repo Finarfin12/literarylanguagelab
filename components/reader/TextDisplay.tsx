@@ -293,6 +293,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
 
   const handleCloseQuiz = async () => {
     setShowQuizModal(false);
+    setShowListeningModal(false);
     if (prefs?.reading?.enable_writing_prompts) {
       try {
         const supabase = createClient();

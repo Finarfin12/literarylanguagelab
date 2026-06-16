@@ -44,6 +44,33 @@ export async function POST(req: Request) {
       });
     }
 
+    // Auto-complete Reading Quests if time spent > 15s
+    const totalTime = (session?.time_spent_seconds || 0) + time_spent_seconds;
+    if (totalTime > 15) {
+      const { data: profile } = await supabase.from('profiles').select('journey_level').eq('id', user.id).single();
+      const level = profile?.journey_level || 1;
+      
+      const readingQuestIds: Record<number, string> = {
+        1: 'a1_read',
+        2: 'a2_read',
+        3: 'b1_read',
+        4: 'b2_read',
+        5: 'c1_read',
+        6: 'c2_read'
+      };
+      
+      const questId = readingQuestIds[level];
+      if (questId) {
+        await supabase.from('journey_progress').upsert({
+          user_id: user.id,
+          quest_id: questId,
+          journey_level: level,
+          completed: true,
+          completed_at: new Date().toISOString(),
+        }, { onConflict: 'user_id,quest_id' });
+      }
+    }
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Heartbeat Error:", error);
