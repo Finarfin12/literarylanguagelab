@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Send, Loader2, Bot, User, MessageCircle, BookOpen, Sparkles, BrainCircuit, GraduationCap, Globe, Gamepad2, HelpCircle, ArrowRight, X, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -186,7 +187,7 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
               </div>
               <div className={`rounded-2xl px-4 py-3 max-w-[85%] text-sm leading-relaxed overflow-x-auto ${msg.role === "assistant" ? "bg-muted text-foreground prose-p:my-1 prose-strong:text-brand prose-strong:font-bold prose-ul:pl-4 prose-ul:list-disc prose-ol:pl-4 prose-ol:list-decimal" : "bg-brand text-white"}`}>
                 {msg.role === "assistant" ? (
-                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                 ) : (
                   msg.content
                 )}

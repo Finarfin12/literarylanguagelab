@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 
 
 const SYSTEM_PROMPTS: Record<string, string> = {
@@ -25,7 +26,7 @@ export async function POST(req: Request) {
     const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: [
-        { role: "system", content: SYSTEM_PROMPTS[mode] },
+        { role: "system", content: withAITextOutputRules(SYSTEM_PROMPTS[mode]) },
         { role: "user", content: text }
       ],
       model: config.model,
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
       max_tokens: config.max_tokens,
     });
 
-    const result = completion.choices[0]?.message?.content || "";
+    const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
     return NextResponse.json({ result });
   } catch (error: any) {
     console.error("LingoWise Error:", error);

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { X, BookOpen, BookmarkPlus, Loader2, Globe, Wind, Sparkles, Languages, Music, Quote, PenTool, GitMerge, Hourglass, Network, Volume2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic";
 
@@ -340,7 +341,7 @@ export default function WordLookupSidebar({ word, contextSentence, textId, posit
               </div>
             ) : (
               <div className="prose prose-sm dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:text-brand prose-headings:font-serif">
-                {result && <ReactMarkdown>{result}</ReactMarkdown>}
+                {result && <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>}
               </div>
             )}
           </>

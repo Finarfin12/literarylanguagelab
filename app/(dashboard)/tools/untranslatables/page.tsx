@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Globe2, Search, ArrowRight, Loader2, Library, Info, Lightbulb, Sparkles } from "lucide-react";
 import Swal from "sweetalert2";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function UntranslatablesPage() {
   const [word, setWord] = useState("");
@@ -67,7 +68,7 @@ export default function UntranslatablesPage() {
         <div className="bg-card shadow-sm border border-border rounded-3xl p-8 shadow-xl animate-in fade-in slide-in-from-bottom-8">
           <h2 className="text-2xl font-serif font-bold text-teal-500 mb-6 border-b border-border pb-4">Strategy & Analysis</h2>
           <div className="prose dark:prose-invert prose-teal max-w-none prose-headings:font-serif prose-headings:text-teal-500">
-            <ReactMarkdown>{result}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
           </div>
         </div>
       )}

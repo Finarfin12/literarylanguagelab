@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { User, Bot, Send, Loader2, X, MessageSquareQuote, Minimize2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Swal from "sweetalert2";
 
 interface Message {
@@ -119,7 +120,7 @@ export default function ReadingCompanionSidebar({ title, author, content, onClos
               </div>
               <div className={`p-4 rounded-2xl ${m.role === "user" ? "bg-blue-500/10 border border-blue-500/20 text-foreground" : "bg-purple-500/10 border border-purple-500/20 text-foreground"}`}>
                 <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed">
-                  {m.role === "user" ? m.content : <ReactMarkdown>{m.content}</ReactMarkdown>}
+                  {m.role === "user" ? m.content : <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>}
                 </div>
               </div>
             </div>

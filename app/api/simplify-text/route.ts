@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { formatAITextResponse } from "@/lib/ai-output";
 
 export async function POST(req: Request) {
   try {
@@ -27,7 +28,7 @@ Keep the core meaning, emotions, and plot intact. Do not summarize, just rewrite
       max_tokens: 1024,
     });
 
-    const simplifiedText = response.choices[0]?.message?.content?.trim() || "";
+    const simplifiedText = formatAITextResponse(response.choices[0]?.message?.content?.trim() || "");
 
     return NextResponse.json({ simplifiedText });
   } catch (error: any) {

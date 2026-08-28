@@ -4,6 +4,7 @@ import { useState } from "react";
 import { VocabItem } from "./VocabularyBankClient";
 import { X, RotateCw, CheckCircle2, XCircle, BrainCircuit } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Swal from "sweetalert2";
 
 interface FlashcardModeProps {
@@ -119,7 +120,7 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
           <div className={`absolute inset-0 bg-card border-2 border-brand/30 shadow-2xl shadow-brand/10 rounded-3xl p-8 flex flex-col justify-between backface-hidden transform rotate-y-180 ${showAnswer ? 'visible' : 'invisible'}`}>
             <div className="overflow-y-auto max-h-[250px] prose prose-sm dark:prose-invert prose-brand flex-1 flex flex-col items-center justify-center text-center mx-auto w-full">
               <h2 className="text-4xl font-serif font-bold text-brand capitalize mb-6">{currentCard.word}</h2>
-              <ReactMarkdown>{currentCard.definition || ""}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{currentCard.definition || ""}</ReactMarkdown>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-border w-full">

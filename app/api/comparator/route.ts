@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 
 
 const SYSTEM_PROMPT = `You are a Master Translation Analyst. The user will provide an Original English text and a Professional Indonesian Translation.
@@ -26,7 +27,7 @@ export async function POST(req: Request) {
     const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: withAITextOutputRules(SYSTEM_PROMPT) },
         { role: "user", content: prompt }
       ],
       model: config.model,
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
       max_tokens: config.max_tokens,
     });
 
-    const result = completion.choices[0]?.message?.content || "";
+    const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
     return NextResponse.json({ result });
   } catch (error: any) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

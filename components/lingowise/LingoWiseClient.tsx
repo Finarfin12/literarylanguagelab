@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sparkles, Glasses, FileText, Wind, Wand2, FlaskConical, Hourglass, Hammer, Search, Loader2, Mic, MicOff } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Swal from "sweetalert2";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 
@@ -143,7 +144,7 @@ export default function LingoWiseClient() {
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto pr-4 prose dark:prose-invert prose-brand max-w-none prose-headings:font-serif prose-headings:text-brand prose-p:leading-relaxed prose-p:text-foreground/90">
-                {result && <ReactMarkdown>{result}</ReactMarkdown>}
+                {result && <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>}
               </div>
             )}
           </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, Languages, BookOpen, Search, GitMerge, Zap } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface SentenceAnalysisSidebarProps {
   sentence: string | null;
@@ -202,7 +203,7 @@ export default function SentenceAnalysisSidebar({ sentence, title, author, onClo
           </div>
         ) : typeof result === "string" ? (
           <div className="prose prose-sm dark:prose-invert prose-brand max-w-none">
-            <ReactMarkdown>{result}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
           </div>
         ) : null}
       </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Scale, Loader2, ArrowRightLeft, Type, Info, CheckCircle2, History, GitCompare, ArrowRight, BookOpen } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Swal from "sweetalert2";
 
 export default function ComparatorPage() {
@@ -95,7 +96,7 @@ export default function ComparatorPage() {
               Annotated Analysis
             </h2>
             <div className="prose dark:prose-invert prose-rose max-w-none prose-lg prose-headings:font-serif prose-headings:text-rose-500">
-              <ReactMarkdown>{result}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
             </div>
           </div>
         </div>

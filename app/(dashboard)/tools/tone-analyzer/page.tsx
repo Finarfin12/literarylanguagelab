@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { useState } from "react";
 import { FileText, Loader2, Wand2, Search, Shuffle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function ToneAnalyzerPage() {
   const [text, setText] = useState("");
@@ -128,7 +129,7 @@ export default function ToneAnalyzerPage() {
           <div className="bg-card shadow-sm backdrop-blur-2xl border border-border rounded-3xl p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
             <h2 className="text-2xl font-serif font-bold text-brand mb-6 border-b border-border pb-4">Analysis Result</h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:font-serif">
-              <ReactMarkdown>{result}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
             </div>
           </div>
         )}

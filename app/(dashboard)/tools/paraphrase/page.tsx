@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { useState, useEffect } from "react";
 import { Edit3, RefreshCw, Loader2, Award, ArrowLeft } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Link from "next/link";
 
 interface Challenge {
@@ -146,7 +147,7 @@ export default function ParaphraseChallengePage() {
           <div className="bg-card shadow-sm backdrop-blur-2xl border border-brand/30 rounded-3xl p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
             <h2 className="text-2xl font-serif font-bold text-brand mb-6 border-b border-brand/20 pb-4">Feedback Evaluator</h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:font-serif">
-              <ReactMarkdown>{result}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
             </div>
           </div>
         )}

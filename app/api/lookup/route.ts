@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 import { createClient } from "@/utils/supabase/server";const MODES: Record<string, string> = {
   "dictionary": "You are a literary dictionary. Provide the definition of the word/phrase, its grammatical register (e.g., formal, archaic, colloquial), and a brief explanation in Indonesian. Respond in Markdown format. Be concise.",
   "cultural": "You are 'Cultural Context Decoder'. Explain the cultural, historical, or mythological origins of the word/phrase. Give an example of its usage. Explain in Indonesian using Markdown.",
@@ -23,6 +24,8 @@ import { createClient } from "@/utils/supabase/server";const MODES: Record<strin
   "simplify": "You are a Graded Reader engine. Rewrite the provided sentence or paragraph into simple, modern English suitable for a B1 CEFR learner. Remove archaic words, simplify complex clauses, and make it easy to understand. Also, provide a very brief explanation in Indonesian of what changed.",
   "collocations": "You are a Lexical Expert. For the given word, provide 3 to 5 common literary or natural collocations (word partnerships) that frequently appear in English literature. Format your response STRICTLY as a JSON array of strings. Example: [\"bitter cold\", \"cast a spell\", \"deep gloom\"]. Do not include any markdown formatting, markdown blocks, or explanations."
 };
+
+const RAW_OUTPUT_MODES = new Set(["semantic-map", "collocations", "pictionary"]);
 
 export async function POST(req: Request) {
   try {
@@ -48,7 +51,8 @@ export async function POST(req: Request) {
     const groq = await getAIClient("tools");
 
     // Dynamic prompt adjustments based on dictionaryPrefs
-    let systemContent = MODES[mode];
+    const shouldFormatText = !RAW_OUTPUT_MODES.has(mode);
+    let systemContent = shouldFormatText ? withAITextOutputRules(MODES[mode]) : MODES[mode];
     if (dictionaryPrefs) {
       const targetLang = dictionaryPrefs.def_language === "en" ? "English" : "Indonesian";
       if (mode === "dictionary" || mode === "literary-focus") {
@@ -69,7 +73,8 @@ export async function POST(req: Request) {
       max_tokens: config.max_tokens,
     });
 
-    const result = completion.choices[0]?.message?.content || "";
+    const rawResult = completion.choices[0]?.message?.content || "";
+    const result = shouldFormatText ? formatAITextResponse(rawResult) : rawResult;
 
     // LOG ACTIVITY
     try {

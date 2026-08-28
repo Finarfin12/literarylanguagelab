@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Languages, ArrowRight, Loader2, Award, CheckCircle2, ArrowLeftRight, FileType2, RotateCcw } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Swal from 'sweetalert2';
 
 export default function TranslationWorkshopPage() {
@@ -135,7 +136,7 @@ export default function TranslationWorkshopPage() {
               <CheckCircle2 className="w-8 h-8" /> Feedback & Grading
             </h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-lg prose-headings:font-serif prose-headings:text-brand prose-p:leading-relaxed prose-li:text-foreground/90">
-              <ReactMarkdown>{result}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
             </div>
           </div>
         </div>

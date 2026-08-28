@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig, getAIServiceErrorMessage } from "@/lib/ai-config";
+import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 
 
 
@@ -25,7 +26,7 @@ Respond ONLY IN ENGLISH for the main analysis to preserve immersion, but you may
 Keep your answers focused, academic, and engaging. Use Markdown formatting.`;
 
     const formattedMessages = [
-      { role: "system", content: systemPrompt },
+      { role: "system", content: withAITextOutputRules(systemPrompt) },
       ...messages.map((m: any) => ({
         role: m.role,
         content: m.content
@@ -41,7 +42,7 @@ Keep your answers focused, academic, and engaging. Use Markdown formatting.`;
       max_tokens: config.max_tokens,
     });
 
-    const result = completion.choices[0]?.message?.content || "";
+    const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
     return NextResponse.json({ result });
   } catch (error: any) {
     console.error("Companion Error:", error);

@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { useState, useRef, useEffect } from "react";
 import { User, Bot, Send, Loader2, Sparkles, ArrowLeft, Plus, MessageSquare, Trash2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 
@@ -292,7 +293,7 @@ export default function AlterEgoChatPage() {
                   </div>
                   <div className={`p-5 rounded-2xl ${m.role === "user" ? "bg-blue-500/10 border border-blue-500/20 text-foreground" : "bg-brand/10 border border-brand/20 text-foreground"}`}>
                     <div className="prose dark:prose-invert max-w-none prose-p:leading-relaxed text-sm">
-                      {m.role === "user" ? m.content : <ReactMarkdown>{m.content}</ReactMarkdown>}
+                      {m.role === "user" ? m.content : <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>}
                     </div>
                   </div>
                 </div>

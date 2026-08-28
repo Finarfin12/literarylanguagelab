@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CheckSquare, Loader2, ArrowLeft, Trophy, AlertCircle, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface Question {
   word: string;
@@ -123,7 +124,7 @@ export default function StoryQuizPage() {
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
             <h2 className="text-xl font-serif font-bold text-brand mb-6 border-b border-border pb-4">The Story ({genre})</h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-lg font-serif italic text-foreground/90">
-              <ReactMarkdown>{quizData.story}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{quizData.story}</ReactMarkdown>
             </div>
             
             <div className="mt-8 pt-4 border-t border-border flex flex-wrap gap-2">

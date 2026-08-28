@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 
 
 
@@ -26,13 +27,13 @@ At the end of your feedback, provide a final score in this exact format: "SKOR: 
     const config = await getAIConfig("tools");
     const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
-      messages: [{ role: "system", content: systemPrompt }],
+      messages: [{ role: "system", content: withAITextOutputRules(systemPrompt) }],
       model: config.model,
       temperature: config.temperature,
       max_tokens: config.max_tokens,
     });
 
-    const result = completion.choices[0]?.message?.content || "";
+    const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
     return NextResponse.json({ result });
   } catch (error: any) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 
 
 export async function POST(req: Request) {
@@ -32,7 +33,7 @@ Respond entirely in Indonesian (except tone classification label, linguistic mar
     const groq = await getAIClient("tools");
     const completion = await groq.chat.completions.create({
       messages: [
-        { role: "system", content: "You are a literary tone analyst and transformation expert. You help Indonesian students of English Literature understand tone nuances and rewrite texts for different audiences." },
+        { role: "system", content: withAITextOutputRules("You are a literary tone analyst and transformation expert. You help Indonesian students of English Literature understand tone nuances and rewrite texts for different audiences.") },
         { role: "user", content: prompt }
       ],
       model: config.model,
@@ -40,7 +41,7 @@ Respond entirely in Indonesian (except tone classification label, linguistic mar
       max_tokens: config.max_tokens,
     });
 
-    const result = completion.choices[0]?.message?.content || "";
+    const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
     return NextResponse.json({ result });
   } catch (error: any) {
     console.error("Tone Analyzer Error:", error);

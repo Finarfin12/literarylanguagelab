@@ -7,6 +7,7 @@ import { createClient } from "@/utils/supabase/client";
 import { ArrowLeft, MessageSquare, Clock, User, Trash2, Edit, Send, Loader2, Save, X, Bold, Italic, Link as LinkIcon, Image as ImageIcon, ShieldAlert, Mic, MicOff } from "lucide-react";
 import Swal from 'sweetalert2';
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 
 interface Thread {
@@ -415,7 +416,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
             </div>
 
             <div className="prose dark:prose-invert max-w-none prose-p:leading-relaxed prose-lg text-foreground/90 prose-img:rounded-2xl prose-img:border prose-img:border-border prose-img:shadow-lg">
-              <ReactMarkdown>{thread?.content || ''}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{thread?.content || ''}</ReactMarkdown>
             </div>
           </>
         )}
@@ -469,7 +470,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
               </div>
             </div>
             <div className="prose dark:prose-invert max-w-none text-foreground/90 text-sm leading-relaxed prose-img:rounded-xl prose-img:max-h-96">
-              <ReactMarkdown>{comment.content}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{comment.content}</ReactMarkdown>
             </div>
           </div>
         ))}

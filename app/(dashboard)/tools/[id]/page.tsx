@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Loader2, ArrowLeft, Play, Copy, Volume2, VolumeX, Download } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { TOOLS } from "@/lib/tools-config";
 import GraphViewer from "@/components/GraphViewer";
 import PronunciationLab from "@/components/PronunciationLab";
@@ -170,7 +171,7 @@ export default function ToolExecutionPage() {
               {tool.id === "semantic-map" ? (
                 <GraphViewer data={result} />
               ) : (
-                <ReactMarkdown>{result}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
               )}
             </div>
           </div>
