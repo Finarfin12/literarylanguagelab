@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { getAIClient, getAIConfig, getAIServiceErrorMessage } from "@/lib/ai-config";
 
 
 
@@ -45,6 +45,6 @@ Keep your answers focused, academic, and engaging. Use Markdown formatting.`;
     return NextResponse.json({ result });
   } catch (error: any) {
     console.error("Companion Error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: getAIServiceErrorMessage(error) }, { status: 502 });
   }
 }

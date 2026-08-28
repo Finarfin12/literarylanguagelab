@@ -10,6 +10,33 @@ export interface AIModelConfig {
   max_tokens: number;
 }
 
+const DEFAULT_GROQ_MODEL = 'openai/gpt-oss-120b';
+
+const GROQ_MODEL_ALIASES: Record<string, string> = {
+  'gpt oss 120b': DEFAULT_GROQ_MODEL,
+  'gpt-oss-120b': DEFAULT_GROQ_MODEL,
+  '@groq/openai/gpt-oss-120b': DEFAULT_GROQ_MODEL,
+  'llama-3.3-70b-versatile': DEFAULT_GROQ_MODEL,
+};
+
+function normalizeAIConfig(config: AIModelConfig): AIModelConfig {
+  if (!config || typeof config.model !== 'string') {
+    return getFallbackConfig('default');
+  }
+
+  if (config.provider !== 'groq') {
+    return config;
+  }
+
+  const normalizedModel =
+    GROQ_MODEL_ALIASES[config.model.trim().toLowerCase()] || config.model.trim();
+
+  return {
+    ...config,
+    model: normalizedModel,
+  };
+}
+
 /**
  * Get AI model configuration untuk use case tertentu
  * @param useCase - 'default' | 'lookup' | 'translation' | 'generation' | 'tools'
@@ -33,7 +60,7 @@ export async function getAIConfig(
       return getFallbackConfig(useCase);
     }
     
-    return data.value as AIModelConfig;
+    return normalizeAIConfig(data.value as AIModelConfig);
   } catch (error) {
     console.error('Error fetching AI config:', error);
     return getFallbackConfig(useCase);
@@ -47,31 +74,31 @@ function getFallbackConfig(useCase: string): AIModelConfig {
   const configs: Record<string, AIModelConfig> = {
     default: {
       provider: 'groq',
-      model: 'llama-3.3-70b-versatile',
+      model: DEFAULT_GROQ_MODEL,
       temperature: 0.7,
       max_tokens: 1500,
     },
     lookup: {
       provider: 'groq',
-      model: 'llama-3.3-70b-versatile',
+      model: DEFAULT_GROQ_MODEL,
       temperature: 0.3,
       max_tokens: 1000,
     },
     translation: {
       provider: 'groq',
-      model: 'llama-3.3-70b-versatile',
+      model: DEFAULT_GROQ_MODEL,
       temperature: 0.5,
       max_tokens: 1500,
     },
     generation: {
       provider: 'groq',
-      model: 'llama-3.3-70b-versatile',
+      model: DEFAULT_GROQ_MODEL,
       temperature: 0.8,
       max_tokens: 2000,
     },
     tools: {
       provider: 'groq',
-      model: 'llama-3.3-70b-versatile',
+      model: DEFAULT_GROQ_MODEL,
       temperature: 0.3,
       max_tokens: 1500,
     },
@@ -139,6 +166,10 @@ export async function getAIClient(useCase?: 'lookup' | 'translation' | 'generati
   
   switch (config.provider) {
     case 'groq': {
+      if (!process.env.GROQ_API_KEY) {
+        throw new Error('GROQ_API_KEY is not configured');
+      }
+
       const Groq = (await import('groq-sdk')).default;
       return new Groq({ apiKey: process.env.GROQ_API_KEY });
     }
@@ -146,4 +177,14 @@ export async function getAIClient(useCase?: 'lookup' | 'translation' | 'generati
     default:
       throw new Error(`Unsupported provider: ${config.provider}. Install the corresponding SDK package.`);
   }
+}
+
+export function getAIServiceErrorMessage(error: unknown): string {
+  const message = error instanceof Error ? error.message : 'Unknown AI service error';
+
+  if (message.includes('GROQ_API_KEY')) {
+    return 'Groq API key belum dikonfigurasi. Isi GROQ_API_KEY di environment server.';
+  }
+
+  return message;
 }
