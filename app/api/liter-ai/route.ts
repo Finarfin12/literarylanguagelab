@@ -110,7 +110,7 @@ Literary Language Lab adalah platform e-learning web yang membantu penutur bahas
 
 ## Technical
 - Dibangun dengan Next.js 16, React 19, TypeScript, Tailwind CSS v4
-- AI: Groq (model openai/gpt-oss-120b)
+- AI: Groq (model llama-3.3-70b-versatile)
 - Database: Supabase (PostgreSQL)
 - Deploy: Vercel
 - PWA: bisa di-install di HP/desktop, offline mode

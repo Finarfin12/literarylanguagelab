@@ -47,31 +47,31 @@ function getFallbackConfig(useCase: string): AIModelConfig {
   const configs: Record<string, AIModelConfig> = {
     default: {
       provider: 'groq',
-      model: 'openai/gpt-oss-120b',
+      model: 'llama-3.3-70b-versatile',
       temperature: 0.7,
       max_tokens: 1500,
     },
     lookup: {
       provider: 'groq',
-      model: 'openai/gpt-oss-120b',
+      model: 'llama-3.3-70b-versatile',
       temperature: 0.3,
       max_tokens: 1000,
     },
     translation: {
       provider: 'groq',
-      model: 'openai/gpt-oss-120b',
+      model: 'llama-3.3-70b-versatile',
       temperature: 0.5,
       max_tokens: 1500,
     },
     generation: {
       provider: 'groq',
-      model: 'openai/gpt-oss-120b',
+      model: 'llama-3.3-70b-versatile',
       temperature: 0.8,
       max_tokens: 2000,
     },
     tools: {
       provider: 'groq',
-      model: 'openai/gpt-oss-120b',
+      model: 'llama-3.3-70b-versatile',
       temperature: 0.3,
       max_tokens: 1500,
     },
@@ -132,38 +132,6 @@ export async function getRateLimit(
 }
 
 /**
- * Extract content dari completion response
- * Handle reasoning models (GPT-OSS) yang return content di field 'reasoning'
- */
-export function extractCompletionContent(completion: any): string {
-  const message = completion.choices?.[0]?.message;
-  if (!message) return "";
-  // Reasoning models: content kosong, jawaban di reasoning
-  // Regular models: content ada langsung
-  return message.content || message.reasoning || "";
-}
-
-/**
- * Wrap Groq client to auto-fix reasoning model responses
- * GPT-OSS returns content in 'reasoning' field, not 'content'
- * This wrapper moves reasoning -> content so all routes work unchanged
- */
-function wrapGroqClient(groq: any) {
-  const originalCreate = groq.chat.completions.create.bind(groq.chat.completions);
-  
-  groq.chat.completions.create = async (...args: any[]) => {
-    const completion = await originalCreate(...args);
-    const message = completion.choices?.[0]?.message;
-    if (message && !message.content && message.reasoning) {
-      message.content = message.reasoning;
-    }
-    return completion;
-  };
-  
-  return groq;
-}
-
-/**
  * Get API client instance berdasarkan provider
  */
 export async function getAIClient(useCase?: 'lookup' | 'translation' | 'generation' | 'tools') {
@@ -172,8 +140,7 @@ export async function getAIClient(useCase?: 'lookup' | 'translation' | 'generati
   switch (config.provider) {
     case 'groq': {
       const Groq = (await import('groq-sdk')).default;
-      const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-      return wrapGroqClient(groq);
+      return new Groq({ apiKey: process.env.GROQ_API_KEY });
     }
     
     default:
