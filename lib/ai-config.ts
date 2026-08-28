@@ -47,31 +47,31 @@ function getFallbackConfig(useCase: string): AIModelConfig {
   const configs: Record<string, AIModelConfig> = {
     default: {
       provider: 'groq',
-      model: 'llama-3.3-70b-versatile',
+      model: 'gpt-oss-120',
       temperature: 0.7,
       max_tokens: 1500,
     },
     lookup: {
       provider: 'groq',
-      model: 'llama-3.3-70b-versatile',
+      model: 'gpt-oss-120',
       temperature: 0.3,
       max_tokens: 1000,
     },
     translation: {
       provider: 'groq',
-      model: 'llama-3.3-70b-versatile',
+      model: 'gpt-oss-120',
       temperature: 0.5,
       max_tokens: 1500,
     },
     generation: {
       provider: 'groq',
-      model: 'llama-3.3-70b-versatile',
+      model: 'gpt-oss-120',
       temperature: 0.8,
       max_tokens: 2000,
     },
     tools: {
       provider: 'groq',
-      model: 'llama-3.3-70b-versatile',
+      model: 'gpt-oss-120',
       temperature: 0.3,
       max_tokens: 1500,
     },
