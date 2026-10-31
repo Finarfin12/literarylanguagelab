@@ -59,8 +59,9 @@ export default function OnboardingPage() {
         setError(res.error);
         return;
       }
+      // Tanpa router.refresh(): halaman tujuan dirender ulang di server saat navigasi,
+      // refresh tambahan hanya menggandakan pekerjaan server.
       router.push(res.next);
-      router.refresh();
     });
   };
 
