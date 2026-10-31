@@ -907,7 +907,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           <div className="bg-card border border-border shadow-2xl rounded-3xl max-w-2xl w-full overflow-hidden">
             <div className="bg-blue-600 p-6 text-white text-center relative overflow-hidden">
               <BookOpen className="w-24 h-24 absolute -right-4 -top-4 opacity-20" />
-              <h3 className="text-2xl font-bold font-serif relative z-10">Writing Challenge</h3>
+              <h3 className="text-2xl font-bold font-serif relative z-10">Latihan Menulis</h3>
               <p className="text-blue-100 mt-1 relative z-10 text-sm">Rangkum bab ini dalam 3-5 kalimat!</p>
             </div>
             

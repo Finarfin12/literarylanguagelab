@@ -1,39 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { User, BookOpen, Clock, Activity, Loader2, Sparkles, CalendarDays, Flame, TrendingUp, Zap } from "lucide-react";
+import { User, BookOpen, Clock, Activity, Loader2, Sparkles, CalendarDays, BookMarked, TrendingUp, GraduationCap } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import Link from "next/link";
-
-function getLevel(xp: number) {
-  if (xp < 500) return { level: 1, title: `Novice Reader (A1)`, nextXP: 500 };
-  if (xp < 2000) return { level: 5, title: `Bibliophile (A2)`, nextXP: 2000 };
-  if (xp < 5000) return { level: 15, title: `Wordsmith (B1)`, nextXP: 5000 };
-  if (xp < 10000) return { level: 30, title: `Literary Scholar (B2)`, nextXP: 10000 };
-  return { level: 50, title: `Master of Linguistics (C1/C2)`, nextXP: Infinity };
-}
-
-function getLevelProgress(xp: number) {
-  if (xp >= 10000) return 100;
-  const thresholds = [0, 500, 2000, 5000, 10000];
-  let current = 0;
-  let next = 500;
-  for (let i = 0; i < thresholds.length; i++) {
-    if (xp < thresholds[i]) {
-      current = thresholds[i - 1];
-      next = thresholds[i];
-      break;
-    }
-  }
-  return Math.round(((xp - current) / (next - current)) * 100);
-}
 
 export default function ProfilePage() {
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<SupabaseUser | null>(null);
-  const [stats, setStats] = useState({ vocabCount: 0, idiomCount: 0, xp: 0, streak: 0, textsCompleted: 0, reviewsThisWeek: 0, followersCount: 0, followingCount: 0 });
+  const [stats, setStats] = useState({ vocabCount: 0, idiomCount: 0, cefrLevel: "", textsCompleted: 0, reviewsThisWeek: 0, followersCount: 0, followingCount: 0 });
   const [recentLogs, setRecentLogs] = useState<any[]>([]);
   const [badges, setBadges] = useState<string[]>([]);
 
@@ -45,7 +22,7 @@ export default function ProfilePage() {
       setProfile(user);
 
       const results = await Promise.allSettled([
-        supabase.from("profiles").select("xp, streak").eq("id", user.id).single(),
+        supabase.from("profiles").select("cefr_level").eq("id", user.id).single(),
         supabase.from("vocabulary").select("*", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("idioms").select("*", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("reading_sessions").select("text_id").eq("user_id", user.id),
@@ -76,8 +53,7 @@ export default function ProfilePage() {
         setStats({
           vocabCount: vCount || 0,
           idiomCount: iCount || 0,
-          xp: profData?.xp || 0,
-          streak: profData?.streak || 0,
+          cefrLevel: profData?.cefr_level || "",
           textsCompleted: new Set(sData?.map((s: any) => s.text_id) || []).size,
           reviewsThisWeek: rCount || 0,
           followersCount: followersC || 0,
@@ -101,13 +77,11 @@ export default function ProfilePage() {
   const avatarUrl = profile.user_metadata?.avatar_url;
   const fullName = profile.user_metadata?.full_name || profile.email?.split("@")[0] || "Anon";
   const aboutMe = profile.user_metadata?.about_me || "Belum ada biografi. Tambahkan di pengaturan.";
-  const { level, title, nextXP } = getLevel(stats.xp);
-  const progressPct = getLevelProgress(stats.xp);
 
   const statCards = [
     { icon: BookOpen, value: stats.vocabCount, label: "Kosakata", color: "text-brand", bg: "bg-brand/10", border: "border-brand/20" },
     { icon: Activity, value: stats.idiomCount, label: "Idiom", color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
-    { icon: Flame, value: stats.streak, label: "Streak (Hari)", color: "text-orange-500", bg: "bg-orange-500/10", border: "border-orange-500/20" },
+    { icon: BookMarked, value: stats.textsCompleted, label: "Teks Dibaca", color: "text-orange-500", bg: "bg-orange-500/10", border: "border-orange-500/20" },
     { icon: TrendingUp, value: stats.reviewsThisWeek, label: "Review Minggu Ini", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
   ];
 
@@ -140,26 +114,18 @@ export default function ProfilePage() {
           <Link href="/settings" className="mb-2 px-6 py-2.5 bg-muted hover:bg-muted/80 border border-border rounded-xl transition-colors font-medium">Edit Profil</Link>
         </div>
 
-        {/* XP & Level Bar */}
-        <div className="bg-card border border-border rounded-3xl p-6 mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-yellow-400/20 flex items-center justify-center"><Zap className="w-6 h-6 text-yellow-400" /></div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-foreground">Level {level}</span>
-                  <span className="text-sm text-muted-foreground px-2 py-0.5 bg-muted rounded-full">• {title} •</span>
-                </div>
-                <p className="text-sm text-muted-foreground">{stats.xp} XP</p>
-              </div>
-            </div>
-            <div className="text-right text-xs text-muted-foreground">
-              {nextXP === Infinity ? "Maksimum!" : `${stats.xp}/${nextXP} XP ke Level ${level + 1}`}
+        {/* Level CEFR */}
+        <div className="bg-card border border-border rounded-3xl p-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-brand/10 flex items-center justify-center"><GraduationCap className="w-6 h-6 text-brand" /></div>
+            <div>
+              <p className="text-sm text-muted-foreground">Level CEFR</p>
+              <p className="text-xl font-bold text-foreground">{stats.cefrLevel || "Belum diketahui"}</p>
             </div>
           </div>
-          <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-yellow-400 to-brand rounded-full transition-all duration-700" style={{ width: `${Math.min(progressPct, 100)}%` }} />
-          </div>
+          {!stats.cefrLevel && (
+            <Link href="/english-lab/placement-test" className="px-5 py-2.5 bg-brand text-background font-bold rounded-xl text-sm text-center">Ikuti Placement Test</Link>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -175,8 +141,6 @@ export default function ProfilePage() {
                 <span className="px-3 py-1 bg-brand/10 text-brand rounded-full text-xs font-bold border border-brand/20">Early Adopter</span>
                 {stats.vocabCount >= 10 && <span className="px-3 py-1 bg-purple-500/10 text-purple-400 rounded-full text-xs font-bold border border-purple-500/20">Vocab Explorer</span>}
                 {stats.vocabCount >= 50 && <span className="px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-xs font-bold border border-green-500/20">Kolektor Kata</span>}
-                {stats.streak >= 7 && <span className="px-3 py-1 bg-orange-500/10 text-orange-500 rounded-full text-xs font-bold border border-orange-500/20">7 Hari Streak</span>}
-                {stats.streak >= 30 && <span className="px-3 py-1 bg-rose-500/10 text-rose-400 rounded-full text-xs font-bold border border-rose-500/20">Bulan Penuh</span>}
                 {stats.textsCompleted >= 5 && <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs font-bold border border-blue-500/20">Kutu Buku</span>}
                 {badges.map(b => (
                   <span key={b} className="px-3 py-1 bg-pink-500/10 text-pink-500 rounded-full text-xs font-bold border border-pink-500/20 capitalize">{b.replace(/_/g, ' ')}</span>

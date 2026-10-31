@@ -10,6 +10,14 @@ const withPWA = withPWAInit({
 const nextConfig: NextConfig = {
   /* config options here */
   turbopack: {},
+  // v2: halaman gamifikasi dihapus, arahkan bookmark lama ke dashboard
+  async redirects() {
+    return ["/leaderboard", "/duels", "/tools/weekly-challenge", "/english-lab/writing-challenge"].map((source) => ({
+      source,
+      destination: "/dashboard",
+      permanent: false,
+    }));
+  },
 };
 
 export default withPWA(nextConfig);

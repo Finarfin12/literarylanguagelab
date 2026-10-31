@@ -65,7 +65,7 @@ export default async function CommunityAnnotationsPage() {
                 type="submit" 
                 className="w-full py-3 bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-colors"
               >
-                + Tambahkan (Dapat 5 XP)
+                + Tambahkan
               </button>
             </form>
           </div>

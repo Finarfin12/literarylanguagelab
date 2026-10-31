@@ -16,9 +16,6 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  // Update login-based streak
-  await supabase.rpc("update_login_streak", { target_user_id: user.id });
-
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar 

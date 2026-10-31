@@ -1,10 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { BookOpen, BookMarked, RefreshCcw, Flame, CheckCircle2, TrendingUp } from "lucide-react";
+import { BookOpen, BookMarked, RefreshCcw, Clock, CheckCircle2, TrendingUp } from "lucide-react";
 import VocabChart from "@/components/dashboard/VocabChart";
-import JourneyWidget from "@/components/dashboard/JourneyWidget";
-import DailyPracticeWidget from "@/components/dashboard/DailyPracticeWidget";
-import WritingChallengeWidget from "@/components/dashboard/WritingChallengeWidget";
 import AnimatedPage from "@/components/AnimatedPage";
 
 export default async function DashboardPage() {
@@ -35,26 +32,17 @@ export default async function DashboardPage() {
     .eq("action_type", "reviewed_vocab")
     .gte("created_at", oneWeekAgo.toISOString());
 
-  // 4. Get completed/read texts count
+  // 4. Get completed/read texts count & reading time this week
   // For MVP, we count unique texts in reading_sessions
   const { data: readingSessions } = await supabase
     .from("reading_sessions")
-    .select("text_id")
+    .select("text_id, time_spent_seconds, last_active_at")
     .eq("user_id", user?.id);
   const completedTexts = new Set(readingSessions?.map(s => s.text_id) || []).size;
-
-  // Trigger login streak update
-  if (user?.id) {
-    await supabase.rpc("update_login_streak", { target_user_id: user.id });
-  }
-
-  // 5. Get login-based streak from profiles
-  const { data: profileData } = await supabase
-    .from("profiles")
-    .select("streak")
-    .eq("id", user?.id)
-    .single();
-  const streak = profileData?.streak || 0;
+  const weeklySeconds = readingSessions
+    ?.filter(s => s.last_active_at && s.last_active_at >= oneWeekAgo.toISOString())
+    .reduce((acc, s) => acc + (s.time_spent_seconds || 0), 0) || 0;
+  const weeklyMinutes = Math.round(weeklySeconds / 60);
 
   // 6. Vocabulary Growth Chart Data (Last 7 Days)
   const chartData = [];
@@ -90,10 +78,10 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-card border border-border rounded-3xl p-6 shadow-sm hover:-translate-y-1 hover:shadow-brand/20 transition-all duration-300 group">
           <div className="flex items-center gap-3 mb-3">
-            <Flame className="w-5 h-5 text-orange-500 group-hover:animate-pulse" />
-            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Login Streak</h3>
+            <Clock className="w-5 h-5 text-orange-500" />
+            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Waktu Baca Minggu Ini</h3>
           </div>
-          <p className="text-4xl font-serif font-bold text-foreground">{streak} <span className="text-lg font-sans text-muted-foreground font-normal">Hari</span></p>
+          <p className="text-4xl font-serif font-bold text-foreground">{weeklyMinutes} <span className="text-lg font-sans text-muted-foreground font-normal">Menit</span></p>
         </div>
 
         <div className="bg-card border border-border rounded-3xl p-6 shadow-sm hover:-translate-y-1 hover:shadow-emerald-500/20 transition-all duration-300 group">
@@ -119,15 +107,6 @@ export default async function DashboardPage() {
           </div>
           <p className="text-4xl font-serif font-bold text-foreground">{vocabCount || 0}</p>
         </div>
-      </div>
-
-      {/* Reading Journey Widget */}
-      <div className="mb-8">
-        <DailyPracticeWidget />
-      </div>
-
-      <div className="mb-8">
-        <JourneyWidget />
       </div>
 
       {/* Chart & Actions */}
@@ -162,8 +141,6 @@ export default async function DashboardPage() {
             </h2>
             <p className="text-sm text-muted-foreground">Buka Text Library</p>
           </Link>
-          
-          <WritingChallengeWidget />
         </div>
       </div>
     </AnimatedPage>

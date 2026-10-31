@@ -444,7 +444,7 @@ export default function PlacementTestPage() {
               href="/dashboard"
               className="block w-full py-3.5 bg-brand text-white font-bold rounded-2xl hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] transition-all mb-3"
             >
-              🗺️ Mulai Reading Journey
+              Kembali ke Dashboard
             </Link>
 
             <button

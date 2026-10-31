@@ -80,12 +80,6 @@ Respond ONLY with valid JSON in this format:
        console.error("Listening DB error", error);
     }
 
-    // Award XP
-    const { data: profile } = await supabase.from('profiles').select('xp').eq('id', user.id).single();
-    if (profile) {
-      await supabase.from('profiles').update({ xp: profile.xp + 10 }).eq('id', user.id);
-    }
-
     return NextResponse.json(parsed);
   } catch (error: any) {
     console.error("Listening Evaluate Error:", error);

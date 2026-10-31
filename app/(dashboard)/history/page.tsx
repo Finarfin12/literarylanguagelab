@@ -11,7 +11,6 @@ export default function HistoryPage() {
   const [wordsMastered, setWordsMastered] = useState(0);
   const [weakWords, setWeakWords] = useState(0);
   const [analysesRun, setAnalysesRun] = useState(0);
-  const [streak, setStreak] = useState(0);
   const [timeSpentSeconds, setTimeSpentSeconds] = useState(0);
   const [vocabData, setVocabData] = useState<any[]>([]);
 
@@ -61,15 +60,6 @@ export default function HistoryPage() {
         
       const totalSeconds = sessionsData?.reduce((acc: number, cur: any) => acc + (cur.time_spent_seconds || 0), 0) || 0;
       setTimeSpentSeconds(totalSeconds);
-
-      // Fetch profile streak
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('streak')
-        .eq('id', user.id)
-        .single();
-        
-      setStreak(profileData?.streak || 0);
 
       setLoading(false);
     }

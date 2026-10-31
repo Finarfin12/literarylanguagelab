@@ -19,7 +19,7 @@ const CATEGORIES = [
   "All",
   "Targeted Transformers",
   "Analysis Extractors",
-  "Interactive & Gamification",
+  "Interactive",
   "Lexicon & Databases"
 ];
 
@@ -51,17 +51,17 @@ export default function ToolsDashboardPage() {
     })),
     { 
       id: "paraphrase", title: "Paraphrase Challenge", description: "Latih kemampuan menulis ulang tanpa kehilangan esensi sastra.", 
-      icon: "PenTool", path: "/tools/paraphrase", category: "Interactive & Gamification", 
+      icon: "PenTool", path: "/tools/paraphrase", category: "Interactive", 
       colorClass: "text-amber-400", bgClass: "bg-amber-500/10", borderClass: "hover:border-amber-400/30" 
     },
     { 
       id: "alter-ego", title: "Alter Ego Chat", description: "Ngobrol langsung dengan penulis legendaris secara interaktif.", 
-      icon: "Sparkles", path: "/tools/alter-ego", category: "Interactive & Gamification", 
+      icon: "Sparkles", path: "/tools/alter-ego", category: "Interactive", 
       colorClass: "text-purple-400", bgClass: "bg-purple-500/10", borderClass: "hover:border-purple-400/30" 
     },
     { 
       id: "story-quiz", title: "Story Mode Quiz", description: "Kuis berbasis cerpen menggunakan koleksi kosa kata Anda.", 
-      icon: "CheckSquare", path: "/tools/story-quiz", category: "Interactive & Gamification", 
+      icon: "CheckSquare", path: "/tools/story-quiz", category: "Interactive", 
       colorClass: "text-green-400", bgClass: "bg-green-500/10", borderClass: "hover:border-green-400/30" 
     },
     { 

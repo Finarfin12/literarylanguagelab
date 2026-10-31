@@ -63,13 +63,11 @@ export async function POST(req: Request) {
       }
     }
 
-    // Award XP + sync vocab_count
-    const { data: profile } = await supabase.from("profiles").select("xp,vocab_count").eq("id", user.id).single();
+    // Sync vocab_count
     const { count: totalVocab } = await supabase.from("vocabulary").select("*", { count: "exact", head: true }).eq("user_id", user.id);
 
     await supabase.from("profiles").upsert({
       id: user.id,
-      xp: (profile?.xp || 0) + 3,
       vocab_count: totalVocab || 1,
     }, { onConflict: "id" });
 

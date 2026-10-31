@@ -1,25 +1,9 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import RoleDropdown from "@/components/admin/RoleDropdown";
-import { ShieldAlert, Users, CalendarDays, Zap, BookOpen } from "lucide-react";
+import { ShieldAlert, Users, CalendarDays, BookOpen } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
-
-function getGamificationTier(xp: number) {
-  let title = "Novice Reader (A1)";
-  let level = 1;
-
-  if (xp >= 10000) { title = "Master of Linguistics (C1/C2)"; level = 50; }
-  else if (xp >= 5000) { title = "Literary Scholar (B2)"; level = 30; }
-  else if (xp >= 2000) { title = "Wordsmith (B1)"; level = 15; }
-  else if (xp >= 500) { title = "Bibliophile (A2)"; level = 5; }
-
-  return {
-    title,
-    level,
-    display: title
-  };
-}
 
 export default async function AdminUsersPage() {
   const supabase = await createClient();
@@ -77,7 +61,7 @@ export default async function AdminUsersPage() {
             <thead>
               <tr className="border-b border-border bg-muted/20 text-xs uppercase tracking-wider text-muted-foreground">
                 <th className="px-6 py-4 font-bold">Pengguna</th>
-                <th className="px-6 py-4 font-bold">Gamification Tier</th>
+                <th className="px-6 py-4 font-bold">Level CEFR</th>
                 <th className="px-6 py-4 font-bold">Statistik</th>
                 <th className="px-6 py-4 font-bold text-center">Bergabung</th>
                 <th className="px-6 py-4 font-bold text-right">Role Akses</th>
@@ -85,7 +69,6 @@ export default async function AdminUsersPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {users?.map((profile) => {
-                const tierInfo = getGamificationTier(profile.xp || 0);
                 const joinDate = new Date(profile.created_at).toLocaleDateString('id-ID', {
                   day: 'numeric',
                   month: 'short',
@@ -110,23 +93,14 @@ export default async function AdminUsersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex flex-col gap-1">
-                        <div>
-                          <span className="text-sm font-bold text-foreground">{tierInfo.display}</span>
-                          <p className="text-xs text-brand font-medium">Level {tierInfo.level} ({profile.xp || 0} XP)</p>
-                        </div>
-                        <div className="bg-brand/10 border border-brand/20 rounded-md px-2 py-0.5 inline-block w-fit mt-1">
-                          <span className="text-[10px] font-bold text-brand uppercase tracking-wider">CEFR: {profile.cefr_level || 'A1'}</span>
-                        </div>
+                      <div className="bg-brand/10 border border-brand/20 rounded-md px-2 py-0.5 inline-block w-fit">
+                        <span className="text-[10px] font-bold text-brand uppercase tracking-wider">{profile.cefr_level || '—'}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1.5" title="Kosakata Disimpan">
                           <BookOpen className="w-3.5 h-3.5" /> {profile.vocab_count || 0} Kata
-                        </div>
-                        <div className="flex items-center gap-1.5" title="Streak Membaca">
-                          <Zap className="w-3.5 h-3.5 text-amber-500" /> {profile.streak || 0} Hari
                         </div>
                       </div>
                     </td>

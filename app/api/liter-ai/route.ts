@@ -74,39 +74,30 @@ Literary Language Lab adalah platform e-learning web yang membantu penutur bahas
 ### 9. Forum & Community
 - **Discussion Board (/forum):** 5 kategori (Literary Interpretation, Creative Writing, AI & Tech, Games, General)
 - **Reading Clubs (/clubs):** buat/join klub baca, diskusi per chapter
-- **Translation Duels (/duels):** kompetisi terjemahan dengan voting (+15 XP)
-- **Shared Annotations (/community-annotations):** catatan komunitas dengan upvote/downvote (+5 XP)
-- **Leaderboard (/leaderboard):** peringkat global berdasarkan XP
+- **Shared Annotations (/community-annotations):** catatan komunitas dengan upvote/downvote
 
 ### 10. Glossary & Idioms
 - **Glossary Builder (/glossary):** buat glosarium per-buku atau per-penulis
 - **Idiom Library (/idioms):** koleksi idiom sastra dengan arti, asal-usul, contoh kalimat
 
-### 11. Profile & Gamification
-- **Dashboard (/dashboard):** statistik (streak, teks selesai, review mingguan, total kosa kata), grafik pertumbuhan. Terdapat juga fitur "Daily Practice" yang menampilkan 3 misi harian: Word of the Day, Grammar Byte (berdasarkan kelemahan user), dan Review Nudge.
-- **Profile (/profile):** avatar, XP, streak, vocab count, achievements
+### 11. Profile & Progres Belajar
+- **Dashboard (/dashboard):** statistik pribadi (waktu baca minggu ini, teks selesai, review mingguan, total kosa kata), antrean review, dan grafik pertumbuhan kosa kata.
+- **Profile (/profile):** avatar, level CEFR, statistik belajar, aktivitas terakhir
 - **Public Portfolio (/p/:username):** profil publik dengan showcase terjemahan
 - **History (/history):** log aktivitas lengkap
-- **Settings (/settings):** edit profil, upload avatar, toggle fitur seperti Writing Challenge.
+- **Settings (/settings):** edit profil, upload avatar, preferensi belajar dan privasi.
 
 ### 12. English Lab (General English)
 - Kumpulan fitur untuk berlatih bahasa Inggris sehari-hari.
 - **Grammar Clinic (/english-lab/grammar-clinic):** Cek grammar teks dengan skor & penjelasan.
-- **Writing Challenge (/english-lab/writing-challenge):** Tantangan menulis mingguan dengan Streak Tracker dan evaluasi mendalam dari AI (skor, pujian kosakata, dan perbaikan grammar).
 - **Flashcard SRS (/english-lab/flashcard):** Hafalkan kosa kata dengan metode SM-2 tersinkronisasi. Dilengkapi Personalized Error-Based Priority yang memprioritaskan kata yang sering salah digunakan saat latihan writing. Ada 4 mode: Standard, Context, Dictation, Listening.
 - **Dialogue Simulator (/english-lab/dialogue-simulator):** Berlatih ngobrol langsung dengan AI di berbagai skenario kehidupan nyata.
 - **Listening Test (/english-lab/listening-test):** Uji pendengaran (kuis & dikte) dengan audio AI atau upload manual.
 - **Slang Decoder (/english-lab/slang-decoder):** Terjemahkan bahasa gaul internet / Gen Z ke bahasa Indonesia kasual.
 - **Placement Test (/english-lab/placement-test):** Tes adaptif singkat untuk mengetahui level CEFR pengguna.
 
-### 13. Reading Journey
-- Fitur *guided learning path* non-blocking yang menyatukan semua tools menjadi petualangan belajar yang terstruktur dari level A1 hingga C2.
-- Pengguna bisa mengecek progress di Progress Dashboard, dan mengubah level manual kapan saja.
-
-## Sistem XP & Gamification
-- XP didapat dari: review kosa kata, menyelesaikan teks, ikut duel terjemahan, kontribusi anotasi komunitas
-- Streak: hari berturut-turut aktif di aplikasi
-- Leaderboard: peringkat global berdasarkan total XP
+## Prinsip Aplikasi
+- Literary Language Lab adalah ruang belajar fokus: tidak ada XP, peringkat, leaderboard, streak, atau kompetisi. Progres bersifat pribadi.
 
 ## Technical
 - Dibangun dengan Next.js 16, React 19, TypeScript, Tailwind CSS v4

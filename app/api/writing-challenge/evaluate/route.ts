@@ -94,47 +94,11 @@ Evaluate their response and return ONLY a raw JSON object (no markdown, no quote
       }
     }
 
-    // Award XP
-    const { data: profile } = await supabase.from("profiles").select("xp").eq("id", user.id).single();
-    if (profile) {
-      await supabase.from("profiles").update({ xp: profile.xp + 10 }).eq("id", user.id);
-    }
-
     // Log Activity
     await supabase.from("activity_logs").insert({
       user_id: user.id,
       action_type: `Completed Writing Challenge for ${textTitle}`
     });
-
-    // Auto-complete Quests
-    try {
-      const { data: submissions } = await supabase.from("writing_submissions").select("id").eq("user_id", user.id);
-      const subCount = submissions?.length || 1; // Including the one just inserted
-
-      // If at least 1 submission, complete A2
-      if (subCount >= 1) {
-        await supabase.from('journey_progress').upsert({
-          user_id: user.id,
-          quest_id: 'a2_writing',
-          journey_level: 2,
-          completed: true,
-          completed_at: new Date().toISOString(),
-        }, { onConflict: 'user_id,quest_id' });
-      }
-
-      // If at least 3 submissions, complete B1
-      if (subCount >= 3) {
-        await supabase.from('journey_progress').upsert({
-          user_id: user.id,
-          quest_id: 'b1_writing',
-          journey_level: 3,
-          completed: true,
-          completed_at: new Date().toISOString(),
-        }, { onConflict: 'user_id,quest_id' });
-      }
-    } catch (e) {
-      console.error("Failed to auto-track writing quest", e);
-    }
 
     return NextResponse.json({ success: true, scores });
   } catch (error: any) {

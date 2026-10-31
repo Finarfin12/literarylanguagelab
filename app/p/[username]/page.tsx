@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
-import { User, Star, Zap, Library, Quote, Users } from "lucide-react";
+import { User, GraduationCap, Library, Quote, Users } from "lucide-react";
 import ProfileActions from "@/components/community/ProfileActions";
 
 export default async function PublicPortfolioPage({ params }: { params: { username: string } }) {
@@ -103,20 +103,15 @@ export default async function PublicPortfolioPage({ params }: { params: { userna
                     <p className="font-bold text-lg">{followingCount || 0}</p>
                   </div>
                 </div>
-                <div className="bg-muted px-4 py-2 rounded-xl flex items-center gap-3">
-                  <Star className="w-5 h-5 text-amber-500" />
-                  <div>
-                    <p className="text-xs font-bold text-muted-foreground uppercase">Total XP</p>
-                    <p className="font-bold text-lg">{profile.xp}</p>
+                {profile.cefr_level && (
+                  <div className="bg-muted px-4 py-2 rounded-xl flex items-center gap-3">
+                    <GraduationCap className="w-5 h-5 text-amber-500" />
+                    <div>
+                      <p className="text-xs font-bold text-muted-foreground uppercase">Level CEFR</p>
+                      <p className="font-bold text-lg">{profile.cefr_level}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="bg-muted px-4 py-2 rounded-xl flex items-center gap-3">
-                  <Zap className="w-5 h-5 text-amber-500" />
-                  <div>
-                    <p className="text-xs font-bold text-muted-foreground uppercase">Day Streak</p>
-                    <p className="font-bold text-lg">{profile.streak}</p>
-                  </div>
-                </div>
+                )}
                 <div className="bg-muted px-4 py-2 rounded-xl flex items-center gap-3">
                   <Library className="w-5 h-5 text-blue-500" />
                   <div>

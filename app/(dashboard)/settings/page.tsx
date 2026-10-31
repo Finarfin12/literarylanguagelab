@@ -45,7 +45,6 @@ interface UserPreferences {
     allow_analytics: boolean;
     share_anonymous_data: boolean;
     public_profile: boolean;
-    show_in_leaderboard: boolean;
   };
   performance: {
     offline_mode: boolean;
@@ -61,7 +60,7 @@ const defaultPreferences: UserPreferences = {
   dictionary: { auto_lookup: true, show_register: true, show_etymology: false, def_language: "id" },
   learning: { default_mastery: 0, auto_add_vocab: false, cards_per_session: 20, show_context: true },
   display: { show_reading_time: true, high_contrast: false, screen_reader: false, keyboard_shortcuts: true, enable_animations: true },
-  privacy: { allow_analytics: true, share_anonymous_data: true, public_profile: false, show_in_leaderboard: false },
+  privacy: { allow_analytics: true, share_anonymous_data: true, public_profile: false },
   performance: { offline_mode: false, preload_next_text: true },
   developer: { debug_mode: false }
 };
@@ -178,7 +177,6 @@ export default function SettingsPage() {
       if (error) throw error;
 
       if (currentUser) {
-        const journeyLevel = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6 }[cefrLevel] || 1;
         await supabase.from('profiles').update({
           full_name: fullName,
           avatar_url: finalAvatarUrl,
@@ -186,8 +184,7 @@ export default function SettingsPage() {
           language_preference: languagePref,
           notification_preference: notificationPref,
           preferences: preferences,
-          cefr_level: cefrLevel,
-          journey_level: journeyLevel
+          cefr_level: cefrLevel
         }).eq('id', currentUser.id);
       }
 
@@ -637,7 +634,7 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-foreground mb-4">Reading Journey & CEFR Level</h3>
+                <h3 className="text-lg font-bold text-foreground mb-4">Level CEFR</h3>
                 <div className="space-y-3">
                   <div className="space-y-1">
                     <label className="text-sm font-medium">Level Kemampuan Bahasa Inggris (CEFR)</label>
@@ -717,13 +714,6 @@ export default function SettingsPage() {
                       <span className="text-xs text-muted-foreground">Bantu tingkatkan kualitas AI (Text-to-Speech & Saran Kosakata)</span>
                     </div>
                     <input type="checkbox" checked={preferences.privacy?.share_anonymous_data ?? true} onChange={e => updatePref('privacy', 'share_anonymous_data', e.target.checked)} className="w-4 h-4 accent-brand" />
-                  </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
-                    <div>
-                      <span className="text-sm font-bold block">Tampilkan di Papan Peringkat (Leaderboard)</span>
-                      <span className="text-xs text-muted-foreground">Izinkan pengguna lain melihat skor dan statistik publik Anda</span>
-                    </div>
-                    <input type="checkbox" checked={preferences.privacy?.show_in_leaderboard ?? false} onChange={e => updatePref('privacy', 'show_in_leaderboard', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
                 </div>
               </div>

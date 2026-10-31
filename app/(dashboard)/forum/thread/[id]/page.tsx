@@ -24,7 +24,7 @@ interface UserProfile {
   role: string;
   level: string;
   avatar_url?: string;
-  xp: number;
+  cefr_level?: string | null;
 }
 
 interface Comment {
@@ -45,7 +45,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
   const [comments, setComments] = useState<Comment[]>([]);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [currentUserProfile, setCurrentUserProfile] = useState<UserProfile | null>(null);
-  const [threadAuthor, setThreadAuthor] = useState<UserProfile>({ full_name: "Penulis", role: "user", level: "intermediate", xp: 0 });
+  const [threadAuthor, setThreadAuthor] = useState<UserProfile>({ full_name: "Penulis", role: "user", level: "intermediate" });
   
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -109,7 +109,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       
       const uniqueUserIds = [...new Set(userIdsToFetch)];
       
-      const { data: profiles } = await supabase.from('profiles').select('id, full_name, role, level, avatar_url, xp').in('id', uniqueUserIds);
+      const { data: profiles } = await supabase.from('profiles').select('id, full_name, role, level, avatar_url, cefr_level').in('id', uniqueUserIds);
       if (profiles) {
          profiles.forEach(p => {
            userMap[p.id] = {
@@ -117,7 +117,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
              role: p.role || 'user',
              level: p.level || 'intermediate',
              avatar_url: p.avatar_url,
-             xp: p.xp || 0
+             cefr_level: p.cefr_level
            };
          });
       }
@@ -126,12 +126,12 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
         setCurrentUserProfile(userMap[user.id]);
       }
 
-      setThreadAuthor(userMap[threadData.user_id] || { full_name: "Penulis", role: "user", level: "intermediate", xp: 0 });
+      setThreadAuthor(userMap[threadData.user_id] || { full_name: "Penulis", role: "user", level: "intermediate" });
 
       if (commentsData) {
         const formattedComments = commentsData.map((c: any) => ({
           ...c,
-          author: userMap[c.user_id] || { full_name: "Penulis", role: "user", level: "intermediate", xp: 0 }
+          author: userMap[c.user_id] || { full_name: "Penulis", role: "user", level: "intermediate" }
         }));
         setComments(formattedComments);
       }
@@ -172,7 +172,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
     if (error) {
       Swal.fire({ title: "Gagal", text: error.message, icon: "error", confirmButtonColor: "#2fa16b" });
     } else if (data) {
-      const myProfile = currentUserProfile || { full_name: currentUser.user_metadata?.full_name || "Saya", role: "user", level: "intermediate", avatar_url: currentUser.user_metadata?.avatar_url, xp: 0 };
+      const myProfile = currentUserProfile || { full_name: currentUser.user_metadata?.full_name || "Saya", role: "user", level: "intermediate", avatar_url: currentUser.user_metadata?.avatar_url };
       setComments([...comments, { ...data, author: myProfile }]);
       setNewComment("");
     }
@@ -286,16 +286,9 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
     return null;
   };
 
-  const renderTierBadge = (xp: number) => {
-    let title = "Novice Reader (A1)";
-    let color = "bg-gray-500/20 text-gray-400";
-    
-    if (xp >= 10000) { title = "Master of Linguistics (C1/C2)"; color = "bg-purple-500/20 text-purple-400"; }
-    else if (xp >= 5000) { title = "Literary Scholar (B2)"; color = "bg-blue-500/20 text-blue-400"; }
-    else if (xp >= 2000) { title = "Wordsmith (B1)"; color = "bg-cyan-500/20 text-cyan-400"; }
-    else if (xp >= 500) { title = "Bibliophile (A2)"; color = "bg-green-500/20 text-green-400"; }
-
-    return <span className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold ${color}`}>{title}</span>;
+  const renderCefrBadge = (cefr?: string | null) => {
+    if (!cefr) return null;
+    return <span className="bg-muted text-muted-foreground px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">{cefr}</span>;
   };
 
   if (loading) {
@@ -406,7 +399,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
                 <p className="font-bold text-foreground text-sm flex items-center gap-2 flex-wrap">
                   {threadAuthor.full_name}
                   {renderRoleBadge(threadAuthor.role)}
-                  {renderTierBadge(threadAuthor.xp)}
+                  {renderCefrBadge(threadAuthor.cefr_level)}
                 </p>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                   <Clock className="w-3 h-3" />
@@ -459,7 +452,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
                 <p className="font-bold text-foreground text-sm flex items-center gap-2 flex-wrap pr-10">
                   {comment.author.full_name}
                   {renderRoleBadge(comment.author.role)}
-                  {renderTierBadge(comment.author.xp)}
+                  {renderCefrBadge(comment.author.cefr_level)}
                   {comment.user_id === thread?.user_id && (
                     <span className="bg-brand/20 text-brand px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Pembuat</span>
                   )}

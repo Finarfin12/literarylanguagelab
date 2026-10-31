@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { Users, Search, UserPlus, UserCheck, Loader2, Trophy, MessageSquare } from "lucide-react";
+import { Users, Search, UserPlus, UserCheck, Loader2, GraduationCap, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import Swal from 'sweetalert2';
 
@@ -11,7 +11,6 @@ interface PublicProfile {
   full_name: string;
   avatar_url: string;
   cefr_level: string;
-  xp: number;
   is_following?: boolean;
 }
 
@@ -30,7 +29,7 @@ export default function CommunityPage() {
       // Fetch public profiles
       const { data: publicProfiles, error } = await supabase
         .from('profiles')
-        .select('id, full_name, avatar_url, cefr_level, xp')
+        .select('id, full_name, avatar_url, cefr_level')
         .eq('is_public', true)
         .neq('id', user?.id || '00000000-0000-0000-0000-000000000000'); // Exclude self
 
@@ -125,7 +124,7 @@ export default function CommunityPage() {
             
             <h3 className="text-lg font-bold text-foreground mb-1">{profile.full_name || 'Anonim'}</h3>
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6 bg-foreground/5 px-3 py-1 rounded-full">
-              <Trophy className="w-3.5 h-3.5 text-yellow-500" /> {profile.xp} XP • {profile.cefr_level || 'A1'}
+              <GraduationCap className="w-3.5 h-3.5 text-brand" /> {profile.cefr_level || 'Level belum diketahui'}
             </div>
 
             <div className="w-full flex gap-2">

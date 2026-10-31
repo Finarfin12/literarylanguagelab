@@ -86,11 +86,6 @@ function calculateFinalLevel(scores: Record<string, { correct: number; total: nu
   return best;
 }
 
-function cefrToJourneyLevel(cefr: string): number {
-  const map: Record<string, number> = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6 };
-  return map[cefr] || 1;
-}
-
 export async function POST(req: Request) {
   try {
     const supabase = await createClient();
@@ -138,7 +133,6 @@ export async function POST(req: Request) {
       // scores: { reading: { correct, total, lastLevel }, grammar: {...}, ... }
 
       const finalLevel = calculateFinalLevel(scores);
-      const journeyLevel = cefrToJourneyLevel(finalLevel);
 
       const readingScore = Math.round((scores.reading?.correct / Math.max(scores.reading?.total, 1)) * 100);
       const grammarScore = Math.round((scores.grammar?.correct / Math.max(scores.grammar?.total, 1)) * 100);
@@ -161,12 +155,10 @@ export async function POST(req: Request) {
       // Update profile
       await supabase.from('profiles').update({
         cefr_level: finalLevel,
-        journey_level: journeyLevel,
       }).eq('id', user.id);
 
       return NextResponse.json({
         finalLevel,
-        journeyLevel,
         scores: { reading: readingScore, grammar: grammarScore, vocabulary: vocabularyScore, listening: listeningScore, total: totalScore },
       });
     }
@@ -176,13 +168,11 @@ export async function POST(req: Request) {
       const { level } = body;
       if (!CEFR_LEVELS.includes(level)) return NextResponse.json({ error: "Invalid level" }, { status: 400 });
 
-      const journeyLevel = cefrToJourneyLevel(level);
       await supabase.from('profiles').update({
         cefr_level: level,
-        journey_level: journeyLevel,
       }).eq('id', user.id);
 
-      return NextResponse.json({ level, journeyLevel });
+      return NextResponse.json({ level });
     }
 
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });

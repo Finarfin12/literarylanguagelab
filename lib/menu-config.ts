@@ -93,7 +93,6 @@ export const MENU_GROUPS = [
       { name: "Translation Workshop", path: "/translation-workshop" },
       { name: "Translation Memory", path: "/translation-memory" },
       { name: "Parallel Text Mode", path: "/tools/parallel-text" },
-      { name: "Weekly Challenge", path: "/tools/weekly-challenge" },
       { name: "Translation Timelapse", path: "/tools/translation-timelapse" },
     ]
   },
@@ -120,9 +119,7 @@ export const MENU_GROUPS = [
     items: [
       { name: "Discussion Board", path: "/forum" },
       { name: "Jejaring Pembaca", path: "/community" },
-      { name: "Global Leaderboard", path: "/leaderboard" },
       { name: "Shared Annotations", path: "/community-annotations" },
-      { name: "Translation Duels", path: "/duels" },
       { name: "Reading Clubs", path: "/clubs" },
     ]
   }

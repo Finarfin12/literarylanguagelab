@@ -18,12 +18,6 @@ export async function addAnnotation(formData: FormData) {
 
   if (error) throw error;
   
-  // Award 5 XP for contributing
-  const { data: profile } = await supabase.from("profiles").select("xp").eq("id", user.id).single();
-  if (profile) {
-     await supabase.from("profiles").update({ xp: profile.xp + 5 }).eq("id", user.id);
-  }
-
   revalidatePath("/community-annotations");
 }
 
