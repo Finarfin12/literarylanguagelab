@@ -10,28 +10,37 @@ export default function AZDictionaryPage() {
   const [activeLetter, setActiveLetter] = useState("A");
   const [words, setWords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
 
   useEffect(() => {
+    let cancelled = false;
     async function fetchWords() {
       setLoading(true);
+      setLoadError("");
       try {
-        // Fetch up to 300 words starting with the letter. Include definitions (md=d)
-        const res = await fetch(`https://api.datamuse.com/words?sp=${activeLetter.toLowerCase()}*&max=200&md=d`);
-        const data = await res.json();
-        
-        // Filter out words with spaces or hyphens to keep it strictly single words
-        const filtered = data.filter((item: any) => /^[a-zA-Z]+$/.test(item.word));
-        setWords(filtered);
+        // Lewat server (/api/dictionary/browse): daftar kata berawalan huruf, di-cache, dan tidak terhalang jaringan pengguna
+        const res = await fetch(`/api/dictionary/browse?letter=${activeLetter.toLowerCase()}`);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "Gagal memuat daftar kata.");
+        if (!cancelled) setWords(data.words || []);
       } catch (err) {
         console.error(err);
+        if (!cancelled) {
+          setWords([]);
+          setLoadError(err instanceof Error ? err.message : "Gagal memuat daftar kata.");
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
     fetchWords();
-  }, [activeLetter]);
+    return () => {
+      cancelled = true;
+    };
+  }, [activeLetter, reloadKey]);
 
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto min-h-full flex flex-col">
@@ -83,6 +92,19 @@ export default function AZDictionaryPage() {
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
             <Loader2 className="w-10 h-10 animate-spin text-brand mb-4" />
             <p className="animate-pulse">Mengambil daftar kata berawalan {activeLetter}...</p>
+          </div>
+        ) : loadError ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center text-muted-foreground">
+            <Hash className="w-12 h-12 opacity-30 mb-4" />
+            <p className="font-bold text-foreground">Daftar kata tidak dapat dimuat.</p>
+            <p className="text-sm mt-1">{loadError} Ini bukan berarti kamusnya kosong.</p>
+            <button
+              type="button"
+              onClick={() => setReloadKey((k) => k + 1)}
+              className="mt-6 min-h-[44px] px-6 bg-brand text-background font-bold rounded-xl"
+            >
+              Coba lagi
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 animate-in fade-in slide-in-from-bottom-8 duration-500 pb-8">

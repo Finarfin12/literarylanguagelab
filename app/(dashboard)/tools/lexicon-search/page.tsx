@@ -314,8 +314,24 @@ export default function LexiconSearchPage() {
       {result && (!result.dictionary || result.dictionary.length === 0) && (
         <div className="text-center py-20 bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl mt-8">
           <AlertCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h2 className="text-2xl font-serif text-muted-foreground">Kata tidak ditemukan di kamus.</h2>
-          <p className="text-muted-foreground mt-2">Coba periksa kembali ejaan kata yang Anda masukkan.</p>
+          {result.dictionaryStatus === "unavailable" ? (
+            <>
+              <h2 className="text-2xl font-serif text-muted-foreground">Layanan kamus sedang tidak dapat dihubungi.</h2>
+              <p className="text-muted-foreground mt-2">Kata ini belum tentu salah eja. Coba lagi beberapa saat lagi.</p>
+              <button
+                type="button"
+                onClick={() => performSearch(word)}
+                className="mt-6 min-h-[44px] px-6 bg-brand text-background font-bold rounded-xl"
+              >
+                Coba lagi
+              </button>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl font-serif text-muted-foreground">Kata tidak ditemukan di kamus.</h2>
+              <p className="text-muted-foreground mt-2">Coba periksa kembali ejaan kata yang Anda masukkan.</p>
+            </>
+          )}
         </div>
       )}
     </div>
