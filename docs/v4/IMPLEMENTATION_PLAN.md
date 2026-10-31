@@ -5,7 +5,7 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v3. (Fase 12 di v3 — mode
 **Aturan umum** (lengkapnya di [HANDOFF.md](HANDOFF.md))
 - **P1: hanya tampilan yang berubah.** Sebelum dan sesudah setiap fase redesign, buka [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) dan centang baris yang disentuh. Menghapus elemen UI yang memicu fitur = bug, walaupun fiturnya masih ada di kode.
 - Pola dari v2/v3 tetap wajib (`runAI`, guard admin, `logAdminAction`, `components/ui/*`, `ResponsivePanel`, fallback sebelum migrasi).
-- Migrasi baru mulai `0011`. Ditulis, tidak dijalankan.
+- Migrasi baru mulai `0011` (`0011` = perbaikan cascade profil di 14f; Fase 15–17 memakai `0012`–`0014`). Ditulis, tidak dijalankan.
 - Verifikasi tiap fase: `npx tsc --noEmit`, lint tanpa temuan baru vs HEAD, build di path pendek, uji unit untuk logika murni, **halaman uji visual sementara** (di salinan build, bukan di repo) untuk komponen yang diubah, di 375px dan 1280px, tema terang dan gelap.
 
 ## Ringkasan fase
@@ -14,7 +14,7 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v3. (Fase 12 di v3 — mode
 |---|---|---|---|
 | 12 | Fondasi desain v4: token, huruf, tema, komponen dasar | 2–3 hari | v3 |
 | 13 | Navigasi & tiga Ruang (susunan fitur) | 2–3 hari | 12 |
-| 14 | Redesign halaman (bertahap, 14a–14e) + Tongkat Ajaib bisa digeser | 6–8 hari | 13 |
+| 14 | Redesign halaman (bertahap, 14a–14e) + Tongkat Ajaib bisa digeser + **14f: lima route API dihidupkan** | 7–9 hari | 13 |
 | 15 | Mesin latihan terstruktur + review grammar | 4–5 hari | 12 |
 | 16 | Kursus Dasar: unit A0–A2 | 4–5 hari | 15, 14a |
 | 17 | Modul khas penutur Indonesia | 2–3 hari | 15 |
@@ -85,13 +85,36 @@ Kerjakan per sub-fase; **satu commit per sub-fase**. Di setiap sub-fase: ubah ma
 
 **14e — Komunitas, profil, pengaturan, bantuan, admin, auth** (inventaris B, H, I, J): forum, clubs, community, messages, community-annotations, `p/[username]`, profile, settings (**semua** bagian & preferensi, termasuk ekspor CSV, hapus akun, Developer Tools), help + Liter-AI, 9 tab admin, login/register/OAuth, landing.
 
+**14f — Lima route API: perbaiki & pakai** (keputusan pemilik, temuan K2 di inventaris)
+
+Kelima route sudah ada tetapi tidak dipanggil UI. **Jangan dihapus**: perbaiki lalu pakai. Setiap route mendapat tombol/tampilan baru; **tidak ada fitur lama yang diganti atau hilang** kecuali yang disebut eksplisit di bawah (pergantian jalur pemanggilan, perilakunya sama bagi pengguna).
+
+1. **`/api/gutenberg/search`** — proxy Gutendex dengan rate limit per IP & cache.
+   - *Perbaiki:* pastikan `page` diteruskan (sudah ada sejak Fase 7), status error upstream diteruskan sebagai pesan ramah.
+   - *Pakai:* `app/(dashboard)/gutenberg/page.tsx` provider **Gutendex** memanggil `/api/gutenberg/search?q=…&page=…` untuk pencarian pertama dan "Muat lagi" (menggantikan `fetch("https://gutendex.com/books/…")` langsung). Bentuk respons sama dengan Gutendex (`results`, `next`, `count`). Provider OpenLibrary **tidak diubah**.
+2. **`/api/wotd`** — mini-lesson + kuis 1 soal untuk satu kata dari kosakata pengguna.
+   - *Perbaiki:* kata **deterministik per pengguna per hari** (urutkan kosakata, pilih dengan hash `userId + tanggal`) menggantikan `Math.random`; jika kosakata kosong pakai `core_words` A1–A2 (jika tabel ada) lalu daftar cadangan; buang komentar `//` dari contoh JSON di prompt; validasi bentuk respons (`quiz.options` 2–4, `quiz.answer` dalam rentang) sebelum dikirim; tambah `checkRateLimit(user.id, "wotd")`.
+   - *Pakai:* kartu **Word of the Day di Sidebar tetap menampilkan kata lokal seperti sekarang** (tanpa panggilan AI saat halaman dibuka) + tombol baru **"Pelajari"** → panel (`ResponsivePanel`) yang memuat `/api/wotd` saat diklik: pelajaran, kolokasi, kuis 1 soal dengan umpan balik, tombol **Simpan kata** (`/api/vocabulary`). Hasil disimpan di `localStorage` `wotd:<tanggal>` agar tidak memanggil AI dua kali sehari. Karena Sidebar tidak tampil di HP, tambahkan kartu kecil yang sama di **Beranda** (HP & desktop).
+3. **`/api/analyze-tone`** — tone kalimat + penanda linguistik + tips mempertahankan tone saat menerjemahkan + usulan terjemahan.
+   - *Perbaiki:* parse JSON yang tahan pagar kode (pola `formatAITextResponse`/strip ```` ``` ````) dengan `try/catch` → 502 berpesan jelas; batasi panjang `text` (≤ 1.000 karakter) dan `context` (≤ 2.000); validasi `confidence` 0–100.
+   - *Pakai:* (a) **modal Tongkat Ajaib** (kalimat yang diinspeksi): tombol baru **"Analisis tone"** di bawah Bedah Sintaksis, konteks = teks paragraf; (b) **Ruang Kerja Segmen** (`SegmentPanel`): tombol **"Analisis tone segmen"**, menampilkan tips & usulan terjemahan (tidak menimpa terjemahan pengguna; ada tombol "Pakai usulan" yang hanya mengisi bila pengguna menekan).
+4. **`/api/detect-idioms`** — deteksi ±180 idiom **tanpa AI** (pencocokan pola lokal).
+   - *Perbaiki:* pindahkan data & logika ke `lib/idioms/` (`IDIOM_DB` + fungsi murni `detectIdioms(text)`), **diuji unit** — termasuk pola posesif (`pull someone's leg`) yang kemungkinan rusak karena di-escape sebelum diganti; ganti `checkRateLimit` (yang mencatat ke `ai_usage_logs` dan memakan kuota AI) dengan limiter ringan tanpa log, mis. `checkIpRateLimit("user:" + user.id, 120)`; batasi panjang `text` (≤ 20.000 karakter).
+   - *Pakai:* **reader** — sekali per halaman (bukan per paragraf), kirim teks halaman aktif, simpan hasil per halaman; tandai idiom di teks dengan gaya berbeda dari referensi budaya (mis. garis bawah putus-putus hijau) + tooltip arti & padanan Indonesia + tombol **Simpan ke Idiom Library** (pakai cara simpan yang sudah ada di halaman `/idioms`). Preferensi baru `reading.highlight_idioms` (default aktif) di Pengaturan → Reading Experience. Jangan menambah beban render: kirim daftar idiom per blok sebagai prop ke `ReaderBlock` (memo) dan gabungkan di `CulturalTextRenderer` sebagai jenis penanda kedua.
+5. **`/api/auth/delete-account`** — hapus akun lewat Admin API setelah konfirmasi email.
+   - *Perbaiki:* pakai `requireUser()`; jika `SUPABASE_SERVICE_ROLE_KEY` tidak ada → 503 dengan pesan jelas; **migrasi `0011_profile_cascade.sql`**: pastikan FK `profiles.id → auth.users(id)` memakai `ON DELETE CASCADE` (di baseline tidak) — cari nama constraint lewat `pg_constraint` di blok `DO`, drop & buat ulang; tanpa ini `auth.admin.deleteUser` bisa gagal (juga memengaruhi hapus pengguna di admin).
+   - *Pakai:* `settings/page.tsx` `handleDeleteAccount` memanggil `POST /api/auth/delete-account { email }` **menggantikan** `supabase.rpc('delete_user')` (RPC itu tidak ada di migrasi mana pun, jadi kemungkinan tidak berfungsi). Setelah sukses: `signOut()` lalu ke `/login`. Tombol terpisah **"hapus data Vocabulary & Riwayat"** tetap ada tanpa perubahan.
+6. **Temuan terkait (perbaiki di 14f):** ekspor CSV "translations" di Pengaturan membaca tabel `translation_submissions`, padahal migrasi hanya punya `translations`. Cek tabel mana yang dipakai Translation Workshop menyimpan hasil, lalu arahkan ekspor ke tabel itu (fallback ke yang lain jika error `42P01`).
+
+**Selesai jika (14f):** kelima route dipanggil dari UI dan berfungsi; uji unit `lib/idioms` lulus (termasuk posesif); `detect-idioms` tidak lagi menulis `ai_usage_logs`; Word of the Day sama sepanjang hari & tidak memanggil AI saat halaman dibuka; hapus akun berhasil di lingkungan non-produksi setelah `0011` dijalankan (atau dicatat sebagai "perlu diuji pemilik"); ekspor terjemahan menghasilkan file; FEATURE_INVENTORY diperbarui (baris baru: tombol Pelajari WOTD, Analisis tone, penanda idiom, preferensi `highlight_idioms`); build lulus.
+
 **Selesai jika (per sub-fase):** semua baris inventaris sub-fase itu tercentang dengan cara uji; halaman uji visual 375px & 1280px, terang & gelap; uji `drag-fab` lulus (14b); `docs/mobile-audit.md` diperbarui; build lulus.
 
 ---
 
 ## Fase 15 — Mesin latihan terstruktur + review grammar
 
-**15.1 Skema** (`0011_exercises.sql`)
+**15.1 Skema** (`0012_exercises.sql`)
 ```sql
 create table if not exists exercises (
   id uuid primary key default gen_random_uuid(),
@@ -146,7 +169,7 @@ create table if not exists grammar_progress (
 
 ## Fase 16 — Kursus Dasar (unit A0–A2)
 
-**16.1 Skema** (`0012_course_units.sql`): `course_units (slug pk, title, cefr_level, sort_order, theme_id, intro_id, steps jsonb, status)` dan `unit_progress (user_id, unit_slug, step_index, completed_at, pk(user_id, unit_slug))`. `steps` = array langkah bertipe: `vocab` (daftar kata / kata inti), `grammar` (topic_slug), `read` (text_id), `listen` (teks untuk TTS), `exercise` (filter soal unit), `speak` (kalimat untuk Pronunciation Clinic atau skenario Dialogue Simulator). Seed 12 unit (judul, level, urutan, intro Indonesia; langkah yang merujuk konten yang belum ada dibiarkan kosong dan ditandai).
+**16.1 Skema** (`0013_course_units.sql`): `course_units (slug pk, title, cefr_level, sort_order, theme_id, intro_id, steps jsonb, status)` dan `unit_progress (user_id, unit_slug, step_index, completed_at, pk(user_id, unit_slug))`. `steps` = array langkah bertipe: `vocab` (daftar kata / kata inti), `grammar` (topic_slug), `read` (text_id), `listen` (teks untuk TTS), `exercise` (filter soal unit), `speak` (kalimat untuk Pronunciation Clinic atau skenario Dialogue Simulator). Seed 12 unit (judul, level, urutan, intro Indonesia; langkah yang merujuk konten yang belum ada dibiarkan kosong dan ditandai).
 - Logika murni `lib/course.ts` (diuji unit): langkah berikutnya, persen selesai, unit yang disarankan.
 
 **16.2 UI**: `app/(dashboard)/kursus/page.tsx` (daftar unit per level, disarankan, tidak dikunci) dan `kursus/[slug]` (pemutar langkah; setiap langkah memakai komponen yang ada: kartu kosakata, ringkasan topik grammar, `TextDisplay` untuk bacaan pendek, TTS, `ExerciseSession`, Pronunciation Clinic). Masuk Ruang I di urutan ke-2 (Fase 13).
@@ -159,7 +182,7 @@ create table if not exists grammar_progress (
 
 ## Fase 17 — Modul khas penutur Indonesia
 
-- Seed data (`0013_l1_modules.sql`): `l1_errors (slug, title, wrong, right, explanation_id, cefr_level)` ±15 kesalahan umum (PRD §6.4) dan `minimal_pairs (slug, word_a, word_b, ipa_a, ipa_b, note_id)` ±15 pasangan. Soal terkait = `exercises` dengan tag `l1-error` / `minimal-pair`.
+- Seed data (`0014_l1_modules.sql`): `l1_errors (slug, title, wrong, right, explanation_id, cefr_level)` ±15 kesalahan umum (PRD §6.4) dan `minimal_pairs (slug, word_a, word_b, ipa_a, ipa_b, note_id)` ±15 pasangan. Soal terkait = `exercises` dengan tag `l1-error` / `minimal-pair`.
 - UI di Ruang I: "Kesalahan Umum" (kartu salah → benar + penjelasan + latihan) dan "Pasangan Bunyi" (dengar TTS A/B → pilih; lalu ucapkan dengan Pronunciation Clinic).
 - Hubungkan ke unit Kursus Dasar yang relevan (langkah `exercise` dengan tag).
 
@@ -177,4 +200,5 @@ create table if not exists grammar_progress (
 - [ ] Kelima tipe latihan dinilai tanpa AI; review grammar terjadwal.
 - [ ] 12 unit Kursus Dasar tampil; ≥ 10 bacaan published per A1 & A2 (konten pemilik).
 - [ ] Modul kesalahan umum & pasangan bunyi berfungsi.
-- [ ] Migrasi `0011`–`0013` tercantum di `docs/SESSION_HANDOFF.md` untuk dijalankan pemilik.
+- [ ] Migrasi `0011`–`0014` tercantum di `docs/SESSION_HANDOFF.md` untuk dijalankan pemilik.
+- [ ] Kelima route API (14f) dipakai di UI dan diuji; ekspor CSV terjemahan membaca tabel yang benar.

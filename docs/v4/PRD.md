@@ -30,7 +30,7 @@ v3 menambah onboarding, jalur pemula, level per keterampilan, dan jalur penerjem
 | # | Prinsip |
 |---|---|
 | P1 | **Redesign hanya mengubah tampilan.** Tidak ada fitur yang dihapus, digabung diam-diam, atau dikurangi perilakunya. [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) adalah daftar periksa wajib: setiap baris tetap ada dan bisa dijangkau setelah redesign, di desktop dan HP. |
-| P2 | Perubahan perilaku hanya yang **disebut eksplisit** di PRD ini: Tongkat Ajaib bisa digeser (§5.4), pintu masuk LingoWise di desktop (§5.2), dan fitur baru Kursus Dasar (§6). |
+| P2 | Perubahan perilaku hanya yang **disebut eksplisit** di PRD ini: Tongkat Ajaib bisa digeser (§5.4), pintu masuk LingoWise di desktop (§5.2), lima route API yang belum dipakai dihidupkan (§5.5), dan fitur baru Kursus Dasar (§6). |
 | P3 | Tidak ada gamifikasi (XP, streak, peringkat) — keputusan v2. |
 | P4 | Semua tema tetap: terang, gelap, sepia (reader), kontras tinggi, font disleksia, ukuran/jarak/lebar teks. |
 
@@ -101,6 +101,20 @@ Reader & Word Lookup mengikuti mockup: halaman kertas, header ringkas, progress 
 - Tidak menutupi tombol navigasi halaman/bottom sheet: saat panel Word Lookup terbuka, tombol menyingkir atau disembunyikan sementara.
 - Aksesibilitas: tetap `<button>` dengan `aria-pressed` dan label; bisa dipindah juga lewat keyboard (mis. Alt+panah) atau cukup tetap bisa difokus & diaktifkan dengan keyboard.
 - Contoh perilaku: artboard "Tongkat Ajaib — HP" di mockup (bisa dicoba).
+
+### 5.5 Lima route API yang belum dipakai: perbaiki & pakai
+
+Keputusan pemilik (31 Okt 2026): route yang sudah ada tetapi tidak dipanggil UI **tidak dihapus**, melainkan diperbaiki dan dipakai.
+
+| Route | Dipakai di | Nilai bagi pengguna |
+|---|---|---|
+| `/api/gutenberg/search` | Pencarian Buku Klasik (provider Gutendex) | Lebih stabil: rate limit & cache di server |
+| `/api/wotd` | Tombol **Pelajari** di kartu Word of the Day (Sidebar & Beranda) | Mini-lesson, kolokasi, kuis 1 soal, simpan kata |
+| `/api/analyze-tone` | Modal Tongkat Ajaib & Ruang Kerja Segmen | Tone kalimat + tips mempertahankan tone saat menerjemahkan |
+| `/api/detect-idioms` | Reader (penanda idiom otomatis, bisa dimatikan di Pengaturan) | Idiom dikenali tanpa AI, bisa disimpan ke Idiom Library |
+| `/api/auth/delete-account` | Pengaturan → Hapus akun | Hapus akun yang benar-benar berfungsi |
+
+Detail perbaikan: IMPLEMENTATION_PLAN Fase 14f.
 
 ---
 

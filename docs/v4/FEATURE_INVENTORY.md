@@ -160,7 +160,10 @@ Ringkasan, Pengguna (cari, filter, role, ban/unban/hapus, link pemakaian), Provi
 | # | Temuan | Tindakan di v4 |
 |---|---|---|
 | K1 | **LingoWise AI tidak punya pintu masuk di desktop**: tidak ada di Sidebar maupun Toolkits Hub (hanya di Menu HP). | Tambahkan ke navigasi desktop (ruang Analisis Sastra). |
-| K2 | Route API tanpa pemanggil di UI: `/api/analyze-tone`, `/api/detect-idioms`, `/api/gutenberg/search` (halaman memanggil Gutendex langsung), `/api/wotd` (Sidebar memakai daftar lokal), `/api/auth/delete-account` (Pengaturan memakai RPC `delete_user`). | **Jangan dihapus.** perbaiki dan pakai;. |
+| K2 | Route API tanpa pemanggil di UI: `/api/analyze-tone`, `/api/detect-idioms`, `/api/gutenberg/search` (halaman memanggil Gutendex langsung), `/api/wotd` (Sidebar memakai daftar lokal), `/api/auth/delete-account` (Pengaturan memakai RPC `delete_user`). | **Jangan dihapus — perbaiki dan pakai** (keputusan pemilik). Langkahnya: Fase **14f** di IMPLEMENTATION_PLAN. |
 | K3 | Bottom nav HP di mockup v4 berbeda dari yang sekarang. | Semua tujuan lama (Beranda, Baca, Kosakata, Alat, Menu) harus tetap bisa dijangkau ≤ 2 ketukan. |
 | K4 | Mockup v4 baru menggambar tema terang; reader punya tema **sepia**, **gelap**, dan **kontras tinggi**. | Rancang ketiganya; jangan hilangkan pilihan tema. |
+| K6 | Hapus akun di Pengaturan memanggil RPC `delete_user` yang tidak ada di migrasi mana pun; FK `profiles.id → auth.users` di baseline tanpa `ON DELETE CASCADE`. | Diperbaiki di 14f (pakai `/api/auth/delete-account` + migrasi `0011`). |
+| K7 | Ekspor CSV "translations" di Pengaturan membaca tabel `translation_submissions` yang tidak ada di migrasi. | Diperbaiki di 14f. |
+| K8 | `/api/detect-idioms` tidak memakai AI tetapi mencatat ke `ai_usage_logs` lewat `checkRateLimit` (memakan kuota AI & mengacaukan statistik Ringkasan). | Diperbaiki di 14f. |
 | K5 | Preferensi `offline_mode`, `preload_next_text`, `auto_save`, `auto_add_vocab`, `default_mastery`, `cards_per_session` ada di Pengaturan. | Tetap tampil di Pengaturan setelah redesign. |
