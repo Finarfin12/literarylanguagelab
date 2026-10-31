@@ -65,7 +65,7 @@ const rows = parseCsv(fs.readFileSync(file, "utf8").replace(/^\uFEFF/, ""));
 const header = rows.shift().map((h) => h.trim().toLowerCase());
 const col = (...names) => header.findIndex((h) => names.includes(h));
 const iWord = col("lemma", "word");
-const iRank = col("rank", "band");
+const iRank = col("rank", "band", "sfi rank");
 const iPos = col("pos");
 const iExample = col("example");
 if (iWord < 0) {
