@@ -1,10 +1,22 @@
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
-
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "tone-analyzer");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { text, targetTone } = await req.json();
 
     if (!text) {
@@ -43,7 +55,7 @@ Respond entirely in Indonesian (except tone classification label, linguistic mar
 
     const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
     return NextResponse.json({ result });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Tone Analyzer Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

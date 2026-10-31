@@ -1,8 +1,21 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "grammar-clinic");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { category, percentage, examples } = await req.json();
 
     if (!category) {
@@ -57,7 +70,7 @@ JSON format:
     }
 
     return NextResponse.json(parsed);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Mini Lesson Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

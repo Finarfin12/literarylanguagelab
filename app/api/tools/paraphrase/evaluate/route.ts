@@ -1,11 +1,22 @@
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
-
-
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "paraphrase-evaluate");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { quote, paraphrase } = await req.json();
 
     if (!quote || !paraphrase) {
@@ -35,7 +46,8 @@ At the end of your feedback, provide a final score in this exact format: "SKOR: 
 
     const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
     return NextResponse.json({ result });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    console.error("Paraphrase Evaluate Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

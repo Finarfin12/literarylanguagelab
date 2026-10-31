@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { checkIpRateLimit } from "@/lib/rate-limit";
 
 const romanNumeralPattern = /^[IVXLCDM]+\.?$/i;
 const chapterHeadingPattern =
@@ -112,6 +113,12 @@ async function fetchWithRetry(url: string) {
 }
 
 export async function GET(req: Request) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const rateLimitRes = await checkIpRateLimit(ip);
+  if (rateLimitRes) {
+    return rateLimitRes;
+  }
+
   const url = new URL(req.url);
   const sourceUrl = url.searchParams.get("url");
 

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
-
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const SYSTEM_PROMPT = `You are a Master Translation Analyst. The user will provide an Original English text and a Professional Indonesian Translation.
 Your goal is to reverse-engineer and annotate the translator's decisions line-by-line or phrase-by-phrase.
@@ -15,6 +16,17 @@ Respond in BOTH English and Indonesian using HIGHLY STRUCTURED Markdown.`;
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "comparator");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { originalText, translatedText } = await req.json();
 
     if (!originalText || !translatedText) {
@@ -37,7 +49,7 @@ export async function POST(req: Request) {
 
     const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
     return NextResponse.json({ result });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

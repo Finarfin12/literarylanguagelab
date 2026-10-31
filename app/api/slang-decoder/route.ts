@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const SYSTEM_PROMPT = `You are an expert cultural translator and Gen-Z slang dictionary. The user will provide a sentence or phrase containing modern English slang, internet abbreviations, pop culture references, or idioms.
 
@@ -26,6 +28,17 @@ Response format:
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "slang-decoder");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { text } = await req.json();
 
     if (!text || !text.trim()) {
@@ -59,7 +72,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(parsed);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Slang Decoder Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

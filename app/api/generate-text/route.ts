@@ -1,9 +1,21 @@
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
-
+import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "generate-text");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { prompt } = await req.json();
 
     if (!prompt) {
@@ -33,7 +45,7 @@ export async function POST(req: Request) {
     const result = JSON.parse(resultStr);
 
     return NextResponse.json(result);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Groq generation error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

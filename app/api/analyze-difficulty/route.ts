@@ -1,9 +1,21 @@
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
-
+import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "analyze-difficulty");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { text } = await req.json();
     if (!text) return NextResponse.json({ error: "Text is required" }, { status: 400 });
 
