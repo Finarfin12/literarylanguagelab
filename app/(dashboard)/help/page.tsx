@@ -298,7 +298,7 @@ export default function HelpPage() {
               tersedia di{" "}
               <a href="https://www.newgeneralservicelist.com" target="_blank" rel="noopener noreferrer" className="text-brand underline">newgeneralservicelist.com</a>{" "}
               di bawah lisensi{" "}
-              <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" className="text-brand underline">Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)</a>.
+              <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" className="text-brand underline">Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)</a>. Definisi bahasa Inggris sederhana dan bentuk kata pada Kosakata Inti juga berasal dari NGSL 1.2.
             </p>
             <p>
               Pemetaan peringkat frekuensi ke perkiraan level CEFR (A1-B2) dibuat oleh Literary Language Lab dan hanya berupa estimasi untuk belajar,

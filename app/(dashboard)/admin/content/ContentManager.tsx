@@ -25,11 +25,13 @@ export default function ContentManager({
   texts,
   topics,
   coreCount,
+  coreWithDefinition,
   schemaReady,
 }: {
   texts: EditableText[];
   topics: GrammarTopicRow[];
   coreCount: number | null;
+  coreWithDefinition: number | null;
   schemaReady: boolean;
 }) {
   const router = useRouter();
@@ -258,8 +260,18 @@ export default function ContentManager({
         </div>
       </section>
 
-      <section className="text-sm text-muted-foreground">
-        Kosakata inti: {coreCount === null ? "tabel belum ada (migrasi 0007)" : `${coreCount} kata`}.
+      <section className="text-sm text-muted-foreground space-y-1">
+        <p>
+          Kosakata inti: {coreCount === null ? "tabel belum ada (migrasi 0007)" : `${coreCount} kata`}
+          {coreCount !== null && coreWithDefinition !== null && ` (${coreWithDefinition} punya definisi)`}.
+        </p>
+        {coreCount !== null && coreCount > 0 && (
+          <p>
+            Tambah definisi bahasa Inggris dan bentuk kata (setelah migrasi <code>0015</code>):{" "}
+            <code>node scripts/enrich-ngsl.mjs --definitions defs.csv --forms teaching.csv --dry-run</code>, lalu ulangi tanpa <code>--dry-run</code>.
+            Petunjuk file ada di komentar skrip.
+          </p>
+        )}
       </section>
     </div>
   );

@@ -54,13 +54,16 @@ export default async function AdminContentPage({
   }
 
   // Topik grammar & jumlah kosakata inti
-  const [topicsRes, coreRes] = await Promise.all([
+  const [topicsRes, coreRes, coreDefRes] = await Promise.all([
     supabase.from("grammar_topics").select("slug, title, cefr_level, sort_order, summary_id").order("sort_order"),
     supabase.from("core_words").select("*", { count: "exact", head: true }),
+    // Kolom definition_en dari migrasi 0015: error jika belum ada → jumlah definisi tidak ditampilkan
+    supabase.from("core_words").select("*", { count: "exact", head: true }).not("definition_en", "is", null),
   ]);
   const topicsMissing = topicsRes.error?.message ?? null;
   const topics = (topicsRes.data || []) as GrammarTopicRow[];
   const coreCount = coreRes.error ? null : coreRes.count ?? 0;
+  const coreWithDefinition = coreDefRes.error ? null : coreDefRes.count ?? 0;
 
   const texts: EditableText[] = rows.map((t) => ({
     id: t.id,
@@ -114,7 +117,7 @@ export default async function AdminContentPage({
         <Link href={filterHref({ status: "published" })} className={chip(status === "published")}>Terbit</Link>
       </div>
 
-      <ContentManager texts={texts} topics={topics} coreCount={coreCount} schemaReady={!textsMissing && !topicsMissing} />
+      <ContentManager texts={texts} topics={topics} coreCount={coreCount} coreWithDefinition={coreWithDefinition} schemaReady={!textsMissing && !topicsMissing} />
       {rows.length >= PAGE_LIMIT && (
         <p className="text-xs text-muted-foreground mt-4">Menampilkan {PAGE_LIMIT} teks terbaru. Gunakan filter untuk mempersempit.</p>
       )}

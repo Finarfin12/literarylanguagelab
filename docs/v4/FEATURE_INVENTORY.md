@@ -78,6 +78,9 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 |---|---|
 | Vocabulary Bank: daftar, cari, filter level, catatan personal, Flashcard Mode | `app/(dashboard)/vocabulary/page.tsx`, `components/vocabulary/VocabularyBankClient.tsx`, `FlashcardMode.tsx` |
 | Kosakata Inti (NGSL): per level, status, "Tambah 10 kata ke Review" | `app/(dashboard)/vocabulary/core/` |
+| Kosakata Inti: **definisi bahasa Inggris** di bawah kata (14g; tanpa definisi → tampilan lama), definisi ikut tersimpan saat kata ditambahkan ke Review | `app/(dashboard)/vocabulary/core/page.tsx`, `actions.ts`, migrasi `0015` |
+| Kosakata Inti: **pengenalan bentuk kata** (`searched` dihitung sebagai `search` pada status & "Tambah 10 kata") (14g) | `lib/core-words.ts`, `vocabulary/core/` |
+| Skrip `scripts/enrich-ngsl.mjs` (UPDATE `definition_en`/`forms`, `--dry-run`, `--core-from`) dan petunjuk di Admin → Konten (14g) | `scripts/enrich-ngsl.mjs`, `scripts/lib/ngsl-enrich.mjs`, `app/(dashboard)/admin/content/` |
 | Review SRS (SM-2): kartu, konteks, **Lihat di teks**, skor 0–3 | `app/(dashboard)/review/`, `app/(dashboard)/vocabulary/review/`, `components/vocabulary/ReviewClient.tsx` |
 | Flashcard SRS (English Lab): mode **guess-word, guess-meaning, dictation, collocation** | `app/(dashboard)/english-lab/flashcard/page.tsx` |
 | Idiom Library | `app/(dashboard)/idioms/page.tsx` |

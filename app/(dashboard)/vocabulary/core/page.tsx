@@ -4,12 +4,27 @@ import { createClient } from "@/utils/supabase/server";
 import AnimatedPage from "@/components/AnimatedPage";
 import { Card, EmptyState } from "@/components/ui/primitives";
 import { isCefrLevel } from "@/lib/cefr";
+import { coreStatus, wordCandidates, type CoreStatus } from "@/lib/core-words";
 import AddWordsButton from "./AddWordsButton";
 
 const PAGE_SIZE = 50;
 const LEVELS = ["A1", "A2", "B1", "B2"] as const;
 
-type WordStatus = "belum" | "sedang" | "dikuasai";
+type WordStatus = CoreStatus;
+
+// Kolom definition_en/forms dari migrasi 0015 (opsional sampai migrasi dijalankan)
+type CoreRow = {
+  word: string;
+  band: number;
+  cefr_estimate: string;
+  pos: string | null;
+  example: string | null;
+  definition_en?: string | null;
+  forms?: string[] | null;
+};
+
+const BASE_COLUMNS = "word, band, cefr_estimate, pos, example";
+const ENRICHED_COLUMNS = `${BASE_COLUMNS}, definition_en, forms`;
 const STATUS_LABEL: Record<WordStatus, { text: string; cls: string }> = {
   belum: { text: "Belum", cls: "bg-muted text-muted-foreground" },
   sedang: { text: "Sedang dipelajari", cls: "bg-amber-500/10 text-amber-600 dark:text-amber-400" },
@@ -31,29 +46,37 @@ export default async function CoreWordsPage({ searchParams }: { searchParams: Pr
   const level = requested ?? (userLevel && (LEVELS as readonly string[]).includes(userLevel) ? userLevel : "A1");
   const page = Math.max(1, Number(params.page) || 1);
 
-  let q = supabase
-    .from("core_words")
-    .select("word, band, cefr_estimate, pos, example", { count: "exact" })
-    .order("band", { ascending: true })
-    .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
-  if (level !== "all") q = q.eq("cefr_estimate", level);
-  const { data: words, count, error } = await q;
+  const fetchWords = (columns: string) => {
+    let q = supabase
+      .from("core_words")
+      .select(columns, { count: "exact" })
+      .order("band", { ascending: true })
+      .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
+    if (level !== "all") q = q.eq("cefr_estimate", level);
+    return q;
+  };
+  let res = await fetchWords(ENRICHED_COLUMNS);
+  // Migrasi 0015 belum dijalankan: ambil ulang tanpa kolom baru (tampilan lama)
+  if (res.error && (res.error.code === "42703" || res.error.code === "PGRST204")) res = await fetchWords(BASE_COLUMNS);
+  const { count, error } = res;
+  const words = (res.data ?? null) as unknown as CoreRow[] | null;
 
   const notReady = error && (error.code === "42P01" || error.code === "PGRST205");
   const total = count ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-  // Status per kata dari Vocabulary Bank pengguna
+  // Status per kata dari Vocabulary Bank pengguna; kata simpanan dalam bentuk lain ("searched") dihitung untuk "search"
   const status = new Map<string, WordStatus>();
   if (user && words && words.length > 0) {
+    const candidates = Array.from(new Set(words.flatMap((w) => wordCandidates(w))));
     const { data: owned } = await supabase
       .from("vocabulary")
       .select("word, mastery_level")
       .eq("user_id", user.id)
-      .in("word", words.map((w) => w.word));
-    for (const o of owned || []) {
-      status.set(String(o.word).toLowerCase(), (o.mastery_level ?? 0) >= 3 ? "dikuasai" : "sedang");
-    }
+      .in("word", candidates);
+    const ownedLevels = new Map<string, number>();
+    for (const o of owned || []) ownedLevels.set(String(o.word).toLowerCase(), o.mastery_level ?? 0);
+    for (const w of words) status.set(String(w.word).toLowerCase(), coreStatus(w, ownedLevels));
   }
 
   const href = (l: string, p = 1) => `/vocabulary/core?level=${l}${p > 1 ? `&page=${p}` : ""}`;
@@ -104,6 +127,7 @@ export default async function CoreWordsPage({ searchParams }: { searchParams: Pr
                     <p className="font-bold text-foreground">
                       {w.word} {w.pos && <span className="text-xs font-normal text-muted-foreground">({w.pos})</span>}
                     </p>
+                    {w.definition_en && <p className="text-sm text-foreground/80">{w.definition_en}</p>}
                     {w.example && <p className="text-sm text-muted-foreground italic">{w.example}</p>}
                   </div>
                   <span className="text-[11px] font-bold px-2 py-1 rounded-full bg-muted shrink-0 hidden sm:inline">{w.cefr_estimate}</span>
