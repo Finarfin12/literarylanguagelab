@@ -161,6 +161,16 @@ Dokumen: `docs/v4/PRD.md`, `DESIGN.md` (acuan visual tunggal), `IMPLEMENTATION_P
 - Tulis **laporan akhir fase** dengan format di `docs/v4/HANDOFF.md` ("Format laporan akhir sesi") dan perbarui tabel status di `docs/SESSION_HANDOFF.md`.
 - Jika satu perintah menghasilkan output aneh (path Windows, backslash), ulangi dengan perintah yang lebih sederhana dan periksa hasilnya dengan `git diff --stat`.
 
+## 10b. Khusus sesi Claude Code
+
+- `CLAUDE.md` di root dimuat otomatis dan sudah menunjuk ke dokumen ini. Memori proyek Claude untuk folder ini ada di `C:\Users\iihid\.claude\projects\C--dev-literarylanguagelab\memory\` (status ringkas dan preferensi).
+- Mulai sesi di folder `C:\dev\literarylanguagelab` (bukan di scratch workspace), supaya `CLAUDE.md` dan memori terbaca.
+- Preferensi pemilik: pekerjaan coding cukup dengan **Sonnet**; model yang lebih kuat untuk perencanaan, PRD, dan dokumen handoff.
+- Pakai alat bawaan untuk file (Read/Edit/Write/Grep/Glob), bukan `cat`/`sed`/heredoc, terutama untuk file berisi backslash atau templat string. Gunakan daftar tugas (task list) untuk fase yang punya banyak langkah.
+- Uji visual: jalankan `next dev -p <port>` dengan env palsu, lalu pakai browser pane bawaan (navigate, find, screenshot, `javascript_tool`) pada halaman uji sementara di `app/zz-xxx/`; hapus sebelum commit.
+- Tidak perlu membuat Artifact untuk pekerjaan repo ini. Jangan membuka layanan yang butuh otorisasi.
+- Setelah selesai satu fase: commit lokal, tulis laporan akhir (format di `docs/v4/HANDOFF.md`), lalu **tanya pemilik sebelum push** (pemilik biasanya menjawab "Push").
+
 ## 11. Prompt pembuka sesi berikutnya (tempel apa adanya, lalu tambahkan nama fase)
 
 ```
