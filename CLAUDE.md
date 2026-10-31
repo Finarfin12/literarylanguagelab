@@ -2,7 +2,8 @@
 
 Dibaca otomatis oleh Claude Code di setiap sesi. Detail lengkap: `docs/v4/HANDOFF.md` (aturan v4) dan `docs/v3/HANDOFF.md` (pola, jebakan, verifikasi).
 
-- **Redesign v4 hanya mengubah tampilan: jangan menghapus, menggabung, atau mengurangi fitur apa pun.** Daftar periksa wajib: `docs/v4/FEATURE_INVENTORY.md`. Ragu → tanya pemilik.
+- **Redesign v4 hanya mengubah tampilan: jangan menghapus, menggabung, atau mengurangi fitur apa pun.** Daftar periksa wajib: `docs/v4/FEATURE_INVENTORY.md`. Acuan visual tunggal: `docs/v4/DESIGN.md`. Ragu → tanya pemilik.
+- Huruf serif **Michelangelus hanya lewat `local()`** (lisensi Microsoft 365, tanpa izin webfont): jangan pernah meng-commit atau meng-host file fontnya.
 
 - Stack: Next.js 16.2 (App Router, breaking changes: `proxy.ts` bukan `middleware.ts`; `params`/`searchParams` adalah Promise), React 19, Supabase, Tailwind v4, TypeScript. Panduan Next.js: `node_modules/next/dist/docs/`.
 - Status & rencana: `docs/SESSION_HANDOFF.md` (status semua fase), `docs/v3/` (Fase 8–11, selesai), `docs/v4/` (Fase 12–17: redesign, susunan fitur, Kursus Dasar). Kerjakan hanya fase yang diminta.

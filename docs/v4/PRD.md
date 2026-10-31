@@ -5,7 +5,7 @@
 | **Status** | Draft untuk ditinjau |
 | **Tanggal** | 31 Oktober 2026 |
 | **Pemilik** | finarfin112 |
-| **Dokumen terkait** | [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md), [HANDOFF.md](HANDOFF.md), [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) (daftar periksa wajib), PRD v3: [../v3/PRD.md](../v3/PRD.md) |
+| **Dokumen terkait** | [DESIGN.md](DESIGN.md) (**sistem desain — acuan visual tunggal**), [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md), [HANDOFF.md](HANDOFF.md), [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) (daftar periksa wajib), PRD v3: [../v3/PRD.md](../v3/PRD.md) |
 | **Mockup** | Kanvas desain pribadi pemilik: https://claude.ai/artifact/LSVnAAWiTKUCJKhjUnd6Zx (Beranda desktop, Beranda HP, Membaca + Word Lookup HP, Tongkat Ajaib HP) |
 | **Prasyarat** | v3 Fase 8–11 selesai di kode (commit `5ff2160`). Migrasi `0006`–`0010` dijalankan pemilik. |
 
@@ -57,11 +57,13 @@ v3 menambah onboarding, jalur pemula, level per keterampilan, dan jalur penerjem
 
 ### 5.1 Arah visual
 
+Ringkasan; spesifikasi lengkap (token, skala huruf, komponen, pola halaman) ada di **[DESIGN.md](DESIGN.md)**, yang berlaku bila ada perbedaan.
+
 | Aspek | Keputusan |
 |---|---|
 | Kesan | Perpustakaan akademis yang ramah: tenang, lega, rapi; judul bagian seperti bab buku |
 | Warna | **Tetap palet sekarang.** Hijau brand dipertahankan; untuk teks berwarna & tombol utama di tema terang dipakai turunan lebih gelap (mis. `#22804F` / `#1E6B45`) agar kontras ≥ 4.5:1. Latar terang menjadi krem kertas hangat (mis. `#F6F2E9`, kartu `#FFFFFF`, garis `#E2DBCB`). Tema gelap: tinta gelap hangat, bukan biru keabu-abuan. Nilai final ditetapkan di Fase 12 dan dicek kontrasnya. |
-| Huruf | **Newsreader** (serif, judul & teks bacaan) + **Public Sans** (UI, tombol, label). Mengganti Inter + Merriweather lewat `next/font` dengan variabel CSS yang sama (`--font-sans`, `--font-serif`). Pemilik boleh mengganti pilihan ini di Fase 12. |
+| Huruf | Serif: **Michelangelus** (pilihan pemilik) — dipakai **hanya lewat `local()`** karena lisensinya untuk Microsoft 365 dan belum ada izin webfont; cadangan **Alegreya** (OFL). Sans: **Source Sans 3** (OFL, humanis, serasi dengan Michelangelus). Detail & aturan lisensi: DESIGN.md §2. |
 | Bentuk | Kartu putih bergaris tipis, bayangan minimal, radius konsisten; label kecil huruf kapital berjarak (gaya katalog); ikon garis tipis |
 | Dihapus dari gaya | Glow, gradasi latar, `backdrop-blur` dekoratif, efek hover "melompat", warna neon per kategori |
 | Gerak | Halus dan singkat; tetap menghormati `prefers-reduced-motion` & preferensi `enable_animations` |
@@ -167,7 +169,7 @@ Detail perbaikan: IMPLEMENTATION_PLAN Fase 14f.
 | # | Pertanyaan | Asumsi default |
 |---|---|---|
 | Q1 | Bottom nav HP baru (Beranda · Baca · Belajar · Terjemah · Menu) atau lama (Beranda · Baca · Kosakata · Alat · Menu)? | Baru, dengan Kosakata & Alat tetap ≤ 2 ketukan |
-| Q2 | Pasangan huruf final? | Newsreader + Public Sans (bisa diganti di Fase 12) |
+| Q2 | ~~Pasangan huruf final?~~ | **Diputuskan:** Michelangelus (`local()`) + cadangan Alegreya, dengan Source Sans 3 (DESIGN.md §2) |
 | Q3 | Daftar & urutan 12 unit Kursus Dasar? | Seperti §6.2; pemilik boleh mengubah |
 | Q4 | Unit dikunci berurutan atau bebas? | Bebas, hanya disarankan |
 | Q5 | Tema gelap: hangat (cokelat tinta) atau tetap seperti sekarang? | Hangat, sejalan dengan kesan perpustakaan |

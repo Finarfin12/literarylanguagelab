@@ -15,9 +15,10 @@ Baca dulu, berurutan:
 1. docs/v4/HANDOFF.md (aturan v4)
 2. docs/v3/HANDOFF.md bagian "Aturan kerja", "Pola yang WAJIB dipakai", "Jebakan", "Resep verifikasi"
 3. docs/v4/PRD.md
-4. docs/v4/FEATURE_INVENTORY.md (daftar periksa wajib)
-5. docs/v4/IMPLEMENTATION_PLAN.md bagian fase yang saya sebut
-6. docs/SESSION_HANDOFF.md (status & migrasi)
+4. docs/v4/DESIGN.md (sistem desain: acuan visual tunggal — warna, huruf, komponen, pola halaman)
+5. docs/v4/FEATURE_INVENTORY.md (daftar periksa wajib)
+6. docs/v4/IMPLEMENTATION_PLAN.md bagian fase yang saya sebut
+7. docs/SESSION_HANDOFF.md (status & migrasi)
 
 ATURAN UTAMA: redesign hanya mengubah tampilan. Jangan menghapus, menggabung, atau mengurangi fitur apa pun.
 Kerjakan HANYA fase yang saya sebut.
@@ -27,7 +28,7 @@ Kerjakan HANYA fase yang saya sebut.
 
 ## Prompt per fase
 
-**Fase 12** — `Kerjakan Fase 12 (Fondasi desain v4). Sebelum mengubah token, tampilkan tabel warna usulan (terang & gelap) dengan rasio kontrasnya dan tunggu persetujuan saya.`
+**Fase 12** — `Kerjakan Fase 12 (Fondasi desain v4) sesuai docs/v4/DESIGN.md. Warna & huruf sudah diputuskan di DESIGN.md; jika ingin menyimpang, tanya dulu. Michelangelus HANYA lewat local() — jangan menaruh file fontnya di repo.`
 
 **Fase 13** — `Kerjakan Fase 13 (Navigasi & tiga Ruang). Mulai dari tests/menu-coverage.test.mts. Tanyakan Q1 (bottom nav) sebelum mengubah MobileBottomNav.`
 
@@ -56,7 +57,7 @@ Kerjakan HANYA fase yang saya sebut.
 3. **Daftar periksa per fase**: salin baris [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) yang relevan ke laporan, centang setelah diuji, sebut cara mengujinya. Fitur baru yang kamu buat → tambahkan barisnya ke inventaris di commit yang sama.
 4. **Ubah kelas, bukan struktur.** Redesign utamanya mengganti kelas Tailwind & markup pembungkus. Jika struktur komponen harus berubah, pindahkan handler & state apa adanya.
 5. **Semua tema**: setiap halaman diuji terang & gelap; reader juga sepia & kontras tinggi.
-6. **Mockup** ada di kanvas pribadi pemilik (link di PRD). Jika tool Artifact tersedia di sesimu dan akunmu sama, kamu boleh membacanya (`read`); jika tidak, ikuti deskripsi di PRD §5. Mockup adalah arah, bukan spesifikasi piksel.
+6. **DESIGN.md adalah acuan visual tunggal.** Mockup ada di kanvas pribadi pemilik (link di PRD). Jika tool Artifact tersedia di sesimu dan akunmu sama, kamu boleh membacanya (`read`); jika tidak, ikuti deskripsi di PRD §5. Mockup adalah arah, bukan spesifikasi piksel.
 
 ---
 
@@ -75,7 +76,8 @@ Contoh yang sudah berhasil dipakai di v2: halaman uji reader dengan buku sinteti
 
 ## Fakta kode baru untuk v4 (sudah dicek, commit `5ff2160`)
 
-- Font sekarang: `Inter` (`--font-sans`) dan `Merriweather` (`--font-serif`) di `app/layout.tsx` via `next/font/google`.
+- Font sekarang: `Inter` (`--font-sans`) dan `Merriweather` (`--font-serif`) di `app/layout.tsx` via `next/font/google`. Target: Source Sans 3 + Michelangelus (`local()`) → Alegreya (DESIGN.md §2).
+- **Michelangelus**: © Gusto IDS, lisensi Microsoft 365, tidak ada izin webfont (`fsType = 0`, "All rights reserved"). Jangan pernah meng-commit atau meng-host file fontnya.
 - `app/globals.css`: token di `:root` dan `.dark`; `body` punya `background-image` radial gradient (glow) — target pembersihan Fase 12.
 - Menu: `lib/menu-config.ts` dengan `MenuItem.advanced`, `PINNED_PATHS`, grup "Lainnya" diisi otomatis dari item `advanced`. Tone Detector sudah digabung ke `/tools/tone-analyzer` (mode Deteksi Nada) dengan redirect di `next.config.ts`.
 - **LingoWise AI (`/lingowise`) tidak terjangkau dari desktop** — hanya di grup Utama Menu HP. Perbaiki di Fase 13.

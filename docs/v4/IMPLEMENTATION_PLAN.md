@@ -2,7 +2,7 @@
 
 Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v3. (Fase 12 di v3 — mode kelas — dibatalkan dan tidak pernah dibuat; nomor 12 dipakai ulang di sini.)
 
-**Aturan umum** (lengkapnya di [HANDOFF.md](HANDOFF.md))
+**Aturan umum** (lengkapnya di [HANDOFF.md](HANDOFF.md); semua keputusan visual di [DESIGN.md](DESIGN.md))
 - **P1: hanya tampilan yang berubah.** Sebelum dan sesudah setiap fase redesign, buka [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) dan centang baris yang disentuh. Menghapus elemen UI yang memicu fitur = bug, walaupun fiturnya masih ada di kode.
 - Pola dari v2/v3 tetap wajib (`runAI`, guard admin, `logAdminAction`, `components/ui/*`, `ResponsivePanel`, fallback sebelum migrasi).
 - Migrasi baru mulai `0011` (`0011` = perbaikan cascade profil di 14f; Fase 15–17 memakai `0012`–`0014`). Ditulis, tidak dijalankan.
@@ -26,13 +26,16 @@ Fase 15 menyentuh file yang berbeda dari 13–14 dan bisa dikerjakan paralel set
 ## Fase 12 — Fondasi desain v4
 
 **12.1 Token** (`app/globals.css`)
-- Ubah **nilai** token yang ada (`--background`, `--foreground`, `--card`, `--border`, `--muted`, `--muted-foreground`, `--brand`, `--brand-hover`, `--danger`) untuk `:root` dan `.dark` sesuai PRD §5.1. **Jangan menghapus atau mengganti nama token** — ratusan kelas Tailwind memakainya.
+- Ubah **nilai** token yang ada (`--background`, `--foreground`, `--card`, `--border`, `--muted`, `--muted-foreground`, `--brand`, `--brand-hover`, `--danger`) untuk `:root` dan `.dark` sesuai **DESIGN.md §3** (nilai & rasio kontras sudah dihitung di sana). **Jangan menghapus atau mengganti nama token** — ratusan kelas Tailwind memakainya.
 - Tambah token baru seperlunya: `--paper` (latar baca), `--ink` (teks baca), `--brand-ink` (hijau gelap untuk teks/tombol di tema terang), `--rule` (garis tipis).
 - Hapus dari `body` di `globals.css`: `background-image` radial gradient (glow). Hapus `selection:text-white` bila kontrasnya buruk di latar terang.
 - Hitung kontras setiap pasangan teks/latar utama di kedua tema dengan skrip kecil (`tests/contrast.test.mts`, rumus WCAG relative luminance) — semua ≥ 4.5:1 untuk teks normal.
 
-**12.2 Huruf** (`app/layout.tsx`)
-- Ganti `Inter` → `Public_Sans` dan `Merriweather` → `Newsreader` dari `next/font/google`, **dengan nama variabel yang sama** (`--font-sans`, `--font-serif`). Cek `prose-literature` dan pilihan font reader (`serif`/`sans-serif`/`dyslexic`) tetap bekerja.
+**12.2 Huruf** (`app/layout.tsx`, `app/globals.css`) — ikuti DESIGN.md §2
+- `next/font/google`: ganti `Inter` → `Source_Sans_3` dengan variabel **`--font-sans`** (nama sama); ganti `Merriweather` → `Alegreya` dengan variabel **`--font-alegreya`**.
+- **Michelangelus hanya lewat `local()`**: tambahkan 4 `@font-face` (`Michelangelus Local`, 400/700 × normal/italic, `src: local("Michelangelus"), local("Michelangelus Regular"), …`) di `globals.css`, lalu `--font-serif: "Michelangelus Local", var(--font-alegreya), Georgia, serif;`. **Jangan** menaruh file Michelangelus di repo/`public/`, jangan `next/font/local`, jangan konversi WOFF (lisensi; DESIGN.md §2.2).
+- Cek `prose-literature`, judul serif, dan pilihan font reader (`serif`/`sans-serif`/`dyslexic`) tetap bekerja; uji visual dua kali: di perangkat **dengan** Michelangelus terpasang dan **tanpa** (hasilnya Alegreya).
+- Tambahkan atribusi huruf di halaman Bantuan (DESIGN.md §2.2 butir 4).
 
 **12.3 Komponen dasar** (`components/ui/primitives.tsx`, `Tabs.tsx`, `ResponsivePanel.tsx`)
 - Restyle `Button`, `Card`, `CardTitle`, `Input`, `Badge`, `EmptyState`, `Skeleton`, `Tabs` ke gaya v4 (kartu bergaris tipis, label kapital kecil, tombol utama `--brand-ink`). API/props **tidak berubah**.
