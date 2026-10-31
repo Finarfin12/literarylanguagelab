@@ -13,6 +13,8 @@
 | 6 Tab admin lainnya | Selesai di kode. Migrasi 0004 **belum dijalankan** | lihat `git log` |
 | 7 Fitur belajar + reader ringan | Selesai di kode. Migrasi 0005 **belum dijalankan**; 0009 hanya ditulis | lihat `git log` |
 
+**Berikutnya: v3** — PRD, implementation plan (Fase 8–12), dan handoff untuk sesi coding (Claude Sonnet 5) ada di [`docs/v3/`](v3/). Mulai sesi baru dengan "Prompt pembuka" di [`docs/v3/HANDOFF.md`](v3/HANDOFF.md). Prasyarat: migrasi `0000`–`0005` sudah dijalankan.
+
 **Keputusan pemilik:** Q1 = forum, clubs, messages, jejaring pembaca **tetap ada** (tanpa poin). Q2 = Latihan Harian dan Weekly (Writing) Challenge **dihapus** (berbeda dari asumsi default PRD). Q3–Q5 memakai default.
 
 **Yang harus dilakukan pemilik sebelum deploy:**
