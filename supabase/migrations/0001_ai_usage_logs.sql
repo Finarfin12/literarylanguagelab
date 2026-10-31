@@ -44,11 +44,17 @@ RETURNS INTEGER AS $$
 DECLARE
   usage_count INTEGER;
 BEGIN
+  -- Pengguna hanya boleh menghitung pemakaiannya sendiri; admin boleh semua.
+  IF target_user_id IS DISTINCT FROM auth.uid()
+     AND NOT EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin') THEN
+    RAISE EXCEPTION 'Akses ditolak: tidak dapat membaca pemakaian pengguna lain.';
+  END IF;
+
   SELECT COUNT(*)::INTEGER INTO usage_count
   FROM ai_usage_logs
   WHERE user_id = target_user_id
     AND created_at >= (NOW() - interval_text::INTERVAL);
   RETURN usage_count;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
