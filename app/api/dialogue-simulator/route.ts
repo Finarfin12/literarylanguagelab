@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { DIALOGUE_SCENARIOS } from "@/lib/dialogue-scenarios";
 import { createClient } from "@/utils/supabase/server";
 
@@ -19,8 +19,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Skenario tidak ditemukan." }, { status: 400 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
     const chatMessages = [
       { role: "system" as const, content: scenario.systemPrompt },
@@ -30,14 +28,13 @@ export async function POST(req: Request) {
       })),
     ];
 
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("dialogue-simulator", {
       messages: chatMessages,
-      model: config.model,
       temperature: 0.7,
       max_tokens: 300,
-    });
+    }, { userId: user?.id });
 
-    const reply = completion.choices[0]?.message?.content || "I'm sorry, could you repeat that?";
+    const reply = completion.content || "I'm sorry, could you repeat that?";
 
     return NextResponse.json({ reply });
   } catch (error: any) {

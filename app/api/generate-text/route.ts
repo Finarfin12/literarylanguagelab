@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -22,9 +22,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("generate-text", {
       messages: [
         {
           role: "system",
@@ -35,13 +33,10 @@ export async function POST(req: Request) {
           content: prompt
         }
       ],
-      model: config.model,
-      temperature: config.temperature,
-      max_tokens: config.max_tokens,
       response_format: { type: "json_object" }
-    });
+    }, { userId: user?.id });
 
-    const resultStr = completion.choices[0]?.message?.content || "{}";
+    const resultStr = completion.content || "{}";
     const result = JSON.parse(resultStr);
 
     return NextResponse.json(result);

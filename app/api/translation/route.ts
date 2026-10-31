@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -66,19 +66,14 @@ export async function POST(req: Request) {
 
     const prompt = `Original Text:\n"${originalText}"\n\nStudent Translation:\n"${translatedText}"`;
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("translation", {
       messages: [
         { role: "system", content: withAITextOutputRules(MODES[mode]) },
         { role: "user", content: prompt }
       ],
-      model: config.model,
-      temperature: config.temperature,
-      max_tokens: config.max_tokens,
-    });
+    }, { userId: user?.id });
 
-    const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
+    const result = formatAITextResponse(completion.content || "");
     return NextResponse.json({ result });
   } catch (error: unknown) {
     console.error("Translation Eval Error:", error);

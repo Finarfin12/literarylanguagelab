@@ -1,5 +1,6 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getAIServiceErrorMessage } from "@/lib/ai-config";
+import { getAIServiceErrorMessage } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -44,16 +45,11 @@ Keep your answers focused, academic, and engaging. Use Markdown formatting.`;
       }))
     ];
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("reading-companion", {
       messages: formattedMessages,
-      model: config.model,
-      temperature: config.temperature,
-      max_tokens: config.max_tokens,
-    });
+    }, { userId: user?.id });
 
-    const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
+    const result = formatAITextResponse(completion.content || "");
     return NextResponse.json({ result });
   } catch (error: unknown) {
     console.error("Companion Error:", error);

@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -80,18 +80,13 @@ export async function POST(req: Request) {
       console.warn("Falling back to Groq for translation:", libreError);
       // Fallback to Groq
       try {
-        const config = await getAIConfig("lookup");
-        const groq = await getAIClient("lookup");
-        const groqCompletion = await groq.chat.completions.create({
+        const groqCompletion = await runAI("lexicon-translation", {
           messages: [
             { role: "system", content: "You are a professional English to Indonesian translator. Translate the given English word/phrase into Indonesian. Provide only the direct translation, nothing else." },
             { role: "user", content: trimmedWord }
           ],
-          model: config.model,
-          temperature: config.temperature,
-      max_tokens: config.max_tokens,
-        });
-        translation = groqCompletion.choices[0]?.message?.content?.trim() || "";
+        }, { userId: user?.id });
+        translation = groqCompletion.content?.trim() || "";
       } catch (groqError) {
         console.error("Groq translation failed:", groqError);
       }

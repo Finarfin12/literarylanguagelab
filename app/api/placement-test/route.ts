@@ -1,4 +1,4 @@
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { runAI } from "@/lib/ai/run";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
@@ -101,19 +101,16 @@ export async function POST(req: Request) {
       const prompt = SECTION_PROMPTS[section];
       if (!prompt) return NextResponse.json({ error: "Invalid section" }, { status: 400 });
 
-      const config = await getAIConfig("tools");
-      const groq = await getAIClient("tools");
-      const response = await groq.chat.completions.create({
-        model: config.model,
+      const response = await runAI("placement-test", {
         messages: [
           { role: "system", content: prompt },
           { role: "user", content: `Generate a question for CEFR level: ${currentEstimate}` },
         ],
         temperature: 0.7,
         max_tokens: 1000,
-      });
+      }, { userId: user?.id });
 
-      const raw = response.choices[0]?.message?.content || '{}';
+      const raw = response.content || '{}';
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
       if (!jsonMatch) return NextResponse.json({ error: "AI response parse error" }, { status: 500 });
 

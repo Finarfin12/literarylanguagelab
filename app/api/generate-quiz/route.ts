@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -44,23 +44,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing context text" }, { status: 400 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
     const prompt = `Book: ${title} by ${author}\n\nRecent Text Context:\n"${contextText}"`;
 
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("generate-quiz", {
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: prompt }
       ],
-      model: config.model,
       temperature: 0.7,
       max_tokens: 500,
       response_format: { type: "json_object" }
-    });
+    }, { userId: user?.id });
 
-    const resultStr = completion.choices[0]?.message?.content || "{}";
+    const resultStr = completion.content || "{}";
     const result = JSON.parse(resultStr);
 
     return NextResponse.json(result);

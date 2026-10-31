@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -52,16 +52,11 @@ You MUST output ONLY a valid JSON object matching this exact structure:
   ]
 }`;
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("story-quiz", {
       messages: [{ role: "system", content: systemPrompt }],
-      model: config.model,
-      temperature: config.temperature,
-      max_tokens: config.max_tokens,
-    });
+    }, { userId: user?.id });
 
-    const result = completion.choices[0]?.message?.content || "";
+    const result = completion.content || "";
     const start = result.indexOf("{");
     const end = result.lastIndexOf("}");
     if (start === -1 || end === -1) throw new Error("Invalid JSON generated");

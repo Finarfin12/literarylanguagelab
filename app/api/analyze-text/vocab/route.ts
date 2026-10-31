@@ -1,6 +1,6 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 
 export async function POST(req: Request) {
   try {
@@ -26,8 +26,6 @@ export async function POST(req: Request) {
     // Extract from first 10,000 chars to avoid massive context
     const textSample = textData.content.substring(0, 10000);
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
     const prompt = `You are an expert English language teacher. Analyze the following literary text and extract 8 to 12 advanced or interesting vocabulary words that a B1-C1 level English learner should know before reading the text.
 For each word, provide:
@@ -47,17 +45,16 @@ Text:
 ${textSample}
 """`;
 
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("vocab-analysis", {
       messages: [
         { role: "system", content: "You are a helpful JSON-only API. Only output valid JSON." },
         { role: "user", content: prompt }
       ],
-      model: config.model,
       temperature: 0.3,
       max_tokens: 1500,
-    });
+    }, { userId: user?.id });
 
-    const raw = completion.choices[0]?.message?.content || "{}";
+    const raw = completion.content || "{}";
     let parsed;
     try {
       const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();

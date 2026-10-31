@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -37,16 +37,13 @@ Your tone, diction, and syntactic structure MUST be a perfect, immersive imitati
       }))
     ];
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("alter-ego", {
       messages: formattedMessages,
-      model: config.model,
       temperature: 0.8,
       max_tokens: 1000,
-    });
+    }, { userId: user?.id });
 
-    const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
+    const result = formatAITextResponse(completion.content || "");
     return NextResponse.json({ result });
   } catch (error: unknown) {
     console.error("Alter Ego Error:", error);

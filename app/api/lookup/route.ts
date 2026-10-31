@@ -1,5 +1,6 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { getRateLimit } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 import { createClient } from "@/utils/supabase/server";const MODES: Record<string, string> = {
   "dictionary": "You are a literary dictionary. Provide the definition of the word/phrase, its grammatical register (e.g., formal, archaic, colloquial), and a brief explanation in Indonesian. Respond in Markdown format. Be concise.",
@@ -47,8 +48,6 @@ export async function POST(req: Request) {
       prompt += `\nFrom: ${title} by ${author}`;
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
     // Dynamic prompt adjustments based on dictionaryPrefs
     const shouldFormatText = !RAW_OUTPUT_MODES.has(mode);
@@ -63,17 +62,14 @@ export async function POST(req: Request) {
       }
     }
 
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("lookup", {
       messages: [
         { role: "system", content: systemContent },
         { role: "user", content: prompt }
       ],
-      model: config.model,
-      temperature: config.temperature,
-      max_tokens: config.max_tokens,
-    });
+    }, { userId: user?.id });
 
-    const rawResult = completion.choices[0]?.message?.content || "";
+    const rawResult = completion.content || "";
     const result = shouldFormatText ? formatAITextResponse(rawResult) : rawResult;
 
     // LOG ACTIVITY

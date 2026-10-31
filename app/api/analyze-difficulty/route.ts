@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -20,9 +20,7 @@ export async function POST(req: Request) {
     if (!text) return NextResponse.json({ error: "Text is required" }, { status: 400 });
 
     const sample = text.slice(0, 3000);
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("analyze-difficulty", {
       messages: [
         {
           role: "system",
@@ -36,13 +34,10 @@ export async function POST(req: Request) {
         },
         { role: "user", content: sample },
       ],
-      model: config.model,
-      temperature: config.temperature,
-      max_tokens: config.max_tokens,
       response_format: { type: "json_object" },
-    });
+    }, { userId: user?.id });
 
-    return NextResponse.json(JSON.parse(completion.choices[0]?.message?.content || "{}"));
+    return NextResponse.json(JSON.parse(completion.content || "{}"));
   } catch (err: unknown) {
     console.error("Difficulty analysis error:", err);
     return NextResponse.json({ error: "Analysis failed" }, { status: 500 });

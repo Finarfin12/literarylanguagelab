@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -22,8 +22,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Category is required" }, { status: 400 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
     const prompt = `You are a strict but encouraging Grammar Tutor. 
 The user is struggling with the grammar category: "${category}". 
@@ -50,17 +48,16 @@ JSON format:
 }
 `;
 
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("grammar-mini-lesson", {
       messages: [
         { role: "system", content: "You are a helpful JSON-only API. Only output valid JSON." },
         { role: "user", content: prompt }
       ],
-      model: config.model,
       temperature: 0.3,
       max_tokens: 1500,
-    });
+    }, { userId: user?.id });
 
-    const raw = completion.choices[0]?.message?.content || "{}";
+    const raw = completion.content || "{}";
     let parsed;
     try {
       const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();

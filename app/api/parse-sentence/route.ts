@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { createClient } from "@/utils/supabase/server";
 
 const SYSTEM_PROMPT = `You are an expert linguistics parser. 
@@ -67,20 +67,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing sentence text" }, { status: 400 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
     
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("parse-sentence", {
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: `Parse this sentence:\n\n${text}` }
       ],
-      model: config.model,
       temperature: 0.1, // Low temperature for deterministic JSON structure
       response_format: { type: "json_object" },
-    });
+    }, { userId: user?.id });
 
-    const resultText = completion.choices[0]?.message?.content || "{}";
+    const resultText = completion.content || "{}";
     
     // Parse to ensure it's valid JSON
     let parsedResult;

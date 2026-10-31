@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -53,20 +53,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Level dan mode diperlukan." }, { status: 400 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("listening-test", {
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: `Generate a ${mode} listening test for CEFR level ${level}. Topic: ${getRandomTopic()}.` },
       ],
-      model: config.model,
       temperature: 0.8,
       max_tokens: 1500,
-    });
+    }, { userId: user?.id });
 
-    const raw = completion.choices[0]?.message?.content || "{}";
+    const raw = completion.content || "{}";
 
     let parsed;
     try {

@@ -1,5 +1,7 @@
 // lib/ai-config.ts
-// Helper functions untuk membaca AI model config dari database
+// Helper functions untuk membaca AI model config dari database.
+// Pemanggilan AI kini lewat runAI() di lib/ai/run.ts; getAIConfig tetap dipakai sebagai
+// konfigurasi cadangan saat registry provider (tabel ai_feature_routes) belum tersedia.
 
 import { createClient } from '@/utils/supabase/server';
 
@@ -155,27 +157,6 @@ export async function getRateLimit(
   } catch (error) {
     console.error('Error fetching rate limit:', error);
     return { requests_per_minute: 30, requests_per_hour: 500 };
-  }
-}
-
-/**
- * Get API client instance berdasarkan provider
- */
-export async function getAIClient(useCase?: 'lookup' | 'translation' | 'generation' | 'tools') {
-  const config = await getAIConfig(useCase);
-  
-  switch (config.provider) {
-    case 'groq': {
-      if (!process.env.GROQ_API_KEY) {
-        throw new Error('GROQ_API_KEY is not configured');
-      }
-
-      const Groq = (await import('groq-sdk')).default;
-      return new Groq({ apiKey: process.env.GROQ_API_KEY });
-    }
-    
-    default:
-      throw new Error(`Unsupported provider: ${config.provider}. Install the corresponding SDK package.`);
   }
 }
 

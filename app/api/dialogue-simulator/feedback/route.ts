@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { createClient } from "@/utils/supabase/server";
 
 const FEEDBACK_PROMPT = `You are an expert English language tutor analyzing a student's spoken English from a roleplay conversation. The student is an Indonesian learner.
@@ -45,22 +45,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Tidak ada pesan pengguna untuk dianalisis." }, { status: 400 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
     const userText = userMessages.map((m: string, i: number) => `Message ${i + 1}: "${m}"`).join("\n");
 
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("dialogue-feedback", {
       messages: [
         { role: "system", content: FEEDBACK_PROMPT },
         { role: "user", content: `Scenario: ${scenario}\n\nStudent's messages:\n${userText}` },
       ],
-      model: config.model,
       temperature: 0.3,
       max_tokens: 2000,
-    });
+    }, { userId: user?.id });
 
-    const raw = completion.choices[0]?.message?.content || "{}";
+    const raw = completion.content || "{}";
 
     let parsed;
     try {

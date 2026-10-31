@@ -1,6 +1,6 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 
 export async function POST(req: Request) {
   try {
@@ -34,20 +34,17 @@ Evaluate their response and return ONLY a raw JSON object (no markdown, no quote
   "grammar_issues": ["list", "of", "original", "wrong", "words", "used"]
 }`;
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("writing-evaluate", {
       messages: [
         { role: "system", content: "You are a helpful JSON-only API. Only output valid JSON." },
         { role: "user", content: systemPrompt }
       ],
-      model: config.model,
       temperature: 0.1,
       max_tokens: 1500,
-    });
+    }, { userId: user?.id });
 
-    const evaluationJSON = completion.choices[0]?.message?.content || "{}";
+    const evaluationJSON = completion.content || "{}";
 
     let scores;
     try {

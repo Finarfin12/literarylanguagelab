@@ -1,6 +1,6 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 
 export async function POST(req: Request) {
   try {
@@ -17,8 +17,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
     const prompt = `You are an expert English teacher. The user just read a chapter or a passage from "${title || "a book"}" by ${author || "unknown"}.
 Based on this text, generate exactly 3 listening comprehension questions. The questions should test their understanding of the plot, characters, or main ideas.
@@ -40,17 +38,16 @@ Text passage:
 ${text.substring(0, 15000)}
 """`;
 
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("listening-quiz", {
       messages: [
         { role: "system", content: "You are a helpful JSON-only API. Only output valid JSON." },
         { role: "user", content: prompt }
       ],
-      model: config.model,
       temperature: 0.3,
       max_tokens: 1500,
-    });
+    }, { userId: user?.id });
 
-    const raw = completion.choices[0]?.message?.content || "{}";
+    const raw = completion.content || "{}";
     let parsed;
     try {
       const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();

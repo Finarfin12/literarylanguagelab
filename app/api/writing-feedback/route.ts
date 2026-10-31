@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { createClient } from "@/utils/supabase/server";
 
 const SYSTEM_PROMPT = `You are an expert English academic writing tutor.
@@ -57,20 +57,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing text to analyze" }, { status: 400 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
     
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("writing-feedback", {
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: `Analyze this text:\n\n${text}` }
       ],
-      model: config.model,
       temperature: 0.2, // Low temperature for deterministic JSON structure
       response_format: { type: "json_object" },
-    });
+    }, { userId: user?.id });
 
-    const resultText = completion.choices[0]?.message?.content || "{}";
+    const resultText = completion.content || "{}";
     
     let parsedResult;
     try {

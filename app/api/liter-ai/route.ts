@@ -1,4 +1,5 @@
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { runAI } from "@/lib/ai/run";
+import { getRateLimit } from "@/lib/ai-config";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
@@ -129,20 +130,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Messages diperlukan" }, { status: 400 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
-    const response = await groq.chat.completions.create({
-      model: config.model,
+    const response = await runAI("liter-ai", {
       messages: [
         { role: "system", content: APP_DOCS },
         ...messages.slice(-10),
       ],
-      temperature: config.temperature,
-      max_tokens: config.max_tokens,
-    });
+    }, { userId: user?.id });
 
     return NextResponse.json({
-      reply: response.choices[0]?.message?.content || "Maaf, saya tidak bisa menjawab saat ini.",
+      reply: response.content || "Maaf, saya tidak bisa menjawab saat ini.",
     });
   } catch (error) {
     console.error("Liter AI error:", error);

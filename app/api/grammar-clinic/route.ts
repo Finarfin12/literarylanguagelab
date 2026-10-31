@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { createClient } from "@/utils/supabase/server";
 
 const SYSTEM_PROMPT = `You are an expert English grammar tutor for Indonesian learners. The user will give you a piece of English text (could be an email, chat message, essay, or any text). Your job is to:
@@ -44,20 +44,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Teks tidak boleh kosong." }, { status: 400 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("grammar-clinic", {
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: text }
       ],
-      model: config.model,
       temperature: 0.2,
       max_tokens: 2000,
-    });
+    }, { userId: user?.id });
 
-    const raw = completion.choices[0]?.message?.content || "{}";
+    const raw = completion.content || "{}";
 
     // Try to parse JSON — handle cases where AI wraps in ```json
     let parsed;

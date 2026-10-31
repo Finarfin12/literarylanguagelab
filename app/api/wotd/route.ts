@@ -1,6 +1,6 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 
 export async function GET() {
   try {
@@ -27,8 +27,6 @@ export async function GET() {
       context = vocabWords[randomIdx].context_sentence || vocabWords[randomIdx].definition;
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
     const prompt = `You are a lively English tutor. The "Word of the Day" for the user is "${wordToTeach}".
 Context/Definition: "${context}"
@@ -52,17 +50,16 @@ Format:
   }
 }`;
 
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("wotd", {
       messages: [
         { role: "system", content: "You are a helpful JSON-only API. Only output valid JSON." },
         { role: "user", content: prompt }
       ],
-      model: config.model,
       temperature: 0.3,
       max_tokens: 1000,
-    });
+    }, { userId: user?.id });
 
-    const raw = completion.choices[0]?.message?.content || "{}";
+    const raw = completion.content || "{}";
     let parsed;
     try {
       const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();

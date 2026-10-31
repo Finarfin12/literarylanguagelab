@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -44,9 +44,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("ocr", {
       messages: [
         {
           role: "user",
@@ -59,12 +57,9 @@ export async function POST(req: Request) {
           ],
         },
       ],
-      model: config.model,
-      temperature: config.temperature,
-      max_tokens: config.max_tokens,
-    });
+    }, { userId: user?.id });
 
-    const result = completion.choices[0]?.message?.content || "";
+    const result = completion.content || "";
     return NextResponse.json({ result });
   } catch (error: unknown) {
     console.error("OCR Error:", error);

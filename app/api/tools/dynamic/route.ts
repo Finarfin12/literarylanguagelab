@@ -1,5 +1,6 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { getRateLimit } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 import { TOOLS } from "@/lib/tools-config";
 import { createClient } from "@/utils/supabase/server";
@@ -27,20 +28,15 @@ export async function POST(req: Request) {
 
     const prompt = `Input Text:\n"${text}"\n\n${configValue ? `Target Configuration: ${configValue}` : ""}`;
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
     const shouldFormatText = tool.id !== "semantic-map";
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("dynamic-tools", {
       messages: [
         { role: "system", content: shouldFormatText ? withAITextOutputRules(tool.systemPrompt) : tool.systemPrompt },
         { role: "user", content: prompt }
       ],
-      model: config.model,
-      temperature: config.temperature,
-      max_tokens: config.max_tokens,
-    });
+    }, { userId: user?.id });
 
-    const rawResult = completion.choices[0]?.message?.content || "";
+    const rawResult = completion.content || "";
     const result = shouldFormatText ? formatAITextResponse(rawResult) : rawResult;
 
     // LOG ACTIVITY

@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -22,8 +22,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No text provided" }, { status: 400 });
     }
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
 
     const systemPrompt = `You are a linguist parsing English syntax. Analyze the provided text and classify each word (or short phrase) into one of four roles: "Subject", "Verb", "Object", or "Other".
 Return a JSON array of objects, where each object has "word" (the exact text segment) and "role" (one of the 4 categories). 
@@ -38,17 +36,16 @@ Example Output format:
 }
 IMPORTANT: Only output valid JSON without markdown wrapping or extra commentary.`;
 
-    const response = await groq.chat.completions.create({
+    const response = await runAI("highlight-syntax", {
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: text }
       ],
-      model: config.model,
       temperature: 0.1,
       response_format: { type: "json_object" },
-    });
+    }, { userId: user?.id });
 
-    const content = response.choices[0]?.message?.content?.trim() || "{}";
+    const content = response.content?.trim() || "{}";
     const data = JSON.parse(content);
 
     return NextResponse.json(data);

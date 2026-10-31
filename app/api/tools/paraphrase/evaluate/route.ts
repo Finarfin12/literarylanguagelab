@@ -1,5 +1,5 @@
+import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -35,16 +35,11 @@ Evaluate the student's paraphrase based on:
 Provide all your explanations and results in BOTH English and Indonesian using clear Markdown. 
 At the end of your feedback, provide a final score in this exact format: "SKOR: X/10".`;
 
-    const config = await getAIConfig("tools");
-    const groq = await getAIClient("tools");
-    const completion = await groq.chat.completions.create({
+    const completion = await runAI("paraphrase-evaluate", {
       messages: [{ role: "system", content: withAITextOutputRules(systemPrompt) }],
-      model: config.model,
-      temperature: config.temperature,
-      max_tokens: config.max_tokens,
-    });
+    }, { userId: user?.id });
 
-    const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
+    const result = formatAITextResponse(completion.content || "");
     return NextResponse.json({ result });
   } catch (error: unknown) {
     console.error("Paraphrase Evaluate Error:", error);

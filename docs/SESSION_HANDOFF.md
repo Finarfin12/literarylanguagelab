@@ -1,4 +1,31 @@
-# Session Handoff — Analisis & Perencanaan v2
+# Session Handoff — Literary Language Lab v2
+
+## Status terbaru (31 Oktober 2026, sore)
+
+| Fase | Status | Commit |
+|---|---|---|
+| 0 Keamanan | Selesai, di-merge ke `main` (PR #2). Migrasi 0000–0002 **belum dijalankan** di Supabase | `1ea3ceb`, `993914e` |
+| 1 Hapus gamifikasi | Selesai di `main` (lokal) | lihat `git log` |
+| 3 Registry provider AI + tab admin AI | Selesai di `main` (lokal). Migrasi 0003 **belum dijalankan** | lihat `git log` |
+| 2, 4, 5, 6, 7 | Belum dimulai | — |
+
+**Keputusan pemilik:** Q1 = forum, clubs, messages, jejaring pembaca **tetap ada** (tanpa poin). Q2 = Latihan Harian dan Weekly (Writing) Challenge **dihapus** (berbeda dari asumsi default PRD). Q3–Q5 memakai default.
+
+**Yang harus dilakukan pemilik sebelum deploy:**
+1. Jalankan berurutan di Supabase SQL Editor: `supabase/migrations/0000` … `0003`.
+2. Isi env `AI_SECRETS_KEY` (32 byte base64, mis. `openssl rand -base64 32`) dan pastikan `SUPABASE_SERVICE_ROLE_KEY` ada. Tanpa keduanya semua fitur AI tetap jalan lewat `GROQ_API_KEY`, tapi registry dari admin tidak dipakai.
+3. Uji Fase 3: tambah provider di `/admin/providers` → "Ambil dari provider" di `/admin/models` → pilih model untuk `translation` di `/admin/routing` → coba Translation Workshop.
+
+**Catatan teknis Fase 3:**
+- Semua route AI memanggil `runAI('<feature-key>', …)` dari `lib/ai/run.ts`. Daftar feature key ada di `lib/ai/features.ts` (harus sama dengan seed di migrasi 0003).
+- Route `ocr` sudah memakai routing `ocr` → `qwen/qwen3.8-27b` (vision). Sisa Fase 4: kompresi gambar di klien dan dukungan kamera.
+- `app/api/stt` dan `app/api/tts` masih memanggil Groq langsung (belum lewat registry).
+- `groq-sdk` sudah tidak dipakai oleh kode, tapi belum dihapus dari `package.json`.
+- Build gagal di folder dengan path sangat panjang di Windows (batas 260 karakter); taruh repo di path pendek.
+
+---
+
+## Arsip: analisis & perencanaan (30–31 Oktober 2026)
 
 Ringkasan sesi 30–31 Oktober 2026 untuk dilanjutkan di sesi lain (Claude, Gemini, atau agent lain).
 Belum ada kode aplikasi yang diubah di sesi ini. Yang dihasilkan hanya dokumen.
