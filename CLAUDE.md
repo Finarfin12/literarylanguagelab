@@ -1,9 +1,11 @@
 # Literary Language Lab — aturan sesi
 
-Dibaca otomatis oleh Claude Code di setiap sesi. Detail lengkap: `docs/v3/HANDOFF.md`.
+Dibaca otomatis oleh Claude Code di setiap sesi. Detail lengkap: `docs/v4/HANDOFF.md` (aturan v4) dan `docs/v3/HANDOFF.md` (pola, jebakan, verifikasi).
+
+- **Redesign v4 hanya mengubah tampilan: jangan menghapus, menggabung, atau mengurangi fitur apa pun.** Daftar periksa wajib: `docs/v4/FEATURE_INVENTORY.md`. Ragu → tanya pemilik.
 
 - Stack: Next.js 16.2 (App Router, breaking changes: `proxy.ts` bukan `middleware.ts`; `params`/`searchParams` adalah Promise), React 19, Supabase, Tailwind v4, TypeScript. Panduan Next.js: `node_modules/next/dist/docs/`.
-- Status & rencana: `docs/SESSION_HANDOFF.md` (v2) dan `docs/v3/` (PRD, IMPLEMENTATION_PLAN, HANDOFF). Kerjakan hanya fase yang diminta.
+- Status & rencana: `docs/SESSION_HANDOFF.md` (status semua fase), `docs/v3/` (Fase 8–11, selesai), `docs/v4/` (Fase 12–17: redesign, susunan fitur, Kursus Dasar). Kerjakan hanya fase yang diminta.
 - Git: branch `main`, satu commit per fase, identitas **finarfin112 <finarfinar112@gmail.com>** (Vercel memblokir penulis lain). Push selalu tanya dulu.
 - Database: tidak ada akses dan tidak ada `.env`. Migrasi ditulis di `supabase/migrations/NNNN_*.sql`, tidak dijalankan. Kode harus tetap jalan sebelum migrasi dijalankan. Migrasi `0000`–`0005` dan `0009` (hapus gamifikasi) sudah dijalankan pemilik: kolom `profiles.xp`/`streak`/`journey_level` dan tabel duels/journey/daily sudah tidak ada.
 - AI: selalu lewat `runAI()` (`lib/ai/run.ts`); feature key baru → `lib/ai/features.ts` + seed `ai_feature_routes` di migrasi.

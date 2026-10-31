@@ -17,7 +17,9 @@
 | 10 (v3) Level per keterampilan & Tes Naik Level | Selesai di kode (bukti keterampilan, `lib/levels.ts`, kartu level di profil, Tes Naik Level dinilai di server). Migrasi `0008_skill_levels.sql` **belum dijalankan**; Tes Naik Level butuh `SUPABASE_SERVICE_ROLE_KEY` | lihat `git log` |
 | 11 (v3) Jalur penerjemahan akademik | Selesai di kode (Ruang Kerja Segmen, anotasi teknik, rubrik Nababan, tahap penerjemah, ekspor CSV). Migrasi `0010_translation_academic.sql` **belum dijalankan** | lihat `git log` |
 
-**Berikutnya: v3** — PRD, implementation plan (Fase 8–11; mode kelas dibatalkan), dan handoff untuk sesi coding (Claude Sonnet 5) ada di [`docs/v3/`](v3/). Mulai sesi baru dengan "Prompt pembuka" di [`docs/v3/HANDOFF.md`](v3/HANDOFF.md). Prasyarat: migrasi `0000`–`0005` sudah dijalankan.
+**Berikutnya: v4** — redesign "perpustakaan yang ramah" (hanya tampilan, **tanpa menghapus fitur**), susunan fitur per tiga Ruang, Tongkat Ajaib bisa digeser, dan Kursus Dasar (Fase 12–17). Dokumen di [`docs/v4/`](v4/): PRD, IMPLEMENTATION_PLAN, HANDOFF, dan [FEATURE_INVENTORY](v4/FEATURE_INVENTORY.md) (daftar periksa wajib). Mulai sesi baru dengan "Prompt pembuka" di [`docs/v4/HANDOFF.md`](v4/HANDOFF.md). Prasyarat: migrasi `0006`–`0010` sudah dijalankan.
+
+_v3 (Fase 8–11) selesai; dokumennya tetap di [`docs/v3/`](v3/)._
 
 **Keputusan pemilik:** Q1 = forum, clubs, messages, jejaring pembaca **tetap ada** (tanpa poin). Q2 = Latihan Harian dan Weekly (Writing) Challenge **dihapus** (berbeda dari asumsi default PRD). Q3–Q5 memakai default.
 

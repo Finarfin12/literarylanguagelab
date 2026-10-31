@@ -1,0 +1,166 @@
+# Inventaris Fitur — Literary Language Lab (setelah Fase 11)
+
+| | |
+|---|---|
+| **Dibuat** | 31 Oktober 2026, dari kode di commit `5ff2160` (Fase 11) |
+| **Tujuan** | Daftar periksa wajib untuk redesign v4. **Setiap baris di dokumen ini harus tetap ada dan berfungsi sama setelah redesign.** |
+| **Aturan pemilik** | Redesign hanya mengubah tampilan. **Tidak ada fitur yang dihapus, digabung diam-diam, atau dikurangi perilakunya.** Satu-satunya perubahan perilaku yang diminta: tombol Tongkat Ajaib di reader bisa digeser (lihat PRD v4). |
+
+Cara memakai: sebelum menyatakan satu fase redesign selesai, centang setiap baris yang disentuh fase itu dan uji bahwa fiturnya masih bisa dijangkau dan dipakai, di desktop **dan** di HP (375px).
+
+Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 alat dinamis di `lib/tools-config.ts`, 16 mode Word Lookup.
+
+---
+
+## A. Kerangka global (muncul di banyak halaman)
+
+| Fitur | Lokasi | Catatan untuk redesign |
+|---|---|---|
+| Sidebar desktop: logo, tombol buka/tutup (collapse), tema terang/gelap, Word of the Day, tombol utama (`PINNED_PATHS`: Library, Buku Klasik, A-Z), grup menu dari `lib/menu-config.ts` dengan deskripsi, grup "Lainnya" terlipat, link Admin (khusus admin), kartu pengguna + Settings + Sign Out | `components/Sidebar.tsx` | Word of the Day memakai daftar lokal di Sidebar, bukan API |
+| Bottom nav HP: Beranda · Baca · Kosakata · Alat · Menu (status aktif per grup path) | `components/MobileBottomNav.tsx` | Mockup v4 mengusulkan Baca · Belajar · Terjemah — **jangan hilangkan tujuan "Kosakata" dan "Alat"**; tetap bisa dijangkau |
+| Halaman Menu HP: profil + inbox pesan (badge belum dibaca), pencarian fitur, grup Utama, semua grup menu, grup Admin (khusus admin), Settings, Bantuan, toggle tema, Logout | `app/(dashboard)/menu/page.tsx` | |
+| TopActions: Inbox Pesan, Pusat Bantuan | `components/TopActions.tsx`, `components/HelpButton.tsx` | |
+| Tema terang/gelap | `components/ThemeProvider.tsx` (next-themes) | Mockup v4 baru menggambar tema terang; **tema gelap wajib dirancang juga** |
+| PWA: install, service worker, cache buku offline (IndexedDB) | `components/PwaRegister.tsx`, `utils/indexeddb.ts`, `app/manifest*` | |
+| Animasi halaman (hormati `prefers-reduced-motion` dan preferensi `enable_animations`) | `components/AnimatedPage.tsx` | |
+| Proxy auth & rate limit, feature flag | `proxy.ts`, `lib/rate-limit.ts`, `lib/ai/flags.ts` | Bukan UI, jangan disentuh redesign |
+
+## B. Akun & awal
+
+| Fitur | Lokasi |
+|---|---|
+| Landing page (3 langkah, 3 tujuan) | `app/page.tsx` |
+| Login & daftar (email + OAuth) | `app/(auth)/login`, `app/(auth)/register`, `app/(auth)/actions.ts`, `components/ui/OAuthButtons.tsx` |
+| Onboarding 3 langkah (level / tujuan / waktu), bisa dilewati | `app/(dashboard)/onboarding/` |
+| Beranda: Langkah berikutnya (`lib/next-step.ts`), alat sesuai tujuan, Lanjutkan Membaca (+progres, termasuk Gutenberg), Kosa Kata Hari Ini, Progres Pribadi + grafik, pintasan, loading skeleton | `app/(dashboard)/dashboard/` |
+
+## C. Membaca (Library, Buku Klasik, Reader)
+
+| Fitur | Lokasi |
+|---|---|
+| Text Library: daftar teks, filter level CEFR, label level, hapus teks | `app/(dashboard)/library/page.tsx`, `components/library/DeleteTextButton.tsx` |
+| Tambah teks: manual (judul, penulis, era, genre) atau **generate teks dengan AI** (prompt, tingkat kesulitan) | `app/(dashboard)/library/add/page.tsx` |
+| Preview teks: Vocabulary Preview, Pre-Learn Flashcard, "Langsung Membaca Saja" | `app/(dashboard)/preview/[id]/page.tsx` |
+| OCR Lens: kamera, galeri, kompresi, scan multi-halaman, edit hasil, simpan ke Library | `app/(dashboard)/library/add/ocr/page.tsx` |
+| Buku Klasik: pencarian OpenLibrary & Gutendex (pilihan provider), "Muat lagi" | `app/(dashboard)/gutenberg/page.tsx` |
+| Reader Gutenberg: cache offline (tanda ✓), tombol kosakata bab (VocabFlashcardModal), panel Bookmark, toolbar seleksi (**Sorot**, **Tandai**, **Analisis**), panel Analisis Kalimat | `app/(dashboard)/gutenberg/[id]/page.tsx`, `components/reader/BookmarkSidebar.tsx`, `SentenceAnalysisSidebar.tsx`, `VocabFlashcardModal.tsx` |
+| Reader Library | `app/(dashboard)/read/[textId]/page.tsx` |
+
+### C.1 Reader (`components/reader/TextDisplay.tsx`) — dipakai Library dan Gutenberg
+
+| Fitur | Detail yang wajib tetap ada |
+|---|---|
+| Pagination | Hal x/y, pilihan bab, progress bar, tombol Sebelumnya/Berikutnya, lompat `#block-N`, posisi tersimpan (localStorage + `reading_sessions`) |
+| Header baca | Estimasi waktu baca, petunjuk shortcut keyboard, tombol **Ask AI Companion** |
+| Beginner Mode | Level A2/B1, tata letak **Ganti Teks (Inline) / Berdampingan (Bawah) / Layar Belah (Split)** |
+| Per paragraf | TTS **Read Aloud** (browser atau Groq), **Bedah Sintaksis** (Subjek/Verba/Objek + legenda) |
+| **Tongkat Ajaib (Inspect Mode)** | Tombol melayang; saat aktif, kalimat bisa diketuk → modal berisi kalimat, Read Aloud, Bedah Sintaksis. **v4: tombol bisa digeser** |
+| Word Lookup (pilih kata) | Lihat C.2 |
+| Referensi budaya | Frasa bertanda + tooltip (penjelasan, padanan Indonesia, asal) |
+| Kuis pemahaman (Comprehension Checkpoint) | Muncul di judul bab; jawaban tersimpan sebagai bukti membaca |
+| Listening Challenge | Soal dari bacaan, jawab dengan suara, skor |
+| Latihan Menulis setelah membaca | Prompt dengan kosakata yang disimpan, evaluasi AI (grammar, vocab, kohesi) |
+| AI Companion | Panel chat tentang teks; shortcut Ctrl+1, Esc menutup |
+| Preferensi baca yang dipakai | `font_family` (serif/sans/dyslexic), `font_size`, `line_height`, `text_width`, `theme` (terang/gelap/**sepia**), `highlight_color`, `line_numbers`, `high_contrast`, `screen_reader`, `show_reading_time`, `keyboard_shortcuts`, `tts_enabled`, `tts_provider`, `enable_quizzes`, `enable_writing_prompts`, `enable_listening_challenge` |
+| Heartbeat waktu baca | Tiap 10 detik saat tab terlihat |
+
+### C.2 Word Lookup (`components/reader/WordLookupSidebar.tsx`)
+
+- Header: kata, **Pictionary** (abc), **dengar** (TTS), tutup.
+- **16 mode**: Literary Focus, Dictionary, Translate, Nuance, Synonyms, Culture, Etymology, Lyricism, Metaphors, Quote, Time Travel, Grammar, Phonetics, Rhyme, Semantic Map (graf, `SemanticMapViewer`), Collocations (daftar + simpan massal).
+- Konteks Kalimat, hasil analisis (markdown + tabel), cache per mode.
+- **Simpan Kata** (dengan konteks, sumber, posisi) / simpan kolokasi.
+- Preferensi kamus: `auto_lookup`, `show_register`, `show_etymology`, `def_language`.
+
+## D. Kosakata
+
+| Fitur | Lokasi |
+|---|---|
+| Vocabulary Bank: daftar, cari, filter level, catatan personal, Flashcard Mode | `app/(dashboard)/vocabulary/page.tsx`, `components/vocabulary/VocabularyBankClient.tsx`, `FlashcardMode.tsx` |
+| Kosakata Inti (NGSL): per level, status, "Tambah 10 kata ke Review" | `app/(dashboard)/vocabulary/core/` |
+| Review SRS (SM-2): kartu, konteks, **Lihat di teks**, skor 0–3 | `app/(dashboard)/review/`, `app/(dashboard)/vocabulary/review/`, `components/vocabulary/ReviewClient.tsx` |
+| Flashcard SRS (English Lab): mode **guess-word, guess-meaning, dictation, collocation** | `app/(dashboard)/english-lab/flashcard/page.tsx` |
+| Idiom Library | `app/(dashboard)/idioms/page.tsx` |
+| Glossary Builder | `app/(dashboard)/glossary/` |
+| Lexicon Search | `app/(dashboard)/tools/lexicon-search/` |
+| A-Z Dictionary (Word Lookup A-Z) | `app/(dashboard)/tools/a-z-dictionary/` |
+
+## E. Latih Bahasa Inggris (English Lab)
+
+| Fitur | Lokasi |
+|---|---|
+| Placement Test adaptif (reading, grammar, vocabulary, listening) + set level manual | `english-lab/placement-test`, `lib/placement.ts` |
+| Tes Naik Level (cooldown 14 hari) | `english-lab/level-test` |
+| Grammar Dasar: 20 topik A1–B1, halaman topik, mini-lesson AI, latihan kalimat, status selesai | `english-lab/grammar`, `english-lab/grammar/[slug]` |
+| Grammar Clinic + statistik | `english-lab/grammar-clinic` |
+| Dialogue Simulator: skenario, bicara (STT), balasan suara (TTS), Akhiri & Feedback | `english-lab/dialogue-simulator`, `lib/dialogue-scenarios.ts`, `hooks/useSpeechToText.ts` |
+| Listening Test: mode **Quiz Pilihan Ganda** & **Dikte**, tingkat CEFR, transkrip, unggah audio sendiri | `english-lab/listening-test` |
+| Pronunciation Clinic (rekam, skor kecocokan; STT browser/Groq) | `/tools/pronunciation-clinic` (`tools/[id]`), `components/PronunciationLab.tsx` |
+| Slang Decoder (+ slang tren) | `english-lab/slang-decoder`, `lib/trending-slang.ts` |
+| Paraphrase Challenge (generate + evaluasi) | `tools/paraphrase` |
+| AI Writing Assistant (feedback tulisan) | `tools/writing-assistant` |
+| Sentence Architect (parse kalimat) | `tools/sentence-architect` |
+| Story Quiz (cerita dari kosakata pengguna + 5 soal) | `tools/story-quiz` |
+
+## F. Analisis Sastra & alat AI
+
+| Fitur | Lokasi |
+|---|---|
+| Toolkits Hub: semua alat, pencarian, filter kategori | `app/(dashboard)/tools/page.tsx` |
+| 28 alat dinamis (satu halaman `tools/[id]`, tombol "Coba dengan contoh"): mood-transformer, era-translator, critical-lens, pronunciation-clinic, dialect-diver, rhetorical-spotter, vibe-translator, diction-lab, sentence-architect, sentiment-spectrum, imagery-sketcher, metaphor-generator, academic-outline, **essay-auditor**, plot-twist, conflict-mapper, semantic-visual, character-monologue, literary-synonyms, nuance-detector, time-traveler, poem-to-palette, semantic-map, **case-study-generator**, imagery-grader, difficulty-analyzer, idiom-detector, tone-detector* | `lib/tools-config.ts`, `app/(dashboard)/tools/[id]/page.tsx`, `lib/tool-examples.ts` |
+| Tone & Gaya: mode **Deteksi Nada** dan **Analisis & Ubah Nada** (gabungan Tone Analyzer + Tone Detector Fase 8; `/tools/tone-detector` di-redirect) | `tools/tone-analyzer` |
+| LingoWise AI: 8 mode (Dialect Diver, Tone & Grammar, Vibe Translator, Mood Transformer, Diction Lab, Era Translator, Sentence Architect, Rhetorical Spotter) | `app/(dashboard)/lingowise`, `components/lingowise/LingoWiseClient.tsx` |
+| Alter Ego Chat (persona penulis) | `tools/alter-ego` |
+| Cultural Context Library (CRUD referensi budaya yang dipakai reader) | `tools/cultural-context` |
+| My Annotations | `tools/annotations` |
+| Archive & Insights (waktu baca, kata dikuasai, area lemah, analisis) | `app/(dashboard)/history` |
+
+\* `tone-detector` tetap ada di `tools-config` tetapi path-nya di-redirect ke Tone & Gaya.
+
+## G. Menerjemahkan
+
+| Fitur | Lokasi |
+|---|---|
+| Translation Workshop: teks asli vs terjemahan, mode evaluasi General / Equivalence / Register / Back-Translation / **Rubrik Nababan**, deteksi teknik, link ke Ruang Kerja Segmen | `app/(dashboard)/translation-workshop` |
+| Ruang Kerja Segmen: daftar proyek (buat/hapus), editor per segmen (simpan otomatis), saran TM ≥ 70%, glosarium, QA, komentar, anotasi teknik (manual + saran AI), distribusi teknik, nilai rubrik, ekspor CSV | `app/(dashboard)/translation-workspace/`, `lib/translation/*` |
+| Translation Memory | `app/(dashboard)/translation-memory` |
+| Side-by-Side Comparator | `tools/comparator` |
+| Untranslatables | `tools/untranslatables` |
+| Parallel Text Mode | `tools/parallel-text` |
+| Translation Timelapse | `tools/translation-timelapse` |
+| Tahap penerjemah di profil | `components/profile/TranslatorStageCard.tsx` |
+
+## H. Komunitas
+
+| Fitur | Lokasi |
+|---|---|
+| Forum: kategori, buat thread, thread + komentar (markdown, badge role & CEFR) | `app/(dashboard)/forum/*` |
+| Jejaring Pembaca: cari profil publik, follow, kirim pesan | `app/(dashboard)/community`, `components/community/ProfileActions.tsx` |
+| Pesan langsung (realtime, online, cari) | `app/(dashboard)/messages`, `hooks/useUnreadMessages.ts` |
+| Reading Clubs: buat klub (publik/privat, pilih buku), halaman klub & diskusi | `app/(dashboard)/clubs/*`, `components/clubs/CreateClubModal.tsx` |
+| Shared Annotations (upvote/downvote) | `app/(dashboard)/community-annotations` |
+| Profil publik / portofolio | `app/p/[username]` |
+
+## I. Profil, Pengaturan, Bantuan
+
+| Fitur | Lokasi |
+|---|---|
+| Profil: avatar, bergabung sejak, followers/following, Level CEFR + Placement, **level per keterampilan & Progres menuju level berikutnya**, tahap penerjemah, Tentang Saya, Pencapaian (Early Adopter, Vocab Explorer, Kolektor Kata, Kutu Buku, badge), Statistik, Aktivitas Terakhir | `app/(dashboard)/profile`, `components/profile/LevelProgressCard.tsx` |
+| Pengaturan — bagian: Tampilan Teks, Reading Experience, Dictionary Lookup, Tampilan & Aksesibilitas, Vocabulary Bank, Spaced Repetition, Level CEFR, Tujuan belajar, Suara & Audio (STT/TTS), Manajemen Data (ekspor CSV, hapus data/akun), Privasi, Performa (`offline_mode`, `preload_next_text`), Developer Tools (admin) | `app/(dashboard)/settings/page.tsx`, `components/settings/LearningGoalSection.tsx` |
+| Pusat Bantuan: FAQ + chat Liter-AI | `app/(dashboard)/help` |
+
+## J. Admin (9 tab)
+
+Ringkasan, Pengguna (cari, filter, role, ban/unban/hapus, link pemakaian), Provider AI (CRUD, tes koneksi), Model (CRUD, impor, harga), Routing Fitur, Pemakaian & Kuota, **Konten** (level teks, estimasi AI, teks berjenjang draft→terbit, topik grammar, jumlah kata inti), Fitur (flag), Audit Log — `app/(dashboard)/admin/*`.
+
+---
+
+## K. Temuan dari analisis ini (bukan penghapusan — untuk ditangani redesign)
+
+| # | Temuan | Tindakan di v4 |
+|---|---|---|
+| K1 | **LingoWise AI tidak punya pintu masuk di desktop**: tidak ada di Sidebar maupun Toolkits Hub (hanya di Menu HP). | Tambahkan ke navigasi desktop (ruang Analisis Sastra). |
+| K2 | Route API tanpa pemanggil di UI: `/api/analyze-tone`, `/api/detect-idioms`, `/api/gutenberg/search` (halaman memanggil Gutendex langsung), `/api/wotd` (Sidebar memakai daftar lokal), `/api/auth/delete-account` (Pengaturan memakai RPC `delete_user`). | **Jangan dihapus.** Dicatat saja; boleh dipakai ulang bila redesign membutuhkan. |
+| K3 | Bottom nav HP di mockup v4 berbeda dari yang sekarang. | Semua tujuan lama (Beranda, Baca, Kosakata, Alat, Menu) harus tetap bisa dijangkau ≤ 2 ketukan. |
+| K4 | Mockup v4 baru menggambar tema terang; reader punya tema **sepia**, **gelap**, dan **kontras tinggi**. | Rancang ketiganya; jangan hilangkan pilihan tema. |
+| K5 | Preferensi `offline_mode`, `preload_next_text`, `auto_save`, `auto_add_vocab`, `default_mastery`, `cards_per_session` ada di Pengaturan. | Tetap tampil di Pengaturan setelah redesign. |
