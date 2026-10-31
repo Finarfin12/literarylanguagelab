@@ -32,6 +32,11 @@ export async function GET(req: Request) {
   try {
     const gutendexUrl = new URL("https://gutendex.com/books/");
     gutendexUrl.searchParams.set("search", query);
+    // F-06: halaman hasil berikutnya (Gutendex memakai ?page=N, 32 buku per halaman)
+    const page = Number(url.searchParams.get("page"));
+    if (Number.isInteger(page) && page > 1 && page <= 500) {
+      gutendexUrl.searchParams.set("page", String(page));
+    }
 
     const res = await fetchWithRetry(gutendexUrl);
 

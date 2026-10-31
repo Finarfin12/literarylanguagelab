@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { MessageSquareQuote, Clock, Keyboard, Volume2, VolumeX, BrainCircuit, Loader2, CheckCircle2, XCircle, BookOpen, Mic, Square, Play, Headphones, Wand2, X } from "lucide-react";
+import { MessageSquareQuote, Clock, Keyboard, BrainCircuit, Loader2, CheckCircle2, XCircle, BookOpen, Mic, Square, Play, Headphones, Wand2, X, ChevronLeft, ChevronRight, Volume2 } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
 import ResponsivePanel from "@/components/ui/ResponsivePanel";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
 import { createClient } from "@/utils/supabase/client";
 import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer";
+import ReaderBlock, { type ReaderUnit } from "./ReaderBlock";
 import InteractiveParagraph from "./InteractiveParagraph";
+import { paginate, pageOfBlock, chapterMarks } from "@/lib/reader-pages";
 import { Search } from "lucide-react";
 
 export interface BookBlock {
@@ -22,9 +24,22 @@ interface TextDisplayProps {
   content?: string;
   blocks?: BookBlock[];
   onTextSelect?: () => void;
+  /** Dipanggil (debounce) saat blok teratas yang terlihat berubah */
+  onPositionChange?: (blockIndex: number) => void;
+  /** Minta reader melompat ke blok tertentu; ganti `nonce` untuk lompatan berulang ke blok yang sama */
+  jumpTo?: { block: number; nonce: number } | null;
 }
 
-export default function TextDisplay({ textId, title, author, content, blocks, onTextSelect }: TextDisplayProps) {
+const POSITION_KEY = (textId: string) => `reader-pos:${textId}`;
+
+// Kalimat yang memuat kata terpilih, untuk disimpan sebagai konteks kosa kata (F-03)
+function sentenceAround(paragraph: string, word: string) {
+  const sentences = paragraph.split(/(?<=[.!?]["'”’]?)\s+/);
+  const lower = word.toLowerCase();
+  return (sentences.find((sentence) => sentence.toLowerCase().includes(lower)) || paragraph).trim().slice(0, 500);
+}
+
+export default function TextDisplay({ textId, title, author, content, blocks, onTextSelect, onPositionChange, jumpTo }: TextDisplayProps) {
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [contextSentence, setContextSentence] = useState<string | null>(null);
   const [positionOffset, setPositionOffset] = useState<number | null>(null);
@@ -75,8 +90,132 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const [recordingTranscript, setRecordingTranscript] = useState("");
   const recognitionRef = useRef<any>(null);
 
-  // Parse paragraphs (only if content is provided as string)
-  const paragraphs = content ? content.split("\n").filter((p) => p.trim() !== "") : [];
+  // Satu daftar unit untuk teks Library (string) maupun buku Gutenberg (blok)
+  const units: ReaderUnit[] = useMemo(
+    () => blocks ?? (content ? content.split("\n").filter((p) => p.trim() !== "").map((text) => ({ type: "paragraph" as const, text })) : []),
+    [blocks, content]
+  );
+  const pages = useMemo(() => paginate(units), [units]);
+  const chapters = useMemo(() => chapterMarks(units, pages), [units, pages]);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [remoteBlock, setRemoteBlock] = useState<number | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const currentBlockRef = useRef(0);
+  const pendingScrollBlock = useRef<number | null>(null);
+  const restoredRef = useRef(false);
+  const page = pages[Math.min(pageIndex, pages.length - 1)];
+
+  const scrollToPendingBlock = useCallback((smooth: boolean) => {
+    const target = pendingScrollBlock.current;
+    if (target === null) return;
+    const el = document.getElementById(`block-${target}`);
+    if (el) {
+      el.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+      pendingScrollBlock.current = null;
+    }
+  }, []);
+
+  const goToBlock = useCallback((blockIndex: number, smooth = false) => {
+    const target = Math.max(0, Math.min(blockIndex, Math.max(units.length - 1, 0)));
+    pendingScrollBlock.current = target;
+    setPageIndex(pageOfBlock(pages, target));
+    // Jika halamannya sama, efek pageIndex tidak jalan; gulir setelah frame berikutnya
+    requestAnimationFrame(() => scrollToPendingBlock(smooth));
+  }, [pages, units.length, scrollToPendingBlock]);
+
+  const goToPage = useCallback((next: number) => {
+    const clamped = Math.max(0, Math.min(next, pages.length - 1));
+    pendingScrollBlock.current = null;
+    setPageIndex(clamped);
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [pages.length]);
+
+  // Setelah halaman berganti, gulir ke blok yang diminta (jika ada)
+  useEffect(() => {
+    scrollToPendingBlock(false);
+  }, [pageIndex, scrollToPendingBlock]);
+
+  // Lompatan dari luar (bookmark, dsb.)
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- posisi dari URL/localStorage hanya tersedia di browser setelah mount
+    if (jumpTo) goToBlock(jumpTo.block, true);
+  }, [jumpTo, goToBlock]);
+
+  // Pulihkan posisi: #block-N (dari review kosa kata) > localStorage > database (di initData)
+  useEffect(() => {
+    if (restoredRef.current || units.length === 0) return;
+    restoredRef.current = true;
+    const hash = window.location.hash.match(/^#block-(\d+)$/);
+    if (hash) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- posisi dari URL/localStorage hanya tersedia di browser setelah mount
+      goToBlock(Number(hash[1]));
+      return;
+    }
+    try {
+      const saved = Number(localStorage.getItem(POSITION_KEY(textId)));
+      if (saved > 0) goToBlock(saved);
+    } catch {
+      // localStorage tidak tersedia
+    }
+  }, [units.length, textId, goToBlock]);
+
+  useEffect(() => {
+    if (remoteBlock !== null && currentBlockRef.current === 0) goToBlock(remoteBlock);
+  }, [remoteBlock, goToBlock]);
+
+  // #block-N yang berubah tanpa memuat ulang halaman
+  useEffect(() => {
+    const onHashChange = () => {
+      const hash = window.location.hash.match(/^#block-(\d+)$/);
+      if (hash) goToBlock(Number(hash[1]), true);
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, [goToBlock]);
+
+  // Lacak blok teratas yang terlihat (hanya blok di halaman ini, jadi murah)
+  useEffect(() => {
+    const scroller = scrollRef.current;
+    if (!scroller) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const update = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const top = scroller.getBoundingClientRect().top + 80;
+        const els = scroller.querySelectorAll<HTMLElement>("[id^='block-']");
+        let current = page?.start ?? 0;
+        for (const el of els) {
+          if (el.getBoundingClientRect().bottom > top) {
+            current = Number(el.id.slice(6));
+            break;
+          }
+        }
+        currentBlockRef.current = current;
+        try {
+          localStorage.setItem(POSITION_KEY(textId), String(current));
+        } catch {
+          // abaikan
+        }
+        onPositionChange?.(current);
+      }, 300);
+    };
+    update();
+    scroller.addEventListener("scroll", update, { passive: true });
+    return () => {
+      clearTimeout(timer);
+      scroller.removeEventListener("scroll", update);
+    };
+  }, [page, textId, onPositionChange]);
+
+  // Nilai terbaru untuk heartbeat tanpa memasang ulang interval
+  const unitCountRef = useRef(0);
+  const titleRef = useRef(title);
+  const authorRef = useRef(author);
+  useEffect(() => {
+    unitCountRef.current = units.length;
+    titleRef.current = title;
+    authorRef.current = author;
+  }, [units.length, title, author]);
 
   // Heartbeat to track time spent
   useEffect(() => {
@@ -98,6 +237,28 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
         if (profile?.preferences) {
           setPrefs(profile.preferences);
         }
+
+        // Posisi dari perangkat lain (F-02), dipakai jika perangkat ini belum punya posisi
+        let hasLocal = false;
+        try {
+          hasLocal = Number(localStorage.getItem(POSITION_KEY(textId))) > 0;
+        } catch {
+          // abaikan
+        }
+        if (!hasLocal && !window.location.hash) {
+          const isGutenberg = textId.startsWith("gutenberg_");
+          const { data: session, error } = await supabase
+            .from("reading_sessions")
+            .select("last_paragraph_index")
+            .eq("user_id", authRes.data.user.id)
+            .eq(isGutenberg ? "source_key" : "text_id", textId)
+            .order("last_active_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (!error && session?.last_paragraph_index) {
+            setRemoteBlock(session.last_paragraph_index);
+          }
+        }
       }
     }
     initData();
@@ -111,7 +272,11 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             text_id: textId,
-            time_spent_seconds: intervalSeconds
+            time_spent_seconds: intervalSeconds,
+            block_index: currentBlockRef.current,
+            total_blocks: unitCountRef.current,
+            title: titleRef.current,
+            author: authorRef.current,
           })
         }).catch(err => console.error("Heartbeat failed", err));
       }
@@ -119,24 +284,6 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
 
     return () => clearInterval(interval);
   }, [textId]);
-
-  // Handle hash scrolling for contextual review
-  useEffect(() => {
-    if (window.location.hash && (blocks?.length || content)) {
-      const id = window.location.hash.substring(1);
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          // Highlight it temporarily
-          el.classList.add('bg-brand/10', 'transition-colors', 'duration-1000', 'rounded-lg', 'p-2');
-          setTimeout(() => {
-            el.classList.remove('bg-brand/10', 'p-2');
-          }, 3000);
-        }
-      }, 300); // small delay to allow DOM to paint
-    }
-  }, [blocks, content]);
 
   useEffect(() => {
     const handleSelection = () => {
@@ -146,12 +293,10 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
       const text = selection.toString().trim();
       if (!text || text.includes("\n") || text.split(" ").length > 5) return; // Only allow words or short phrases
 
-      // Get context sentence (simple approximation: get the parent node text)
-      let sentence = "";
+      // Konteks: kalimat yang memuat kata, diambil dari teks blok (bukan hanya node terdekat)
       const anchorNode = selection.anchorNode;
-      if (anchorNode && anchorNode.parentElement) {
-        sentence = anchorNode.parentElement.textContent || text;
-      }
+      const blockEl = anchorNode?.parentElement?.closest("[data-block-idx]");
+      const sentence = sentenceAround(blockEl?.textContent || anchorNode?.parentElement?.textContent || text, text);
 
       let offset = null;
       let el = anchorNode?.parentElement;
@@ -498,11 +643,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
     }
   }
 
-  const wordCount = useMemo(() => {
-    if (blocks) return blocks.reduce((acc, block) => acc + block.text.split(/\s+/).length, 0);
-    if (paragraphs) return paragraphs.reduce((acc, p) => acc + p.split(/\s+/).length, 0);
-    return 0;
-  }, [blocks, paragraphs]);
+  const wordCount = useMemo(() => units.reduce((acc, unit) => acc + unit.text.split(/\s+/).length, 0), [units]);
 
   const readingTimeMinutes = Math.ceil(wordCount / 200);
 
@@ -512,9 +653,17 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
     lineHeight: readPrefs.line_height ? readPrefs.line_height : undefined,
   };
 
-  const handleSentenceInspect = (sentence: string) => {
+  const handleSentenceInspect = useCallback((sentence: string) => {
     setInspectedSentence(sentence);
-  };
+  }, []);
+
+  // Callback stabil untuk ReaderBlock (memo) agar blok lain tidak ikut di-render ulang
+  const toggleSpeechRef = useRef(toggleSpeech);
+  useEffect(() => {
+    toggleSpeechRef.current = toggleSpeech;
+  });
+  const handleToggleSpeech = useCallback((text: string, index: number) => toggleSpeechRef.current(text, index), []);
+  const handleToggleSyntax = useCallback((index: number) => setActiveSyntaxIndex((cur) => (cur === index ? null : index)), []);
 
   const playInspectAudio = async (text: string) => {
     const provider = prefs?.reading?.tts_provider || "browser";
@@ -561,14 +710,32 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
       )}
       {/* Main Reading Area */}
       <div 
-        className={`flex-1 overflow-y-auto transition-all duration-300 relative ${activeSidebar ? 'lg:pr-[400px]' : ''}`}
+        ref={scrollRef}
+        className={`flex-1 overflow-y-auto overscroll-contain relative ${activeSidebar ? 'lg:pr-[400px]' : ''}`}
         onMouseUp={() => onTextSelect?.()}
         onTouchEnd={() => onTextSelect?.()}
       >
-        <div className="sticky top-0 bg-background/80 backdrop-blur-md z-30 p-4 border-b border-border flex justify-between items-center shadow-sm">
-          <div className="flex-1 truncate flex items-center gap-4 text-sm text-muted-foreground font-medium">
+        {/* Header baca: latar solid (tanpa blur) agar ringan saat menggulir di HP */}
+        <div className="sticky top-0 bg-background z-30 px-3 md:px-4 py-2 border-b border-border flex justify-between items-center gap-2">
+          <div className="flex-1 min-w-0 truncate flex items-center gap-3 md:gap-4 text-sm text-muted-foreground font-medium">
+            {pages.length > 1 && (
+              <span className="shrink-0 tabular-nums">Hal {pageIndex + 1}/{pages.length}</span>
+            )}
+            {chapters.length > 1 && (
+              <select
+                aria-label="Lompat ke bab"
+                value={[...chapters].reverse().find((c) => c.page <= pageIndex)?.index ?? ""}
+                onChange={(e) => goToBlock(Number(e.target.value))}
+                className="min-w-0 max-w-[45vw] md:max-w-xs bg-muted border border-border rounded-lg px-2 py-1.5 text-sm text-foreground truncate"
+              >
+                <option value="" disabled>Bab…</option>
+                {chapters.map((c) => (
+                  <option key={c.index} value={c.index}>{c.title}</option>
+                ))}
+              </select>
+            )}
             {displayPrefs.show_reading_time !== false && (
-              <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> Est: {readingTimeMinutes} mnt</span>
+              <span className="hidden sm:flex items-center gap-1 shrink-0"><Clock className="w-4 h-4" /> Est: {readingTimeMinutes} mnt</span>
             )}
             {displayPrefs.keyboard_shortcuts !== false && (
               <span className="hidden md:flex items-center gap-1 opacity-50"><Keyboard className="w-4 h-4" /> Ctrl+1: AI, Esc: Tutup</span>
@@ -576,7 +743,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           </div>
           <button 
             onClick={() => setShowCompanion(true)} 
-            className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-full font-medium flex items-center gap-2 text-sm shadow-md transition-all hover:scale-105 active:scale-95"
+            className="shrink-0 min-h-[40px] px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-full font-medium flex items-center gap-2 text-sm"
           >
             <MessageSquareQuote className="w-4 h-4" />
             <span className="hidden md:inline">Ask AI Companion</span>
@@ -584,8 +751,14 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           </button>
         </div>
 
+        {pages.length > 1 && (
+          <div className="sticky top-[53px] z-20 h-1 bg-muted" aria-hidden="true">
+            <div className="h-full bg-brand" style={{ width: `${((pageIndex + 1) / pages.length) * 100}%` }} />
+          </div>
+        )}
+
         {/* Global Controls for Beginner Mode */}
-        <div className="bg-muted/30 border-b border-border px-6 py-3 flex flex-wrap items-center justify-center gap-4 text-sm z-20 relative">
+        <div className="bg-muted/30 border-b border-border px-4 md:px-6 py-2 md:py-3 flex flex-wrap items-center justify-center gap-3 md:gap-4 text-sm z-10 relative">
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={isBeginnerMode} onChange={e => setIsBeginnerMode(e.target.checked)} className="w-4 h-4 accent-brand" />
             <span className="font-bold">Beginner Mode</span>
@@ -616,106 +789,67 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           </div>
         )}
 
-        <div className={`${widthClass} mx-auto px-6 md:px-8 py-12 transition-all duration-500`}>
-          <header className="mb-12 text-center">
+        <div className={`${widthClass} mx-auto px-4 md:px-8 py-8 md:py-12`}>
+          {pageIndex === 0 && (
+          <header className="mb-8 md:mb-12 text-center">
             <h1 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: dyslexicStyle.fontFamily ? dyslexicStyle.fontFamily : 'inherit' }}>{title}</h1>
             <p className="text-lg md:text-xl italic opacity-80">by {author}</p>
           </header>
+          )}
 
           <div 
             ref={contentRef}
-            className={`prose-literature ${fontClass} leading-loose opacity-90 transition-all duration-300`}
+            className={`prose-literature ${fontClass} leading-loose opacity-90`}
             style={customStyle}
             role={displayPrefs.screen_reader ? "article" : undefined}
             aria-label={displayPrefs.screen_reader ? `Buku: ${title} oleh ${author}` : undefined}
           >
-            {blocks ? (
-              blocks.map((block, index) => {
-                const isHeading = block.type === "heading";
-                const isVerse = block.type === "verse";
-                return (
-                  <div key={index} id={`block-${index}`} className="flex gap-4 group" data-block-idx={index}>
-                    {readPrefs.line_numbers && !isHeading && (
-                      <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60" aria-hidden={displayPrefs.screen_reader ? "true" : "false"}>{index + 1}</span>
-                    )}
-                    <p 
-                      className={`flex-1 ${isHeading ? 'gutenberg-heading mt-14 mb-8 text-center text-3xl font-bold' : isVerse ? 'my-8 whitespace-pre-line text-center italic' : 'my-6 text-left [text-indent:2rem] md:text-justify'}`}
-                      data-block-idx={index}
-                    >
-                      <InteractiveParagraph 
-                        text={block.text} 
-                        culturalRefs={culturalRefs}
-                        isBeginnerMode={isBeginnerMode}
-                        beginnerLevel={beginnerLevel}
-                        beginnerLayout={beginnerLayout}
-                        showSyntax={activeSyntaxIndex === index}
-                        isInspectMode={isInspectMode}
-                        onSentenceInspect={handleSentenceInspect}
-                      />
-                    </p>
-                    {!isHeading && (
-                      <div className="w-10 pt-2 shrink-0 flex flex-col gap-2 items-center justify-start">
-                        {readPrefs.tts_enabled !== false && (
-                          <button 
-                            onClick={() => toggleSpeech(block.text, index)}
-                            className={`p-2 rounded-full transition-all ${speakingIndex === index ? 'opacity-100 bg-brand/20 text-brand animate-pulse' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand'}`}
-                            title={speakingIndex === index ? "Stop Reading" : "Read Aloud"}
-                          >
-                            {speakingIndex === index ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                          </button>
-                        )}
-                        <button 
-                          onClick={() => setActiveSyntaxIndex(activeSyntaxIndex === index ? null : index)}
-                          className={`p-2 rounded-full transition-all ${activeSyntaxIndex === index ? 'opacity-100 bg-blue-500/20 text-blue-500' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500'}`}
-                          title={activeSyntaxIndex === index ? "Tutup Bedah Sintaksis" : "Bedah Sintaksis"}
-                        >
-                          <Search className="w-4 h-4" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })
-            ) : (
-              paragraphs.map((p, idx) => (
-                <div key={idx} id={`block-${idx}`} className="flex gap-4 group">
-                  {readPrefs.line_numbers && (
-                    <span className="w-8 text-right text-xs opacity-30 select-none pt-2 group-hover:opacity-60" aria-hidden={displayPrefs.screen_reader ? "true" : "false"}>{idx + 1}</span>
-                  )}
-                  <p className="flex-1 my-6 text-left [text-indent:2rem] md:text-justify">
-                    <InteractiveParagraph 
-                        text={p} 
-                        culturalRefs={culturalRefs}
-                        isBeginnerMode={isBeginnerMode}
-                        beginnerLevel={beginnerLevel}
-                        beginnerLayout={beginnerLayout}
-                        showSyntax={activeSyntaxIndex === idx}
-                        isInspectMode={isInspectMode}
-                        onSentenceInspect={handleSentenceInspect}
-                      />
-                  </p>
-                  <div className="w-10 pt-2 shrink-0 flex flex-col gap-2 items-center justify-start">
-                    {readPrefs.tts_enabled !== false && (
-                      <button 
-                        onClick={() => toggleSpeech(p, idx)}
-                        className={`p-2 rounded-full transition-all ${speakingIndex === idx ? 'opacity-100 bg-brand/20 text-brand animate-pulse' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand'}`}
-                        title={speakingIndex === idx ? "Stop Reading" : "Read Aloud"}
-                      >
-                        {speakingIndex === idx ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                      </button>
-                    )}
-                    <button 
-                      onClick={() => setActiveSyntaxIndex(activeSyntaxIndex === idx ? null : idx)}
-                      className={`p-2 rounded-full transition-all ${activeSyntaxIndex === idx ? 'opacity-100 bg-blue-500/20 text-blue-500' : 'opacity-0 md:group-hover:opacity-100 bg-muted text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500'}`}
-                      title={activeSyntaxIndex === idx ? "Tutup Bedah Sintaksis" : "Bedah Sintaksis"}
-                    >
-                      <Search className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
+            {units.slice(page.start, page.end).map((block, offset) => {
+              const index = page.start + offset;
+              return (
+                <ReaderBlock
+                  key={index}
+                  index={index}
+                  block={block}
+                  culturalRefs={culturalRefs}
+                  isBeginnerMode={isBeginnerMode}
+                  beginnerLevel={beginnerLevel}
+                  beginnerLayout={beginnerLayout}
+                  isInspectMode={isInspectMode}
+                  showSyntax={activeSyntaxIndex === index}
+                  speaking={speakingIndex === index}
+                  ttsEnabled={readPrefs.tts_enabled !== false}
+                  lineNumbers={!!readPrefs.line_numbers}
+                  screenReader={!!displayPrefs.screen_reader}
+                  onInspect={handleSentenceInspect}
+                  onToggleSpeech={handleToggleSpeech}
+                  onToggleSyntax={handleToggleSyntax}
+                />
+              );
+            })}
           </div>
+
+          {pages.length > 1 && (
+            <nav aria-label="Navigasi halaman" className="mt-10 mb-24 lg:mb-8 flex items-center justify-between gap-3 font-sans not-prose">
+              <button
+                onClick={() => goToPage(pageIndex - 1)}
+                disabled={pageIndex === 0}
+                className="flex-1 sm:flex-none min-h-[48px] px-4 rounded-xl border border-border bg-card hover:bg-muted disabled:opacity-40 flex items-center justify-center gap-2 text-sm font-bold"
+              >
+                <ChevronLeft className="w-4 h-4" /> Sebelumnya
+              </button>
+              <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">
+                {pageIndex + 1} / {pages.length}
+              </span>
+              <button
+                onClick={() => goToPage(pageIndex + 1)}
+                disabled={pageIndex >= pages.length - 1}
+                className="flex-1 sm:flex-none min-h-[48px] px-4 rounded-xl bg-brand text-background hover:bg-brand-hover disabled:opacity-40 flex items-center justify-center gap-2 text-sm font-bold"
+              >
+                Berikutnya <ChevronRight className="w-4 h-4" />
+              </button>
+            </nav>
+          )}
         </div>
       </div>
 

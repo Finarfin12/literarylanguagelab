@@ -51,7 +51,7 @@ export default function ResponsivePanel({
         className={`fixed inset-x-0 bottom-0 h-[85dvh] rounded-t-3xl border-t z-[70]
           ${desktopPosition} lg:inset-auto lg:top-0 lg:right-0 lg:bottom-auto lg:h-full lg:w-[var(--panel-w)] lg:rounded-none lg:border-t-0 lg:border-l lg:z-50
           bg-background border-border flex flex-col overflow-hidden
-          shadow-[0_-10px_50px_rgba(0,0,0,0.35)] lg:shadow-[0_0_50px_rgba(0,0,0,0.35)]
+          ${open ? "shadow-[0_-10px_50px_rgba(0,0,0,0.35)] lg:shadow-[0_0_50px_rgba(0,0,0,0.35)]" : ""}
           transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
           ${open ? "translate-y-0 lg:translate-x-0" : "translate-y-full lg:translate-y-0 lg:translate-x-full"}`}
       >

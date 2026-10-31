@@ -17,7 +17,7 @@ Turunan dari [PRD.md](PRD.md). Setiap fase berakhir dalam kondisi yang bisa di-d
 | 2 | Redesign tampilan & mobile | 4–6 hari | 1 |
 | 3 | Registry provider AI + tab admin AI | 4–5 hari | 0 |
 | 4 | OCR Qwen di atas registry | 0,5 hari | 3 |
-| 5 | MCP | 3–4 hari | 3 |
+| 5 | ~~MCP~~ — **dibatalkan** (31 Okt 2026) | — | — |
 | 6 | Tab admin lainnya (Ringkasan, Pemakaian, Fitur, Audit) | 3 hari | 3 |
 | 7 | Fitur belajar roadmap (F-02, F-01, F-03, F-06) & pembersihan skema | 7–10 hari | 1, 2 |
 
@@ -181,6 +181,8 @@ create index on ai_usage_logs (user_id, created_at desc);
 ---
 
 ## Fase 5 — MCP
+
+> **Dibatalkan oleh pemilik pada 31 Oktober 2026.** Bagian ini disimpan sebagai arsip.
 
 **5.1 Skema (`0003_mcp.sql`)**
 ```sql

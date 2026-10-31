@@ -6,11 +6,18 @@ import AnimatedPage from "@/components/AnimatedPage";
 import { ButtonLink, Card, CardTitle, EmptyState } from "@/components/ui/primitives";
 
 type RecentSession = {
-  text_id: string;
+  text_id: string | null;
   last_active_at: string | null;
   time_spent_seconds: number | null;
   texts: { title: string | null; author: string | null } | { title: string | null; author: string | null }[] | null;
+  // Kolom dari migrasi 0005 (opsional sampai migrasi dijalankan)
+  source_key?: string | null;
+  source_title?: string | null;
+  source_author?: string | null;
+  progress_pct?: number | null;
 };
+
+const SESSION_COLUMNS = "text_id, time_spent_seconds, last_active_at, texts(title, author)";
 
 function formatAgo(iso: string | null) {
   if (!iso) return "";
@@ -46,7 +53,7 @@ export default async function DashboardPage() {
     // Sesi baca (teks selesai, waktu baca, lanjutkan membaca)
     supabase
       .from("reading_sessions")
-      .select("text_id, time_spent_seconds, last_active_at, texts(title, author)")
+      .select(`${SESSION_COLUMNS}, source_key, source_title, source_author, progress_pct`)
       .eq("user_id", user?.id)
       .order("last_active_at", { ascending: false }),
     // Pertumbuhan kosa kata 7 hari
@@ -57,26 +64,40 @@ export default async function DashboardPage() {
   const dueCount = dueRes.count || 0;
   const dueWords = dueWordsRes.data || [];
   const reviewedThisWeek = reviewedRes.count || 0;
-  const readingSessions = (sessionsRes.data || []) as RecentSession[];
+  // Sebelum migrasi 0005 kolom posisi belum ada: ambil ulang tanpa kolom tersebut
+  const sessionsData = sessionsRes.error
+    ? (await supabase.from("reading_sessions").select(SESSION_COLUMNS).eq("user_id", user?.id).order("last_active_at", { ascending: false })).data
+    : sessionsRes.data;
+  const readingSessions = (sessionsData || []) as RecentSession[];
+  const sessionKey = (s: RecentSession) => s.text_id || s.source_key || "";
 
-  const completedTexts = new Set(readingSessions.map((s) => s.text_id)).size;
+  const completedTexts = new Set(readingSessions.map(sessionKey).filter(Boolean)).size;
   const weeklySeconds = readingSessions
     .filter((s) => s.last_active_at && s.last_active_at >= oneWeekAgo.toISOString())
     .reduce((acc, s) => acc + (s.time_spent_seconds || 0), 0);
   const weeklyMinutes = Math.round(weeklySeconds / 60);
 
-  // Lanjutkan Membaca: 3 teks terakhir yang dibuka (satu entri per teks)
+  // Lanjutkan Membaca: 3 bacaan terakhir (teks Library maupun buku Gutenberg), satu entri per bacaan
   const seen = new Set<string>();
   const continueReading = readingSessions
     .filter((s) => {
-      if (!s.text_id || seen.has(s.text_id)) return false;
-      seen.add(s.text_id);
+      const key = sessionKey(s);
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
       return true;
     })
     .slice(0, 3)
     .map((s) => {
       const text = Array.isArray(s.texts) ? s.texts[0] : s.texts;
-      return { id: s.text_id, title: text?.title || "Teks tanpa judul", author: text?.author, lastActive: s.last_active_at };
+      const gutenbergId = s.source_key?.startsWith("gutenberg_") ? s.source_key.slice("gutenberg_".length) : null;
+      return {
+        id: sessionKey(s),
+        href: gutenbergId ? `/gutenberg/${gutenbergId}` : `/read/${s.text_id}`,
+        title: text?.title || s.source_title || "Teks tanpa judul",
+        author: text?.author || s.source_author,
+        lastActive: s.last_active_at,
+        progress: s.progress_pct ?? null,
+      };
     });
 
   const chartData = [];
@@ -121,7 +142,7 @@ export default async function DashboardPage() {
             <ul className="divide-y divide-border -mx-2">
               {continueReading.map((t) => (
                 <li key={t.id}>
-                  <Link href={`/read/${t.id}`} className="flex items-center gap-3 px-2 py-3 min-h-[56px] rounded-control hover:bg-muted transition-colors">
+                  <Link href={t.href} className="flex items-center gap-3 px-2 py-3 min-h-[56px] rounded-control hover:bg-muted transition-colors">
                     <div className="w-10 h-10 rounded-control bg-blue-500/10 flex items-center justify-center shrink-0">
                       <BookOpen className="w-5 h-5 text-blue-400" />
                     </div>
@@ -130,7 +151,13 @@ export default async function DashboardPage() {
                       <p className="text-xs text-muted-foreground truncate">
                         {t.author ? `${t.author} · ` : ""}
                         {formatAgo(t.lastActive)}
+                        {t.progress !== null && ` · ${Math.round(t.progress)}%`}
                       </p>
+                      {t.progress !== null && (
+                        <div className="h-1 mt-1.5 rounded-full bg-muted overflow-hidden" aria-hidden="true">
+                          <div className="h-full bg-blue-400" style={{ width: `${Math.min(100, t.progress)}%` }} />
+                        </div>
+                      )}
                     </div>
                     <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
                   </Link>

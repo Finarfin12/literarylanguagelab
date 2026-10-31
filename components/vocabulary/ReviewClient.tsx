@@ -1,12 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, RotateCcw, Brain, RefreshCcw, Loader2 } from "lucide-react";
+import { CheckCircle2, RotateCcw, Brain, RefreshCcw, Loader2, BookOpen } from "lucide-react";
+import Link from "next/link";
 import Swal from "sweetalert2";
 
 interface ReviewClientProps {
   dueVocab: any[];
   learningPrefs?: any;
+}
+
+// Tautan ke posisi kata di teks sumber (F-03): /read/<uuid>#block-N atau /gutenberg/<id>#block-N
+function sourceHref(item: { text_id?: string | null; position_offset?: number | null }) {
+  if (!item.text_id) return null;
+  const hash = typeof item.position_offset === "number" && item.position_offset >= 0 ? `#block-${item.position_offset}` : "";
+  const gutenberg = item.text_id.match(/^gutenberg[_-](\d+)$/);
+  if (gutenberg) return `/gutenberg/${gutenberg[1]}${hash}`;
+  return /^[0-9a-f-]{36}$/i.test(item.text_id) ? `/read/${item.text_id}${hash}` : null;
 }
 
 export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientProps) {
@@ -99,6 +109,12 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
               <div className="text-left">
                 <p className="text-sm font-medium text-muted-foreground mb-1">Konteks:</p>
                 <p className="text-foreground italic">"{currentItem.context_sentence}"</p>
+                {currentItem.context_source && <p className="text-xs text-muted-foreground mt-1">{currentItem.context_source}</p>}
+                {sourceHref(currentItem) && (
+                  <Link href={sourceHref(currentItem)!} className="inline-flex items-center gap-1.5 mt-2 min-h-[44px] text-sm font-bold text-brand">
+                    <BookOpen className="w-4 h-4" /> Lihat di teks
+                  </Link>
+                )}
               </div>
             )}
             

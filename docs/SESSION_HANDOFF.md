@@ -9,14 +9,28 @@
 | 3 Registry provider AI + tab admin AI | Selesai di `main` (lokal). Migrasi 0003 **belum dijalankan** | lihat `git log` |
 | 4 OCR Qwen | Selesai di kode. Uji 10 foto belum (butuh GROQ_API_KEY) | lihat `git log` |
 | 2 Tampilan & mobile | Selesai di kode. Audit visual di HP belum, lihat `docs/mobile-audit.md` | lihat `git log` |
-| 5, 6, 7 | Belum dimulai | — |
+| 5 MCP | **Dibatalkan** oleh pemilik (31 Okt 2026). Kolom `mcp_server_ids` di `ai_feature_routes` dibiarkan, tidak dipakai | — |
+| 6 Tab admin lainnya | Selesai di kode. Migrasi 0004 **belum dijalankan** | lihat `git log` |
+| 7 Fitur belajar + reader ringan | Selesai di kode. Migrasi 0005 **belum dijalankan**; 0009 hanya ditulis | lihat `git log` |
 
 **Keputusan pemilik:** Q1 = forum, clubs, messages, jejaring pembaca **tetap ada** (tanpa poin). Q2 = Latihan Harian dan Weekly (Writing) Challenge **dihapus** (berbeda dari asumsi default PRD). Q3–Q5 memakai default.
 
 **Yang harus dilakukan pemilik sebelum deploy:**
-1. Jalankan berurutan di Supabase SQL Editor: `supabase/migrations/0000` … `0003`.
+1. Jalankan berurutan di Supabase SQL Editor: `supabase/migrations/0000` … `0005`. **Jangan** jalankan `0009_drop_gamification.sql` sebelum v2 stabil ≥ 2 minggu dan database sudah di-backup.
 2. Isi env `AI_SECRETS_KEY` (32 byte base64, mis. `openssl rand -base64 32`) dan pastikan `SUPABASE_SERVICE_ROLE_KEY` ada. Tanpa keduanya semua fitur AI tetap jalan lewat `GROQ_API_KEY`, tapi registry dari admin tidak dipakai.
 3. Uji Fase 3: tambah provider di `/admin/providers` → "Ambil dari provider" di `/admin/models` → pilih model untuk `translation` di `/admin/routing` → coba Translation Workshop.
+
+**Catatan teknis Fase 6:**
+- Tab admin: Ringkasan (`/admin`), Pengguna, Provider AI, Model, Routing Fitur, Pemakaian & Kuota, Fitur, Audit Log.
+- Feature flag (`system_config.features`) sekarang benar-benar berlaku: dicek di `checkRateLimit` (503) dan `runAI` (`lib/ai/flags.ts`).
+- Semua aksi admin dicatat lewat `logAdminAction()` (`lib/admin-audit.ts`) ke `admin_audit_log`.
+
+**Catatan teknis Fase 7:**
+- Reader (`components/reader/TextDisplay.tsx`) kini dibagi per halaman ~900 kata (`lib/reader-pages.ts`), dengan pilihan bab, progress bar, dan tombol Sebelumnya/Berikutnya. Paragraf dirender lewat `ReaderBlock` (memo).
+- Penyebab berat yang diperbaiki: seluruh buku dirender sekaligus; satu IntersectionObserver per paragraf (sekarang hanya saat Beginner Mode); regex referensi budaya dibuat ulang per paragraf (sekarang satu regex ter-cache); semua paragraf ikut re-render saat sidebar/seleksi berubah; blur header dan drop-shadow per paragraf.
+- Bug lama yang ikut diperbaiki: posisi baca & bookmark Gutenberg selalu 0 (membaca scrollTop elemen yang tidak di-scroll). Posisi sekarang berupa indeks blok, disimpan di localStorage dan `reading_sessions.last_paragraph_index`.
+- F-01 (Unify Reader) ternyata sudah ada: Gutenberg memakai `TextDisplay`. F-06 (pagination pencarian) juga sudah ada; proxy `/api/gutenberg/search` kini meneruskan `page`.
+- F-03: konteks kosa kata = kalimat yang memuat kata; kartu review punya tautan "Lihat di teks" (`#block-N`).
 
 **Catatan teknis Fase 3:**
 - Semua route AI memanggil `runAI('<feature-key>', …)` dari `lib/ai/run.ts`. Daftar feature key ada di `lib/ai/features.ts` (harus sama dengan seed di migrasi 0003).

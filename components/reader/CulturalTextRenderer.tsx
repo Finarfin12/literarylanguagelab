@@ -16,61 +16,47 @@ interface CulturalTextRendererProps {
   references: CulturalReference[];
 }
 
+// Satu regex gabungan per daftar referensi, dikompilasi sekali lalu dipakai ulang oleh
+// semua paragraf. Sebelumnya setiap paragraf membuat satu regex per referensi di setiap render.
+type CompiledRefs = { regex: RegExp; byPhrase: Map<string, CulturalReference> };
+const compiledCache = new WeakMap<CulturalReference[], CompiledRefs | null>();
+
+function compileReferences(references: CulturalReference[]): CompiledRefs | null {
+  if (compiledCache.has(references)) return compiledCache.get(references)!;
+  const usable = references.filter((r) => r.phrase && r.phrase.trim());
+  let compiled: CompiledRefs | null = null;
+  if (usable.length > 0) {
+    // Frasa terpanjang lebih dulu agar kecocokan paling panjang yang menang
+    const sorted = [...usable].sort((a, b) => b.phrase.length - a.phrase.length);
+    compiled = {
+      regex: new RegExp(`\\b(?:${sorted.map((r) => escapeRegExp(r.phrase)).join("|")})\\b`, "gi"),
+      byPhrase: new Map(sorted.map((r) => [r.phrase.toLowerCase(), r])),
+    };
+  }
+  compiledCache.set(references, compiled);
+  return compiled;
+}
+
 export default function CulturalTextRenderer({ text, references }: CulturalTextRendererProps) {
   if (!references || references.length === 0) {
     return <>{text}</>;
   }
 
-  // Create an array of parts: some are text, some are cultural reference nodes
+  const compiled = compileReferences(references);
+  if (!compiled) return <>{text}</>;
+
   const parts: React.ReactNode[] = [];
-  
-  // To avoid overlapping matches, we need a robust approach.
-  // We'll sort references by length (longest first) to match greedy.
-  const sortedRefs = [...references].sort((a, b) => b.phrase.length - a.phrase.length);
-  
-  let currentText = text;
-  
-  while (currentText.length > 0) {
-    let earliestMatchIndex = -1;
-    let matchedRef: CulturalReference | null = null;
-    let matchLength = 0;
-
-    // Find the earliest occurrence of ANY reference in currentText
-    for (const ref of sortedRefs) {
-      // Case-insensitive search, whole word matching roughly
-      const regex = new RegExp(`\\b${escapeRegExp(ref.phrase)}\\b`, "i");
-      const match = currentText.match(regex);
-      
-      if (match && match.index !== undefined) {
-        if (earliestMatchIndex === -1 || match.index < earliestMatchIndex) {
-          earliestMatchIndex = match.index;
-          matchedRef = ref;
-          matchLength = match[0].length;
-        }
-      }
-    }
-
-    if (earliestMatchIndex === -1 || !matchedRef) {
-      // No more matches found
-      parts.push(currentText);
-      break;
-    }
-
-    // Push the text before the match
-    if (earliestMatchIndex > 0) {
-      parts.push(currentText.substring(0, earliestMatchIndex));
-    }
-
-    // Push the interactive reference node
-    const matchedText = currentText.substring(earliestMatchIndex, earliestMatchIndex + matchLength);
-    parts.push(
-      <CulturalTooltip key={`${matchedRef.id}-${parts.length}`} reference={matchedRef} text={matchedText} />
-    );
-
-    // Update currentText to be the remainder
-    currentText = currentText.substring(earliestMatchIndex + matchLength);
+  let lastIndex = 0;
+  for (const match of text.matchAll(compiled.regex)) {
+    const ref = compiled.byPhrase.get(match[0].toLowerCase());
+    if (!ref || match.index === undefined) continue;
+    if (match.index > lastIndex) parts.push(text.substring(lastIndex, match.index));
+    parts.push(<CulturalTooltip key={`${ref.id}-${match.index}`} reference={ref} text={match[0]} />);
+    lastIndex = match.index + match[0].length;
   }
 
+  if (parts.length === 0) return <>{text}</>;
+  if (lastIndex < text.length) parts.push(text.substring(lastIndex));
   return <>{parts}</>;
 }
 
@@ -89,7 +75,7 @@ function CulturalTooltip({ reference, text }: { reference: CulturalReference, te
       </span>
       
       {show && (
-        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-80 z-[100] animate-in fade-in zoom-in-95 duration-200">
+        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-72 max-w-[85vw] z-[100] animate-in fade-in zoom-in-95 duration-200">
           <span className="block bg-background dark:bg-zinc-900 text-foreground text-sm border border-border shadow-2xl rounded-2xl p-5 text-left leading-relaxed font-sans">
             <span className="flex items-center gap-2 mb-2 text-amber-600 font-bold">
               <BookOpen className="w-4 h-4" /> Cultural Context

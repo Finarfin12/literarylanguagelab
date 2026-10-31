@@ -65,7 +65,8 @@ body {
 }
 
 .prose-literature p {
-  @apply mb-10 text-justify drop-shadow-sm;
+  /* drop-shadow per paragraf dihapus: mahal di-render pada teks panjang, terutama di HP */
+  @apply mb-10 text-justify;
   text-indent: 1.5em;
 }
 

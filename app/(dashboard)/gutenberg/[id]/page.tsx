@@ -56,6 +56,11 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   const closeBookmarks = useCallback(() => setBookmarkOpen(false), []);
   const [analysisSentence, setAnalysisSentence] = useState<string | null>(null);
   const [vocabContextText, setVocabContextText] = useState<string | null>(null);
+  const [jumpTo, setJumpTo] = useState<{ block: number; nonce: number } | null>(null);
+  const currentBlockRef = useRef(0);
+  const handlePositionChange = useCallback((blockIndex: number) => {
+    currentBlockRef.current = blockIndex;
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem(`gutenberg-progress-${gutenbergId}`);
@@ -67,22 +72,6 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
 
   useEffect(() => { localStorage.setItem(`gutenberg-progress-${gutenbergId}`, JSON.stringify({ bookmarks })); }, [bookmarks, gutenbergId]);
 
-  const saveProgress = useCallback(() => {
-    if (!containerRef.current) return;
-    const scroll = containerRef.current.scrollTop;
-    const max = containerRef.current.scrollHeight - containerRef.current.clientHeight;
-    const pct = max > 0 ? Math.round((scroll / max) * 100) : 0;
-    localStorage.setItem(`gutenberg-position-${gutenbergId}`, String(pct));
-  }, [gutenbergId]);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const timer = setInterval(saveProgress, 5000);
-    el.addEventListener("scroll", saveProgress, { passive: true });
-    return () => { clearInterval(timer); el.removeEventListener("scroll", saveProgress); };
-  }, [saveProgress]);
-
   useEffect(() => {
     async function loadBook() {
       try {
@@ -92,12 +81,6 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
           setBookBlocks(cachedData.blocks as BookBlock[]);
           setCached(true);
           setLoading(false);
-          const saved = localStorage.getItem(`gutenberg-position-${gutenbergId}`);
-          if (saved && containerRef.current) {
-            const pct = parseInt(saved);
-            const max = containerRef.current.scrollHeight - containerRef.current.clientHeight;
-            containerRef.current.scrollTop = (pct / 100) * max;
-          }
           return;
         }
 
@@ -135,33 +118,6 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
     loadBook();
   }, [gutenbergId]);
 
-  useEffect(() => {
-    if (!loading && bookBlocks.length > 0 && containerRef.current) {
-      const saved = localStorage.getItem(`gutenberg-position-${gutenbergId}`);
-      if (saved) {
-        const pct = parseInt(saved);
-        const max = containerRef.current.scrollHeight - containerRef.current.clientHeight;
-        containerRef.current.scrollTop = Math.min((pct / 100) * max, max);
-      }
-    }
-  }, [loading, bookBlocks, gutenbergId]);
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    const handleSelectionChange = () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        handleTextSelect();
-      }, 500); // 500ms debounce
-    };
-    
-    document.addEventListener("selectionchange", handleSelectionChange);
-    return () => {
-      document.removeEventListener("selectionchange", handleSelectionChange);
-      clearTimeout(timer);
-    };
-  }, []); // Run once to attach listener, handleTextSelect captures current refs
-
   const handleTextSelect = () => {
     const sel = window.getSelection();
     if (!sel || !sel.toString().trim() || !containerRef.current) {
@@ -174,9 +130,31 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
     const range = sel.getRangeAt(0);
     const rect = range.getBoundingClientRect();
     const containerRect = containerRef.current.getBoundingClientRect();
-    setSelection({ text, position: Math.round(containerRef.current.scrollTop) });
+    const blockEl = sel.anchorNode?.parentElement?.closest("[data-block-idx]");
+    const position = blockEl ? Number(blockEl.getAttribute("data-block-idx")) : currentBlockRef.current;
+    setSelection({ text, position });
     setSelectionCoords({ x: rect.left + rect.width / 2 - containerRect.left, y: rect.top - containerRect.top - 10 });
   };
+
+  // Listener seleksi dipasang sekali; ref memastikan versi handler terbaru yang dipanggil
+  const handleTextSelectRef = useRef(handleTextSelect);
+  useEffect(() => {
+    handleTextSelectRef.current = handleTextSelect;
+  });
+  const onTextSelect = useCallback(() => handleTextSelectRef.current(), []);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    const handleSelectionChange = () => {
+      clearTimeout(timer);
+      timer = setTimeout(onTextSelect, 500); // 500ms debounce
+    };
+    document.addEventListener("selectionchange", handleSelectionChange);
+    return () => {
+      document.removeEventListener("selectionchange", handleSelectionChange);
+      clearTimeout(timer);
+    };
+  }, [onTextSelect]);
 
   const addHighlight = () => {
     if (!selection) return;
@@ -206,8 +184,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   };
 
   const goToPosition = (position: number) => {
-    if (!containerRef.current) return;
-    containerRef.current.scrollTop = position;
+    setJumpTo({ block: position, nonce: Date.now() });
     setBookmarkOpen(false);
   };
 
@@ -216,14 +193,10 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   };
 
   const handleGenerateVocab = () => {
-    if (!containerRef.current || bookBlocks.length === 0) return;
-    
-    // Estimate current block index based on scroll
-    const container = containerRef.current;
-    const scrollRatio = container.scrollTop / Math.max(1, container.scrollHeight - container.clientHeight);
-    
-    // Grab ~50 blocks around the current position
-    const approxIndex = Math.floor(scrollRatio * bookBlocks.length);
+    if (bookBlocks.length === 0) return;
+
+    // Ambil ~50 blok di sekitar posisi baca saat ini
+    const approxIndex = currentBlockRef.current;
     const startIndex = Math.max(0, approxIndex - 5);
     const endIndex = Math.min(bookBlocks.length, startIndex + 50);
     
@@ -254,34 +227,36 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   }
 
   return (
-    <div className="max-w-4xl mx-auto bg-card min-h-screen border-x border-border shadow-2xl relative animate-in fade-in duration-1000">
-      <div className="sticky top-0 bg-card/90 backdrop-blur-md border-b border-border p-4 pr-24 sm:pr-32 flex items-center justify-between z-10 shadow-sm">
-        <Link href="/gutenberg" className="p-2 bg-muted hover:bg-orange-500 hover:text-white rounded-full transition-colors shrink-0">
+    <div className="max-w-4xl mx-auto bg-card min-h-screen lg:border-x border-border relative">
+      <div className="sticky top-0 bg-card border-b border-border px-3 py-2 md:p-4 pr-24 sm:pr-32 flex items-center justify-between z-10">
+        <Link href="/gutenberg" aria-label="Kembali ke pencarian" className="p-2.5 bg-muted hover:bg-orange-500 hover:text-white rounded-full transition-colors shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1 text-center truncate px-4">
-          <h1 className="font-serif font-bold text-lg truncate">{bookMeta.title}</h1>
+          <h1 className="font-serif font-bold text-base md:text-lg truncate">{bookMeta.title}</h1>
           <p className="text-xs text-muted-foreground uppercase tracking-widest truncate">{bookMeta.author}</p>
         </div>
         <div className="flex items-center gap-1 shrink-0">
           <TopActions className="hidden sm:flex items-center gap-1 mr-2" />
           {cached && <Check className="w-4 h-4 text-brand" />}
-          <button onClick={handleGenerateVocab} className="p-2 bg-brand/10 text-brand rounded-xl hover:bg-brand/20 transition-colors" title="Generate Chapter Vocab">
+          <button onClick={handleGenerateVocab} className="p-2.5 bg-brand/10 text-brand rounded-xl hover:bg-brand/20 transition-colors" title="Generate Chapter Vocab" aria-label="Kosa kata bab ini">
             <BrainCircuit className="w-4 h-4" />
           </button>
-          <button onClick={() => setBookmarkOpen(!bookmarkOpen)} className="p-2 bg-muted rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-brand">
+          <button onClick={() => setBookmarkOpen(!bookmarkOpen)} className="p-2.5 bg-muted rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-brand" aria-label="Bookmark">
             <BookmarkPlus className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      <div className="flex-1 relative overflow-hidden flex flex-col h-[calc(100vh-73px)]" ref={containerRef}>
+      <div className="flex-1 relative overflow-hidden flex flex-col h-[calc(100dvh-57px-4rem)] md:h-[calc(100dvh-73px-4rem)] lg:h-[calc(100dvh-73px)]" ref={containerRef}>
         <TextDisplay 
           textId={`gutenberg_${gutenbergId}`}
           title={bookMeta.title}
           author={bookMeta.author}
           blocks={bookBlocks}
-          onTextSelect={handleTextSelect}
+          onTextSelect={onTextSelect}
+          onPositionChange={handlePositionChange}
+          jumpTo={jumpTo}
         />
         
         {selectionCoords && selection && (

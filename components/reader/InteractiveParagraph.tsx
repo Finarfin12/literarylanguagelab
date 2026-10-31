@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer";
 import { Loader2 } from "lucide-react";
 
@@ -20,7 +20,7 @@ interface InteractiveParagraphProps {
   onSentenceInspect?: (sentence: string) => void;
 }
 
-export default function InteractiveParagraph({
+function InteractiveParagraph({
   text,
   culturalRefs,
   isBeginnerMode,
@@ -47,12 +47,13 @@ export default function InteractiveParagraph({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Intersection Observer for lazy loading
+  // Intersection Observer untuk lazy-load teks sederhana. Hanya dibuat saat Beginner Mode
+  // aktif agar halaman panjang tidak membawa ratusan observer yang tidak dipakai.
   useEffect(() => {
+    if (!isBeginnerMode || isVisible) return;
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
         setIsVisible(true);
-        // Only observe once until it becomes visible
         observer.disconnect();
       }
     }, { rootMargin: "200px" });
@@ -61,7 +62,7 @@ export default function InteractiveParagraph({
       observer.observe(containerRef.current);
     }
     return () => observer.disconnect();
-  }, []);
+  }, [isBeginnerMode, isVisible]);
 
   // Fetch Simplified Text
   useEffect(() => {
@@ -257,3 +258,5 @@ export default function InteractiveParagraph({
     </div>
   );
 }
+
+export default memo(InteractiveParagraph);
