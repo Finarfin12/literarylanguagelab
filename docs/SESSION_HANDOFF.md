@@ -4,21 +4,21 @@
 
 | Fase | Status | Commit |
 |---|---|---|
-| 0 Keamanan | Selesai, di-merge ke `main` (PR #2). Migrasi 0000–0002 **belum dijalankan** di Supabase | `1ea3ceb`, `993914e` |
+| 0 Keamanan | Selesai, di-merge ke `main` (PR #2). Migrasi 0000–0002 **sudah dijalankan** di Supabase | `1ea3ceb`, `993914e` |
 | 1 Hapus gamifikasi | Selesai di `main` (lokal) | lihat `git log` |
-| 3 Registry provider AI + tab admin AI | Selesai di `main` (lokal). Migrasi 0003 **belum dijalankan** | lihat `git log` |
+| 3 Registry provider AI + tab admin AI | Selesai di `main` (lokal). Migrasi 0003 **sudah dijalankan** | lihat `git log` |
 | 4 OCR Qwen | Selesai di kode. Uji 10 foto belum (butuh GROQ_API_KEY) | lihat `git log` |
 | 2 Tampilan & mobile | Selesai di kode. Audit visual di HP belum, lihat `docs/mobile-audit.md` | lihat `git log` |
 | 5 MCP | **Dibatalkan** oleh pemilik (31 Okt 2026). Kolom `mcp_server_ids` di `ai_feature_routes` dibiarkan, tidak dipakai | — |
-| 6 Tab admin lainnya | Selesai di kode. Migrasi 0004 **belum dijalankan** | lihat `git log` |
-| 7 Fitur belajar + reader ringan | Selesai di kode. Migrasi 0005 **belum dijalankan**; 0009 hanya ditulis | lihat `git log` |
+| 6 Tab admin lainnya | Selesai di kode. Migrasi 0004 **sudah dijalankan** | lihat `git log` |
+| 7 Fitur belajar + reader ringan | Selesai di kode. Migrasi 0005 **sudah dijalankan**; 0009 hanya ditulis | lihat `git log` |
 
 **Berikutnya: v3** — PRD, implementation plan (Fase 8–11; mode kelas dibatalkan), dan handoff untuk sesi coding (Claude Sonnet 5) ada di [`docs/v3/`](v3/). Mulai sesi baru dengan "Prompt pembuka" di [`docs/v3/HANDOFF.md`](v3/HANDOFF.md). Prasyarat: migrasi `0000`–`0005` sudah dijalankan.
 
 **Keputusan pemilik:** Q1 = forum, clubs, messages, jejaring pembaca **tetap ada** (tanpa poin). Q2 = Latihan Harian dan Weekly (Writing) Challenge **dihapus** (berbeda dari asumsi default PRD). Q3–Q5 memakai default.
 
 **Yang harus dilakukan pemilik sebelum deploy:**
-1. Jalankan berurutan di Supabase SQL Editor: `supabase/migrations/0000` … `0005`. **Jangan** jalankan `0009_drop_gamification.sql` sebelum v2 stabil ≥ 2 minggu dan database sudah di-backup.
+1. ~~Jalankan migrasi `0000` … `0005`~~ — **sudah dijalankan** (dikonfirmasi pemilik 31 Okt 2026). `0009_drop_gamification.sql` **belum** dijalankan dan memang belum boleh: tunggu v2 stabil ≥ 2 minggu dan database sudah di-backup.
 2. Isi env `AI_SECRETS_KEY` (32 byte base64, mis. `openssl rand -base64 32`) dan pastikan `SUPABASE_SERVICE_ROLE_KEY` ada. Tanpa keduanya semua fitur AI tetap jalan lewat `GROQ_API_KEY`, tapi registry dari admin tidak dipakai.
 3. Uji Fase 3: tambah provider di `/admin/providers` → "Ambil dari provider" di `/admin/models` → pilih model untuk `translation` di `/admin/routing` → coba Translation Workshop.
 
