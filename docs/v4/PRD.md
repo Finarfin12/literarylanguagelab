@@ -7,7 +7,7 @@
 | **Pemilik** | finarfin112 |
 | **Dokumen terkait** | [DESIGN.md](DESIGN.md) (**sistem desain — acuan visual tunggal**), [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md), [HANDOFF.md](HANDOFF.md), [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) (daftar periksa wajib), PRD v3: [../v3/PRD.md](../v3/PRD.md) |
 | **Mockup** | Kanvas desain pribadi pemilik: https://claude.ai/artifact/LSVnAAWiTKUCJKhjUnd6Zx (Beranda desktop, Beranda HP, Membaca + Word Lookup HP, Tongkat Ajaib HP) |
-| **Prasyarat** | v3 Fase 8–11 selesai di kode (commit `5ff2160`). Migrasi `0006`–`0010` dijalankan pemilik. |
+| **Prasyarat** | v3 Fase 8–11 selesai di kode (commit `5ff2160`, ditambah `dc29ee3`: LingoWise di Sidebar desktop). Migrasi `0006`–`0010` dijalankan pemilik. |
 
 ---
 
@@ -30,7 +30,7 @@ v3 menambah onboarding, jalur pemula, level per keterampilan, dan jalur penerjem
 | # | Prinsip |
 |---|---|
 | P1 | **Redesign hanya mengubah tampilan.** Tidak ada fitur yang dihapus, digabung diam-diam, atau dikurangi perilakunya. [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) adalah daftar periksa wajib: setiap baris tetap ada dan bisa dijangkau setelah redesign, di desktop dan HP. |
-| P2 | Perubahan perilaku hanya yang **disebut eksplisit** di PRD ini: Tongkat Ajaib bisa digeser (§5.4), pintu masuk LingoWise di desktop (§5.2), lima route API yang belum dipakai dihidupkan (§5.5), dan fitur baru Kursus Dasar (§6). |
+| P2 | Perubahan perilaku hanya yang **disebut eksplisit** di PRD ini: Tongkat Ajaib bisa digeser (§5.4), pintu masuk LingoWise di desktop (§5.2), lima route API yang belum dipakai dihidupkan (§5.5), pengayaan Kosakata Inti (§6.5), service worker PWA yang hilang dibuat (K9), dan fitur baru Kursus Dasar (§6). |
 | P3 | Tidak ada gamifikasi (XP, streak, peringkat) — keputusan v2. |
 | P4 | Semua tema tetap: terang, gelap, sepia (reader), kontras tinggi, font disleksia, ukuran/jarak/lebar teks. |
 
@@ -86,8 +86,8 @@ Aturan:
 - **Satu item boleh muncul di lebih dari satu ruang** (mis. Glossary di Ruang Terjemah dan Koleksi) — tidak ada yang dipindah sampai hilang.
 - Ruang sesuai `learning_goal` pengguna tampil pertama dan ditandai "Tujuanmu"; ruang lain tetap terbuka.
 - **Toolkits Hub** (`/tools`) tetap ada sebagai "Semua alat" dengan pencarian & filter.
-- **LingoWise AI** mendapat pintu masuk di desktop (temuan K1 inventaris).
-- Bottom nav HP: Beranda · Baca · Belajar · Terjemah · Menu. "Kosakata" dan "Alat" tetap terjangkau ≤ 2 ketukan (Beranda → Kosa Kata Hari Ini; Menu → Koleksi saya / Semua alat). Pemilik bisa memilih mempertahankan bottom nav lama di Fase 13 (Q1).
+- **LingoWise AI** sudah punya pintu masuk di Sidebar desktop (`dc29ee3`, K1 selesai); susunan baru harus mempertahankannya.
+- Bottom nav HP (**Q1 diputuskan**): **Beranda · Baca · Kosakata · Ruang · Menu.** Kebiasaan harian di HP adalah Baca → Simpan kata → Ulangi, jadi Kosakata satu ketukan. "Ruang" membuka halaman tiga ruang, sehingga Belajar Dasar dan Terjemah terjangkau dua ketukan; Alat lewat Menu → Semua alat.
 
 ### 5.3 Halaman yang di-redesign
 
@@ -156,9 +156,12 @@ Detail perbaikan: IMPLEMENTATION_PLAN Fase 14f.
 - Peringkat dan level yang sudah ada tidak berubah. Lisensi CC BY-SA 4.0; atribusi di /help diperluas.
 - Detail: Fase 14g di IMPLEMENTATION_PLAN.
 
-### 6.6 Paket konten awal
+### 6.6 Paket konten awal (dikerjakan terakhir)
 
-- Minimal **10 bacaan per level A1 dan A2** dibuat admin lewat Admin → Konten (AI → draft → tinjau → terbit) sebelum Kursus Dasar dirilis. Ini pekerjaan operasional pemilik, dibantu alat yang sudah ada.
+- **Keputusan pemilik:** konten dibuat **paling akhir**, setelah kode Fase 15–17 selesai (Fase 18).
+- **20 bacaan asli** (10 A1, 10 A2) sesuai tema unit, plus isi langkah ke-12 unit, **ditulis oleh sesi Claude** sebagai migrasi seed berstatus draft. Pemilik hanya meninjau, mengedit bila perlu, lalu menerbitkan di Admin → Konten.
+- Sampai konten siap, Kursus Dasar **disembunyikan** dari pengguna biasa dengan feature flag `kursus_dasar` (admin tetap bisa mencoba). Fitur lain — Kosakata Inti, Grammar Dasar, bacaan berjenjang — tidak terpengaruh.
+- Pemilik menyalakan flag setelah minimal unit 0–5 lengkap.
 
 ---
 
@@ -176,7 +179,7 @@ Detail perbaikan: IMPLEMENTATION_PLAN Fase 14f.
 
 | # | Pertanyaan | Asumsi default |
 |---|---|---|
-| Q1 | Bottom nav HP baru (Beranda · Baca · Belajar · Terjemah · Menu) atau lama (Beranda · Baca · Kosakata · Alat · Menu)? | Baru, dengan Kosakata & Alat tetap ≤ 2 ketukan |
+| Q1 | ~~Bottom nav HP?~~ | **Diputuskan:** Beranda · Baca · Kosakata · Ruang · Menu (§5.2) |
 | Q2 | ~~Pasangan huruf final?~~ | **Diputuskan:** Michelangelus (`local()`) + cadangan Alegreya, dengan Source Sans 3 (DESIGN.md §2) |
 | Q3 | Daftar & urutan 12 unit Kursus Dasar? | Seperti §6.2; pemilik boleh mengubah |
 | Q4 | Unit dikunci berurutan atau bebas? | Bebas, hanya disarankan |

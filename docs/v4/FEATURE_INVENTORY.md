@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Dibuat** | 31 Oktober 2026, dari kode di commit `5ff2160` (Fase 11) |
+| **Dibuat** | 31 Oktober 2026, dari kode di commit `5ff2160` (Fase 11). Diperbarui 1 November 2026: `dc29ee3` (LingoWise di Sidebar desktop) |
 | **Tujuan** | Daftar periksa wajib untuk redesign v4. **Setiap baris di dokumen ini harus tetap ada dan berfungsi sama setelah redesign.** |
 | **Aturan pemilik** | Redesign hanya mengubah tampilan. **Tidak ada fitur yang dihapus, digabung diam-diam, atau dikurangi perilakunya.** Satu-satunya perubahan perilaku yang diminta: tombol Tongkat Ajaib di reader bisa digeser (lihat PRD v4). |
 
@@ -21,7 +21,7 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 | Halaman Menu HP: profil + inbox pesan (badge belum dibaca), pencarian fitur, grup Utama, semua grup menu, grup Admin (khusus admin), Settings, Bantuan, toggle tema, Logout | `app/(dashboard)/menu/page.tsx` | |
 | TopActions: Inbox Pesan, Pusat Bantuan | `components/TopActions.tsx`, `components/HelpButton.tsx` | |
 | Tema terang/gelap | `components/ThemeProvider.tsx` (next-themes) | Mockup v4 baru menggambar tema terang; **tema gelap wajib dirancang juga** |
-| PWA: install, service worker, cache buku offline (IndexedDB) | `components/PwaRegister.tsx`, `utils/indexeddb.ts`, `app/manifest*` | |
+| PWA: install, service worker, cache buku offline (IndexedDB) — **service worker belum ada** (K9), dibuat di 14e; baris ini baru bisa dicentang sesudahnya | `components/PwaRegister.tsx`, `utils/indexeddb.ts`, `app/manifest*`, `public/sw.js` (14e) | |
 | Animasi halaman (hormati `prefers-reduced-motion` dan preferensi `enable_animations`) | `components/AnimatedPage.tsx` | |
 | Proxy auth & rate limit, feature flag | `proxy.ts`, `lib/rate-limit.ts`, `lib/ai/flags.ts` | Bukan UI, jangan disentuh redesign |
 
@@ -159,11 +159,12 @@ Ringkasan, Pengguna (cari, filter, role, ban/unban/hapus, link pemakaian), Provi
 
 | # | Temuan | Tindakan di v4 |
 |---|---|---|
-| K1 | **LingoWise AI tidak punya pintu masuk di desktop**: tidak ada di Sidebar maupun Toolkits Hub (hanya di Menu HP). | Tambahkan ke navigasi desktop (ruang Analisis Sastra). |
+| K1 | ~~LingoWise AI tidak punya pintu masuk di desktop~~ — **selesai** di `dc29ee3` (tombol di Sidebar). | Fase 13: bawa tombol ke susunan Sidebar baru (Ruang II). |
 | K2 | Route API tanpa pemanggil di UI: `/api/analyze-tone`, `/api/detect-idioms`, `/api/gutenberg/search` (halaman memanggil Gutendex langsung), `/api/wotd` (Sidebar memakai daftar lokal), `/api/auth/delete-account` (Pengaturan memakai RPC `delete_user`). | **Jangan dihapus — perbaiki dan pakai** (keputusan pemilik). Langkahnya: Fase **14f** di IMPLEMENTATION_PLAN. |
 | K3 | Bottom nav HP di mockup v4 berbeda dari yang sekarang. | Semua tujuan lama (Beranda, Baca, Kosakata, Alat, Menu) harus tetap bisa dijangkau ≤ 2 ketukan. |
 | K4 | Mockup v4 baru menggambar tema terang; reader punya tema **sepia**, **gelap**, dan **kontras tinggi**. | Rancang ketiganya; jangan hilangkan pilihan tema. |
 | K6 | Hapus akun di Pengaturan memanggil RPC `delete_user` yang tidak ada di migrasi mana pun; FK `profiles.id → auth.users` di baseline tanpa `ON DELETE CASCADE`. | Diperbaiki di 14f (pakai `/api/auth/delete-account` + migrasi `0011`). |
 | K7 | Ekspor CSV "translations" di Pengaturan membaca tabel `translation_submissions` yang tidak ada di migrasi. | Diperbaiki di 14f. |
 | K8 | `/api/detect-idioms` tidak memakai AI tetapi mencatat ke `ai_usage_logs` lewat `checkRateLimit` (memakan kuota AI & mengacaukan statistik Ringkasan). | Diperbaiki di 14f. |
+| K9 | `PwaRegister.tsx` mendaftarkan `/sw.js` yang tidak ada (build Turbopack tidak membuatnya); pendaftaran gagal diam-diam. | Cara A (keputusan pemilik): tulis `public/sw.js` manual + halaman `/offline` di 14e. |
 | K5 | Preferensi `offline_mode`, `preload_next_text`, `auto_save`, `auto_add_vocab`, `default_mastery`, `cards_per_session` ada di Pengaturan. | Tetap tampil di Pengaturan setelah redesign. |

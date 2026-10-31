@@ -5,7 +5,7 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v3. (Fase 12 di v3 — mode
 **Aturan umum** (lengkapnya di [HANDOFF.md](HANDOFF.md); semua keputusan visual di [DESIGN.md](DESIGN.md))
 - **P1: hanya tampilan yang berubah.** Sebelum dan sesudah setiap fase redesign, buka [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) dan centang baris yang disentuh. Menghapus elemen UI yang memicu fitur = bug, walaupun fiturnya masih ada di kode.
 - Pola dari v2/v3 tetap wajib (`runAI`, guard admin, `logAdminAction`, `components/ui/*`, `ResponsivePanel`, fallback sebelum migrasi).
-- Migrasi baru mulai `0011` (`0011` = perbaikan cascade profil di 14f; Fase 15–17 memakai `0012`–`0014`; `0015` = pengayaan Kosakata Inti di 14g). Ditulis, tidak dijalankan.
+- Migrasi baru mulai `0011` (`0011` = perbaikan cascade profil di 14f; Fase 15–17 memakai `0012`–`0014`; `0015` = pengayaan Kosakata Inti di 14g; `0016` = konten Kursus Dasar di Fase 18). Ditulis, tidak dijalankan.
 - Verifikasi tiap fase: `npx tsc --noEmit`, lint tanpa temuan baru vs HEAD, build di path pendek, uji unit untuk logika murni, **halaman uji visual sementara** (di salinan build, bukan di repo) untuk komponen yang diubah, di 375px dan 1280px, tema terang dan gelap.
 
 ## Ringkasan fase
@@ -19,8 +19,13 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v3. (Fase 12 di v3 — mode
 | 15 | Mesin latihan terstruktur + review grammar | 4–5 hari | 12 (memakai 14g bila sudah ada) |
 | 16 | Kursus Dasar: unit A0–A2 | 4–5 hari | 15, 14a |
 | 17 | Modul khas penutur Indonesia | 2–3 hari | 15 |
+| 18 | Paket konten Kursus Dasar (20 bacaan + isi 12 unit) — **terakhir** | 2–3 hari | 15, 16, 17, 14g |
 
-Fase 15 menyentuh file yang berbeda dari 13–14 dan bisa dikerjakan paralel setelah Fase 12.
+**Urutan kerja yang disepakati:** **14g → 12 → 13 → (titik henti) → 14a–14f → 15 → 16 → 17 → 18.**
+- **14g dulu**: kecil, tidak bergantung pada fase lain, datanya sudah ada, langsung terasa manfaatnya.
+- **Titik henti setelah 13**: pemilik mencoba navigasi baru dan memutuskan lanjut ke redesign besar 14a–14e (estimasi total v4 ±28–36 hari).
+- **Konten Kursus Dasar paling akhir** (Fase 18). Selama belum ada, Kursus Dasar disembunyikan dengan flag `kursus_dasar`; fitur lain tidak terpengaruh.
+- Fase 15 menyentuh file yang berbeda dari 13–14 dan secara teknis bisa paralel setelah Fase 12.
 
 ---
 
@@ -33,6 +38,7 @@ Fase 15 menyentuh file yang berbeda dari 13–14 dan bisa dikerjakan paralel set
 - Hitung kontras setiap pasangan teks/latar utama di kedua tema dengan skrip kecil (`tests/contrast.test.mts`, rumus WCAG relative luminance) — semua ≥ 4.5:1 untuk teks normal.
 
 **12.2 Huruf** (`app/layout.tsx`, `app/globals.css`) — ikuti DESIGN.md §2
+- **Setel dengan Alegreya.** Michelangelus hanya terlihat oleh pengguna yang sudah memasangnya (mis. pengguna Microsoft 365); hampir semua pengguna melihat Alegreya. Ukuran, tinggi baris, dan tata letak disetel dan diuji dengan Alegreya; Michelangelus diuji sebagai variasi (tidak boleh membuat teks terpotong atau melimpah).
 - `next/font/google`: ganti `Inter` → `Source_Sans_3` dengan variabel **`--font-sans`** (nama sama); ganti `Merriweather` → `Alegreya` dengan variabel **`--font-alegreya`**.
 - **Michelangelus hanya lewat `local()`**: tambahkan 4 `@font-face` (`Michelangelus Local`, 400/700 × normal/italic, `src: local("Michelangelus"), local("Michelangelus Regular"), …`) di `globals.css`, lalu `--font-serif: "Michelangelus Local", var(--font-alegreya), Georgia, serif;`. **Jangan** menaruh file Michelangelus di repo/`public/`, jangan `next/font/local`, jangan konversi WOFF (lisensi; DESIGN.md §2.2).
 - Cek `prose-literature`, judul serif, dan pilihan font reader (`serif`/`sans-serif`/`dyslexic`) tetap bekerja; uji visual dua kali: di perangkat **dengan** Michelangelus terpasang dan **tanpa** (hasilnya Alegreya).
@@ -43,7 +49,14 @@ Fase 15 menyentuh file yang berbeda dari 13–14 dan bisa dikerjakan paralel set
 - Tambah komponen gaya katalog bila perlu: `SectionHeading` (judul bagian seperti bab), `Eyebrow` (label kapital kecil), `BookSpine` (sampul sederhana untuk bacaan).
 
 **12.4 Pembersihan gaya dekoratif global**
-- Cari & ganti pola dekoratif umum di seluruh `app/` dan `components/`: `shadow-[0_0_*rgba(...)]` (glow), `bg-gradient-to-*` dekoratif, `backdrop-blur-*` pada kartu, `hover:-translate-y-1`, `animate-pulse` dekoratif. **Hanya kelas gaya**; jangan menghapus elemen, handler, atau teks. Daftar file yang diubah masuk laporan.
+Dikerjakan dengan **skrip pengganti**, bukan edit manual satu per satu:
+- `scripts/v4-restyle.mjs` (di repo, boleh dihapus setelah v4): membaca daftar aturan `pola → pengganti`, mengganti **hanya di dalam string `className`/`cn(...)`** di `app/` dan `components/`, lalu menulis laporan `docs/v4/restyle-report.md` (per file: kelas lama → baru, jumlah).
+- Aturan:
+  - Dekoratif → hapus kelasnya: `shadow-[0_0_*rgba(...)]` (glow), `bg-gradient-to-*`/`from-*`/`via-*`/`to-*` dekoratif, `backdrop-blur-*` pada kartu, `hover:-translate-y-*`, `animate-pulse` dekoratif.
+  - **Warna kategori/neon** (`purple`, `emerald`, `orange`, `rose`, `pink`, `violet`, `fuchsia`, `cyan`, `indigo`, `teal`, `sky`, `lime`, `blue`, `green`, `amber`, `yellow`, `red` dengan angka) → token semantik menurut **DESIGN.md §3.4**. Saat ini ±50 file memakainya.
+  - **Pengecualian (jangan disentuh skrip):** warna yang membawa informasi — warna sorotan pilihan pengguna, pemilih warna anotasi, warna kelas kata/analisis kalimat, diff, seri grafik, tema reader. Skrip melewati file/baris yang ada di daftar pengecualian dan mencantumkannya di laporan untuk ditinjau di sub-fase 14.
+- Mode `--dry-run` menulis laporan tanpa mengubah file. Jalankan dry-run → tinjau laporan → jalankan sungguhan → **periksa sampel** ±15 file (yang paling banyak berubah + satu per bagian inventaris) di halaman uji.
+- **Hanya kelas gaya**; jangan menghapus elemen, handler, atau teks.
 
 **Selesai jika:** kedua tema memakai palet baru dengan kontras teruji; huruf baru aktif di seluruh aplikasi; komponen dasar restyled tanpa perubahan props; tidak ada glow/gradasi dekoratif tersisa (grep di laporan); semua baris inventaris bagian A tetap berfungsi; build lulus.
 
@@ -60,13 +73,19 @@ Fase 15 menyentuh file yang berbeda dari 13–14 dan bisa dikerjakan paralel set
 
 **13.3 Sidebar desktop & Menu HP**
 - `components/Sidebar.tsx`: Beranda → Ruang I–III → Koleksi saya → Komunitas → Semua alat (`/tools`) → Admin (khusus admin). Pertahankan: collapse, tema, Word of the Day, kartu pengguna, Settings, Sign Out, badge.
-- **Tambah LingoWise AI** di Ruang II (temuan K1).
+- **LingoWise AI** sudah punya tombol di Sidebar desktop (`dc29ee3`, K1 selesai). Bawa tombol itu ke susunan baru: masuk Ruang II dan tetap terjangkau dari Sidebar.
 - `app/(dashboard)/menu/page.tsx`: susunan sama dengan Sidebar; pencarian tetap mencari **semua** item.
 
 **13.4 Bottom nav HP** (`components/MobileBottomNav.tsx`)
-- Sesuai keputusan Q1 (default: Beranda · Baca · Belajar · Terjemah · Menu). Status aktif per path tetap. Pastikan Kosakata & Alat ≤ 2 ketukan.
+- **Q1 diputuskan:** **Beranda · Baca · Kosakata · Ruang · Menu.** Alasannya: kebiasaan harian di HP adalah Baca → Simpan kata → Ulangi, jadi Kosakata/Review harus satu ketukan.
+  - "Ruang" membuka halaman daftar tiga ruang (`/ruang`, baru: tiga kartu ruang + Koleksi + Komunitas). Belajar Dasar dan Terjemah terjangkau dua ketukan lewat sini.
+  - Alat tetap ≤ 2 ketukan (Menu → Semua alat). Status aktif per path tetap; "Ruang" aktif untuk `/ruang/*`.
 
-**Selesai jika:** uji `menu-coverage` lulus; ketiga halaman ruang tampil berurutan; LingoWise terjangkau dari desktop; setiap item inventaris terjangkau ≤ 2 ketukan dari navigasi (catat jalurnya di laporan); build lulus.
+**13.5 Keputusan lama yang dibawa ke fase ini**
+- **Menu utama ≤ 30 item:** tandai 5 alat tambahan sebagai `advanced: true` sehingga pindah ke grup "Lainnya" (tetap ada dan bisa dicari). Usulkan daftar 5 alat di laporan (pilih yang paling jarang dipakai menurut `ai_usage_logs` bila datanya bisa dicek; jika tidak, yang paling khusus) dan **tanyakan pemilik sebelum commit**. `menu-coverage` harus tetap lulus.
+- **Cookie penanda onboarding:** saat onboarding selesai, set cookie `lll_onboarded=1` (httpOnly, 1 tahun). Pemeriksaan onboarding di layout/`proxy.ts` melewati query `profiles` bila cookie ada; tanpa cookie, perilaku lama (query) tetap, lalu cookie diset jika profil sudah selesai onboarding. Logout menghapus cookie. Tidak ada perubahan perilaku bagi pengguna.
+
+**Selesai jika:** uji `menu-coverage` lulus; ketiga halaman ruang + `/ruang` tampil berurutan; LingoWise terjangkau dari desktop di susunan baru; bottom nav sesuai Q1; ≤ 30 item di menu utama (daftar 5 alat disetujui pemilik); cookie onboarding mengurangi satu query per halaman; setiap item inventaris terjangkau ≤ 2 ketukan dari navigasi (catat jalurnya di laporan); build lulus.
 
 ---
 
@@ -88,6 +107,12 @@ Kerjakan per sub-fase; **satu commit per sub-fase**. Di setiap sub-fase: ubah ma
 **14d — Sastra & Terjemah** (inventaris F, G): tools hub, `tools/[id]` (28 alat + "Coba dengan contoh"), tone-analyzer (2 mode), lingowise (8 mode), alter-ego, cultural-context, annotations, history, translation-workshop (5 mode + teknik), translation-workspace, translation-memory, comparator, untranslatables, parallel-text, timelapse.
 
 **14e — Komunitas, profil, pengaturan, bantuan, admin, auth** (inventaris B, H, I, J): forum, clubs, community, messages, community-annotations, `p/[username]`, profile, settings (**semua** bagian & preferensi, termasuk ekspor CSV, hapus akun, Developer Tools), help + Liter-AI, 9 tab admin, login/register/OAuth, landing.
+- **PWA (temuan K9, cara A — keputusan pemilik):** `components/PwaRegister.tsx` mendaftarkan `/sw.js`, tetapi file itu tidak ada (build Turbopack tidak membuatnya), jadi pendaftaran selalu gagal diam-diam. Tulis **`public/sw.js` manual** tanpa plugin build:
+  - pre-cache halaman cadangan `/offline` (baru, sederhana: "Kamu sedang offline; buku yang sudah diunduh bisa dibuka dari Koleksi") dan ikon/manifest;
+  - navigasi: network-first, jatuh ke cache lalu `/offline`; aset statis `/_next/static/*`: cache-first; **jangan** meng-cache `/api/*`, respons Supabase, atau halaman yang butuh login;
+  - versi cache di konstanta (`CACHE = "lll-v1"`), hapus cache lama di `activate`.
+  - Cache buku offline tetap memakai IndexedDB (`utils/indexeddb.ts`) seperti sekarang.
+  - Uji: build → DevTools Application menunjukkan SW aktif; mode offline membuka `/offline` dan buku yang diunduh. Baris PWA inventaris bisa dicentang setelah ini.
 
 **14f — Lima route API: perbaiki & pakai** (keputusan pemilik, temuan K2 di inventaris)
 
@@ -228,7 +253,13 @@ create table if not exists grammar_progress (
 
 **16.3 Admin**: kelola unit & langkah di Admin → Konten (pilih kata, topik, teks, soal).
 
-**Selesai jika:** 12 unit tampil; satu unit contoh lengkap end-to-end (pemilik mengisi kontennya); progres tersimpan di database; `next-step` menyarankan unit berikutnya; uji unit `course.ts` lulus; build lulus.
+**16.4 Disembunyikan sampai konten siap** (keputusan pemilik: konten di Fase 18)
+- Feature flag **`kursus_dasar`** (sistem flag v2, `lib/ai/flags.ts`). Karena key yang belum terdaftar dianggap aktif, `0013` menulis `kursus_dasar: false` ke `system_config.features` **hanya jika key belum ada** (`jsonb ||` dengan pengecekan `?`).
+- Flag mati: item Kursus Dasar tidak tampil di Ruang I, menu, pencarian menu, dan `next-step` bagi pengguna biasa; `/kursus` menampilkan "Segera hadir" untuk pengguna biasa. **Admin tetap bisa membuka dan mencoba** (dengan label "Pratinjau admin").
+- Sebelum `0013` dijalankan (tabel belum ada) perilakunya sama dengan flag mati.
+- `menu-coverage`: item Kursus Dasar tetap terdaftar di Ruang I (uji tidak boleh gagal karena flag).
+
+**Selesai jika:** 12 unit tampil untuk admin; **satu unit contoh** lengkap end-to-end (konten contoh ditulis sesi ini, cukup untuk menguji; konten penuh di Fase 18); flag `kursus_dasar` menyembunyikan kursus dari pengguna biasa; progres tersimpan di database; `next-step` menyarankan unit berikutnya; uji unit `course.ts` lulus; build lulus.
 
 ---
 
@@ -242,6 +273,29 @@ create table if not exists grammar_progress (
 
 ---
 
+## Fase 18 — Paket konten Kursus Dasar (terakhir)
+
+Dikerjakan **setelah kode Fase 15–17 selesai** (keputusan pemilik: konten dibuat paling akhir). Sampai fase ini selesai, Kursus Dasar tersembunyi dari pengguna biasa lewat flag `kursus_dasar` (Fase 16.4).
+
+**18.1 Bacaan** (`0016_course_content.sql`, ditulis oleh sesi Claude, **tidak** oleh pemilik)
+- 20 bacaan **asli** (bukan salinan buku/teks berhak cipta): 10 A1 (±80–120 kata, *present simple*, kalimat pendek) dan 10 A2 (±120–180 kata, boleh *past simple*, *going to*, perbandingan), mengikuti tema unit PRD §6.2.
+- Kosakata utama dari `core_words` di level yang sama (A1: peringkat ≤ 500; A2: ≤ 1000). Kata di luar NGSL dibatasi dan wajar untuk tema (nama, tempat).
+- Insert ke `texts` dengan `status = 'draft'`, `is_public = false`, `source = 'admin'`, `cefr_level`, `author = 'Literary Language Lab'`, `word_count` dihitung. Idempoten: lewati jika judul yang sama sudah ada (`WHERE NOT EXISTS`).
+- Setiap bacaan diperiksa dengan skrip kecil di sesi (bukan di repo): jumlah kata dalam rentang, persentase kata yang ada di `core_words` level itu dicatat di laporan.
+
+**18.2 Isi unit** (di migrasi yang sama, sesudah 18.1)
+- Isi `course_units.steps` ke-12 unit: kata (dari `core_words`, dengan `definition_en` dari 14g bila ada), topik `grammar_topics` yang ada, bacaan 18.1 (dirujuk lewat judul → id di blok `DO`), teks dengar, filter soal (`unit_slug`/tag), kalimat bicara.
+- Soal: 5–8 soal per unit dari "Buat soal dari Kosakata Inti" (tanpa AI) atau ditulis langsung di migrasi sebagai `draft`.
+- Langkah yang kontennya belum ada tetap boleh kosong dan ditandai, seperti di 16.1.
+
+**18.3 Peninjauan pemilik & rilis**
+- Pemilik menjalankan `0016`, meninjau di Admin → Konten (edit bila perlu) → **Terbitkan** bacaan & soal.
+- Setelah minimal unit 0–5 lengkap: pemilik menyalakan `kursus_dasar` di Admin → Fitur. Kursus Dasar tampil di Ruang I dan `next-step`.
+
+**Selesai jika (18):** 20 bacaan draft tersedia setelah `0016` dijalankan; ke-12 unit punya langkah terisi (yang kosong tercatat); laporan memuat jumlah kata & cakupan NGSL per bacaan; FEATURE_INVENTORY diperbarui; build lulus. Rilis (flag menyala) = keputusan pemilik setelah meninjau.
+
+---
+
 ## Checklist verifikasi akhir v4
 
 - [ ] Semua baris [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) tercentang (desktop & HP, terang & gelap).
@@ -250,8 +304,10 @@ create table if not exists grammar_progress (
 - [ ] Tongkat Ajaib bisa digeser, menempel ke tepi, ketuk tetap menyalakan/mematikan, posisi tersimpan.
 - [ ] LingoWise terjangkau dari desktop.
 - [ ] Kelima tipe latihan dinilai tanpa AI; review grammar terjadwal.
-- [ ] 12 unit Kursus Dasar tampil; ≥ 10 bacaan published per A1 & A2 (konten pemilik).
+- [ ] 12 unit Kursus Dasar tampil; 20 bacaan A1–A2 dari Fase 18 tersedia sebagai draft → ditinjau & diterbitkan pemilik; flag `kursus_dasar` dinyalakan pemilik.
+- [ ] Service worker `public/sw.js` aktif; halaman `/offline` berfungsi (K9).
+- [ ] Bottom nav: Beranda · Baca · Kosakata · Ruang · Menu (Q1).
 - [ ] Modul kesalahan umum & pasangan bunyi berfungsi.
 - [ ] Kosakata Inti menampilkan definisi; bentuk kata dikenali (14g).
-- [ ] Migrasi `0011`–`0015` tercantum di `docs/SESSION_HANDOFF.md` untuk dijalankan pemilik.
+- [ ] Migrasi `0011`–`0016` tercantum di `docs/SESSION_HANDOFF.md` untuk dijalankan pemilik.
 - [ ] Kelima route API (14f) dipakai di UI dan diuji; ekspor CSV terjemahan membaca tabel yang benar.

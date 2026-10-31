@@ -34,6 +34,8 @@
 
 **Mengapa pasangan ini:** Michelangelus adalah serif "abadi" yang diturunkan dari tulisan tangan Michelangelo, dengan italic berciri kaligrafi. Pasangan terbaiknya adalah **sans humanis** (bentuk huruf mengikuti goresan pena, bukan geometri murni) agar keduanya terasa satu keluarga: Source Sans 3 humanis, sangat terbaca di ukuran kecil, punya banyak ketebalan, dan angka rata (lining) yang rapi untuk UI. Alegreya dipilih sebagai cadangan serif karena juga humanis-kaligrafis berakar Renaisans, sehingga tampilan tetap berkarakter di perangkat tanpa Michelangelus.
 
+> **Yang dilihat kebanyakan pengguna adalah Alegreya.** Lewat `local()`, Michelangelus hanya tampil di perangkat yang sudah memasangnya (mis. pengguna Microsoft 365). Karena itu **ukuran, tinggi baris, dan tata letak disetel dengan Alegreya**, lalu Michelangelus diuji sebagai variasi (tidak boleh membuat teks terpotong atau melimpah). Agar semua pengguna melihat Michelangelus, perlu lisensi webfont tertulis (§2.2 butir 3).
+
 ### 2.2 Lisensi Michelangelus — aturan pemakaian (wajib)
 
 Fakta (dicek 31 Okt 2026):
@@ -122,6 +124,31 @@ Angka di UI (statistik, progres, halaman): `font-variant-numeric: lining-nums ta
 | Kontras tinggi | `#000000` / `#FFFFFF` | `#FFFF00` / `#000000` | 19.6 ✅ — **tetap seperti sekarang** |
 
 `highlight_color` pilihan pengguna tetap dipakai untuk seleksi teks.
+
+### 3.4 Warna semantik & pengganti warna kategori
+
+Aplikasi lama memberi tiap kategori/alat warna sendiri (`purple-500`, `emerald-500`, `orange-500`, …; ±50 file). v4 **membedakan kategori lewat ikon, label, dan urutan**, bukan warna. Warna hanya untuk makna.
+
+Token baru (tambahkan di `:root` dan `.dark`):
+
+| Token | Terang | Gelap | Kontras |
+|---|---|---|---|
+| `--warning-ink` | `#8A5A00` | `#E5B45A` | terang 5.9 di card, 5.3 di background, 5.2 di tint ✅; gelap 8.7 di card, 9.6 di background ✅ |
+| `--warning-tint` | `#FBF0D9` | `#3A2E14` | warning-ink di atasnya 5.2 / 7.0 ✅ |
+| `--danger-tint` | `#FBE9E7` | `#3A1A17` | danger di atasnya 5.6 / 5.7 ✅ |
+
+Pemetaan untuk skrip `v4-restyle` (Fase 12.4):
+
+| Kelas lama (warna apa pun dengan angka) | Makna | Pengganti |
+|---|---|---|
+| `red-*` | error, hapus, jawaban salah | `text-danger`, `bg-danger-tint`, `border-danger/30` |
+| `amber-*`, `yellow-*`, `orange-*` dipakai untuk peringatan/draft | peringatan, draft, kuota hampir habis | `text-warning-ink`, `bg-warning-tint`, `border-warning-ink/30` |
+| `green-*`, `emerald-*` | sukses, benar, terbit, aktif | `text-brand-ink`, `bg-brand-tint`, `border-brand/30` |
+| `blue-*`, `sky-*` | info, tautan | `text-brand-ink` (tautan) atau `text-muted-foreground` + `bg-muted` (info) |
+| `purple-*`, `violet-*`, `fuchsia-*`, `pink-*`, `rose-*`, `indigo-*`, `cyan-*`, `teal-*`, `lime-*`, `orange-*` sebagai warna kategori | identitas alat/kategori (dekoratif) | ikon `text-foreground` atau `text-brand-ink` (aktif), latar `bg-muted`, garis `border-border` |
+| `from-*`/`via-*`/`to-*` (gradasi) | dekoratif | hapus; pakai `bg-card` / `bg-muted` |
+
+**Pengecualian — warna yang membawa informasi tetap berbeda-beda** (jangan diganti skrip; ditinjau di sub-fase 14 dan cukup diperiksa kontrasnya): warna sorotan & `highlight_color` pilihan pengguna, pemilih warna anotasi, warna kelas kata / analisis kalimat, tanda diff (tambah/hapus), seri grafik admin, tema reader.
 
 ---
 
@@ -232,3 +259,6 @@ Semua di `components/ui/` (fondasi dari v2). **Props yang ada tidak boleh beruba
 | 31 Okt 2026 | Redesign hanya tampilan — tidak ada fitur yang dihapus |
 | 31 Okt 2026 | Serif: **Michelangelus** (pilihan pemilik) lewat `local()` karena lisensi web belum ada; cadangan Alegreya; sans: Source Sans 3 |
 | 31 Okt 2026 | Tongkat Ajaib bisa digeser |
+| 1 Nov 2026 | Tata letak disetel dengan Alegreya (yang dilihat kebanyakan pengguna); Michelangelus diuji sebagai variasi |
+| 1 Nov 2026 | Warna kategori/neon diganti token semantik (§3.4); kategori dibedakan lewat ikon & label |
+| 1 Nov 2026 | Bottom nav HP: Beranda · Baca · Kosakata · Ruang · Menu |
