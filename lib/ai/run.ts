@@ -3,6 +3,7 @@
 // coba model cadangan jika error 5xx/timeout → catat ke ai_usage_logs.
 
 import { getServiceClient } from "./admin-client";
+import { FeatureDisabledError, isFeatureOn } from "./flags";
 import { chat, ProviderError, type ChatMessage } from "./providers/openai-compatible";
 import { resolveFeature, type ResolvedModel } from "./resolve";
 import { assertSafeBaseUrl } from "./url-guard";
@@ -66,6 +67,7 @@ async function callModel(
 }
 
 export async function runAI(featureKey: string, params: RunAIParams, ctx: RunAIContext = {}): Promise<RunAIResult> {
+  if (!(await isFeatureOn(featureKey))) throw new FeatureDisabledError(featureKey);
   const route = await resolveFeature(featureKey);
   const overrides = { temperature: route.temperature, maxTokens: route.maxTokens };
   const timeoutMs = ctx.timeoutMs ?? DEFAULT_TIMEOUT_MS;

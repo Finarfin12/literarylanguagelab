@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { getRateLimit } from "@/lib/ai-config";
+import { isFeatureOn } from "@/lib/ai/flags";
 
 // In-memory sliding window cache for rate limiting (fallback & high-reliability)
 const usageMemory = new Map<string, number[]>();
@@ -40,6 +41,11 @@ export async function checkRateLimit(
   userId: string,
   featureKey: string = "tools"
 ): Promise<NextResponse | null> {
+  // Fitur yang dimatikan admin (Admin → Fitur) tidak dihitung sebagai pemakaian
+  if (!(await isFeatureOn(featureKey))) {
+    return NextResponse.json({ error: "Fitur ini sedang dinonaktifkan oleh admin." }, { status: 503 });
+  }
+
   const useCase = mapFeatureToUseCase(featureKey);
   const limits = await getRateLimit(useCase);
   const limitPerMinute = limits.requests_per_minute || 30;

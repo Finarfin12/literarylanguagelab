@@ -2,13 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, Server, Cpu, Route } from "lucide-react";
+import { LayoutDashboard, Users, Server, Cpu, Route, BarChart3, ToggleRight, ScrollText } from "lucide-react";
 
 const TABS = [
+  { href: "/admin", label: "Ringkasan", icon: LayoutDashboard, exact: true },
   { href: "/admin/users", label: "Pengguna", icon: Users },
   { href: "/admin/providers", label: "Provider AI", icon: Server },
   { href: "/admin/models", label: "Model", icon: Cpu },
   { href: "/admin/routing", label: "Routing Fitur", icon: Route },
+  { href: "/admin/usage", label: "Pemakaian", icon: BarChart3 },
+  { href: "/admin/features", label: "Fitur", icon: ToggleRight },
+  { href: "/admin/audit", label: "Audit Log", icon: ScrollText },
 ];
 
 export default function AdminTabs() {
@@ -16,9 +20,9 @@ export default function AdminTabs() {
 
   return (
     <nav className="sticky top-0 z-20 bg-background/90 backdrop-blur border-b border-border">
-      <div className="max-w-6xl mx-auto px-4 lg:px-8 flex gap-1 overflow-x-auto [scrollbar-width:none]">
-        {TABS.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(`${href}/`);
+      <div className="max-w-6xl mx-auto px-4 lg:px-8 flex gap-1 overflow-x-auto scrollbar-none">
+        {TABS.map(({ href, label, icon: Icon, exact }) => {
+          const active = pathname === href || (!exact && pathname.startsWith(`${href}/`));
           return (
             <Link
               key={href}

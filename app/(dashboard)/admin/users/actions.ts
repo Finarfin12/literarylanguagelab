@@ -2,6 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { logAdminAction } from "@/lib/admin-audit";
 
 export async function updateUserRole(targetUserId: string, newRole: string) {
   const supabase = await createClient();
@@ -27,6 +28,7 @@ export async function updateUserRole(targetUserId: string, newRole: string) {
   }
 
   // 4. Update the role
+  const { data: before } = await supabase.from('profiles').select('role').eq('id', targetUserId).maybeSingle();
   const { error } = await supabase
     .from('profiles')
     .update({ role: newRole })
@@ -37,6 +39,7 @@ export async function updateUserRole(targetUserId: string, newRole: string) {
     throw new Error(error.message);
   }
 
+  await logAdminAction({ actorId: user.id, action: "user.role", target: targetUserId, before, after: { role: newRole } });
   revalidatePath("/admin/users");
   return { success: true };
 }

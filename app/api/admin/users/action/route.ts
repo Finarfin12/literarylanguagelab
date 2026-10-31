@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@supabase/supabase-js";
+import { logAdminAction } from "@/lib/admin-audit";
 
 export async function POST(req: Request) {
   try {
@@ -33,6 +34,7 @@ export async function POST(req: Request) {
     if (action === "delete") {
       const { error } = await supabaseAdmin.auth.admin.deleteUser(targetUserId);
       if (error) throw error;
+      await logAdminAction({ actorId: user.id, action: "user.delete", target: targetUserId });
       return NextResponse.json({ success: true, message: "User permanently deleted." });
     }
 
@@ -43,6 +45,7 @@ export async function POST(req: Request) {
       if (error) throw error;
 
       await supabaseAdmin.from("profiles").update({ role: "banned" }).eq("id", targetUserId);
+      await logAdminAction({ actorId: user.id, action: "user.ban", target: targetUserId, after: { role: "banned" } });
       return NextResponse.json({ success: true, message: "User banned." });
     }
 
@@ -53,6 +56,7 @@ export async function POST(req: Request) {
       if (error) throw error;
 
       await supabaseAdmin.from("profiles").update({ role: "user" }).eq("id", targetUserId);
+      await logAdminAction({ actorId: user.id, action: "user.unban", target: targetUserId, after: { role: "user" } });
       return NextResponse.json({ success: true, message: "User unbanned." });
     }
 

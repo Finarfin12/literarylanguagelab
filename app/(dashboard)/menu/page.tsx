@@ -31,10 +31,14 @@ const ADMIN_GROUP = {
   icon: ShieldAlert,
   color: "text-red-500",
   items: [
+    { name: "Ringkasan", path: "/admin" },
     { name: "Pengguna", path: "/admin/users" },
     { name: "Provider AI", path: "/admin/providers" },
     { name: "Model", path: "/admin/models" },
     { name: "Routing Fitur", path: "/admin/routing" },
+    { name: "Pemakaian & Kuota", path: "/admin/usage" },
+    { name: "Fitur", path: "/admin/features" },
+    { name: "Audit Log", path: "/admin/audit" },
   ],
 };
 

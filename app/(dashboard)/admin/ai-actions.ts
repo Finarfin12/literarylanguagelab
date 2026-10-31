@@ -10,6 +10,7 @@ import { getFeature, type AICapability } from "@/lib/ai/features";
 import { chat, listModels } from "@/lib/ai/providers/openai-compatible";
 import { invalidateAIRegistryCache, resolveProviderKey } from "@/lib/ai/resolve";
 import { assertSafeBaseUrl } from "@/lib/ai/url-guard";
+import { logAdminAction } from "@/lib/admin-audit";
 
 const CAPABILITIES: AICapability[] = ["text", "vision", "tools", "stt", "tts"];
 const TEST_TIMEOUT_MS = 15 * 1000;
@@ -27,11 +28,21 @@ function optionalNumber(value: FormDataEntryValue | null): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
+// Harga per 1 juta token (USD), opsional. Hanya dikirim jika form memuat field harga,
+// agar tetap jalan sebelum migrasi 0004 (kolom price_in/price_out) dijalankan.
+function pricing(formData: FormData): { price_in?: number | null; price_out?: number | null } {
+  if (!formData.has("price_in") && !formData.has("price_out")) return {};
+  return {
+    price_in: optionalNumber(formData.get("price_in")),
+    price_out: optionalNumber(formData.get("price_out")),
+  };
+}
+
 // ---------- Provider ----------
 
 export async function saveProvider(formData: FormData): Promise<ActionResult> {
   try {
-    const { supabase } = await assertAdmin();
+    const { supabase, user } = await assertAdmin();
     const id = String(formData.get("id") || "");
     const name = String(formData.get("name") || "").trim();
     const baseUrl = String(formData.get("base_url") || "").trim().replace(/\/+$/, "");
@@ -55,11 +66,21 @@ export async function saveProvider(formData: FormData): Promise<ActionResult> {
       row.api_key_hint = maskSecret(apiKey);
     }
 
+    const { data: before } = id
+      ? await supabase.from("ai_providers").select("name, base_url, allow_private_network, is_active, api_key_hint").eq("id", id).maybeSingle()
+      : { data: null };
     const { error } = id
       ? await supabase.from("ai_providers").update(row).eq("id", id)
       : await supabase.from("ai_providers").insert(row);
     if (error) return { ok: false, error: error.message };
 
+    await logAdminAction({
+      actorId: user.id,
+      action: id ? "provider.update" : "provider.create",
+      target: id || name,
+      before,
+      after: { ...row, api_key_encrypted: undefined, api_key_changed: Boolean(apiKey) },
+    });
     refresh();
     return { ok: true };
   } catch (error) {
@@ -69,13 +90,14 @@ export async function saveProvider(formData: FormData): Promise<ActionResult> {
 
 export async function deleteProvider(id: string): Promise<ActionResult> {
   try {
-    const { supabase } = await assertAdmin();
-    const { data: provider } = await supabase.from("ai_providers").select("env_key_name").eq("id", id).maybeSingle();
+    const { supabase, user } = await assertAdmin();
+    const { data: provider } = await supabase.from("ai_providers").select("name, base_url, env_key_name").eq("id", id).maybeSingle();
     if (provider?.env_key_name) {
       return { ok: false, error: "Provider bawaan (env) tidak bisa dihapus. Nonaktifkan saja jika tidak dipakai." };
     }
     const { error } = await supabase.from("ai_providers").delete().eq("id", id);
     if (error) return { ok: false, error: error.message };
+    await logAdminAction({ actorId: user.id, action: "provider.delete", target: id, before: provider });
     refresh();
     return { ok: true };
   } catch (error) {
@@ -144,7 +166,7 @@ export async function testProvider(
 
 export async function saveModel(formData: FormData): Promise<ActionResult> {
   try {
-    const { supabase } = await assertAdmin();
+    const { supabase, user } = await assertAdmin();
     const id = String(formData.get("id") || "");
     const providerId = String(formData.get("provider_id") || "");
     const modelId = String(formData.get("model_id") || "").trim();
@@ -164,13 +186,16 @@ export async function saveModel(formData: FormData): Promise<ActionResult> {
       default_temperature: optionalNumber(formData.get("default_temperature")),
       default_max_tokens: optionalNumber(formData.get("default_max_tokens")),
       is_active: formData.get("is_active") === "on",
+      ...pricing(formData),
     };
 
+    const { data: before } = id ? await supabase.from("ai_models").select("*").eq("id", id).maybeSingle() : { data: null };
     const { error } = id
       ? await supabase.from("ai_models").update(row).eq("id", id)
       : await supabase.from("ai_models").insert(row);
     if (error) return { ok: false, error: error.code === "23505" ? "Model ini sudah terdaftar untuk provider tersebut." : error.message };
 
+    await logAdminAction({ actorId: user.id, action: id ? "model.update" : "model.create", target: id || modelId, before, after: row });
     refresh();
     return { ok: true };
   } catch (error) {
@@ -180,7 +205,7 @@ export async function saveModel(formData: FormData): Promise<ActionResult> {
 
 export async function importModels(providerId: string, modelIds: string[]): Promise<ActionResult<number>> {
   try {
-    const { supabase } = await assertAdmin();
+    const { supabase, user } = await assertAdmin();
     const rows = modelIds
       .map((m) => m.trim())
       .filter(Boolean)
@@ -193,6 +218,7 @@ export async function importModels(providerId: string, modelIds: string[]): Prom
       .upsert(rows, { onConflict: "provider_id,model_id", ignoreDuplicates: true });
     if (error) return { ok: false, error: error.message };
 
+    await logAdminAction({ actorId: user.id, action: "model.import", target: providerId, after: { models: rows.map((r) => r.model_id) } });
     refresh();
     return { ok: true, data: rows.length };
   } catch (error) {
@@ -202,9 +228,11 @@ export async function importModels(providerId: string, modelIds: string[]): Prom
 
 export async function deleteModel(id: string): Promise<ActionResult> {
   try {
-    const { supabase } = await assertAdmin();
+    const { supabase, user } = await assertAdmin();
+    const { data: before } = await supabase.from("ai_models").select("*").eq("id", id).maybeSingle();
     const { error } = await supabase.from("ai_models").delete().eq("id", id);
     if (error) return { ok: false, error: error.message };
+    await logAdminAction({ actorId: user.id, action: "model.delete", target: id, before });
     refresh();
     return { ok: true };
   } catch (error) {
@@ -216,7 +244,7 @@ export async function deleteModel(id: string): Promise<ActionResult> {
 
 export async function saveRoute(formData: FormData): Promise<ActionResult> {
   try {
-    const { supabase } = await assertAdmin();
+    const { supabase, user } = await assertAdmin();
     const featureKey = String(formData.get("feature_key") || "");
     const feature = getFeature(featureKey);
     if (!feature) return { ok: false, error: "Fitur tidak dikenal." };
@@ -245,15 +273,19 @@ export async function saveRoute(formData: FormData): Promise<ActionResult> {
       return { ok: false, error: "Max tokens harus di antara 1 dan 32000." };
     }
 
-    const { error } = await supabase.from("ai_feature_routes").upsert({
+    const after = {
       feature_key: featureKey,
       model_id: modelId,
       fallback_model_id: fallbackId,
       temperature,
       max_tokens: maxTokens,
       updated_at: new Date().toISOString(),
-    });
+    };
+    const { data: before } = await supabase.from("ai_feature_routes").select("*").eq("feature_key", featureKey).maybeSingle();
+    const { error } = await supabase.from("ai_feature_routes").upsert(after);
     if (error) return { ok: false, error: error.message };
+
+    await logAdminAction({ actorId: user.id, action: "route.update", target: featureKey, before, after });
 
     refresh();
     return { ok: true };

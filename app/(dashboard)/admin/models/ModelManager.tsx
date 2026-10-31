@@ -21,6 +21,8 @@ export interface ModelView {
   defaultTemperature: number | null;
   defaultMaxTokens: number | null;
   isActive: boolean;
+  priceIn: number | null;
+  priceOut: number | null;
 }
 
 const CAPABILITIES = [
@@ -31,7 +33,7 @@ const CAPABILITIES = [
   { key: "tts", label: "Text-to-speech" },
 ];
 
-function ModelForm({ providerId, model, onDone }: { providerId: string; model?: ModelView; onDone: () => void }) {
+function ModelForm({ providerId, model, pricingReady, onDone }: { providerId: string; model?: ModelView; pricingReady: boolean; onDone: () => void }) {
   const [pending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -68,6 +70,18 @@ function ModelForm({ providerId, model, onDone }: { providerId: string; model?: 
           <span className="text-sm font-medium">Max tokens default</span>
           <input name="default_max_tokens" type="number" min="1" defaultValue={model?.defaultMaxTokens ?? 1500} className={inputClass} />
         </label>
+        {pricingReady && (
+          <>
+            <label className="space-y-1 block">
+              <span className="text-sm font-medium">Harga input (USD / 1 juta token)</span>
+              <input name="price_in" type="number" step="0.0001" min="0" defaultValue={model?.priceIn ?? ""} placeholder="opsional" className={inputClass} />
+            </label>
+            <label className="space-y-1 block">
+              <span className="text-sm font-medium">Harga output (USD / 1 juta token)</span>
+              <input name="price_out" type="number" step="0.0001" min="0" defaultValue={model?.priceOut ?? ""} placeholder="opsional" className={inputClass} />
+            </label>
+          </>
+        )}
       </div>
       <fieldset>
         <legend className="text-sm font-medium mb-1">Kemampuan</legend>
@@ -102,7 +116,7 @@ function ModelForm({ providerId, model, onDone }: { providerId: string; model?: 
   );
 }
 
-function ModelRow({ model }: { model: ModelView }) {
+function ModelRow({ model, pricingReady }: { model: ModelView; pricingReady: boolean }) {
   const [editing, setEditing] = useState(false);
   const router = useRouter();
 
@@ -125,7 +139,7 @@ function ModelRow({ model }: { model: ModelView }) {
   if (editing) {
     return (
       <div className="p-4 border-t border-border">
-        <ModelForm providerId={model.providerId} model={model} onDone={() => setEditing(false)} />
+        <ModelForm providerId={model.providerId} model={model} pricingReady={pricingReady} onDone={() => setEditing(false)} />
       </div>
     );
   }
@@ -146,6 +160,7 @@ function ModelRow({ model }: { model: ModelView }) {
           ))}
           <span className="text-[10px] text-muted-foreground px-1 py-0.5">
             temp {model.defaultTemperature ?? "-"} · max {model.defaultMaxTokens ?? "-"}
+            {model.priceIn !== null && ` · $${model.priceIn}/$${model.priceOut ?? 0} per 1M`}
           </span>
         </div>
       </div>
@@ -245,7 +260,7 @@ function ImportPanel({ provider, existing, onDone }: { provider: ProviderOption;
   );
 }
 
-function ProviderSection({ provider, models }: { provider: ProviderOption; models: ModelView[] }) {
+function ProviderSection({ provider, models, pricingReady }: { provider: ProviderOption; models: ModelView[]; pricingReady: boolean }) {
   const [mode, setMode] = useState<"idle" | "add" | "import">("idle");
 
   return (
@@ -265,27 +280,27 @@ function ProviderSection({ provider, models }: { provider: ProviderOption; model
       </div>
       {mode === "add" && (
         <div className="p-4 border-t border-border">
-          <ModelForm providerId={provider.id} onDone={() => setMode("idle")} />
+          <ModelForm providerId={provider.id} pricingReady={pricingReady} onDone={() => setMode("idle")} />
         </div>
       )}
       {mode === "import" && (
         <ImportPanel provider={provider} existing={new Set(models.map((m) => m.modelId))} onDone={() => setMode("idle")} />
       )}
       {models.map((m) => (
-        <ModelRow key={m.id} model={m} />
+        <ModelRow key={m.id} model={m} pricingReady={pricingReady} />
       ))}
     </section>
   );
 }
 
-export default function ModelManager({ providers, models }: { providers: ProviderOption[]; models: ModelView[] }) {
+export default function ModelManager({ providers, models, pricingReady }: { providers: ProviderOption[]; models: ModelView[]; pricingReady: boolean }) {
   if (providers.length === 0) {
     return <p className="text-muted-foreground text-sm">Tambahkan provider terlebih dahulu di tab Provider AI.</p>;
   }
   return (
     <div className="space-y-6">
       {providers.map((p) => (
-        <ProviderSection key={p.id} provider={p} models={models.filter((m) => m.providerId === p.id)} />
+        <ProviderSection key={p.id} provider={p} models={models.filter((m) => m.providerId === p.id)} pricingReady={pricingReady} />
       ))}
     </div>
   );

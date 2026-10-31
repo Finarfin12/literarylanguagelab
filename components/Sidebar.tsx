@@ -271,7 +271,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
 
           {isAdmin && (
             <Link 
-              href="/admin/users"
+              href="/admin"
               className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
                 pathname.startsWith('/admin') 
                   ? 'bg-red-500/10 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.15)]' 
