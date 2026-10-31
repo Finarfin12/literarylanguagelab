@@ -159,7 +159,11 @@ Detail perbaikan: IMPLEMENTATION_PLAN Fase 14f.
 ### 6.6 Paket konten awal (dikerjakan terakhir)
 
 - **Keputusan pemilik:** konten dibuat **paling akhir**, setelah kode Fase 15–17 selesai (Fase 18).
-- **20 bacaan asli** (10 A1, 10 A2) sesuai tema unit, plus isi langkah ke-12 unit, **ditulis oleh sesi Claude** sebagai migrasi seed berstatus draft. Pemilik hanya meninjau, mengedit bila perlu, lalu menerbitkan di Admin → Konten.
+- **Tiga jalur pembuatan bacaan**, boleh dipakai bersamaan; semuanya menghasilkan draft yang ditinjau lalu diterbitkan pemilik:
+  1. **Seed dari Claude** (utama): 20 bacaan asli (10 A1, 10 A2) sesuai tema unit, plus isi langkah ke-12 unit, sebagai migrasi seed berstatus draft.
+  2. **AI dari Admin**: tombol "Buat bacaan dengan AI untuk unit ini" (tema, level, dan kata target terisi otomatis) dan "Buat draf untuk semua unit yang belum punya bacaan". Tombol AI lama di Admin → Konten tetap ada.
+  3. **Tulis sendiri**: formulir "Tulis teks sendiri" di Admin → Konten.
+- Setiap draft menampilkan **pemeriksaan otomatis**: jumlah kata sesuai level dan persentase kata Kosakata Inti di level itu, supaya kualitas hasil AI mudah dinilai. Pemeriksaan ini hanya informasi, tidak memblokir.
 - Sampai konten siap, Kursus Dasar **disembunyikan** dari pengguna biasa dengan feature flag `kursus_dasar` (admin tetap bisa mencoba). Fitur lain — Kosakata Inti, Grammar Dasar, bacaan berjenjang — tidak terpengaruh.
 - Pemilik menyalakan flag setelah minimal unit 0–5 lengkap.
 

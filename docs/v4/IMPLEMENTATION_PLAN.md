@@ -19,7 +19,7 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v3. (Fase 12 di v3 — mode
 | 15 | Mesin latihan terstruktur + review grammar | 4–5 hari | 12 (memakai 14g bila sudah ada) |
 | 16 | Kursus Dasar: unit A0–A2 | 4–5 hari | 15, 14a |
 | 17 | Modul khas penutur Indonesia | 2–3 hari | 15 |
-| 18 | Paket konten Kursus Dasar (20 bacaan + isi 12 unit) — **terakhir** | 2–3 hari | 15, 16, 17, 14g |
+| 18 | Paket konten Kursus Dasar (20 bacaan + isi 12 unit) + jalur AI per unit & tulis sendiri + pemeriksaan otomatis — **terakhir** | 3–4 hari | 15, 16, 17, 14g |
 
 **Urutan kerja yang disepakati:** **14g → 12 → 13 → (titik henti) → 14a–14f → 15 → 16 → 17 → 18.**
 - **14g dulu**: kecil, tidak bergantung pada fase lain, datanya sudah ada, langsung terasa manfaatnya.
@@ -277,7 +277,15 @@ create table if not exists grammar_progress (
 
 Dikerjakan **setelah kode Fase 15–17 selesai** (keputusan pemilik: konten dibuat paling akhir). Sampai fase ini selesai, Kursus Dasar tersembunyi dari pengguna biasa lewat flag `kursus_dasar` (Fase 16.4).
 
-**18.1 Bacaan** (`0016_course_content.sql`, ditulis oleh sesi Claude, **tidak** oleh pemilik)
+**Tiga jalur pembuatan bacaan** (keputusan pemilik: semua tersedia, boleh dipakai bersamaan; misalnya bacaan Claude untuk unit 0–5, sisanya lewat AI atau ditulis sendiri). **Semua jalur berakhir sebagai draft → ditinjau → Terbitkan.**
+
+| Jalur | Siapa | Di mana | Langkah |
+|---|---|---|---|
+| 1. Seed dari Claude (utama) | sesi Claude | `0016_course_content.sql` | 18.1 |
+| 2. AI dari Admin | pemilik | editor unit & Admin → Konten | 18.4 |
+| 3. Tulis sendiri | pemilik | Admin → Konten, formulir baru | 18.5 |
+
+**18.1 Bacaan — jalur 1** (`0016_course_content.sql`, ditulis oleh sesi Claude, **tidak** oleh pemilik)
 - 20 bacaan **asli** (bukan salinan buku/teks berhak cipta): 10 A1 (±80–120 kata, *present simple*, kalimat pendek) dan 10 A2 (±120–180 kata, boleh *past simple*, *going to*, perbandingan), mengikuti tema unit PRD §6.2.
 - Kosakata utama dari `core_words` di level yang sama (A1: peringkat ≤ 500; A2: ≤ 1000). Kata di luar NGSL dibatasi dan wajar untuk tema (nama, tempat).
 - Insert ke `texts` dengan `status = 'draft'`, `is_public = false`, `source = 'admin'`, `cefr_level`, `author = 'Literary Language Lab'`, `word_count` dihitung. Idempoten: lewati jika judul yang sama sudah ada (`WHERE NOT EXISTS`).
@@ -288,11 +296,28 @@ Dikerjakan **setelah kode Fase 15–17 selesai** (keputusan pemilik: konten dibu
 - Soal: 5–8 soal per unit dari "Buat soal dari Kosakata Inti" (tanpa AI) atau ditulis langsung di migrasi sebagai `draft`.
 - Langkah yang kontennya belum ada tetap boleh kosong dan ditandai, seperti di 16.1.
 
+**18.4 Jalur 2 — AI dari Admin, tanpa mengetik 20 kali**
+- Tombol lama "Buat teks berjenjang dengan AI" (`generateGradedText`) **tetap ada dan tidak berubah** (P1).
+- Di editor unit (16.3): tombol **"Buat bacaan dengan AI untuk unit ini"** → memanggil `generateGradedText` dengan level, topik (tema unit), dan panjang yang **terisi otomatis** dari unit, plus daftar kata target unit (kata `core_words` di langkah `vocab`) yang dimasukkan ke prompt. Hasilnya draft yang langsung dikaitkan ke langkah `read` unit itu.
+- Tombol **"Buat draf untuk semua unit yang belum punya bacaan"**: memproses unit satu per satu (bukan paralel), menampilkan progres ("3 dari 7"), bisa dihentikan, dan melewati unit yang gagal dengan pesan. Setiap panggilan lewat `runAI` → tercatat di `ai_usage_logs` dan tunduk pada kuota/rate limit yang ada; `logAdminAction` untuk tiap draft.
+- Jika `generateGradedText` perlu parameter tambahan (kata target), tambahkan sebagai **opsional** agar pemanggil lama tetap sama.
+
+**18.5 Jalur 3 — Tulis sendiri**
+- Formulir baru **"Tulis teks sendiri"** di Admin → Konten: judul, level CEFR, isi, (opsional) unit tujuan → insert `texts` dengan `status = 'draft'`, `is_public = false`, `source = 'admin'`, `word_count` dihitung. Server action dengan `assertAdmin` + `logAdminAction`.
+- Draft yang ada tetap bisa diedit dengan tombol **Edit** yang sudah ada.
+
+**18.6 Pemeriksaan otomatis setiap draft** (semua jalur)
+- Logika murni `lib/graded-check.ts` (**diuji unit**): `checkGradedText(content, level, coreWords)` → `{ wordCount, inRange, coveragePct, offListSample }`.
+  - Rentang kata: A1 80–120, A2 120–180 (B1 ke atas: tanpa batas, hanya ditampilkan).
+  - Cakupan: persentase token (huruf kecil, dikenali lewat `word` atau `forms` dari 14g) yang ada di `core_words` dengan `band` ≤ batas level (A1 500, A2 1000, B1 2000). Target: A1 ≥ 90%, A2 ≥ 92%. Nama diri (huruf kapital di tengah kalimat) dan angka tidak dihitung.
+- Ditampilkan di setiap kartu draft di Admin → Konten: "112 kata · 94% Kosakata Inti A1 ✓" atau tanda peringatan + contoh kata di luar daftar. **Hanya informasi** — tidak memblokir Terbitkan.
+- Sebelum `0007`/`0015` dijalankan atau `core_words` kosong: hanya jumlah kata yang ditampilkan.
+
 **18.3 Peninjauan pemilik & rilis**
 - Pemilik menjalankan `0016`, meninjau di Admin → Konten (edit bila perlu) → **Terbitkan** bacaan & soal.
 - Setelah minimal unit 0–5 lengkap: pemilik menyalakan `kursus_dasar` di Admin → Fitur. Kursus Dasar tampil di Ruang I dan `next-step`.
 
-**Selesai jika (18):** 20 bacaan draft tersedia setelah `0016` dijalankan; ke-12 unit punya langkah terisi (yang kosong tercatat); laporan memuat jumlah kata & cakupan NGSL per bacaan; FEATURE_INVENTORY diperbarui; build lulus. Rilis (flag menyala) = keputusan pemilik setelah meninjau.
+**Selesai jika (18):** 20 bacaan draft tersedia setelah `0016` dijalankan; tombol AI per unit & massal membuat draft yang terkait ke unit (diuji dengan provider AI uji atau dicatat "perlu diuji pemilik"); formulir "Tulis teks sendiri" membuat draft; pemeriksaan otomatis tampil di setiap draft dan uji unit `graded-check` lulus; tombol AI lama tetap berfungsi; ke-12 unit punya langkah terisi (yang kosong tercatat); laporan memuat jumlah kata & cakupan NGSL per bacaan; FEATURE_INVENTORY diperbarui; build lulus. Rilis (flag menyala) = keputusan pemilik setelah meninjau.
 
 ---
 

@@ -49,7 +49,7 @@ Kerjakan HANYA fase yang saya sebut.
 
 **Fase 17** — `Kerjakan Fase 17 (Modul penutur Indonesia). Tulis penjelasan sendiri dalam bahasa Indonesia; jangan menyalin buku teks.`
 
-**Fase 18** — `Kerjakan Fase 18 (Paket konten Kursus Dasar). Tulis 20 bacaan asli A1–A2 dan isi 12 unit di migrasi 0016_course_content.sql sebagai draft; jangan jalankan. Jangan menyalin teks berhak cipta. Laporkan jumlah kata dan cakupan NGSL per bacaan.`
+**Fase 18** — `Kerjakan Fase 18 (Paket konten Kursus Dasar). Tulis 20 bacaan asli A1–A2 dan isi 12 unit di migrasi 0016_course_content.sql sebagai draft; jangan jalankan. Jangan menyalin teks berhak cipta. Laporkan jumlah kata dan cakupan NGSL per bacaan. Lalu buat jalur 2 (AI per unit & massal) dan jalur 3 (Tulis sendiri) serta lib/graded-check.ts dengan uji unitnya. Tombol AI lama di Admin → Konten jangan diubah.`
 
 ---
 
@@ -138,4 +138,4 @@ Setelah fase selesai, perbarui tabel status di `docs/SESSION_HANDOFF.md`.
 | Fase 15 | Jalankan `0012`; buat 5 soal AI → tinjau → terbitkan; kerjakan di HP |
 | Fase 16 | Jalankan `0013`; isi satu unit lengkap; kerjakan dari awal sampai akhir |
 | Fase 17 | Jalankan `0014`; coba Kesalahan Umum & Pasangan Bunyi |
-| Fase 18 | Jalankan `0016`; tinjau 20 bacaan & isi unit di Admin → Konten → Terbitkan; nyalakan `kursus_dasar` di Admin → Fitur setelah minimal unit 0–5 lengkap |
+| Fase 18 | Jalankan `0016`; tinjau 20 bacaan & isi unit di Admin → Konten (lihat angka pemeriksaan otomatis) → Terbitkan; coba satu bacaan lewat "Buat bacaan dengan AI untuk unit ini" dan satu lewat "Tulis teks sendiri"; nyalakan `kursus_dasar` di Admin → Fitur setelah minimal unit 0–5 lengkap |
