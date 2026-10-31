@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Languages, ArrowRight, Loader2, Award, CheckCircle2, ArrowLeftRight, FileType2, RotateCcw } from "lucide-react";
+import { Languages, ArrowRight, Loader2, Award, CheckCircle2, ArrowLeftRight, FileType2, RotateCcw, Scale, Tags } from "lucide-react";
+import Link from "next/link";
+import { splitSentences } from "@/lib/translation/segment";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Swal from 'sweetalert2';
@@ -12,6 +14,9 @@ export default function TranslationWorkshopPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [mode, setMode] = useState("general");
+  // Hasil terstruktur untuk mode rubrik dan teknik
+  const [rubric, setRubric] = useState<{ weightedScore: number; saved: boolean; perSegment: { idx: number; accuracy: number; acceptability: number; readability: number; notes?: string }[] } | null>(null);
+  const [suggestions, setSuggestions] = useState<{ source_span: string; target_span: string; technique_name: string; reason: string }[] | null>(null);
 
   const handleEvaluate = async () => {
     if (!originalText.trim() || !translatedText.trim()) {
@@ -21,8 +26,39 @@ export default function TranslationWorkshopPage() {
 
     setLoading(true);
     setResult(null);
+    setRubric(null);
+    setSuggestions(null);
 
     try {
+      if (mode === "rubric") {
+        // Dipasangkan per kalimat jika jumlah kalimat sama; selain itu seluruh teks dinilai sebagai satu segmen
+        const src = splitSentences(originalText);
+        const tgt = splitSentences(translatedText);
+        const segments = src.length === tgt.length && src.length <= 30
+          ? src.map((source, i) => ({ source, target: tgt[i] }))
+          : [{ source: originalText, target: translatedText }];
+        const res = await fetch("/api/translation/rubric", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ segments }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        setRubric(data);
+        return;
+      }
+      if (mode === "technique") {
+        const res = await fetch("/api/translation/techniques", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sourceText: originalText, targetText: translatedText }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        setSuggestions(data.suggestions || []);
+        return;
+      }
+
       const res = await fetch("/api/translation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -77,6 +113,18 @@ export default function TranslationWorkshopPage() {
         >
           <RotateCcw className="w-4 h-4" /> Back-Translation
         </button>
+        <button 
+          onClick={() => setMode("rubric")}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "rubric" ? "bg-rose-500 text-white shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+        >
+          <Scale className="w-4 h-4" /> Rubrik (Nababan)
+        </button>
+        <button 
+          onClick={() => setMode("technique")}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "technique" ? "bg-cyan-500 text-white shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+        >
+          <Tags className="w-4 h-4" /> Teknik Penerjemahan
+        </button>
       </div>
 
       {/* Split Screen Workspace */}
@@ -123,6 +171,48 @@ export default function TranslationWorkshopPage() {
           )}
         </button>
       </div>
+
+      <p className="text-center text-sm text-muted-foreground -mt-6 mb-10">
+        Untuk teks panjang kalimat demi kalimat, pakai <Link href="/translation-workspace" className="text-brand underline">Ruang Kerja Segmen</Link>.
+      </p>
+
+      {/* Hasil mode rubrik */}
+      {rubric && (
+        <div className="bg-card border border-brand/30 rounded-3xl p-4 md:p-8 mb-12">
+          <h2 className="text-xl font-serif font-bold text-brand mb-2">Penilaian rubrik (Nababan et al., 2012)</h2>
+          <p className="text-foreground">Skor akhir tertimbang: <strong>{Number(rubric.weightedScore).toFixed(2)}</strong> dari 3 <span className="text-xs text-muted-foreground">(akurasi : keberterimaan : keterbacaan = 3 : 2 : 1)</span></p>
+          <p className="text-xs text-muted-foreground mb-4">{rubric.saved ? "Tersimpan di riwayat penilaianmu." : "Belum tersimpan (migrasi 0010 belum dijalankan)."} Dinilai AI untuk belajar mandiri.</p>
+          <ul className="space-y-2 text-sm">
+            {rubric.perSegment.map((p) => (
+              <li key={p.idx} className="border border-border rounded-xl p-3">
+                <p className="font-bold">Segmen {p.idx + 1}: akurasi {p.accuracy}, keberterimaan {p.acceptability}, keterbacaan {p.readability}</p>
+                {p.notes && <p className="text-muted-foreground">{p.notes}</p>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Hasil mode teknik */}
+      {suggestions && (
+        <div className="bg-card border border-cyan-500/30 rounded-3xl p-4 md:p-8 mb-12">
+          <h2 className="text-xl font-serif font-bold text-cyan-500 mb-4">Teknik penerjemahan yang terdeteksi</h2>
+          {suggestions.length === 0 ? (
+            <p className="text-muted-foreground">AI tidak menemukan teknik yang jelas pada teks ini.</p>
+          ) : (
+            <ul className="space-y-3 text-sm">
+              {suggestions.map((s, i) => (
+                <li key={i} className="border border-border rounded-xl p-3">
+                  <p className="font-bold text-cyan-500">{s.technique_name}</p>
+                  <p className="italic text-muted-foreground">&ldquo;{s.source_span}&rdquo; → &ldquo;{s.target_span}&rdquo;</p>
+                  {s.reason && <p>{s.reason}</p>}
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="text-xs text-muted-foreground mt-4">Ini saran AI. Untuk menyimpan anotasi, buat proyek di Ruang Kerja Segmen.</p>
+        </div>
+      )}
 
       {/* Output Panel */}
       {result && (

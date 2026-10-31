@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import Link from "next/link";
 import LevelProgressCard from "@/components/profile/LevelProgressCard";
+import TranslatorStageCard from "@/components/profile/TranslatorStageCard";
 
 export default function ProfilePage() {
   const supabase = createClient();
@@ -130,6 +131,7 @@ export default function ProfilePage() {
         </div>
 
         <LevelProgressCard />
+        <TranslatorStageCard />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column */}

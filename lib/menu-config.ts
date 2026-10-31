@@ -114,6 +114,7 @@ export const MENU_GROUPS: MenuGroup[] = [
     color: "text-cyan-400",
     items: [
       { name: "Translation Workshop", path: "/translation-workshop", description: "Terjemahkan teks dan dapatkan penilaian dari AI.", goals: ["penerjemahan"] },
+      { name: "Ruang Kerja Segmen", path: "/translation-workspace", description: "Terjemahkan teks panjang per kalimat dengan TM, glosarium, dan rubrik.", goals: ["penerjemahan"] },
       { name: "Translation Memory", path: "/translation-memory", description: "Simpan dan cari ulang terjemahan yang pernah kamu buat.", goals: ["penerjemahan"] },
       { name: "Side-by-Side Comparator", path: "/tools/comparator", description: "Bandingkan dua terjemahan berdampingan.", goals: ["penerjemahan"] },
       { name: "Untranslatables", path: "/tools/untranslatables", description: "Kata yang sulit dipadankan dan cara menyiasatinya.", goals: ["penerjemahan"] },

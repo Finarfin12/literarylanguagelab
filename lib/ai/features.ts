@@ -47,6 +47,8 @@ export const AI_FEATURES: AIFeature[] = [
   { key: "graded-text-generate", label: "Generator Teks Berjenjang (admin)", group: "Tools", requires: "text" },
 
   { key: "translation", label: "Translation Workshop", group: "Translation", requires: "text" },
+  { key: "translation-rubric", label: "Penilaian Rubrik Terjemahan", group: "Translation", requires: "text" },
+  { key: "translation-technique-suggest", label: "Saran Teknik Penerjemahan", group: "Translation", requires: "text" },
   { key: "comparator", label: "Translation Comparator", group: "Translation", requires: "text" },
   { key: "untranslatables", label: "Untranslatables", group: "Translation", requires: "text" },
   { key: "lexicon-translation", label: "Lexicon Search (terjemahan)", group: "Translation", requires: "text" },
