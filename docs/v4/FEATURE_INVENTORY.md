@@ -42,7 +42,7 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 | Tambah teks: manual (judul, penulis, era, genre) atau **generate teks dengan AI** (prompt, tingkat kesulitan) | `app/(dashboard)/library/add/page.tsx` |
 | Preview teks: Vocabulary Preview, Pre-Learn Flashcard, "Langsung Membaca Saja" | `app/(dashboard)/preview/[id]/page.tsx` |
 | OCR Lens: kamera, galeri, kompresi, scan multi-halaman, edit hasil, simpan ke Library | `app/(dashboard)/library/add/ocr/page.tsx` |
-| Buku Klasik: pencarian OpenLibrary & Gutendex (pilihan provider), "Muat lagi" | `app/(dashboard)/gutenberg/page.tsx` |
+| Buku Klasik: pencarian OpenLibrary & Gutendex (pilihan provider, tersimpan di `localStorage`), "Muat lagi", tautan "Coba lewat …" saat gagal. **Keduanya tidak boleh diubah**; v4 menambah opsi ketiga "Gutenberg (server)" (Fase 14f) | `app/(dashboard)/gutenberg/page.tsx` |
 | Reader Gutenberg: cache offline (tanda ✓), tombol kosakata bab (VocabFlashcardModal), panel Bookmark, toolbar seleksi (**Sorot**, **Tandai**, **Analisis**), panel Analisis Kalimat | `app/(dashboard)/gutenberg/[id]/page.tsx`, `components/reader/BookmarkSidebar.tsx`, `SentenceAnalysisSidebar.tsx`, `VocabFlashcardModal.tsx` |
 | Reader Library | `app/(dashboard)/read/[textId]/page.tsx` |
 

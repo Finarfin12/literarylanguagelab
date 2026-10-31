@@ -110,7 +110,7 @@ Keputusan pemilik (31 Okt 2026): route yang sudah ada tetapi tidak dipanggil UI 
 
 | Route | Dipakai di | Nilai bagi pengguna |
 |---|---|---|
-| `/api/gutenberg/search` | Pencarian Buku Klasik (provider Gutendex) | Lebih stabil: rate limit & cache di server |
+| `/api/gutenberg/search` | **Opsi ketiga** "Gutenberg (server)" di pencarian Buku Klasik — OpenLibrary & Gutendex tetap tidak berubah | Alternatif yang lebih stabil bila dua sumber lain gagal: rate limit & cache di server |
 | `/api/wotd` | Tombol **Pelajari** di kartu Word of the Day (Sidebar & Beranda) | Mini-lesson, kolokasi, kuis 1 soal, simpan kata |
 | `/api/analyze-tone` | Modal Tongkat Ajaib & Ruang Kerja Segmen | Tone kalimat + tips mempertahankan tone saat menerjemahkan |
 | `/api/detect-idioms` | Reader (penanda idiom otomatis, bisa dimatikan di Pengaturan) | Idiom dikenali tanpa AI, bisa disimpan ke Idiom Library |

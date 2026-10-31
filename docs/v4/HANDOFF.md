@@ -35,7 +35,7 @@ Kerjakan HANYA fase yang saya sebut.
 **Fase 14a / 14b / 14c / 14d / 14e** — `Kerjakan Fase 14<x> saja. Sebelum mengubah file, tulis daftar baris FEATURE_INVENTORY yang disentuh sub-fase ini. Di akhir, centang setiap baris beserta cara mengujinya.`
 (14b juga: `Mulai dari lib/reader/drag-fab.ts dan uji unitnya, baru komponen MagicWandButton.`)
 
-**Fase 14f** — `Kerjakan Fase 14f (lima route API: perbaiki & pakai). Mulai dari lib/idioms dan uji unitnya. Tulis migrasi 0011_profile_cascade.sql tapi jangan jalankan. Fitur lama yang memakai jalur lama (pencarian Gutendex, hapus akun) harus tetap berperilaku sama bagi pengguna.`
+**Fase 14f** — `Kerjakan Fase 14f (lima route API: perbaiki & pakai). Mulai dari lib/idioms dan uji unitnya. Tulis migrasi 0011_profile_cascade.sql tapi jangan jalankan. Pencarian OpenLibrary dan Gutendex JANGAN diubah: /api/gutenberg/search hanya ditambahkan sebagai opsi ketiga. Hapus akun harus tetap berperilaku sama bagi pengguna.`
 
 **Fase 15** — `Kerjakan Fase 15 (Mesin latihan + review grammar). Mulai dari lib/exercises/* dan uji unitnya. Latihan kalimat bebas yang lama di halaman topik grammar TETAP ada.`
 
@@ -117,7 +117,7 @@ Setelah fase selesai, perbarui tabel status di `docs/SESSION_HANDOFF.md`.
 | Fase 12 | Setujui tabel warna & huruf; buka beberapa halaman di HP: kesan sudah "perpustakaan"? |
 | Fase 13 | Telusuri tiga ruang; pastikan alat favoritmu masih ada; putuskan Q1 |
 | Fase 14x | Telusuri halaman sub-fase itu di HP & desktop dengan FEATURE_INVENTORY di tangan |
-| Fase 14f | Jalankan `0011`; coba Pelajari (Word of the Day), Analisis tone, penanda idiom, cari di Buku Klasik (Gutendex), dan hapus akun **dengan akun uji, bukan akun utama** |
+| Fase 14f | Jalankan `0011`; coba Pelajari (Word of the Day), Analisis tone, penanda idiom, cari di Buku Klasik lewat ketiga opsi (OpenLibrary, Gutendex, Gutenberg server), dan hapus akun **dengan akun uji, bukan akun utama** |
 | Fase 15 | Jalankan `0012`; buat 5 soal AI → tinjau → terbitkan; kerjakan di HP |
 | Fase 16 | Jalankan `0013`; isi satu unit lengkap; kerjakan dari awal sampai akhir |
 | Fase 17 | Jalankan `0014`; coba Kesalahan Umum & Pasangan Bunyi |
