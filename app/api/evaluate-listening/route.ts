@@ -1,6 +1,7 @@
 import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { recordEvidence } from "@/lib/skill-evidence";
 
 export async function POST(req: Request) {
   try {
@@ -61,6 +62,10 @@ Respond ONLY with valid JSON in this format:
       parsed = JSON.parse(cleaned);
     } catch {
       return NextResponse.json({ error: "Failed to parse AI response" }, { status: 500 });
+    }
+
+    if (typeof parsed.score === "number") {
+      await recordEvidence(supabase, user.id, { skill: "listening", source: "listening_challenge", score: parsed.score, ref_id: textId || null });
     }
 
     // Save to DB

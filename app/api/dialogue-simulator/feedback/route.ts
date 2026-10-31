@@ -1,16 +1,18 @@
 import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { recordEvidence } from "@/lib/skill-evidence";
 
 const FEEDBACK_PROMPT = `You are an expert English language tutor analyzing a student's spoken English from a roleplay conversation. The student is an Indonesian learner.
 
-Analyze ALL of the student's messages and provide structured feedback. Return ONLY valid JSON (no markdown fences).
+Analyze ALL of the student's messages and provide structured feedback. "cefr_estimate" is the CEFR level (A1, A2, B1, B2, C1 or C2) that the student's English demonstrates. Return ONLY valid JSON (no markdown fences).
 
 Response format:
 {
   "fluency_score": 75,
   "grammar_score": 80,
   "vocabulary_score": 70,
+  "cefr_estimate": "B1",
   "overall_feedback_id": "Ringkasan umpan balik dalam bahasa Indonesia yang mudah dipahami.",
   "corrections": [
     {
@@ -74,6 +76,17 @@ export async function POST(req: Request) {
         cultural_tip: "",
         strengths: [],
       };
+    }
+
+    // Bukti keterampilan dari percakapan (hasil fallback gagal-parse bernilai 0 dan dilewati). Best effort.
+    if (Number(parsed.grammar_score) > 0) {
+      await recordEvidence(supabase, user.id, {
+        skill: "production",
+        source: "dialogue",
+        score: Number(parsed.fluency_score) || null,
+        cefr_estimate: parsed.cefr_estimate,
+      });
+      await recordEvidence(supabase, user.id, { skill: "grammar", source: "dialogue", score: Number(parsed.grammar_score) });
     }
 
     return NextResponse.json(parsed);

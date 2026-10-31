@@ -23,6 +23,16 @@ test("review jatuh tempo menang atas semuanya", () => {
   assert.match(s.title, /7 kata/);
 });
 
+test("siap naik level: Tes Naik Level menang atas bacaan, kalah dari review", () => {
+  const ready = getNextStep({ goal: "umum", cefr: "B1", dueCount: 0, continueReading: reading, levelText, levelUpTarget: "B2" });
+  assert.equal(ready.href, "/english-lab/level-test");
+  assert.match(ready.title, /B2/);
+  const due = getNextStep({ goal: "umum", cefr: "B1", dueCount: 3, levelUpTarget: "B2" });
+  assert.equal(due.href, "/review");
+  const none = getNextStep({ goal: "umum", cefr: "B1", dueCount: 0, continueReading: reading, levelUpTarget: null });
+  assert.equal(none.href, "/read/1");
+});
+
 test("tanpa review: lanjutkan bacaan", () => {
   const s = getNextStep({ goal: "umum", cefr: "A2", dueCount: 0, continueReading: reading, levelText });
   assert.equal(s.href, "/read/1");

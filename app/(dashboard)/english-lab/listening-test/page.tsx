@@ -208,6 +208,17 @@ export default function ListeningTestPage() {
     }
   };
 
+  // Skor Listening Test dicatat sebagai bukti menyimak. Dikte audio manual tanpa transkrip (skor tiruan 100) dilewati.
+  const reportScore = (value: number) => {
+    fetch("/api/skill-evidence", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kind: "listening_test", score: value }),
+    }).catch(() => {
+      // abaikan jika gagal
+    });
+  };
+
   const submitQuiz = () => {
     if (!testData) return;
     
@@ -216,7 +227,9 @@ export default function ListeningTestPage() {
       testData.questions.forEach((q, i) => {
         if (answers[i]?.startsWith(q.correct)) correct++;
       });
-      setScore(Math.round((correct / testData.questions.length) * 100));
+      const quizScore = Math.round((correct / testData.questions.length) * 100);
+      setScore(quizScore);
+      reportScore(quizScore);
     } else {
       if (testData.passage === "TRANSKRIP_TIDAK_TERSEDIA") {
         setScore(100); // Dummy score for manual audio without transcript
@@ -226,18 +239,21 @@ export default function ListeningTestPage() {
         const cleanTarget = testData.passage.toLowerCase().replace(/[^\w\s]/g, "").trim();
         
         // Very basic Levenshtein approximation could be here, but for now exact or includes
+        let dictationScore: number;
         if (cleanUser === cleanTarget) {
-          setScore(100);
+          dictationScore = 100;
         } else if (cleanTarget.includes(cleanUser) && cleanUser.length > cleanTarget.length * 0.8) {
-          setScore(80);
+          dictationScore = 80;
         } else {
           // Calculate word match percentage
           const targetWords = cleanTarget.split(" ");
           const userWords = cleanUser.split(" ");
           let matchCount = 0;
           userWords.forEach(w => { if (targetWords.includes(w)) matchCount++; });
-          setScore(Math.round((matchCount / Math.max(targetWords.length, 1)) * 100));
+          dictationScore = Math.round((matchCount / Math.max(targetWords.length, 1)) * 100);
         }
+        setScore(dictationScore);
+        reportScore(dictationScore);
       }
     }
     

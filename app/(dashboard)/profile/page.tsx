@@ -5,6 +5,7 @@ import { User, BookOpen, Clock, Activity, Loader2, Sparkles, CalendarDays, BookM
 import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import Link from "next/link";
+import LevelProgressCard from "@/components/profile/LevelProgressCard";
 
 export default function ProfilePage() {
   const supabase = createClient();
@@ -127,6 +128,8 @@ export default function ProfilePage() {
             <Link href="/english-lab/placement-test" className="px-5 py-2.5 bg-brand text-background font-bold rounded-xl text-sm text-center">Ikuti Placement Test</Link>
           )}
         </div>
+
+        <LevelProgressCard />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column */}

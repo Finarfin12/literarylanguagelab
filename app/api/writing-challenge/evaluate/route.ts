@@ -1,6 +1,7 @@
 import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { recordEvidence } from "@/lib/skill-evidence";
 
 export async function POST(req: Request) {
   try {
@@ -29,6 +30,7 @@ Evaluate their response and return ONLY a raw JSON object (no markdown, no quote
   "grammar_score": (0-100),
   "vocabulary_score": (0-100, based on usage of required words),
   "coherence_score": (0-100, how well it summarizes/answers the prompt),
+  "cefr_estimate": "(A1, A2, B1, B2, C1 or C2: the CEFR level this writing demonstrates)",
   "feedback": "Short constructive feedback in Indonesian",
   "corrected_text": "The response with corrected grammar (if any)",
   "grammar_issues": ["list", "of", "original", "wrong", "words", "used"]
@@ -52,6 +54,20 @@ Evaluate their response and return ONLY a raw JSON object (no markdown, no quote
     } catch (e) {
       console.error("Failed to parse evaluation JSON", evaluationJSON);
       return NextResponse.json({ error: "Failed to evaluate response" }, { status: 500 });
+    }
+
+    // Bukti keterampilan: produksi (estimasi level) dan grammar (skor). Best effort.
+    const grammarScore = Number(scores.grammar_score);
+    const avgScore = [scores.grammar_score, scores.vocabulary_score, scores.coherence_score].map(Number).filter(Number.isFinite);
+    await recordEvidence(supabase, user.id, {
+      skill: "production",
+      source: "writing_eval",
+      score: avgScore.length ? avgScore.reduce((a, b) => a + b, 0) / avgScore.length : null,
+      cefr_estimate: scores.cefr_estimate,
+      ref_id: textId || null,
+    });
+    if (Number.isFinite(grammarScore)) {
+      await recordEvidence(supabase, user.id, { skill: "grammar", source: "writing_eval", score: grammarScore, ref_id: textId || null });
     }
 
     // Save to writing_submissions

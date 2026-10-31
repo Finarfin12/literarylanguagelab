@@ -7,6 +7,8 @@ import AnimatedPage from "@/components/AnimatedPage";
 import { ButtonLink, Card, CardTitle, EmptyState } from "@/components/ui/primitives";
 import { getNextStep } from "@/lib/next-step";
 import { neighborLevels } from "@/lib/cefr";
+import { loadLevelContext } from "@/lib/skill-evidence";
+import { canTakeLevelTest, levelUpReadiness } from "@/lib/levels";
 import { toolsForGoal } from "@/lib/menu-config";
 import { GOAL_LABELS, isLearningGoal, type LearningGoal } from "@/lib/learning-goals";
 
@@ -53,6 +55,20 @@ async function loadPersonalization(supabase: Awaited<ReturnType<typeof createCli
   return { goal, cefr, levelTexts: error ? [] : ((data || []) as LevelTextCandidate[]) };
 }
 
+// Level berikutnya jika syarat naik level terpenuhi dan tes boleh diambil (migrasi 0008); selain itu null.
+async function loadLevelUpTarget(supabase: Awaited<ReturnType<typeof createClient>>, userId: string | undefined): Promise<string | null> {
+  if (!userId) return null;
+  try {
+    const ctx = await loadLevelContext(supabase, userId);
+    if (!ctx.schemaReady || !ctx.level) return null;
+    const readiness = levelUpReadiness(ctx.evidence, ctx.level, ctx.vocab, ctx.rules);
+    const cooldown = canTakeLevelTest(ctx.lastTestAt, new Date(), ctx.rules.test.cooldownDays);
+    return readiness.ready && cooldown.allowed ? readiness.target : null;
+  } catch {
+    return null;
+  }
+}
+
 const SESSION_COLUMNS = "text_id, time_spent_seconds, last_active_at, texts(title, author)";
 
 function formatAgo(iso: string | null) {
@@ -71,7 +87,7 @@ export default async function DashboardPage() {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-  const [vocabRes, dueRes, dueWordsRes, reviewedRes, sessionsRes, newVocabRes, personal] = await Promise.all([
+  const [vocabRes, dueRes, dueWordsRes, reviewedRes, sessionsRes, newVocabRes, personal, levelUpTarget] = await Promise.all([
     // Total kosa kata
     supabase.from("vocabulary").select("*", { count: "exact", head: true }).eq("user_id", user?.id),
     // Jumlah kata jatuh tempo
@@ -95,6 +111,7 @@ export default async function DashboardPage() {
     supabase.from("vocabulary").select("created_at").eq("user_id", user?.id).gte("created_at", oneWeekAgo.toISOString()),
     // Tujuan belajar & level untuk "Langkah berikutnya"
     loadPersonalization(supabase, user?.id),
+    loadLevelUpTarget(supabase, user?.id),
   ]);
 
   const vocabCount = vocabRes.count || 0;
@@ -151,6 +168,7 @@ export default async function DashboardPage() {
     dueCount,
     continueReading: openReading ? { title: openReading.title, href: openReading.href } : null,
     levelText,
+    levelUpTarget,
   });
   const goalForTools: LearningGoal = personal.goal ?? "umum";
   const recommendedTools = toolsForGoal(goalForTools, 6);

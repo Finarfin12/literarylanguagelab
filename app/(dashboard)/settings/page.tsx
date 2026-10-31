@@ -86,6 +86,7 @@ export default function SettingsPage() {
   const [userRole, setUserRole] = useState("student");
   const [sttEngine, setSttEngine] = useState("browser");
   const [cefrLevel, setCefrLevel] = useState("A1");
+  const [savedCefrLevel, setSavedCefrLevel] = useState("A1");
   // Kolom dari migrasi 0006 (null jika belum dijalankan / belum diisi)
   const [learningGoal, setLearningGoal] = useState<LearningGoal | null>(null);
   const [dailyMinutes, setDailyMinutes] = useState<DailyMinutes | null>(null);
@@ -117,6 +118,7 @@ export default function SettingsPage() {
           setNotificationPref(profile.notification_preference ?? true);
           setUserRole(profile.role ?? "student");
           setCefrLevel(profile.cefr_level ?? "A1");
+          setSavedCefrLevel(profile.cefr_level ?? "A1");
           setLearningGoal(isLearningGoal(profile.learning_goal) ? profile.learning_goal : null);
           setDailyMinutes(isDailyMinutes(profile.daily_minutes) ? profile.daily_minutes : null);
           
@@ -191,8 +193,17 @@ export default function SettingsPage() {
           language_preference: languagePref,
           notification_preference: notificationPref,
           preferences: preferences,
-          cefr_level: cefrLevel
         }).eq('id', currentUser.id);
+
+        // Level diubah manual lewat API supaya tercatat di level_history dan level per keterampilan ikut
+        if (cefrLevel !== savedCefrLevel) {
+          const levelRes = await fetch("/api/placement-test", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "set_level", level: cefrLevel }),
+          });
+          if (levelRes.ok) setSavedCefrLevel(cefrLevel);
+        }
       }
 
       setAvatarUrl(finalAvatarUrl);

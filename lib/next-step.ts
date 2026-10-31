@@ -9,6 +9,8 @@ export interface NextStepInput {
   dueCount: number;
   /** Bacaan terakhir yang belum selesai (teks Library atau buku Gutenberg). */
   continueReading?: { title: string; href: string } | null;
+  /** Fase 10: level berikutnya jika semua syarat naik level terpenuhi dan tes boleh diambil; selain itu null. */
+  levelUpTarget?: string | null;
   /** Fase 9: bacaan sesuai level pengguna. Boleh dikosongkan sebelum fitur itu ada. */
   levelText?: { title: string; href: string; minutes?: number } | null;
 }
@@ -37,15 +39,23 @@ const GOAL_FALLBACK: Record<LearningGoal, NextStep> = {
   },
 };
 
-/** Prioritas: review jatuh tempo > lanjutkan bacaan > bacaan sesuai level > tes level > alat sesuai tujuan. */
+/** Prioritas: review jatuh tempo > Tes Naik Level (jika siap) > lanjutkan bacaan > bacaan sesuai level > tes level > alat sesuai tujuan. */
 export function getNextStep(input: NextStepInput): NextStep {
-  const { goal, cefr, dueCount, continueReading, levelText } = input;
+  const { goal, cefr, dueCount, continueReading, levelText, levelUpTarget } = input;
 
   if (dueCount > 0) {
     return {
       title: `Review ${dueCount} kata`,
       href: "/review",
       reason: "Kata ini sudah waktunya diulang. Mengulang tepat waktu membuatnya lebih awet.",
+    };
+  }
+
+  if (levelUpTarget) {
+    return {
+      title: `Ikuti Tes Naik Level ke ${levelUpTarget}`,
+      href: "/english-lab/level-test",
+      reason: "Semua syarat naik levelmu sudah terpenuhi. Tes ini hanya 10-15 menit.",
     };
   }
 

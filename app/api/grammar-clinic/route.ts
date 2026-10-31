@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { getUserCefr } from "@/lib/user-level";
 import { explanationLanguage } from "@/lib/cefr";
+import { recordEvidence } from "@/lib/skill-evidence";
 
 const SYSTEM_PROMPT = `You are an expert English grammar tutor for Indonesian learners. The user will give you a piece of English text (could be an email, chat message, essay, or any text). Your job is to:
 
@@ -78,6 +79,11 @@ export async function POST(req: Request) {
         tips: ["Maaf, AI gagal menganalisis teks ini. Silakan coba lagi."],
         raw_response: raw
       };
+    }
+
+    // Bukti keterampilan grammar (best effort). Skor 0 dari fallback gagal-parse tidak dicatat.
+    if (typeof parsed.score === "number" && parsed.score > 0) {
+      await recordEvidence(supabase, user.id, { skill: "grammar", source: "grammar_clinic", score: parsed.score });
     }
 
     // Save session to Supabase

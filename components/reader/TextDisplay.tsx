@@ -593,6 +593,19 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
     }
   };
 
+  // Jawaban kuis bab dicatat sebagai bukti keterampilan membaca (level teks diambil server dari texts.cefr_level)
+  const answerQuiz = (index: number, correct: boolean) => {
+    setQuizAnswered(index);
+    if (!textId) return;
+    fetch("/api/reading/quiz-result", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ textId, correct }),
+    }).catch(() => {
+      // pencatatan bukti bersifat tambahan; abaikan jika gagal
+    });
+  };
+
   const triggerQuiz = async (headingIdx: number) => {
     setLastQuizHeadingIdx(headingIdx); // Prevent triggering again for this heading
     setQuizLoading(true);
@@ -917,7 +930,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                         <button 
                           key={i}
                           disabled={showResult}
-                          onClick={() => setQuizAnswered(i)}
+                          onClick={() => answerQuiz(i, quizData.correct_index === i)}
                           className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between ${btnClass}`}
                         >
                           <span>{opt}</span>

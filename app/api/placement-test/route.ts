@@ -1,64 +1,19 @@
-import { runAI } from "@/lib/ai/run";
+import { generatePlacementQuestion } from "@/lib/placement";
+import { recordLevelChange } from "@/lib/skill-evidence";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
 const CEFR_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'] as const;
 
-const SECTION_PROMPTS: Record<string, string> = {
-  reading: `You are an English placement test generator for Indonesian learners. Generate a READING COMPREHENSION question.
-Given the target CEFR level, create:
-1. A short English passage (3-5 sentences, appropriate complexity for the level)
-2. One multiple-choice question about the passage
-3. 4 answer options (A, B, C, D)
-4. The correct answer letter
-
-Return ONLY valid JSON:
-{
-  "passage": "The passage text here...",
-  "question": "What is the main idea?",
-  "options": ["A. option1", "B. option2", "C. option3", "D. option4"],
-  "correct": "A",
-  "explanation_id": "Penjelasan singkat dalam bahasa Indonesia"
-}`,
-
-  grammar: `You are an English placement test generator for Indonesian learners. Generate a GRAMMAR question.
-Given the target CEFR level, create a fill-in-the-blank or error identification question testing grammar knowledge appropriate for that level.
-
-Return ONLY valid JSON:
-{
-  "question": "Choose the correct sentence:",
-  "options": ["A. option1", "B. option2", "C. option3", "D. option4"],
-  "correct": "B",
-  "explanation_id": "Penjelasan singkat dalam bahasa Indonesia mengapa jawaban ini benar"
-}`,
-
-  vocabulary: `You are an English placement test generator for Indonesian learners. Generate a VOCABULARY question.
-Given the target CEFR level, create a question that tests word knowledge (definition, synonym, or usage in context) appropriate for that level.
-
-Return ONLY valid JSON:
-{
-  "question": "What does 'elaborate' mean in this context: 'She gave an elaborate explanation.'",
-  "options": ["A. option1", "B. option2", "C. option3", "D. option4"],
-  "correct": "C",
-  "explanation_id": "Penjelasan singkat dalam bahasa Indonesia"
-}`,
-
-  listening: `You are an English placement test generator for Indonesian learners. Generate a LISTENING comprehension question.
-Given the target CEFR level, create:
-1. A short sentence or dialogue (2-3 sentences) that will be read aloud via TTS
-2. One comprehension question about it
-3. 4 answer options
-4. The correct answer
-
-Return ONLY valid JSON:
-{
-  "audio_text": "The text that will be spoken by TTS",
-  "question": "What did the speaker say about...?",
-  "options": ["A. option1", "B. option2", "C. option3", "D. option4"],
-  "correct": "A",
-  "explanation_id": "Penjelasan singkat dalam bahasa Indonesia"
-}`
-};
+// Pengguna sendiri yang memilih level (tes ulang atau manual), jadi level per keterampilan mengikuti.
+// Kolom skill_levels dari migrasi 0008: jika belum ada, update diabaikan.
+async function resetSkillLevels(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
+  try {
+    await supabase.from('profiles').update({ skill_levels: {} }).eq('id', userId);
+  } catch {
+    // abaikan
+  }
+}
 
 function getAdaptiveLevel(currentEstimate: string, wasCorrect: boolean): string {
   const idx = CEFR_LEVELS.indexOf(currentEstimate as typeof CEFR_LEVELS[number]);
@@ -98,23 +53,14 @@ export async function POST(req: Request) {
     // === GENERATE A QUESTION ===
     if (action === 'generate') {
       const { section, currentEstimate = 'B1' } = body;
-      const prompt = SECTION_PROMPTS[section];
-      if (!prompt) return NextResponse.json({ error: "Invalid section" }, { status: 400 });
-
-      const response = await runAI("placement-test", {
-        messages: [
-          { role: "system", content: prompt },
-          { role: "user", content: `Generate a question for CEFR level: ${currentEstimate}` },
-        ],
-        temperature: 0.7,
-        max_tokens: 1000,
-      }, { userId: user?.id });
-
-      const raw = response.content || '{}';
-      const jsonMatch = raw.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) return NextResponse.json({ error: "AI response parse error" }, { status: 500 });
-
-      const question = JSON.parse(jsonMatch[0]);
+      let question;
+      try {
+        question = await generatePlacementQuestion(section, currentEstimate, user?.id);
+      } catch (e) {
+        const message = e instanceof Error ? e.message : "";
+        if (message === "Invalid section") return NextResponse.json({ error: "Invalid section" }, { status: 400 });
+        return NextResponse.json({ error: "AI response parse error" }, { status: 500 });
+      }
       // Don't send correct answer to client during test
       const { correct, explanation_id, ...clientQuestion } = question;
 
@@ -149,10 +95,15 @@ export async function POST(req: Request) {
         details: scores,
       });
 
-      // Update profile
+      // Update profile. Level per keterampilan diatur ulang ke level hasil tes (Placement Test diulang atas kemauan pengguna).
+      const { data: before } = await supabase.from('profiles').select('cefr_level').eq('id', user.id).maybeSingle();
       await supabase.from('profiles').update({
         cefr_level: finalLevel,
       }).eq('id', user.id);
+      await resetSkillLevels(supabase, user.id);
+      if (before?.cefr_level !== finalLevel) {
+        await recordLevelChange(supabase, user.id, { from: before?.cefr_level ?? null, to: finalLevel, source: 'placement' });
+      }
 
       return NextResponse.json({
         finalLevel,
@@ -165,9 +116,14 @@ export async function POST(req: Request) {
       const { level } = body;
       if (!CEFR_LEVELS.includes(level)) return NextResponse.json({ error: "Invalid level" }, { status: 400 });
 
+      const { data: before } = await supabase.from('profiles').select('cefr_level').eq('id', user.id).maybeSingle();
       await supabase.from('profiles').update({
         cefr_level: level,
       }).eq('id', user.id);
+      await resetSkillLevels(supabase, user.id);
+      if (before?.cefr_level !== level) {
+        await recordLevelChange(supabase, user.id, { from: before?.cefr_level ?? null, to: level, source: 'manual' });
+      }
 
       return NextResponse.json({ level });
     }

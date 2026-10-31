@@ -33,6 +33,7 @@ export const AI_FEATURES: AIFeature[] = [
   { key: "evaluate-listening", label: "Evaluasi Dikte", group: "English Lab", requires: "text" },
   { key: "slang-decoder", label: "Slang Decoder", group: "English Lab", requires: "text" },
   { key: "placement-test", label: "Placement Test", group: "English Lab", requires: "text" },
+  { key: "level-test", label: "Tes Naik Level", group: "English Lab", requires: "text" },
   { key: "writing-feedback", label: "Writing Feedback", group: "English Lab", requires: "text" },
 
   { key: "lingowise", label: "LingoWise AI", group: "Tools", requires: "text" },
