@@ -1,5 +1,7 @@
 "use client";
 
+import TryExampleButton from "@/components/ui/TryExampleButton";
+import { TONE_ANALYZER_EXAMPLE } from "@/lib/tool-examples";
 import Swal from 'sweetalert2';
 import { useState } from "react";
 import { FileText, Loader2, Wand2, Search, Shuffle } from "lucide-react";
@@ -10,6 +12,7 @@ export default function ToneAnalyzerPage() {
   const [text, setText] = useState("");
   const [mode, setMode] = useState<"detect" | "transform">("detect");
   const [targetTone, setTargetTone] = useState("Akademis Profesional");
+  const [customTone, setCustomTone] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
@@ -25,10 +28,17 @@ export default function ToneAnalyzerPage() {
     "Gothic",
     "Melancholic",
   ];
+  const CUSTOM = "__custom__";
+  const effectiveTone = targetTone === CUSTOM ? customTone.trim() : targetTone;
 
   const handleAnalyze = async () => {
     if (!text.trim()) {
       Swal.fire({ title: "Perhatian", text: "Masukkan teks terlebih dahulu!", icon: "info", confirmButtonColor: "#2fa16b" });
+      return;
+    }
+
+    if (mode === "transform" && !effectiveTone) {
+      Swal.fire({ title: "Perhatian", text: "Tulis nada tujuan terlebih dahulu.", icon: "info", confirmButtonColor: "#2fa16b" });
       return;
     }
 
@@ -41,7 +51,8 @@ export default function ToneAnalyzerPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text,
-          targetTone: mode === "transform" ? targetTone : undefined,
+          mode,
+          targetTone: mode === "transform" ? effectiveTone : undefined,
         }),
       });
 
@@ -61,9 +72,9 @@ export default function ToneAnalyzerPage() {
       <div className="mb-10">
         <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
           <FileText className="w-8 h-8 text-brand" />
-          Tone Analyzer
+          Tone & Gaya
         </h1>
-        <p className="text-muted-foreground mt-2 text-lg">Deteksi tone/nada teks, linguistic markers, tips preservasi dalam terjemahan, dan transformasi tone.</p>
+        <p className="text-muted-foreground mt-2 text-lg">Kenali nada sebuah teks beserta ciri bahasanya, atau ubah ke nada lain. Pilih mode di bawah.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-8">
@@ -75,19 +86,19 @@ export default function ToneAnalyzerPage() {
               onClick={() => setMode("detect")}
               className={`flex-1 py-3 px-4 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${mode === "detect" ? "bg-brand text-background shadow-md" : "text-muted-foreground hover:text-foreground"}`}
             >
-              <Search className="w-4 h-4" /> Detect Tone
+              <Search className="w-4 h-4" /> Deteksi Nada
             </button>
             <button
               onClick={() => setMode("transform")}
               className={`flex-1 py-3 px-4 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all ${mode === "transform" ? "bg-brand text-background shadow-md" : "text-muted-foreground hover:text-foreground"}`}
             >
-              <Shuffle className="w-4 h-4" /> Transform Tone
+              <Shuffle className="w-4 h-4" /> Analisis &amp; Ubah Nada
             </button>
           </div>
 
           {mode === "transform" && (
             <div className="mb-6 animate-in fade-in slide-in-from-top-2 duration-300">
-              <label className="block text-sm font-bold text-brand uppercase tracking-wider mb-3">Target Tone</label>
+              <label className="block text-sm font-bold text-brand uppercase tracking-wider mb-3">Nada tujuan</label>
               <select
                 value={targetTone}
                 onChange={(e) => setTargetTone(e.target.value)}
@@ -96,15 +107,28 @@ export default function ToneAnalyzerPage() {
                 {TONE_OPTIONS.map(opt => (
                   <option key={opt} value={opt}>{opt}</option>
                 ))}
+                <option value={CUSTOM}>Tulis sendiri...</option>
               </select>
+              {targetTone === CUSTOM && (
+                <input
+                  type="text"
+                  value={customTone}
+                  onChange={(e) => setCustomTone(e.target.value)}
+                  maxLength={80}
+                  placeholder="Contoh: lembut seperti surat dari sahabat lama"
+                  aria-label="Nada tujuan buatan sendiri"
+                  className="mt-3 w-full min-h-[44px] bg-background border border-foreground/20 rounded-xl p-3 text-foreground focus:ring-2 focus:ring-brand outline-none"
+                />
+              )}
             </div>
           )}
 
           <div className="mb-6">
             <label className="block text-sm font-bold text-foreground uppercase tracking-wider mb-3">
               Input Text (English)
-              {mode === "detect" && <span className="text-muted-foreground font-normal ml-2">— tone & linguistic markers akan dideteksi otomatis</span>}
+              {mode === "detect" && <span className="text-muted-foreground font-normal ml-2">— nada dan ciri bahasanya dideteksi tanpa mengubah teks</span>}
             </label>
+            <TryExampleButton example={TONE_ANALYZER_EXAMPLE} onFill={setText} className="mb-2" />
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
@@ -120,14 +144,14 @@ export default function ToneAnalyzerPage() {
               className="px-4 md:px-8 py-4 bg-brand text-background font-bold rounded-xl hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center gap-2"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
-              {mode === "detect" ? "Detect Tone" : "Analyze & Transform"}
+              {mode === "detect" ? "Deteksi Nada" : "Analisis & Ubah Nada"}
             </button>
           </div>
         </div>
 
         {result && (
           <div className="bg-card shadow-sm backdrop-blur-2xl border border-border rounded-3xl p-4 md:p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <h2 className="text-2xl font-serif font-bold text-brand mb-6 border-b border-border pb-4">Analysis Result</h2>
+            <h2 className="text-2xl font-serif font-bold text-brand mb-6 border-b border-border pb-4">Hasil</h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:font-serif">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
             </div>

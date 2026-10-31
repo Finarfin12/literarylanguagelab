@@ -87,7 +87,7 @@ export default function FlashcardReviewPage() {
             className="absolute inset-0 bg-brand/10 backdrop-blur-xl border border-brand/30 rounded-3xl shadow-2xl flex flex-col items-center justify-center p-4 md:p-8 text-center"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
-            <p className="text-sm font-bold text-brand/80 mb-4 uppercase tracking-widest">Meaning</p>
+            <p className="text-sm font-bold text-brand/80 mb-4 uppercase tracking-widest">Arti</p>
             <p className="text-2xl md:text-4xl font-serif font-bold text-foreground mb-8">{currentCard.meaning}</p>
             {currentCard.context && (
               <div className="bg-black/30 p-6 rounded-2xl max-w-lg border border-border">

@@ -1,5 +1,6 @@
 "use client";
 
+import TryExampleButton from "@/components/ui/TryExampleButton";
 import Swal from 'sweetalert2';
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -125,7 +126,10 @@ export default function ToolExecutionPage() {
           )}
 
           <div className="mb-6">
-            <label className="block text-sm font-bold text-foreground uppercase tracking-wider mb-3">Input Text (English)</label>
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <label className="block text-sm font-bold text-foreground uppercase tracking-wider">Input Text (English)</label>
+              <TryExampleButton example={tool.example} onFill={setText} />
+            </div>
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}

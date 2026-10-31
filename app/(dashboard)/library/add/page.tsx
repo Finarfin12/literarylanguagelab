@@ -48,7 +48,7 @@ export default function AddTextPage() {
       });
     } catch (error: any) {
       Swal.fire({
-        title: "Generation Error",
+        title: "Gagal membuat teks",
         text: error.message,
         icon: "error",
         background: "#1c1c1c",
@@ -62,7 +62,7 @@ export default function AddTextPage() {
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Add New Text</h1>
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Tambah Teks Baru</h1>
         <p className="text-muted-foreground mt-2">Tambahkan teks sastra ke Library, baik dengan menulis sendiri atau meminta bantuan AI.</p>
       </div>
 
@@ -100,7 +100,7 @@ export default function AddTextPage() {
                   disabled={generating || !prompt}
                   className="px-6 py-3 rounded-xl bg-brand text-background font-bold hover:bg-brand-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all"
                 >
-                  {generating ? <><Loader2 className="w-4 h-4 animate-spin"/> Generating...</> : <><Sparkles className="w-4 h-4"/> Generate</>}
+                  {generating ? <><Loader2 className="w-4 h-4 animate-spin"/> Membuat...</> : <><Sparkles className="w-4 h-4"/> Buat dengan AI</>}
                 </button>
               </div>
             </div>

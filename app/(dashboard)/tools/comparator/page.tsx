@@ -1,5 +1,7 @@
 "use client";
 
+import TryExampleButton from "@/components/ui/TryExampleButton";
+import { COMPARATOR_EXAMPLE } from "@/lib/tool-examples";
 import { useState, useEffect } from "react";
 import { Scale, Loader2, ArrowRightLeft, Type, Info, CheckCircle2, History, GitCompare, ArrowRight, BookOpen } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -47,6 +49,15 @@ export default function ComparatorPage() {
         <p className="text-muted-foreground mt-2 text-lg">Pelajari strategi dari para ahli. Bandingkan teks asli dengan terjemahan profesional untuk membedah keputusan penerjemahnya secara mendalam.</p>
       </div>
 
+      <div className="mb-3">
+        <TryExampleButton
+          example={COMPARATOR_EXAMPLE.original}
+          onFill={() => {
+            setOriginalText(COMPARATOR_EXAMPLE.original);
+            setTranslatedText(COMPARATOR_EXAMPLE.translation);
+          }}
+        />
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Original Text */}
         <div className="bg-card shadow-sm border border-border rounded-3xl p-4 sm:p-6 shadow-xl flex flex-col">

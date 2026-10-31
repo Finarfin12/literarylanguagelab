@@ -103,11 +103,11 @@ export default function ProfilePage() {
             <div className="flex items-center gap-6 mt-4">
               <div className="flex items-center gap-2">
                 <span className="text-lg font-bold text-foreground">{stats.followersCount}</span>
-                <span className="text-sm text-muted-foreground">Followers</span>
+                <span className="text-sm text-muted-foreground">Pengikut</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-lg font-bold text-foreground">{stats.followingCount}</span>
-                <span className="text-sm text-muted-foreground">Following</span>
+                <span className="text-sm text-muted-foreground">Mengikuti</span>
               </div>
             </div>
           </div>

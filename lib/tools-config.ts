@@ -1,3 +1,5 @@
+import { TOOL_EXAMPLES } from "./tool-examples";
+
 export interface ToolConfig {
   id: string;
   title: string;
@@ -6,9 +8,11 @@ export interface ToolConfig {
   type: "textarea" | "dropdown";
   options?: string[];
   systemPrompt: string;
+  /** Input contoh untuk tombol "Coba dengan contoh" (diisi dari lib/tool-examples.ts). */
+  example?: string;
 }
 
-export const TOOLS: ToolConfig[] = [
+const BASE_TOOLS: ToolConfig[] = [
   // Dropdown Tools
   {
     id: "mood-transformer",
@@ -230,13 +234,7 @@ export const TOOLS: ToolConfig[] = [
     icon: "Quote",
     type: "textarea",
     systemPrompt: "Detect all idioms, metaphors, and figurative language in this text. For each: 1) Identify the phrase, 2) Explain its meaning, 3) Provide Indonesian equivalent or translation strategy. Provide all explanations in BOTH English and Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, bold text, and ⚠️ warning icons for phrases that should NOT be translated literally)."
-  },
-  {
-    id: "tone-detector",
-    title: "Tone Analyzer",
-    description: "Deteksi tone/nada teks + linguistic markers + tips preservasi.",
-    icon: "Mic",
-    type: "textarea",
-    systemPrompt: "Analyze the tone of this text. Classify it (neutral/formal/sarcastic/ironic/humorous/melancholic/dramatic/romantic/ominous/urgent), identify linguistic markers (word choices, syntax, punctuation), and explain how to preserve this tone when translating to Indonesian with specific examples. Provide all explanations in BOTH English and Indonesian using HIGHLY STRUCTURED Markdown (must use ## Headers, bullet points, and bold text)."
   }
 ];
+
+export const TOOLS: ToolConfig[] = BASE_TOOLS.map((t) => ({ ...t, example: TOOL_EXAMPLES[t.id] }));

@@ -36,7 +36,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
     <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
         <div>
-          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Text Library</h1>
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Library Teks</h1>
           <p className="text-muted-foreground mt-2">Pilih teks sastra untuk mulai membaca dan belajar. ({count ?? "?"} teks)</p>
         </div>
         <div className="flex flex-col gap-4">
@@ -57,14 +57,14 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
             className="flex items-center justify-center gap-2 px-6 py-3 bg-brand text-background font-bold rounded-xl hover:bg-brand-hover hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-brand/20 whitespace-nowrap"
           >
             <Sparkles className="w-5 h-5" />
-            <span>Generate & Add Text</span>
+            <span>Buat &amp; Tambah Teks</span>
           </Link>
         </div>
       </div>
 
       {error && (
         <div className="p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 mb-8">
-          <p className="font-bold">Supabase Error:</p>
+          <p className="font-bold">Gagal memuat data:</p>
           <pre className="text-xs mt-2 whitespace-pre-wrap">{JSON.stringify(error, null, 2)}</pre>
         </div>
       )}

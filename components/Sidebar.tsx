@@ -10,7 +10,7 @@ import {
   Library, Briefcase, Sun, Moon, Sparkles, User, Settings,
   Menu, PanelLeftClose, BookOpen, Trophy, LayoutDashboard, ShieldAlert, BrainCircuit
 } from "lucide-react";
-import { MENU_GROUPS } from "@/lib/menu-config";
+import { getGroupedMenu } from "@/lib/menu-config";
 
 interface SidebarProps {
   userEmail?: string;
@@ -148,12 +148,12 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             <div className="flex items-center gap-3">
               <LayoutDashboard className={`w-5 h-5 ${pathname === '/dashboard' ? 'text-brand' : 'text-brand/70'}`} />
               <span className={`font-bold ${pathname === '/dashboard' ? 'text-foreground' : 'text-muted-foreground'}`}>
-                Progress Dashboard
+                Beranda
               </span>
             </div>
           </Link>
           
-          {/* Standalone Text Library Link */}
+          {/* Pintasan utama */}
           <Link 
             href="/library"
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
@@ -170,7 +170,6 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             </div>
           </Link>
 
-          {/* Standalone Gutenberg Link */}
           <Link 
             href="/gutenberg"
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
@@ -187,7 +186,6 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             </div>
           </Link>
 
-          {/* Standalone A-Z Browser Link */}
           <Link 
             href="/tools/a-z-dictionary"
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
@@ -216,14 +214,14 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             <div className="flex items-center gap-3">
               <Sparkles className={`w-5 h-5 ${pathname === '/tools' ? 'text-purple-400' : 'text-purple-500'}`} />
               <span className={`font-bold ${pathname === '/tools' ? 'text-foreground' : 'text-muted-foreground'}`}>
-                All Toolkits Hub
+                Semua Alat
               </span>
             </div>
           </Link>
 
-          {MENU_GROUPS.map((group) => {
+          {getGroupedMenu().map((group) => {
             const Icon = group.icon;
-            const isOpen = openGroups[group.title];
+            const isOpen = openGroups[group.title] ?? (group.title === "Baca & Pahami");
             
             // Check if any child is active
             const isChildActive = group.items.some(item => pathname === item.path);
@@ -259,7 +257,10 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
                             : "text-muted-foreground hover:bg-muted hover:text-foreground hover:translate-x-1"
                           }`}
                         >
-                          <span className="flex-1">{item.name}</span>
+                          <span className="flex-1">
+                            {item.name}
+                            <span className="block text-xs font-normal text-muted-foreground/80 leading-snug">{item.description}</span>
+                          </span>
                         </Link>
                       );
                     })}

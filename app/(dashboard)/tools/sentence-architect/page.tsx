@@ -1,5 +1,7 @@
 "use client";
 
+import TryExampleButton from "@/components/ui/TryExampleButton";
+import { TOOL_EXAMPLES } from "@/lib/tool-examples";
 import { useState } from "react";
 import { Building2, Loader2, ArrowRight, BookOpen, Layers, GitMerge, Type } from "lucide-react";
 
@@ -80,6 +82,7 @@ export default function SentenceArchitectPage() {
 
       <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 shadow-xl mb-8">
         <label className="block text-sm font-bold text-foreground mb-3">Masukkan Kalimat Bahasa Inggris:</label>
+        <TryExampleButton example={TOOL_EXAMPLES["sentence-architect"]} onFill={setText} className="mb-2" />
         <textarea 
           className="w-full bg-background border border-border rounded-xl p-4 text-foreground focus:ring-2 focus:ring-brand focus:border-transparent transition-all outline-none resize-none custom-scrollbar"
           rows={5}

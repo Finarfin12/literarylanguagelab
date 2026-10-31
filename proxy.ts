@@ -14,6 +14,9 @@ function isPublicRoute(pathname: string): boolean {
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  // Diteruskan ke layout (server component) yang perlu tahu path saat ini, mis. redirect onboarding.
+  // Selalu ditimpa di sini, jadi nilai kiriman klien tidak dipercaya.
+  request.headers.set("x-pathname", pathname);
   const { supabaseResponse, user } = await updateSession(request);
 
   // Protect /api/* endpoints with 401 if not authenticated and not public

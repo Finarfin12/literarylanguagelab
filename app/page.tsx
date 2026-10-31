@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Sparkles, BrainCircuit, Globe2, BookMarked, ArrowRight } from "lucide-react";
+import { BookOpen, Sparkles, BrainCircuit, Globe2, BookMarked, ArrowRight, Repeat2, MessageCircle, PenLine, Languages } from "lucide-react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 
@@ -25,8 +25,8 @@ export default async function Home() {
           <span className="font-serif font-bold text-xl tracking-tight text-foreground">Literary Lab</span>
         </div>
         <div className="flex items-center gap-4">
-          <Link href="/login" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Log in</Link>
-          <Link href="/register" className="text-sm font-bold bg-foreground text-background px-4 py-2 rounded-full hover:bg-orange-500 hover:text-white transition-all">Sign up</Link>
+          <Link href="/login" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Masuk</Link>
+          <Link href="/register" className="text-sm font-bold bg-foreground text-background px-4 py-2 rounded-full hover:bg-orange-500 hover:text-white transition-all">Daftar</Link>
         </div>
       </nav>
 
@@ -58,6 +58,57 @@ export default async function Home() {
             </Link>
           </div>
         </div>
+
+        {/* 3 LANGKAH */}
+        <section className="mb-32" aria-labelledby="cara-kerja">
+          <div className="text-center mb-12">
+            <h2 id="cara-kerja" className="text-3xl font-bold font-serif mb-4">Cara belajarnya sederhana</h2>
+            <p className="text-muted-foreground">Tiga langkah yang kamu ulang setiap hari.</p>
+          </div>
+          <ol className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { icon: BookOpen, title: "1. Baca", text: "Pilih teks yang sesuai levelmu. Ketuk kata yang belum kamu kenal untuk melihat artinya." },
+              { icon: BookMarked, title: "2. Simpan kata", text: "Kata yang kamu ketuk tersimpan bersama kalimat asalnya, jadi kamu ingat konteksnya." },
+              { icon: Repeat2, title: "3. Ulangi", text: "Aplikasi mengingatkan kata itu tepat sebelum kamu lupa, beberapa menit sehari." },
+            ].map(({ icon: Icon, title, text }) => (
+              <li key={title} className="rounded-3xl bg-card border border-border p-6 shadow-sm">
+                <div className="w-12 h-12 bg-orange-500/10 rounded-2xl flex items-center justify-center mb-4 border border-orange-500/20">
+                  <Icon className="w-6 h-6 text-orange-500" />
+                </div>
+                <h3 className="text-xl font-bold font-serif mb-2">{title}</h3>
+                <p className="text-muted-foreground">{text}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* 3 JALUR TUJUAN */}
+        <section className="mb-32" aria-labelledby="pilih-jalur">
+          <div className="text-center mb-12">
+            <h2 id="pilih-jalur" className="text-3xl font-bold font-serif mb-4">Mau belajar untuk apa?</h2>
+            <p className="text-muted-foreground">Pilih tujuanmu saat mendaftar. Berandamu akan menyesuaikan.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { icon: MessageCircle, title: "Bahasa Inggris sehari-hari", text: "Bacaan berjenjang, kosakata inti, dan latihan grammar dari dasar." },
+              { icon: PenLine, title: "Memahami karya sastra", text: "Baca karya klasik, lalu bedah majas, nada, dan sudut pandangnya." },
+              { icon: Languages, title: "Latihan menerjemahkan", text: "Terjemahkan, bandingkan, dan dapatkan penilaian atas hasilmu." },
+            ].map(({ icon: Icon, title, text }) => (
+              <Link
+                key={title}
+                href="/register"
+                className="group rounded-3xl bg-card border border-border p-6 shadow-sm hover:border-orange-500/40 hover:shadow-lg transition-all min-h-[44px]"
+              >
+                <Icon className="w-7 h-7 text-orange-500 mb-4" />
+                <h3 className="text-xl font-bold font-serif mb-2">{title}</h3>
+                <p className="text-muted-foreground mb-4">{text}</p>
+                <span className="inline-flex items-center gap-1 text-sm font-bold text-orange-600 dark:text-orange-400">
+                  Mulai dari sini <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         {/* BENTO GRID SHOWCASE */}
         <div className="animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">

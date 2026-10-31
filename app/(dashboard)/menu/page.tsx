@@ -3,42 +3,42 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { MENU_GROUPS } from "@/lib/menu-config";
+import { getGroupedMenu, type MenuGroup } from "@/lib/menu-config";
 import { User, Settings, LogOut, ChevronRight, ChevronDown, HelpCircle, MessageSquare, Sun, Moon, Search, Home, ShieldAlert } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import AnimatedPage from "@/components/AnimatedPage";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
-// Halaman inti yang di desktop ada di Sidebar, bukan di MENU_GROUPS
-const CORE_GROUP = {
+// Halaman inti yang tidak termasuk grup tujuan belajar
+const CORE_GROUP: MenuGroup = {
   title: "Utama",
   icon: Home,
   color: "text-brand",
   items: [
-    { name: "Dashboard", path: "/dashboard" },
-    { name: "Text Library", path: "/library" },
-    { name: "Public Domain Books", path: "/gutenberg" },
-    { name: "A-Z Dictionary", path: "/tools/a-z-dictionary" },
-    { name: "All Toolkits Hub", path: "/tools" },
-    { name: "LingoWise AI", path: "/lingowise" },
-    { name: "Pesan", path: "/messages" },
-    { name: "Profil", path: "/profile" },
+    { name: "Beranda", path: "/dashboard", description: "Langkah berikutnya dan ringkasan belajarmu." },
+    { name: "Text Library", path: "/library", description: "Koleksi teks bacaan dengan filter level." },
+    { name: "Public Domain Books", path: "/gutenberg", description: "Ribuan karya sastra domain publik dari Project Gutenberg." },
+    { name: "A-Z Dictionary", path: "/tools/a-z-dictionary", description: "Cari arti dan contoh kata dengan cepat." },
+    { name: "Semua Alat", path: "/tools", description: "Daftar lengkap alat bantu belajar." },
+    { name: "LingoWise AI", path: "/lingowise", description: "Asisten AI untuk bertanya soal bahasa dan sastra." },
+    { name: "Pesan", path: "/messages", description: "Kotak masuk pesan dari pengguna lain." },
+    { name: "Profil", path: "/profile", description: "Profil dan progres belajarmu." },
   ],
 };
 
-const ADMIN_GROUP = {
+const ADMIN_GROUP: MenuGroup = {
   title: "Admin",
   icon: ShieldAlert,
   color: "text-red-500",
   items: [
-    { name: "Ringkasan", path: "/admin" },
-    { name: "Pengguna", path: "/admin/users" },
-    { name: "Provider AI", path: "/admin/providers" },
-    { name: "Model", path: "/admin/models" },
-    { name: "Routing Fitur", path: "/admin/routing" },
-    { name: "Pemakaian & Kuota", path: "/admin/usage" },
-    { name: "Fitur", path: "/admin/features" },
-    { name: "Audit Log", path: "/admin/audit" },
+    { name: "Ringkasan", path: "/admin", description: "Ringkasan penggunaan aplikasi." },
+    { name: "Pengguna", path: "/admin/users", description: "Kelola akun pengguna." },
+    { name: "Provider AI", path: "/admin/providers", description: "Tambah dan atur penyedia AI." },
+    { name: "Model", path: "/admin/models", description: "Daftar model AI yang tersedia." },
+    { name: "Routing Fitur", path: "/admin/routing", description: "Pilih model untuk tiap fitur." },
+    { name: "Pemakaian & Kuota", path: "/admin/usage", description: "Pantau pemakaian dan batas kuota." },
+    { name: "Fitur", path: "/admin/features", description: "Nyalakan atau matikan fitur." },
+    { name: "Audit Log", path: "/admin/audit", description: "Catatan tindakan admin." },
   ],
 };
 
@@ -74,11 +74,11 @@ export default function MobileMenuPage() {
 
   const searching = query.trim().length > 0;
   const q = query.trim().toLowerCase();
-  const groups = [CORE_GROUP, ...MENU_GROUPS, ...(isAdmin ? [ADMIN_GROUP] : [])]
+  const groups = [CORE_GROUP, ...getGroupedMenu(), ...(isAdmin ? [ADMIN_GROUP] : [])]
     .map((g) => ({
       ...g,
       items: searching
-        ? g.items.filter((i) => i.name.toLowerCase().includes(q) || g.title.toLowerCase().includes(q))
+        ? g.items.filter((i) => i.name.toLowerCase().includes(q) || i.description.toLowerCase().includes(q) || g.title.toLowerCase().includes(q))
         : g.items,
     }))
     .filter((g) => g.items.length > 0);
@@ -136,7 +136,7 @@ export default function MobileMenuPage() {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Cari fitur, mis. OCR, flashcard, forum..."
+          placeholder="Cari fitur, mis. OCR, kosakata, forum..."
           aria-label="Cari fitur"
           className="w-full min-h-[48px] pl-11 pr-4 bg-card border border-border rounded-2xl text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand"
         />
@@ -150,12 +150,13 @@ export default function MobileMenuPage() {
         {groups.map((group) => {
           const Icon = group.icon;
           // Saat mencari, semua grup yang cocok selalu terbuka
-          const isOpen = searching || !collapsed[group.title];
+          const isCollapsed = collapsed[group.title] ?? !!group.collapsedByDefault;
+          const isOpen = searching || !isCollapsed;
           return (
             <div key={group.title} className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
               <button
                 type="button"
-                onClick={() => setCollapsed((c) => ({ ...c, [group.title]: !c[group.title] }))}
+                onClick={() => setCollapsed((c) => ({ ...c, [group.title]: !(c[group.title] ?? !!group.collapsedByDefault) }))}
                 aria-expanded={isOpen}
                 className="w-full px-5 min-h-[56px] bg-muted/20 flex items-center gap-3 text-left"
               >
@@ -170,10 +171,11 @@ export default function MobileMenuPage() {
                     <Link 
                       key={item.path} 
                       href={item.path}
-                      className="flex items-center justify-between px-5 min-h-[48px] hover:bg-muted transition-colors group"
+                      className="flex items-center justify-between gap-3 px-5 min-h-[56px] hover:bg-muted transition-colors group"
                     >
-                      <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                        {item.name}
+                      <span className="py-2">
+                        <span className="block text-sm font-medium text-foreground">{item.name}</span>
+                        <span className="block text-xs text-muted-foreground leading-snug">{item.description}</span>
                       </span>
                       <ChevronRight className="w-4 h-4 text-muted-foreground opacity-50 group-hover:opacity-100 transition-opacity" />
                     </Link>
@@ -189,7 +191,7 @@ export default function MobileMenuPage() {
       <div className="mt-8 grid grid-cols-3 gap-3 pb-8">
         <Link href="/settings" className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
           <Settings className="w-5 h-5" />
-          <span className="text-xs">Settings</span>
+          <span className="text-xs">Pengaturan</span>
         </Link>
         <Link href="/help" className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
           <HelpCircle className="w-5 h-5" />
@@ -207,7 +209,7 @@ export default function MobileMenuPage() {
           className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-rose-500/20 bg-rose-500/10 text-rose-500 font-medium hover:bg-rose-500 hover:text-white transition-colors col-span-3"
         >
           <LogOut className="w-4 h-4" />
-          Logout
+          Keluar
         </button>
       </div>
     </AnimatedPage>

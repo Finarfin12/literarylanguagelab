@@ -1,5 +1,7 @@
 "use client";
 
+import TryExampleButton from "@/components/ui/TryExampleButton";
+import { UNTRANSLATABLES_EXAMPLE } from "@/lib/tool-examples";
 import { useState } from "react";
 import { Globe2, Search, ArrowRight, Loader2, Library, Info, Lightbulb, Sparkles } from "lucide-react";
 import Swal from "sweetalert2";
@@ -47,6 +49,9 @@ export default function UntranslatablesPage() {
         <p className="text-muted-foreground mt-4 text-lg">Eksplorasi strategi penerjemahan untuk kata-kata bahasa Inggris yang tidak memiliki padanan langsung dalam bahasa Indonesia.</p>
       </div>
 
+      <div className="max-w-2xl mx-auto w-full mb-2">
+        <TryExampleButton example={UNTRANSLATABLES_EXAMPLE} onFill={setWord} />
+      </div>
       <form onSubmit={handleSearch} className="mb-12 relative max-w-2xl mx-auto w-full">
         <input 
           type="text" 

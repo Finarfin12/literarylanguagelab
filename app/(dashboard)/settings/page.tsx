@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { User, Settings, Save, Upload, Loader2, Mail, ShieldAlert, Globe2, Bell, AlertTriangle, BookOpen, BrainCircuit } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import Swal from "sweetalert2";
+import LearningGoalSection from "@/components/settings/LearningGoalSection";
+import { isDailyMinutes, isLearningGoal, type DailyMinutes, type LearningGoal } from "@/lib/learning-goals";
 
 interface UserPreferences {
   reading: {
@@ -84,6 +86,9 @@ export default function SettingsPage() {
   const [userRole, setUserRole] = useState("student");
   const [sttEngine, setSttEngine] = useState("browser");
   const [cefrLevel, setCefrLevel] = useState("A1");
+  // Kolom dari migrasi 0006 (null jika belum dijalankan / belum diisi)
+  const [learningGoal, setLearningGoal] = useState<LearningGoal | null>(null);
+  const [dailyMinutes, setDailyMinutes] = useState<DailyMinutes | null>(null);
 
   // Preferences State
   const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
@@ -112,6 +117,8 @@ export default function SettingsPage() {
           setNotificationPref(profile.notification_preference ?? true);
           setUserRole(profile.role ?? "student");
           setCefrLevel(profile.cefr_level ?? "A1");
+          setLearningGoal(isLearningGoal(profile.learning_goal) ? profile.learning_goal : null);
+          setDailyMinutes(isDailyMinutes(profile.daily_minutes) ? profile.daily_minutes : null);
           
           if (profile.preferences) {
             // Merge existing preferences with default to avoid undefined errors
@@ -415,7 +422,7 @@ export default function SettingsPage() {
                   <p className="font-bold text-foreground text-sm mb-2">Bahasa Utama</p>
                   <select value={languagePref} onChange={e => setLanguagePref(e.target.value)} className="w-full bg-background border border-foreground/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand">
                     <option value="id">Bahasa Indonesia</option>
-                    <option value="en">English</option>
+                    <option value="en">Inggris</option>
                   </select>
                 </div>
               </div>
@@ -426,22 +433,22 @@ export default function SettingsPage() {
           {activeTab === "reading" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
               <div>
-                <h3 className="text-lg font-bold text-foreground mb-4">Text Display</h3>
+                <h3 className="text-lg font-bold text-foreground mb-4">Tampilan Teks</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-medium">Font Family</label>
+                    <label className="text-sm font-medium">Jenis Huruf</label>
                     <select value={preferences.reading.font_family} onChange={e => updatePref('reading', 'font_family', e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm">
-                      <option value="serif">Serif (Literary)</option>
+                      <option value="serif">Serif (Sastra)</option>
                       <option value="sans-serif">Sans-Serif (Modern)</option>
-                      <option value="dyslexic">OpenDyslexic (Accessible)</option>
+                      <option value="dyslexic">OpenDyslexic (Ramah disleksia)</option>
                     </select>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-sm font-medium">Text Width</label>
+                    <label className="text-sm font-medium">Lebar Teks</label>
                     <select value={preferences.reading.text_width} onChange={e => updatePref('reading', 'text_width', e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm">
-                      <option value="narrow">Narrow (Fokus)</option>
-                      <option value="medium">Medium (Standar)</option>
-                      <option value="wide">Wide (Layar Penuh)</option>
+                      <option value="narrow">Sempit (Fokus)</option>
+                      <option value="medium">Sedang (Standar)</option>
+                      <option value="wide">Lebar (Layar Penuh)</option>
                     </select>
                   </div>
                   <div className="space-y-1">
@@ -449,7 +456,7 @@ export default function SettingsPage() {
                     <input type="range" min="12" max="24" step="1" value={preferences.reading.font_size} onChange={e => updatePref('reading', 'font_size', parseInt(e.target.value))} className="w-full accent-brand" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-sm font-medium">Line Height</label>
+                    <label className="text-sm font-medium">Jarak Antar Baris</label>
                     <select value={preferences.reading.line_height} onChange={e => updatePref('reading', 'line_height', parseFloat(e.target.value))} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm">
                       <option value="1.5">Compact (1.5)</option>
                       <option value="1.75">Standard (1.75)</option>
@@ -633,6 +640,8 @@ export default function SettingsPage() {
                 </div>
               </div>
 
+              <LearningGoalSection key={`${learningGoal}-${dailyMinutes}`} initialGoal={learningGoal} initialMinutes={dailyMinutes} />
+
               <div>
                 <h3 className="text-lg font-bold text-foreground mb-4">Level CEFR</h3>
                 <div className="space-y-3">
@@ -666,7 +675,7 @@ export default function SettingsPage() {
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
               
               <div>
-                <h3 className="text-lg font-bold text-foreground mb-4">Voice & Audio Preferences</h3>
+                <h3 className="text-lg font-bold text-foreground mb-4">Suara &amp; Audio</h3>
                 <div className="space-y-1 p-4 bg-foreground/5 rounded-xl border border-foreground/10">
                   <label className="text-sm font-bold text-foreground">Speech-to-Text Engine</label>
                   <p className="text-xs text-muted-foreground mb-3">Pilih mesin pendeteksi suara untuk dikte dan tes pelafalan.</p>

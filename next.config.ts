@@ -12,11 +12,16 @@ const nextConfig: NextConfig = {
   turbopack: {},
   // v2: halaman gamifikasi dihapus, arahkan bookmark lama ke dashboard
   async redirects() {
-    return ["/leaderboard", "/duels", "/tools/weekly-challenge", "/english-lab/writing-challenge"].map((source) => ({
+    const gamification = ["/leaderboard", "/duels", "/tools/weekly-challenge", "/english-lab/writing-challenge"].map((source) => ({
       source,
       destination: "/dashboard",
       permanent: false,
     }));
+    // v3: Tone Detector digabung ke Tone & Gaya (mode "Deteksi Nada")
+    return [
+      ...gamification,
+      { source: "/tools/tone-detector", destination: "/tools/tone-analyzer", permanent: false },
+    ];
   },
 };
 

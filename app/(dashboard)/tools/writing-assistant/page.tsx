@@ -1,5 +1,7 @@
 "use client";
 
+import TryExampleButton from "@/components/ui/TryExampleButton";
+import { WRITING_ASSISTANT_EXAMPLE } from "@/lib/tool-examples";
 import { useState } from "react";
 import { PenTool, Loader2, CheckCircle2, AlertTriangle, Sparkles, Wand2, Type } from "lucide-react";
 
@@ -87,6 +89,7 @@ export default function WritingAssistantPage() {
             <label className="block text-sm font-bold text-foreground mb-3 flex items-center gap-2">
               <Type className="w-4 h-4 text-blue-500" /> Teks Esai / Karya Tulis
             </label>
+            <TryExampleButton example={WRITING_ASSISTANT_EXAMPLE} onFill={setText} className="mb-2 self-start" />
             <textarea 
               className="w-full flex-1 min-h-[400px] bg-background border border-border rounded-xl p-6 text-foreground text-lg leading-relaxed font-serif focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none resize-none custom-scrollbar"
               placeholder="Paste tulisan berbahasa Inggris Anda di sini..."

@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import Sidebar from "@/components/Sidebar";
@@ -14,6 +15,17 @@ export default async function DashboardLayout({
 
   if (!user) {
     redirect("/login");
+  }
+
+  // Onboarding: pengguna yang belum menjawab diarahkan sekali ke /onboarding.
+  // Jika kolom belum ada (migrasi 0006 belum dijalankan) query error → jangan redirect.
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  const skipOnboarding = pathname.startsWith("/onboarding") || pathname.startsWith("/english-lab/placement-test");
+  if (!skipOnboarding) {
+    const { data: profile, error } = await supabase.from("profiles").select("onboarded_at").eq("id", user.id).maybeSingle();
+    if (!error && profile && !profile.onboarded_at) {
+      redirect("/onboarding");
+    }
   }
 
   return (

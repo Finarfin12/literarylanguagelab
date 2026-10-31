@@ -1,9 +1,12 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { BookOpen, BookMarked, RefreshCcw, Clock, CheckCircle2, TrendingUp, ChevronRight, Library, Camera, Sparkles } from "lucide-react";
+import { BookOpen, BookMarked, RefreshCcw, Clock, CheckCircle2, TrendingUp, ChevronRight, Library, Camera, Sparkles, Compass } from "lucide-react";
 import VocabChart from "@/components/dashboard/VocabChart";
 import AnimatedPage from "@/components/AnimatedPage";
 import { ButtonLink, Card, CardTitle, EmptyState } from "@/components/ui/primitives";
+import { getNextStep } from "@/lib/next-step";
+import { toolsForGoal } from "@/lib/menu-config";
+import { GOAL_LABELS, isLearningGoal, type LearningGoal } from "@/lib/learning-goals";
 
 type RecentSession = {
   text_id: string | null;
@@ -16,6 +19,17 @@ type RecentSession = {
   source_author?: string | null;
   progress_pct?: number | null;
 };
+
+// Profil untuk personalisasi. learning_goal dari migrasi 0006: jika belum ada, ambil cefr_level saja.
+async function loadPersonalization(supabase: Awaited<ReturnType<typeof createClient>>, userId: string | undefined) {
+  if (!userId) return { goal: null as LearningGoal | null, cefr: null as string | null };
+  const full = await supabase.from("profiles").select("cefr_level, learning_goal").eq("id", userId).maybeSingle();
+  if (!full.error) {
+    return { goal: isLearningGoal(full.data?.learning_goal) ? full.data.learning_goal : null, cefr: (full.data?.cefr_level as string | null) ?? null };
+  }
+  const basic = await supabase.from("profiles").select("cefr_level").eq("id", userId).maybeSingle();
+  return { goal: null as LearningGoal | null, cefr: (basic.data?.cefr_level as string | null) ?? null };
+}
 
 const SESSION_COLUMNS = "text_id, time_spent_seconds, last_active_at, texts(title, author)";
 
@@ -36,7 +50,7 @@ export default async function DashboardPage() {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-  const [vocabRes, dueRes, dueWordsRes, reviewedRes, sessionsRes, newVocabRes] = await Promise.all([
+  const [vocabRes, dueRes, dueWordsRes, reviewedRes, sessionsRes, newVocabRes, personal] = await Promise.all([
     // Total kosa kata
     supabase.from("vocabulary").select("*", { count: "exact", head: true }).eq("user_id", user?.id),
     // Jumlah kata jatuh tempo
@@ -58,6 +72,8 @@ export default async function DashboardPage() {
       .order("last_active_at", { ascending: false }),
     // Pertumbuhan kosa kata 7 hari
     supabase.from("vocabulary").select("created_at").eq("user_id", user?.id).gte("created_at", oneWeekAgo.toISOString()),
+    // Tujuan belajar & level untuk "Langkah berikutnya"
+    loadPersonalization(supabase, user?.id),
   ]);
 
   const vocabCount = vocabRes.count || 0;
@@ -100,6 +116,16 @@ export default async function DashboardPage() {
       };
     });
 
+  const openReading = continueReading.find((t) => t.progress === null || t.progress < 100) ?? null;
+  const nextStep = getNextStep({
+    goal: personal.goal,
+    cefr: personal.cefr,
+    dueCount,
+    continueReading: openReading ? { title: openReading.title, href: openReading.href } : null,
+  });
+  const goalForTools: LearningGoal = personal.goal ?? "umum";
+  const recommendedTools = toolsForGoal(goalForTools, 6);
+
   const chartData = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
@@ -124,6 +150,16 @@ export default async function DashboardPage() {
         </h1>
         <p className="text-muted-foreground mt-1 md:mt-2 md:text-lg">Lanjutkan bacaan dan ulangi kosa kata yang sudah waktunya.</p>
       </div>
+
+      {/* Langkah berikutnya */}
+      <Card className="mb-4 md:mb-6 border-brand/30 bg-brand/5">
+        <CardTitle icon={<Compass className="w-5 h-5 text-brand" />}>Langkah berikutnya</CardTitle>
+        <p className="text-lg md:text-xl font-serif font-bold text-foreground">{nextStep.title}</p>
+        <p className="text-sm text-muted-foreground mt-1">{nextStep.reason}</p>
+        <div className="mt-4">
+          <ButtonLink href={nextStep.href}>Mulai</ButtonLink>
+        </div>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-6">
         {/* Lanjutkan Membaca */}
@@ -196,7 +232,7 @@ export default async function DashboardPage() {
           )}
           <div className="mt-auto pt-4">
             <ButtonLink href={dueCount > 0 ? "/review" : "/vocabulary"} className="w-full">
-              {dueCount > 0 ? "Mulai Review" : "Buka Vocabulary Bank"}
+              {dueCount > 0 ? "Mulai Review" : "Buka Bank Kosakata"}
             </ButtonLink>
           </div>
         </Card>
@@ -223,12 +259,28 @@ export default async function DashboardPage() {
         </div>
       </Card>
 
+      {/* Alat untuk kamu */}
+      <Card className="mt-4 md:mt-6">
+        <CardTitle icon={<Sparkles className="w-5 h-5 text-brand" />}>Alat untuk kamu</CardTitle>
+        <p className="text-sm text-muted-foreground -mt-2 mb-4">Dipilih untuk tujuan: {GOAL_LABELS[goalForTools].title.toLowerCase()}. Ubah di Pengaturan.</p>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {recommendedTools.map((t) => (
+            <li key={t.path}>
+              <Link href={t.path} className="block h-full p-3 min-h-[56px] rounded-control border border-border bg-card hover:bg-muted transition-colors">
+                <span className="block text-sm font-bold text-foreground">{t.name}</span>
+                <span className="block text-xs text-muted-foreground mt-0.5">{t.description}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Card>
+
       {/* Pintasan */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 md:mt-6">
         {[
           { href: "/gutenberg", label: "Buku Klasik", icon: BookOpen },
           { href: "/library/add/ocr", label: "Scan Halaman", icon: Camera },
-          { href: "/vocabulary", label: "Vocabulary Bank", icon: BookMarked },
+          { href: "/vocabulary", label: "Bank Kosakata", icon: BookMarked },
           { href: "/tools", label: "Semua Alat", icon: Sparkles },
         ].map(({ href, label, icon: Icon }) => (
           <Link key={href} href={href} className="flex items-center gap-2 p-3 min-h-[48px] rounded-control border border-border bg-card hover:bg-muted text-sm font-bold text-foreground transition-colors">
