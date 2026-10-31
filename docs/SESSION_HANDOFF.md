@@ -11,14 +11,23 @@
 | 2 Tampilan & mobile | Selesai di kode. Audit visual di HP belum, lihat `docs/mobile-audit.md` | lihat `git log` |
 | 5 MCP | **Dibatalkan** oleh pemilik (31 Okt 2026). Kolom `mcp_server_ids` di `ai_feature_routes` dibiarkan, tidak dipakai | — |
 | 6 Tab admin lainnya | Selesai di kode. Migrasi 0004 **sudah dijalankan** | lihat `git log` |
-| 7 Fitur belajar + reader ringan | Selesai di kode. Migrasi 0005 **sudah dijalankan**; 0009 hanya ditulis | lihat `git log` |
+| 7 Fitur belajar + reader ringan | Selesai di kode. Migrasi 0005 dan 0009 **sudah dijalankan** | lihat `git log` |
 
 **Berikutnya: v3** — PRD, implementation plan (Fase 8–11; mode kelas dibatalkan), dan handoff untuk sesi coding (Claude Sonnet 5) ada di [`docs/v3/`](v3/). Mulai sesi baru dengan "Prompt pembuka" di [`docs/v3/HANDOFF.md`](v3/HANDOFF.md). Prasyarat: migrasi `0000`–`0005` sudah dijalankan.
 
 **Keputusan pemilik:** Q1 = forum, clubs, messages, jejaring pembaca **tetap ada** (tanpa poin). Q2 = Latihan Harian dan Weekly (Writing) Challenge **dihapus** (berbeda dari asumsi default PRD). Q3–Q5 memakai default.
 
 **Yang harus dilakukan pemilik sebelum deploy:**
-1. ~~Jalankan migrasi `0000` … `0005`~~ — **sudah dijalankan** (dikonfirmasi pemilik 31 Okt 2026). `0009_drop_gamification.sql` **belum** dijalankan dan memang belum boleh: tunggu v2 stabil ≥ 2 minggu dan database sudah di-backup.
+1. ~~Jalankan migrasi `0000` … `0005`~~ — **sudah dijalankan** (dikonfirmasi pemilik 31 Okt 2026). `0009_drop_gamification.sql` **juga sudah dijalankan** (dikonfirmasi pemilik 31 Okt 2026): kolom `profiles.xp/streak/journey_level`, tabel `journey_progress`, `duels*`, `daily_activities`, tabel challenge, dan fungsi `update_login_streak` sudah tidak ada. Kode v2 tidak memakainya lagi. **Cek:** fungsi/trigger database (mis. `handle_new_user`) tidak boleh masih menulis ke kolom yang dihapus — lihat query di bawah, dan uji daftar akun baru.
+
+   ```sql
+   -- Fungsi di schema public yang masih menyebut objek gamifikasi (harus kosong)
+   select p.proname
+   from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+   where n.nspname = 'public'
+     and (p.prosrc ~* '\m(xp|streak|longest_streak|last_login_date|journey_level)\M'
+       or p.prosrc ~* '(journey_progress|daily_activities|duel_|challenge_submissions)');
+   ```
 2. Isi env `AI_SECRETS_KEY` (32 byte base64, mis. `openssl rand -base64 32`) dan pastikan `SUPABASE_SERVICE_ROLE_KEY` ada. Tanpa keduanya semua fitur AI tetap jalan lewat `GROQ_API_KEY`, tapi registry dari admin tidak dipakai.
 3. Uji Fase 3: tambah provider di `/admin/providers` → "Ambil dari provider" di `/admin/models` → pilih model untuk `translation` di `/admin/routing` → coba Translation Workshop.
 

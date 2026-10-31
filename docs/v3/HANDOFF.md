@@ -63,7 +63,7 @@ Definisi 18 teknik Molina & Hurtado Albir ditulis ulang singkat dalam bahasa Ind
 3. **Akhiri pesan commit** dengan baris atribusi model yang diberikan sistem sesi.
 4. **Tidak ada akses database.** Folder kerja tidak punya `.env`. Migrasi ditulis sebagai file `supabase/migrations/NNNN_*.sql`, **tidak dijalankan**. Jangan pernah login ke Supabase/aplikasi produksi.
 5. **Kode harus jalan sebelum migrasi dijalankan.** Tangkap error kolom/tabel hilang (kode `42703`, `PGRST204`, `42P01`, `PGRST205`) dan turun ke perilaku lama; di halaman admin tampilkan `MissingMigrationNotice` (`app/(dashboard)/admin/_lib/ui.tsx`). Contoh pola: `app/api/reading/heartbeat/route.ts`, `app/(dashboard)/admin/models/page.tsx`, `app/(dashboard)/dashboard/page.tsx`.
-6. **Jangan** menyentuh `.env*`, menulis API key, atau menjalankan `supabase/migrations/0009_drop_gamification.sql`.
+6. **Jangan** menyentuh `.env*` atau menulis API key. (`0009_drop_gamification.sql` sudah dijalankan pemilik; kolom/tabel gamifikasi sudah tidak ada di database, jadi jangan dipakai lagi.)
 7. **Tidak ada dependency baru** tanpa izin pemilik. `groq-sdk` sudah tidak dipakai kode (boleh diusulkan untuk dihapus, jangan dihapus sendiri).
 8. **Teks UI dan komentar kode dalam bahasa Indonesia**, mengikuti gaya file di sekitarnya.
 9. **Berhenti dan tanya** jika: plan bertentangan dengan kode, perlu menghapus fitur yang dipakai pengguna, perlu akses produksi, atau perubahan menyentuh > 40 file di luar fase.
@@ -151,7 +151,7 @@ node --experimental-transform-types --no-warnings path/ke/test.mts <path-repo>
 - **Posisi baca:** `reading_sessions.last_paragraph_index`/`progress_pct`/`source_key` (migrasi `0005`); buku Gutenberg memakai `source_key = "gutenberg_<id>"`.
 - **Terjemahan:** tabel `translations` (passage, user_translation, ai_feedback, feedback_score). Translation Workshop punya 4 mode evaluasi di `app/api/translation/route.ts` (`MODES`).
 - **Feature flag:** `system_config.features[featureKey] === false` mematikan fitur (dicek di `checkRateLimit` dan `runAI`).
-- **Migrasi yang ada:** `0000`–`0005` (v2) dan `0009` (drop gamifikasi, jangan dijalankan). Nomor berikutnya: `0006`, `0007`, `0008`, `0010`.
+- **Migrasi yang ada:** `0000`–`0005` (v2) dan `0009` (drop gamifikasi) — **semuanya sudah dijalankan** pemilik (31 Okt 2026). Nomor berikutnya: `0006`, `0007`, `0008`, `0010`.
 - **Mode kelas dibatalkan** oleh pemilik (31 Okt 2026). Jangan membuat role `lecturer`, kelas, atau tugas.
 - **`AGENTS.md` tidak ada di repo** (diabaikan `.gitignore`). Panduan Next.js ada di `node_modules/next/dist/docs/`. Aturan sesi ringkas ada di `CLAUDE.md` (root).
 
