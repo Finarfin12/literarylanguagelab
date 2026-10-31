@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const SYSTEM_PROMPT = `You are an English listening test generator for Indonesian learners. Generate a short English passage and comprehension questions based on the requested CEFR level and mode.
 
@@ -34,6 +36,17 @@ Generate 4 questions for quiz mode. Make questions progressively harder.`;
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "listening-test");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { level, mode } = await req.json();
 
     if (!level || !mode) {
@@ -68,7 +81,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(parsed);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Listening Test Generate Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

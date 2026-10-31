@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const SYSTEM_PROMPT = `You are a friendly reading companion for an intermediate English learner (CEFR B1).
 The user is reading a classic literature book. You will be provided with the last few paragraphs they just read (which represent the end of a chapter).
@@ -25,6 +27,17 @@ ONLY RETURN VALID JSON. Do not wrap in markdown tags like \`\`\`json.`;
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "generate-quiz");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { contextText, title, author } = await req.json();
 
     if (!contextText || contextText.trim() === "") {
@@ -51,7 +64,7 @@ export async function POST(req: Request) {
     const result = JSON.parse(resultStr);
 
     return NextResponse.json(result);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Quiz Generation Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

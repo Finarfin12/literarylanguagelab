@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
+import { getAIClient, getAIConfig } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
-
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const MODES: Record<string, string> = {
   "general": `You are an expert Literature Translation Evaluator. The user is an Indonesian university student studying English Literature. 
@@ -46,6 +47,17 @@ Respond in BOTH English and Indonesian using Markdown.`
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "translation");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { originalText, translatedText, mode = "general" } = await req.json();
 
     if (!originalText || !translatedText || !MODES[mode]) {
@@ -68,7 +80,7 @@ export async function POST(req: Request) {
 
     const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
     return NextResponse.json({ result });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Translation Eval Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

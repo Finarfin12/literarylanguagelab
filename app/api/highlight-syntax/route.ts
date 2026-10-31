@@ -1,8 +1,21 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "highlight-syntax");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { text } = await req.json();
 
     if (!text) {
@@ -39,7 +52,7 @@ IMPORTANT: Only output valid JSON without markdown wrapping or extra commentary.
     const data = JSON.parse(content);
 
     return NextResponse.json(data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Syntax Highlighting Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

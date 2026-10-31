@@ -38,8 +38,13 @@ yarn-error.log*
 
 # Ignore database schemas, migrations, and markdown notes
 *.sql
+!supabase/migrations/**
 *.md
 !README.md
+!docs/**
+
+# next process runner temp files
+.next-start.*
 # typescript
 *.tsbuildinfo
 next-env.d.ts

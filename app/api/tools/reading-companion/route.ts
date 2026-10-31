@@ -1,11 +1,22 @@
 import { NextResponse } from "next/server";
 import { getAIClient, getAIConfig, getAIServiceErrorMessage } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
-
-
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "reading-companion");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { title, author, content, messages } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
@@ -44,7 +55,7 @@ Keep your answers focused, academic, and engaging. Use Markdown formatting.`;
 
     const result = formatAITextResponse(completion.choices[0]?.message?.content || "");
     return NextResponse.json({ result });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Companion Error:", error);
     return NextResponse.json({ error: getAIServiceErrorMessage(error) }, { status: 502 });
   }

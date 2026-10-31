@@ -121,11 +121,11 @@ export async function isFeatureEnabled(featureName: string): Promise<boolean> {
       .eq('key', 'features')
       .single();
     
-    if (error || !data) {
+    if (error || !data || !data.value) {
       return true; // Default: semua fitur enabled
     }
     
-    return data.value[featureName] === true;
+    return data.value[featureName] !== false;
   } catch (error) {
     console.error('Error checking feature flag:', error);
     return true;

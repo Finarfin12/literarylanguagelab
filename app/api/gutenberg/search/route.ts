@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { checkIpRateLimit } from "@/lib/rate-limit";
 
 async function fetchWithRetry(url: string | URL) {
   const controller = new AbortController();
@@ -15,6 +16,12 @@ async function fetchWithRetry(url: string | URL) {
 }
 
 export async function GET(req: Request) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const rateLimitRes = await checkIpRateLimit(ip);
+  if (rateLimitRes) {
+    return rateLimitRes;
+  }
+
   const url = new URL(req.url);
   const query = url.searchParams.get("q")?.trim();
 

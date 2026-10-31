@@ -1,9 +1,21 @@
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
-
+import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function GET(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "paraphrase-generate");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const url = new URL(req.url);
     const level = url.searchParams.get("level") || "B2";
 
@@ -27,14 +39,14 @@ DO NOT provide any other text, intro, or markdown. Output ONLY a valid JSON obje
     });
 
     const result = completion.choices[0]?.message?.content || "";
-    // Robust parsing
-    const start = result.indexOf('{');
-    const end = result.lastIndexOf('}');
+    const start = result.indexOf("{");
+    const end = result.lastIndexOf("}");
     if (start === -1 || end === -1) throw new Error("Invalid JSON generated");
-    
+
     const parsed = JSON.parse(result.substring(start, end + 1));
     return NextResponse.json(parsed);
-  } catch (error: any) {
+  } catch (error: unknown) {
+    console.error("Paraphrase Generate Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

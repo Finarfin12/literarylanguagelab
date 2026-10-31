@@ -1,9 +1,21 @@
 import { NextResponse } from "next/server";
-import { getAIClient, getAIConfig, getRateLimit } from "@/lib/ai-config";
-
+import { getAIClient, getAIConfig } from "@/lib/ai-config";
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "lexicon-search");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { word } = await req.json();
 
     if (!word) {
@@ -92,7 +104,7 @@ export async function POST(req: Request) {
       translation
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Lexicon Search Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

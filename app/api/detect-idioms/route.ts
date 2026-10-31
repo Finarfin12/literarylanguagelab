@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { requireUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 interface IdiomEntry {
   phrase: string;
@@ -199,6 +201,17 @@ const IDIOM_DB: IdiomEntry[] = (() => {
 
 export async function POST(req: Request) {
   try {
+    const authResult = await requireUser();
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    const { user } = authResult;
+
+    const rateLimitRes = await checkRateLimit(user.id, "detect-idioms");
+    if (rateLimitRes) {
+      return rateLimitRes;
+    }
+
     const { text } = await req.json();
     if (!text) return NextResponse.json({ error: "Text is required" }, { status: 400 });
 
