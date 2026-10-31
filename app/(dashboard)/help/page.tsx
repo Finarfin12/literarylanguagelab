@@ -288,6 +288,24 @@ export default function HelpPage() {
             <li className="flex gap-2"><span className="text-brand font-bold shrink-0">5.</span> Sesuaikan pencahayaan antarmuka (gelap/terang) melalui ikon tema di bagian navigasi.</li>
           </ul>
         </section>
+
+        {/* Atribusi & lisensi */}
+        <section id="atribusi">
+          <h2 className="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4">Atribusi &amp; Lisensi</h2>
+          <div className="text-xs md:text-sm text-muted-foreground space-y-2">
+            <p>
+              Daftar Kosakata Inti berasal dari <strong>New General Service List (NGSL) versi 1.2</strong> oleh Browne, C., Culligan, B., dan Phillips, J.,
+              tersedia di{" "}
+              <a href="https://www.newgeneralservicelist.com" target="_blank" rel="noopener noreferrer" className="text-brand underline">newgeneralservicelist.com</a>{" "}
+              di bawah lisensi{" "}
+              <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" className="text-brand underline">Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)</a>.
+            </p>
+            <p>
+              Pemetaan peringkat frekuensi ke perkiraan level CEFR (A1-B2) dibuat oleh Literary Language Lab dan hanya berupa estimasi untuk belajar,
+              bukan penilaian CEFR resmi. Teks berjenjang buatan AI ditinjau admin sebelum diterbitkan.
+            </p>
+          </div>
+        </section>
       </div>
 
       {/* Floating Liter AI button (only on help page) */}

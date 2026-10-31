@@ -50,6 +50,7 @@ export const MENU_GROUPS: MenuGroup[] = [
     color: "text-amber-400",
     items: [
       { name: "Vocabulary Bank", path: "/vocabulary", description: "Semua kata yang kamu simpan dari bacaan.", goals: ["umum", "sastra", "penerjemahan"] },
+      { name: "Kosakata Inti", path: "/vocabulary/core", description: "Kata paling sering dipakai, dari level A1, siap ditambah ke Review.", goals: ["umum"] },
       { name: "Review (SRS)", path: "/review", description: "Ulangi kata pada waktu yang tepat agar tidak lupa.", goals: ["umum", "sastra", "penerjemahan"] },
       { name: "Flashcard SRS", path: "/english-lab/flashcard", description: "Latihan kartu kosakata bergaya flashcard.", goals: ["umum"] },
       { name: "Idiom Library", path: "/idioms", description: "Daftar idiom Inggris beserta arti dan terjemahannya.", goals: ["umum"] },
@@ -67,6 +68,7 @@ export const MENU_GROUPS: MenuGroup[] = [
     color: "text-emerald-400",
     items: [
       { name: "Placement Test", path: "/english-lab/placement-test", description: "Tes singkat untuk mengetahui level CEFR kamu.", goals: ["umum"] },
+      { name: "Grammar Dasar", path: "/english-lab/grammar", description: "20 topik grammar A1-B1 yang disusun berurutan.", goals: ["umum"] },
       { name: "Grammar Clinic", path: "/english-lab/grammar-clinic", description: "Latihan dan penjelasan tata bahasa.", goals: ["umum", "penerjemahan"] },
       { name: "Dialogue Simulator", path: "/english-lab/dialogue-simulator", description: "Latihan percakapan dengan lawan bicara AI.", goals: ["umum"] },
       { name: "Listening Test", path: "/english-lab/listening-test", description: "Latihan menyimak dengan soal pemahaman.", goals: ["umum"] },

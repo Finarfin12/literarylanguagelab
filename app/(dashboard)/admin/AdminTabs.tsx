@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, Server, Cpu, Route, BarChart3, ToggleRight, ScrollText } from "lucide-react";
+import { LayoutDashboard, Users, Server, Cpu, Route, BarChart3, ToggleRight, ScrollText, Library } from "lucide-react";
 
 const TABS = [
   { href: "/admin", label: "Ringkasan", icon: LayoutDashboard, exact: true },
@@ -11,6 +11,7 @@ const TABS = [
   { href: "/admin/models", label: "Model", icon: Cpu },
   { href: "/admin/routing", label: "Routing Fitur", icon: Route },
   { href: "/admin/usage", label: "Pemakaian", icon: BarChart3 },
+  { href: "/admin/content", label: "Konten", icon: Library },
   { href: "/admin/features", label: "Fitur", icon: ToggleRight },
   { href: "/admin/audit", label: "Audit Log", icon: ScrollText },
 ];

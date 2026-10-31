@@ -13,6 +13,7 @@
 | 6 Tab admin lainnya | Selesai di kode. Migrasi 0004 **sudah dijalankan** | lihat `git log` |
 | 7 Fitur belajar + reader ringan | Selesai di kode. Migrasi 0005 dan 0009 **sudah dijalankan** | lihat `git log` |
 | 8 (v3) Penataan untuk orang awam | Selesai di kode (onboarding, menu baru, Tone & Gaya gabungan, contoh, beranda, landing). Migrasi `0006_onboarding.sql` **belum dijalankan** | lihat `git log` |
+| 9 (v3) Fondasi belajar dasar | Selesai di kode (Library berjenjang, tab admin Konten, Kosakata Inti, Grammar Dasar, adaptasi level). Migrasi `0007_graded_content.sql` **belum dijalankan**; `core_words` kosong sampai `scripts/import-ngsl.mjs` dijalankan | lihat `git log` |
 
 **Berikutnya: v3** — PRD, implementation plan (Fase 8–11; mode kelas dibatalkan), dan handoff untuk sesi coding (Claude Sonnet 5) ada di [`docs/v3/`](v3/). Mulai sesi baru dengan "Prompt pembuka" di [`docs/v3/HANDOFF.md`](v3/HANDOFF.md). Prasyarat: migrasi `0000`–`0005` sudah dijalankan.
 

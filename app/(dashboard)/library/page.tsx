@@ -3,27 +3,57 @@ import Link from "next/link";
 import { BookOpen, Plus, Sparkles, Search, Library as LibraryIcon } from "lucide-react";
 import TopActions from "@/components/TopActions";
 import DeleteTextButton from "@/components/library/DeleteTextButton";
+import { CEFR_LEVELS, isCefrLevel, neighborLevels } from "@/lib/cefr";
 
-export default async function LibraryPage({ searchParams }: { searchParams: { q?: string } }) {
+export default async function LibraryPage({ searchParams }: { searchParams: Promise<{ q?: string; level?: string }> }) {
   const supabase = await createClient();
   const query = await searchParams;
   const searchTerm = query?.q || "";
 
-  let queryBuilder = supabase
-    .from("texts")
-    .select("*", { count: "exact" })
-    .eq("is_public", true)
-    .order("created_at", { ascending: false });
-
-  if (searchTerm) {
-    queryBuilder = queryBuilder.or(`title.ilike.%${searchTerm}%,author.ilike.%${searchTerm}%`);
+  const { data: { user } } = await supabase.auth.getUser();
+  let userLevel: string | null = null;
+  if (user) {
+    const { data: lvl } = await supabase.from("profiles").select("cefr_level").eq("id", user.id).maybeSingle();
+    userLevel = (lvl?.cefr_level as string | null) ?? null;
   }
 
-  const { data: texts, error, count } = await queryBuilder;
+  // Filter level: ?level=all (semua) | ?level=B1 (satu level) | default = level pengguna dan satu di bawahnya.
+  // Default juga menyertakan teks yang belum diberi level, supaya teks lama tidak hilang.
+  const levelParam = query?.level;
+  const explicitLevel = isCefrLevel(levelParam) ? levelParam : null;
+  const showAll = levelParam === "all";
+  const defaultLevels = neighborLevels(userLevel, 1, 0);
+  const useDefault = !explicitLevel && !showAll && defaultLevels.length > 0;
+  const activeChip = explicitLevel ?? (showAll || !useDefault ? "all" : "default");
+
+  const buildQuery = (withLevel: boolean) => {
+    let qb = supabase
+      .from("texts")
+      .select("*", { count: "exact" })
+      .eq("is_public", true)
+      .order("created_at", { ascending: false });
+    if (searchTerm) qb = qb.or(`title.ilike.%${searchTerm}%,author.ilike.%${searchTerm}%`);
+    if (withLevel) {
+      if (explicitLevel) qb = qb.eq("cefr_level", explicitLevel);
+      else if (useDefault) qb = qb.or(`cefr_level.in.(${defaultLevels.join(",")}),cefr_level.is.null`);
+    }
+    return qb;
+  };
+
+  let { data: texts, error, count } = await buildQuery(true);
+  // Kolom cefr_level belum ada (migrasi 0007 belum dijalankan): tampilkan tanpa filter level
+  const levelsReady = !error;
+  if (error) ({ data: texts, error, count } = await buildQuery(false));
+
+  const chipHref = (level: string) => {
+    const p = new URLSearchParams();
+    if (searchTerm) p.set("q", searchTerm);
+    p.set("level", level);
+    return `/library?${p.toString()}`;
+  };
 
   let isAdmin = false;
   let enablePreview = true; // default to true
-  const { data: { user } } = await supabase.auth.getUser();
   if (user) {
     const { data: profile } = await supabase.from('profiles').select('role, preferences').eq('id', user.id).single();
     if (profile) {
@@ -44,6 +74,8 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
             <TopActions className="flex items-center gap-3 shrink-0 self-end sm:self-auto" />
             <form className="relative flex-1 w-full sm:min-w-[250px]">
               <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            {explicitLevel && <input type="hidden" name="level" value={explicitLevel} />}
+            {showAll && <input type="hidden" name="level" value="all" />}
             <input 
               name="q"
               defaultValue={searchTerm}
@@ -62,6 +94,24 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
         </div>
       </div>
 
+      {levelsReady && (
+        <nav aria-label="Filter level" className="flex flex-wrap items-center gap-2 mb-8">
+          {useDefault || activeChip === "default" ? (
+            <span className="min-h-[44px] inline-flex items-center px-4 rounded-full text-sm font-bold bg-brand text-background">
+              Level kamu ({defaultLevels.join(", ")})
+            </span>
+          ) : null}
+          <Link href={chipHref("all")} className={`min-h-[44px] inline-flex items-center px-4 rounded-full text-sm font-bold border ${activeChip === "all" ? "bg-brand text-background border-brand" : "bg-card text-muted-foreground border-border hover:bg-muted"}`}>
+            Semua
+          </Link>
+          {CEFR_LEVELS.map((l) => (
+            <Link key={l} href={chipHref(l)} className={`min-h-[44px] inline-flex items-center px-4 rounded-full text-sm font-bold border ${activeChip === l ? "bg-brand text-background border-brand" : "bg-card text-muted-foreground border-border hover:bg-muted"}`}>
+              {l}
+            </Link>
+          ))}
+        </nav>
+      )}
+
       {error && (
         <div className="p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 mb-8">
           <p className="font-bold">Gagal memuat data:</p>
@@ -73,7 +123,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
         <div className="text-center p-6 md:p-12 border border-dashed border-border rounded-xl">
           <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-xl font-serif font-bold text-foreground mb-2">Belum ada teks tersedia</h3>
-          <p className="text-muted-foreground">Klik tombol "Generate & Add Text" di atas untuk membuat teks karya sastra secara otomatis dengan AI.</p>
+          <p className="text-muted-foreground">Coba pilih &quot;Semua&quot; pada filter level, atau klik &quot;Buat &amp; Tambah Teks&quot; di atas untuk membuat teks dengan AI.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -94,10 +144,10 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
 
                   <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
                     <span className="text-xs font-medium px-3 py-1 bg-brand/10 text-brand rounded-full border border-brand/20">
-                      Level {text.difficulty}
+                      {text.cefr_level ? `Level ${text.cefr_level}` : `Level ${text.difficulty}`}
                     </span>
                     <span className="text-xs text-muted-foreground flex items-center gap-1 group-hover:text-foreground transition-colors">
-                      <BookOpen className="w-3 h-3" /> {enablePreview ? "Preview" : "Read"}
+                      <BookOpen className="w-3 h-3" /> {enablePreview ? "Pratinjau" : "Baca"}
                     </span>
                   </div>
                 </div>

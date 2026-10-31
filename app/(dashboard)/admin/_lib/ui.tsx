@@ -41,3 +41,16 @@ export function MissingMigrationNotice({ message }: { message: string }) {
     </Notice>
   );
 }
+
+/** Pesan umum jika sebuah migrasi belum dijalankan (pola fallback v2/v3). */
+export function MigrationNotice({ file, message }: { file: string; message?: string }) {
+  return (
+    <Notice tone="error">
+      <p className="font-bold">Migrasi belum dijalankan.</p>
+      <p>
+        Jalankan <code>supabase/migrations/{file}</code> di Supabase SQL Editor agar fitur ini aktif.
+        {message ? ` Detail: ${message}` : ""}
+      </p>
+    </Notice>
+  );
+}

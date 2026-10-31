@@ -1,6 +1,8 @@
 import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { getUserCefr } from "@/lib/user-level";
+import { explanationLanguage } from "@/lib/cefr";
 
 const SYSTEM_PROMPT = `You are an expert English grammar tutor for Indonesian learners. The user will give you a piece of English text (could be an email, chat message, essay, or any text). Your job is to:
 
@@ -45,9 +47,15 @@ export async function POST(req: Request) {
     }
 
 
+    // Penyesuaian bahasa penjelasan menurut level pengguna (dari profiles di server)
+    const lang = explanationLanguage(await getUserCefr(supabase, user.id));
+    let levelNote = "";
+    if (lang === "id") levelNote = "\n\nThe learner is a beginner (A1-A2): keep explanation_id very simple with short sentences and no grammar jargon; keep explanation_en to one short line.";
+    else if (lang === "en") levelNote = "\n\nThe learner is upper-intermediate or above (B2+): make explanation_en the main, more precise explanation; keep explanation_id to one short line.";
+
     const completion = await runAI("grammar-clinic", {
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: SYSTEM_PROMPT + levelNote },
         { role: "user", content: text }
       ],
       temperature: 0.2,

@@ -10,6 +10,7 @@ import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer"
 import ReaderBlock, { type ReaderUnit } from "./ReaderBlock";
 import InteractiveParagraph from "./InteractiveParagraph";
 import { paginate, pageOfBlock, chapterMarks } from "@/lib/reader-pages";
+import { beginnerModeLevel } from "@/lib/cefr";
 import { Search } from "lucide-react";
 
 export interface BookBlock {
@@ -233,10 +234,12 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
       if (refsRes.data) setCulturalRefs(refsRes.data);
 
       if (authRes.data.user) {
-        const { data: profile } = await supabase.from("profiles").select("preferences").eq("id", authRes.data.user.id).single();
+        const { data: profile } = await supabase.from("profiles").select("preferences, cefr_level").eq("id", authRes.data.user.id).single();
         if (profile?.preferences) {
           setPrefs(profile.preferences);
         }
+        // Beginner Mode default = satu level di bawah level pengguna (minimal A2)
+        if (profile?.cefr_level) setBeginnerLevel(beginnerModeLevel(profile.cefr_level));
 
         // Posisi dari perangkat lain (F-02), dipakai jika perangkat ini belum punya posisi
         let hasLocal = false;
@@ -769,6 +772,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
               <select value={beginnerLevel} onChange={e => setBeginnerLevel(e.target.value)} className="bg-background border border-border rounded-lg px-2 py-1 text-sm focus:outline-none">
                 <option value="A2">Level A2 (Dasar)</option>
                 <option value="B1">Level B1 (Menengah)</option>
+                <option value="B2">Level B2 (Menengah atas)</option>
               </select>
               <select value={beginnerLayout} onChange={e => setBeginnerLayout(e.target.value as any)} className="bg-background border border-border rounded-lg px-2 py-1 text-sm focus:outline-none">
                 <option value="inline">Ganti Teks (Inline)</option>

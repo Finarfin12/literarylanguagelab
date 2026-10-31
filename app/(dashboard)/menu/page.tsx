@@ -37,6 +37,7 @@ const ADMIN_GROUP: MenuGroup = {
     { name: "Model", path: "/admin/models", description: "Daftar model AI yang tersedia." },
     { name: "Routing Fitur", path: "/admin/routing", description: "Pilih model untuk tiap fitur." },
     { name: "Pemakaian & Kuota", path: "/admin/usage", description: "Pantau pemakaian dan batas kuota." },
+    { name: "Konten", path: "/admin/content", description: "Level teks, teks berjenjang, dan topik grammar." },
     { name: "Fitur", path: "/admin/features", description: "Nyalakan atau matikan fitur." },
     { name: "Audit Log", path: "/admin/audit", description: "Catatan tindakan admin." },
   ],

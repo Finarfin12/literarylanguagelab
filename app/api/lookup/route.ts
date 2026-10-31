@@ -2,7 +2,11 @@ import { runAI } from "@/lib/ai/run";
 import { NextResponse } from "next/server";
 import { getRateLimit } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
-import { createClient } from "@/utils/supabase/server";const MODES: Record<string, string> = {
+import { createClient } from "@/utils/supabase/server";
+import { getUserCefr } from "@/lib/user-level";
+import { explanationInstruction } from "@/lib/cefr";
+
+const MODES: Record<string, string> = {
   "dictionary": "You are a literary dictionary. Provide the definition of the word/phrase, its grammatical register (e.g., formal, archaic, colloquial), and a brief explanation in Indonesian. Respond in Markdown format. Be concise.",
   "cultural": "You are 'Cultural Context Decoder'. Explain the cultural, historical, or mythological origins of the word/phrase. Give an example of its usage. Explain in Indonesian using Markdown.",
   "nuance": "You are 'Nuance Detector'. Explain the specific connotative 'flavor' of the word. Is it warm, cold, formal, casual, sharp, soft? Compare it to a similar synonym to highlight its unique nuance. Explain in Indonesian using Markdown.",
@@ -61,6 +65,10 @@ export async function POST(req: Request) {
         systemContent += rules;
       }
     }
+
+    // Bahasa penjelasan menyesuaikan level pengguna (diambil di server, bukan dari klien)
+    const levelRule = explanationInstruction(await getUserCefr(supabase, user.id));
+    if (levelRule && shouldFormatText && mode !== "translate") systemContent += `\n\nLEARNER LEVEL: ${levelRule}`;
 
     const completion = await runAI("lookup", {
       messages: [

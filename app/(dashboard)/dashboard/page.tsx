@@ -5,6 +5,7 @@ import VocabChart from "@/components/dashboard/VocabChart";
 import AnimatedPage from "@/components/AnimatedPage";
 import { ButtonLink, Card, CardTitle, EmptyState } from "@/components/ui/primitives";
 import { getNextStep } from "@/lib/next-step";
+import { neighborLevels } from "@/lib/cefr";
 import { toolsForGoal } from "@/lib/menu-config";
 import { GOAL_LABELS, isLearningGoal, type LearningGoal } from "@/lib/learning-goals";
 
@@ -116,12 +117,36 @@ export default async function DashboardPage() {
       };
     });
 
+  // Bacaan sesuai level (Library berjenjang, migrasi 0007): teks terbit di level pengguna yang belum pernah dibuka.
+  // Jika kolom cefr_level belum ada, query error dan saran ini dilewati.
+  let levelText: { title: string; href: string; minutes?: number } | null = null;
+  const levelRange = neighborLevels(personal.cefr, 0, 0);
+  if (levelRange.length > 0) {
+    const openedIds = new Set(readingSessions.map((s) => s.text_id).filter(Boolean) as string[]);
+    const { data: candidates, error: levelError } = await supabase
+      .from("texts")
+      .select("id, title, word_count")
+      .eq("is_public", true)
+      .eq("cefr_level", levelRange[0])
+      .order("created_at", { ascending: false })
+      .limit(20);
+    const pick = levelError ? null : (candidates || []).find((t) => !openedIds.has(t.id));
+    if (pick) {
+      levelText = {
+        title: pick.title,
+        href: `/read/${pick.id}`,
+        minutes: pick.word_count ? Math.max(1, Math.round(pick.word_count / 200)) : undefined,
+      };
+    }
+  }
+
   const openReading = continueReading.find((t) => t.progress === null || t.progress < 100) ?? null;
   const nextStep = getNextStep({
     goal: personal.goal,
     cefr: personal.cefr,
     dueCount,
     continueReading: openReading ? { title: openReading.title, href: openReading.href } : null,
+    levelText,
   });
   const goalForTools: LearningGoal = personal.goal ?? "umum";
   const recommendedTools = toolsForGoal(goalForTools, 6);
