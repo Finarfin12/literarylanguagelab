@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useState } from "react";
 import { BookMarked, Search, Filter, Trash2, Edit3, Save, X, BrainCircuit } from "lucide-react";
 import { deleteVocab, updateNotes } from "@/app/(dashboard)/vocabulary/actions";
@@ -152,7 +153,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
 
                 <div className="mb-4 flex-1">
                   <div className="prose prose-sm dark:prose-invert text-foreground/90 max-w-none line-clamp-3">
-                    <div className="whitespace-pre-wrap">{item.definition}</div>
+                    <div><Markdown>{item.definition}</Markdown></div>
                   </div>
                 </div>
                 

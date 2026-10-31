@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import TryExampleButton from "@/components/ui/TryExampleButton";
 import { WRITING_ASSISTANT_EXAMPLE } from "@/lib/tool-examples";
 import { useState } from "react";
@@ -232,7 +233,7 @@ export default function WritingAssistantPage() {
                     {result.sentence_variety.map((item, idx) => (
                       <div key={idx} className="bg-muted/50 rounded-2xl p-4 border border-border">
                         <p className="text-sm font-bold text-foreground mb-2">Masalah:</p>
-                        <p className="text-sm text-muted-foreground mb-4">{item.feedback}</p>
+                        <div className="text-sm text-muted-foreground mb-4"><Markdown>{item.feedback}</Markdown></div>
                         
                         <p className="text-sm font-bold text-foreground mb-2">Contoh Revisi:</p>
                         <p className="text-amber-600 bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-sm italic">

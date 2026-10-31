@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useEffect, useState } from "react";
 import { CheckCircle2, Lightbulb, PenLine } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -146,7 +147,7 @@ export default function TopicPractice({ slug, title, summary }: { slug: string; 
             {(clinic.corrections || []).map((c, i) => (
               <div key={i} className="border-l-4 border-amber-500/50 pl-3">
                 <p><span className="line-through text-muted-foreground">{c.original}</span> → <strong>{c.corrected}</strong></p>
-                {c.explanation_id && <p className="text-muted-foreground">{c.explanation_id}</p>}
+                {c.explanation_id && <div className="text-muted-foreground"><Markdown>{c.explanation_id}</Markdown></div>}
               </div>
             ))}
             {clinic.corrected_text && <p className="text-muted-foreground">Versi benar: <span className="text-foreground font-serif">{clinic.corrected_text}</span></p>}

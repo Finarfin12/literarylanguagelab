@@ -95,11 +95,11 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
         <div className="bg-brand h-full transition-all duration-500" style={{ width: `${(currentIndex / cards.length) * 100}%` }}></div>
       </div>
 
-      <div className="perspective-1000 w-full min-h-[400px] relative">
-        <div className={`w-full h-full transition-all duration-700 transform-style-3d ${showAnswer ? 'rotate-y-180' : ''}`}>
+      <div className="[perspective:1000px] w-full min-h-[400px] relative">
+        <div className={`w-full h-full min-h-[400px] transition-transform duration-700 transform-3d ${showAnswer ? 'rotate-y-180' : ''}`}>
           
           {/* Front (Word) */}
-          <div className={`absolute inset-0 bg-card border-2 border-border shadow-xl rounded-3xl p-5 md:p-10 flex flex-col justify-center items-center text-center backface-hidden ${showAnswer ? 'invisible' : 'visible'}`}>
+          <div className={`absolute inset-0 bg-card border-2 border-border shadow-xl rounded-3xl p-5 md:p-10 flex flex-col justify-center items-center text-center backface-hidden transition-[visibility] duration-[350ms] ${showAnswer ? 'invisible' : 'visible'}`}>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground capitalize mb-8">{currentCard.word}</h2>
             {currentCard.context_sentence && (
               <div className="bg-muted/50 p-6 rounded-xl text-left border-l-4 border-brand max-w-md w-full opacity-80">
@@ -117,10 +117,13 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
           </div>
 
           {/* Back (Definition) */}
-          <div className={`absolute inset-0 bg-card border-2 border-brand/30 shadow-2xl shadow-brand/10 rounded-3xl p-4 md:p-8 flex flex-col justify-between backface-hidden transform rotate-y-180 ${showAnswer ? 'visible' : 'invisible'}`}>
-            <div className="overflow-y-auto max-h-[250px] prose prose-sm dark:prose-invert prose-brand flex-1 flex flex-col items-center justify-center text-center mx-auto w-full">
-              <h2 className="text-2xl md:text-4xl font-serif font-bold text-brand capitalize mb-6">{currentCard.word}</h2>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{currentCard.definition || ""}</ReactMarkdown>
+          <div className={`absolute inset-0 bg-card border-2 border-brand/30 shadow-2xl shadow-brand/10 rounded-3xl p-4 md:p-8 flex flex-col justify-between backface-hidden transition-[visibility] duration-[350ms] rotate-y-180 ${showAnswer ? 'visible' : 'invisible'}`}>
+            {/* my-auto (bukan justify-center): isi panjang tetap bisa digulir dari atas, kata tidak terpotong */}
+            <div className="overflow-y-auto max-h-[300px] prose prose-sm dark:prose-invert prose-brand flex-1 flex flex-col text-center mx-auto w-full">
+              <div className="my-auto w-full">
+                <h2 className="text-2xl md:text-4xl font-serif font-bold text-brand capitalize mb-6">{currentCard.word}</h2>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{currentCard.definition || ""}</ReactMarkdown>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-border w-full">

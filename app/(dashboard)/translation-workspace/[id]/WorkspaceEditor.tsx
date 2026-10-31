@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Award, CheckCircle2, Download, PanelRightOpen } from "lucide-react";
@@ -259,7 +260,7 @@ export default function WorkspaceEditor({
             {assessment.per_segment.map((p) => (
               <li key={p.idx} className="border border-border rounded-control p-2">
                 <p className="font-bold">Segmen {p.idx + 1}: akurasi {p.accuracy}, keberterimaan {p.acceptability}, keterbacaan {p.readability}</p>
-                {p.notes && <p className="text-muted-foreground">{p.notes}</p>}
+                {p.notes && <div className="text-muted-foreground"><Markdown>{p.notes}</Markdown></div>}
               </li>
             ))}
           </ul>

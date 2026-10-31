@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { MessageSquareQuote, Clock, Keyboard, BrainCircuit, Loader2, CheckCircle2, XCircle, BookOpen, Mic, Square, Play, Headphones, Wand2, X, ChevronLeft, ChevronRight, Volume2 } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
@@ -943,7 +944,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
 
                   {quizAnswered !== null && (
                     <div className="pt-6 border-t border-border animate-in fade-in slide-in-from-bottom-2">
-                      <p className="text-sm text-muted-foreground mb-4">{quizData.explanation}</p>
+                      <div className="text-sm text-muted-foreground mb-4"><Markdown>{quizData.explanation}</Markdown></div>
                       <button 
                         onClick={handleCloseQuiz}
                         className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold shadow-md transition-all active:scale-95"
@@ -1002,13 +1003,13 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                   </div>
                   <div className="bg-muted/30 p-4 rounded-xl border border-border">
                     <p className="text-sm font-bold text-foreground mb-2">Feedback AI:</p>
-                    <p className="text-sm text-muted-foreground">{listeningResult.feedback}</p>
+                    <div className="text-sm text-muted-foreground"><Markdown>{listeningResult.feedback}</Markdown></div>
                   </div>
                   <div className="space-y-4 mt-4 max-h-40 overflow-y-auto pr-2">
                     {listeningResult.evaluations?.map((ev: any, i: number) => (
                       <div key={i} className={`p-3 rounded-xl border text-sm ${ev.is_correct ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
                         <p className="font-bold flex items-center gap-2">Q{ev.question_number} {ev.is_correct ? <CheckCircle2 className="w-4 h-4 text-green-500"/> : <XCircle className="w-4 h-4 text-red-500"/>}</p>
-                        <p className="text-muted-foreground mt-1">{ev.feedback}</p>
+                        <div className="text-muted-foreground mt-1"><Markdown>{ev.feedback}</Markdown></div>
                       </div>
                     ))}
                   </div>
@@ -1138,7 +1139,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                   
                   <div className="bg-muted/30 p-4 rounded-xl border border-border">
                     <p className="text-sm font-bold text-foreground mb-2">Feedback AI:</p>
-                    <p className="text-sm text-muted-foreground">{writingResult.feedback}</p>
+                    <div className="text-sm text-muted-foreground"><Markdown>{writingResult.feedback}</Markdown></div>
                   </div>
                   
                   {writingResult.corrected_text && writingResult.corrected_text !== writingResponse && (

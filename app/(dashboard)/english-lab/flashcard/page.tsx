@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { BookOpen, RefreshCw, CheckCircle, XCircle, Loader2, Volume2, Trophy, ArrowRight, Brain, Zap, Mic, MicOff } from "lucide-react";
@@ -372,7 +373,7 @@ export default function FlashcardSRSPage() {
         {mode === "guess-word" && (
           <div className="text-center mb-8">
             <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Kata apa yang cocok dengan definisi ini?</p>
-            <p className="text-xl font-serif text-foreground">{currentCard.definition}</p>
+            <div className="text-xl font-serif text-foreground"><Markdown>{currentCard.definition}</Markdown></div>
           </div>
         )}
 
@@ -422,7 +423,7 @@ export default function FlashcardSRSPage() {
                   disabled={showResult}
                   className={`p-4 rounded-xl border text-left transition-all text-sm ${borderClass} ${showResult ? "cursor-default" : "cursor-pointer"}`}
                 >
-                  {opt}
+                  {mode === "guess-meaning" ? <Markdown inline>{opt}</Markdown> : opt}
                 </button>
               );
             })}

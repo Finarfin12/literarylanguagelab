@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useState, useRef, useEffect } from "react";
 import { ArrowLeft, Send, Loader2, Mic, MicOff, Volume2, MessageSquare, Star, CheckCircle, XCircle, ArrowRight, Lightbulb, Trophy, Coffee, Briefcase, Plane, Building, Stethoscope, UtensilsCrossed, Users, Headphones } from "lucide-react";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
@@ -182,12 +183,12 @@ export default function DialogueSimulatorPage() {
           <ScoreBadge label="Kosakata" score={feedback.vocabulary_score} />
         </div>
         <div className="bg-card border border-border rounded-2xl p-6 mb-6">
-          <p className="text-foreground leading-relaxed">{feedback.overall_feedback_id}</p>
+          <div className="text-foreground leading-relaxed"><Markdown>{feedback.overall_feedback_id}</Markdown></div>
         </div>
         {feedback.strengths.length > 0 && (
           <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-5 mb-6">
             <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-3 flex items-center gap-2"><CheckCircle className="w-4 h-4" /> Hal Positif</h3>
-            <ul className="space-y-1">{feedback.strengths.map((s, i) => <li key={i} className="text-sm text-foreground/80 flex gap-2"><span className="text-emerald-400">•</span>{s}</li>)}</ul>
+            <ul className="space-y-1">{feedback.strengths.map((s, i) => <li key={i} className="text-sm text-foreground/80 flex gap-2"><span className="text-emerald-400">•</span><span><Markdown inline>{s}</Markdown></span></li>)}</ul>
           </div>
         )}
         {feedback.corrections.length > 0 && (
@@ -196,7 +197,7 @@ export default function DialogueSimulatorPage() {
             <div className="space-y-3">{feedback.corrections.map((c, i) => (
               <div key={i} className="bg-background/50 rounded-xl p-3">
                 <div className="flex items-center gap-2 text-sm mb-1"><span className="text-red-400 line-through">{c.original}</span><ArrowRight className="w-3 h-3 text-muted-foreground" /><span className="text-emerald-400 font-medium">{c.corrected}</span></div>
-                <p className="text-xs text-muted-foreground">{c.explanation_id}</p>
+                <div className="text-xs text-muted-foreground"><Markdown>{c.explanation_id}</Markdown></div>
               </div>
             ))}</div>
           </div>
@@ -205,14 +206,14 @@ export default function DialogueSimulatorPage() {
           <div className="bg-blue-500/5 border border-blue-500/20 rounded-2xl p-5 mb-6">
             <h3 className="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3 flex items-center gap-2"><Star className="w-4 h-4" /> Saran Kosakata</h3>
             <div className="space-y-2">{feedback.vocabulary_suggestions.map((v, i) => (
-              <div key={i} className="text-sm"><span className="text-muted-foreground">Anda menggunakan "</span><span className="text-foreground font-bold">{v.used}</span><span className="text-muted-foreground">" → coba "</span><span className="text-blue-400 font-bold">{v.better}</span><span className="text-muted-foreground">"</span><p className="text-xs text-muted-foreground mt-0.5">{v.context_id}</p></div>
+              <div key={i} className="text-sm"><span className="text-muted-foreground">Anda menggunakan "</span><span className="text-foreground font-bold">{v.used}</span><span className="text-muted-foreground">" → coba "</span><span className="text-blue-400 font-bold">{v.better}</span><span className="text-muted-foreground">"</span><div className="text-xs text-muted-foreground mt-0.5"><Markdown>{v.context_id}</Markdown></div></div>
             ))}</div>
           </div>
         )}
         {feedback.cultural_tip && (
           <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5 mb-6">
             <h3 className="text-sm font-bold text-amber-400 uppercase tracking-wider mb-2 flex items-center gap-2"><Lightbulb className="w-4 h-4" /> Tips Budaya</h3>
-            <p className="text-sm text-foreground/80">{feedback.cultural_tip}</p>
+            <div className="text-sm text-foreground/80"><Markdown>{feedback.cultural_tip}</Markdown></div>
           </div>
         )}
         <button onClick={() => { setActiveScenario(null); setMessages([]); setFeedback(null); }} className="w-full py-3 bg-brand text-background font-bold rounded-xl mt-4">Coba Skenario Lain</button>

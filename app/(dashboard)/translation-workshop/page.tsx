@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useState } from "react";
 import { Languages, ArrowRight, Loader2, Award, CheckCircle2, ArrowLeftRight, FileType2, RotateCcw, Scale, Tags } from "lucide-react";
 import Link from "next/link";
@@ -186,7 +187,7 @@ export default function TranslationWorkshopPage() {
             {rubric.perSegment.map((p) => (
               <li key={p.idx} className="border border-border rounded-xl p-3">
                 <p className="font-bold">Segmen {p.idx + 1}: akurasi {p.accuracy}, keberterimaan {p.acceptability}, keterbacaan {p.readability}</p>
-                {p.notes && <p className="text-muted-foreground">{p.notes}</p>}
+                {p.notes && <div className="text-muted-foreground"><Markdown>{p.notes}</Markdown></div>}
               </li>
             ))}
           </ul>

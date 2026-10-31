@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, Volume2, XCircle } from "lucide-react";
@@ -157,7 +158,7 @@ export default function LevelTestPage() {
                   <span>
                     <span className="text-muted-foreground">{SECTION_LABELS[r.section] ?? r.section}: </span>
                     jawabanmu {r.yourAnswer ?? "-"}, yang benar <strong>{r.correct}</strong>.
-                    {r.explanation_id && <span className="block text-muted-foreground">{r.explanation_id}</span>}
+                    {r.explanation_id && <div className="text-muted-foreground"><Markdown>{r.explanation_id}</Markdown></div>}
                   </span>
                 </li>
               ))}

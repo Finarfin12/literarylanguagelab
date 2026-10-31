@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useState } from "react";
 import { CheckSquare, Loader2, ArrowLeft, Trophy, AlertCircle, RefreshCw } from "lucide-react";
 import Link from "next/link";
@@ -175,7 +176,7 @@ export default function StoryQuizPage() {
                 {submitted && (
                   <div className={`mt-4 p-4 rounded-xl ${answers[qIndex] === q.correctAnswerIndex ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>
                     <p className="text-sm font-bold mb-1">{answers[qIndex] === q.correctAnswerIndex ? "Jawaban Benar!" : "Jawaban Salah."}</p>
-                    <p className="text-sm opacity-90">{q.explanation}</p>
+                    <div className="text-sm opacity-90"><Markdown>{q.explanation}</Markdown></div>
                   </div>
                 )}
               </div>

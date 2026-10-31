@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useState, useEffect } from "react";
 import { CheckCircle, XCircle, AlertTriangle, Loader2, Mic, MicOff, Sparkles, ArrowRight, Lightbulb, Copy, Check, BarChart3, Brain, Play } from "lucide-react";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
@@ -270,8 +271,8 @@ export default function GrammarClinicPage() {
                         </button>
                         {expandedIdx === i && (
                           <div className="px-4 pb-3 pt-1 bg-muted/30 border-t border-border animate-in fade-in slide-in-from-top-2 duration-200">
-                            <p className="text-sm text-foreground/90 leading-relaxed">{c.explanation_id}</p>
-                            <p className="text-xs text-muted-foreground italic mt-1">{c.explanation_en}</p>
+                            <div className="text-sm text-foreground/90 leading-relaxed"><Markdown>{c.explanation_id}</Markdown></div>
+                            <div className="text-xs text-muted-foreground italic mt-1"><Markdown>{c.explanation_en}</Markdown></div>
                           </div>
                         )}
                       </div>
@@ -305,7 +306,7 @@ export default function GrammarClinicPage() {
                   <ul className="space-y-1">
                     {result.tips.map((tip, i) => (
                       <li key={i} className="text-sm text-foreground/80 flex items-start gap-2">
-                        <span className="text-amber-400 mt-1">•</span> {tip}
+                        <span className="text-amber-400 mt-1">•</span> <span><Markdown inline>{tip}</Markdown></span>
                       </li>
                     ))}
                   </ul>
@@ -390,7 +391,7 @@ export default function GrammarClinicPage() {
               ) : miniLessonData ? (
                 <div className="space-y-6">
                   <div className="prose prose-sm dark:prose-invert prose-brand max-w-none">
-                    <p className="text-foreground/90 leading-relaxed text-base">{miniLessonData.lesson_text}</p>
+                    <div className="text-foreground/90 leading-relaxed text-base"><Markdown>{miniLessonData.lesson_text}</Markdown></div>
                   </div>
                   
                   <div className="bg-brand/5 border border-brand/20 rounded-2xl p-6">

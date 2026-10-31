@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import TryExampleButton from "@/components/ui/TryExampleButton";
 import { TOOL_EXAMPLES } from "@/lib/tool-examples";
 import { useState } from "react";
@@ -179,7 +180,7 @@ export default function SentenceArchitectPage() {
                   </div>
                   <div className="flex items-start gap-2 text-sm text-muted-foreground relative z-10">
                     <ArrowRight className="w-4 h-4 shrink-0 mt-0.5 text-blue-400" />
-                    <p>{strategy.explanation}</p>
+                    <div><Markdown>{strategy.explanation}</Markdown></div>
                   </div>
                 </div>
               ))}

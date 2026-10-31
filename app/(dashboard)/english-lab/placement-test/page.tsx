@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useState, useEffect, useCallback } from "react";
 import { BookOpen, PenLine, BookMarked, Headphones, ChevronRight, Trophy, Loader2, RotateCcw, Volume2, CheckCircle2, XCircle, ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
@@ -369,7 +370,7 @@ export default function PlacementTestPage() {
                     }`}>
                       {selectedAnswer === serverData.correct ? '✅ Benar!' : '❌ Kurang Tepat'}
                     </p>
-                    <p className="text-xs text-muted-foreground">{serverData.explanation_id}</p>
+                    <div className="text-xs text-muted-foreground"><Markdown>{serverData.explanation_id}</Markdown></div>
                   </div>
                 )}
 

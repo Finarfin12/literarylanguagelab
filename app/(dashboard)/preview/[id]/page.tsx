@@ -1,5 +1,6 @@
 "use client";
 
+import Markdown from "@/components/ui/Markdown";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { BookOpen, BrainCircuit, ArrowRight, Save, CheckCircle2, ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
@@ -207,7 +208,7 @@ export default function PreviewPage() {
           {/* Back */}
           <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 shadow-[0_0_30px_rgba(62,207,142,0.15)] rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center overflow-y-auto">
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground mb-2 sm:mb-4 pt-8 sm:pt-0">{currentWord.word}</h2>
-            <p className="text-lg sm:text-xl text-brand font-medium mb-4 sm:mb-6">{currentWord.definition}</p>
+            <div className="text-lg sm:text-xl text-brand font-medium mb-4 sm:mb-6"><Markdown>{currentWord.definition}</Markdown></div>
             <div className="bg-muted/50 p-3 sm:p-4 rounded-xl text-xs sm:text-sm italic text-muted-foreground border-l-4 border-l-brand w-full overflow-hidden">
               "{currentWord.example}"
             </div>
