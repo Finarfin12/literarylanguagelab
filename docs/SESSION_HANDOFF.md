@@ -1,0 +1,76 @@
+# Session Handoff — Analisis & Perencanaan v2
+
+Ringkasan sesi 30–31 Oktober 2026 untuk dilanjutkan di sesi lain (Claude, Gemini, atau agent lain).
+Belum ada kode aplikasi yang diubah di sesi ini. Yang dihasilkan hanya dokumen.
+
+## Status singkat
+
+| Item | Status |
+|---|---|
+| Analisis bug | Selesai, 13 bug tercatat (B-01 sampai B-13 di [PRD.md](PRD.md) §7) |
+| PRD | Selesai: [PRD.md](PRD.md) |
+| Implementation plan | Selesai, 8 fase: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) |
+| Instruksi untuk Gemini Flash 3.8 | Selesai: [HANDOFF_GEMINI.md](HANDOFF_GEMINI.md) |
+| Dokumen di git | Di branch `docs/v2-plan` (belum di-merge ke `main`). `.gitignore` mengabaikan `*.md`, jadi dokumen di-commit dengan `git add -f` |
+| Implementasi | **Belum dimulai.** Rencananya dikerjakan oleh Gemini Flash 3.8, fase demi fase |
+
+## Apa yang diminta pemilik
+
+1. Menganalisis bug dan mengusulkan fitur tambahan. Roadmap pemilik ada di `fitur_tambahan_road map.xlsx` (F-01 sampai F-07).
+2. Mengubah aplikasi menjadi **ruang belajar fokus**: menghapus gamifikasi (XP, tier, leaderboard, duels, streak, journey quests).
+3. Memperbaiki tampilan mobile agar **semua fitur bisa diakses** dari HP.
+4. OCR memakai **Qwen di Groq**.
+5. Admin mendapat **tab-tab pengelolaan**, termasuk pengelolaan AI: menambah provider lewat API key + endpoint, dan menambah AI lewat **MCP**.
+6. Memperbaiki semua bug.
+7. Membuat PRD dan implementation plan, lalu menyerahkannya ke Gemini Flash 3.8 untuk dikerjakan.
+
+## Temuan penting (sudah diverifikasi di kode)
+
+- **27 route `/api/*` tanpa pengecekan login.** Siapa pun bisa memakai kuota `GROQ_API_KEY`. Daftar lengkapnya ada di HANDOFF_GEMINI.md.
+- **Rate limit tidak berjalan.** `getRateLimit()` di `lib/ai-config.ts` tidak pernah dipanggil.
+- **OCR rusak.** `app/api/ocr/route.ts` memakai konfigurasi `tools` (`openai/gpt-oss-120b`, model teks) untuk membaca gambar.
+- **Waktu baca bisa dipalsukan.** Heartbeat percaya `time_spent_seconds` dari klien; quest langsung selesai setelah 15 detik.
+- **Duels palsu.** Feedback AI ditulis permanen di kode, dan XP bisa di-farm dengan submit berulang.
+- **`isFeatureEnabled` keliru.** Key yang tidak terdaftar dianggap mati.
+- **`middleware.ts` sudah deprecated** di Next.js 16 dan harus menjadi `proxy.ts`.
+- **RPC di setiap render.** `update_login_streak` dipanggil di `(dashboard)/layout.tsx` pada setiap navigasi.
+- **Admin bisa mem-ban atau menghapus dirinya sendiri.**
+- **Repo kotor.** File log/pid dan script sementara ter-commit; skema DB tidak ada di repo.
+- **Perlu dicek di Supabase:** RLS `profiles` mungkin membolehkan user mengubah `role` miliknya sendiri.
+
+## Fakta eksternal (dicek di dokumentasi Groq, 31 Okt 2026)
+
+- Model vision: `qwen/qwen3.8-27b` (maks 3 gambar/request, request dengan URL gambar maks 20 MB).
+- Remote MCP: lewat Responses API (`/openai/v1/responses`, tool `type: "mcp"`). Status beta; hanya model yang mendukung tool use.
+- Catatan: WebSearch gagal di sesi ini karena error konfigurasi model, jadi pengecekan dilakukan lewat browser bawaan ke `console.groq.com/docs`.
+
+## Keputusan desain yang sudah diambil
+
+- **Provider AI:** tipe `openai_compatible` (base URL + API key, lewat `fetch`), tanpa SDK baru. API key dienkripsi AES-256-GCM dengan env `AI_SECRETS_KEY`.
+- **Routing per fitur:** tabel `ai_feature_routes` (model utama, cadangan, parameter, MCP yang diizinkan). OCR dibatasi ke model berkemampuan `vision`.
+- **MCP:** hanya server remote HTTPS, di belakang feature flag `mcp_enabled`.
+- **Data gamifikasi:** tidak di-DROP sampai Fase 7; berhenti dipakai dulu supaya bisa rollback.
+- **Urutan:** Fase 0 (keamanan) dulu. Setelah itu Fase 1–2 (UI) dan Fase 3 (AI) bisa paralel.
+
+## Pertanyaan yang masih terbuka
+
+- **Q1 (penghalang Fase 1):** apakah forum, reading clubs, messages, dan jejaring pembaca tetap ada (tanpa XP) atau ikut dihapus? Default di dokumen: **tetap ada**. Pemilik belum menjawab.
+- Q2–Q5 memakai asumsi default (lihat PRD §8).
+- Di device asal, `gamification-system.md` terhapus dari working tree (tidak oleh sesi ini) dan perubahan itu tidak ikut di-commit. Versi di git masih utuh.
+
+## Langkah berikutnya
+
+1. Di device baru: `git fetch && git switch docs/v2-plan`. Merge ke `main` jika sudah disetujui.
+2. Pemilik menjawab Q1.
+3. Mulai Fase 0 dengan prompt di HANDOFF_GEMINI.md (bagian "Prompt pembuka" + "Fase 0").
+4. Setelah tiap fase, pemilik melakukan review sesuai tabel "Titik review" di HANDOFF_GEMINI.md.
+
+## Prompt untuk sesi baru
+
+```
+Lanjutkan pekerjaan di repo "Literary Language Lab" (branch docs/v2-plan). Baca berurutan:
+AGENTS.md, docs/SESSION_HANDOFF.md, docs/PRD.md, docs/IMPLEMENTATION_PLAN.md,
+docs/HANDOFF_GEMINI.md. Jangan ulang analisis yang sudah tercatat.
+Tanyakan dulu ke saya jawaban Q1 jika pekerjaan menyentuh Fase 1,
+lalu kerjakan fase yang saya sebut.
+```
