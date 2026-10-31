@@ -6,6 +6,7 @@ Dibaca otomatis oleh Claude Code di setiap sesi. Detail lengkap: `docs/v4/HANDOF
 - Huruf serif **Michelangelus hanya lewat `local()`** (lisensi Microsoft 365, tanpa izin webfont): jangan pernah meng-commit atau meng-host file fontnya.
 
 - Stack: Next.js 16.2 (App Router, breaking changes: `proxy.ts` bukan `middleware.ts`; `params`/`searchParams` adalah Promise), React 19, Supabase, Tailwind v4, TypeScript. Panduan Next.js: `node_modules/next/dist/docs/`.
+- **Mulai sesi baru dari `docs/HANDOFF_NEXT_SESSION.md`** (keadaan terkini, tindakan tertunda, jebakan, resep verifikasi, prompt pembuka).
 - Status & rencana: `docs/SESSION_HANDOFF.md` (status semua fase), `docs/v3/` (Fase 8–11, selesai), `docs/v4/` (Fase 12–17: redesign, susunan fitur, Kursus Dasar). Kerjakan hanya fase yang diminta.
 - Git: branch `main`, satu commit per fase, identitas **finarfin112 <finarfinar112@gmail.com>** (Vercel memblokir penulis lain). Push selalu tanya dulu.
 - Database: tidak ada akses dan tidak ada `.env`. Migrasi ditulis di `supabase/migrations/NNNN_*.sql`, tidak dijalankan. Kode harus tetap jalan sebelum migrasi dijalankan. Migrasi `0000`–`0005` dan `0009` (hapus gamifikasi) sudah dijalankan pemilik: kolom `profiles.xp`/`streak`/`journey_level` dan tabel duels/journey/daily sudah tidak ada.
