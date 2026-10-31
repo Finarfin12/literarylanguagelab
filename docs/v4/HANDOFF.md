@@ -37,6 +37,8 @@ Kerjakan HANYA fase yang saya sebut.
 
 **Fase 14f** — `Kerjakan Fase 14f (lima route API: perbaiki & pakai). Mulai dari lib/idioms dan uji unitnya. Tulis migrasi 0011_profile_cascade.sql tapi jangan jalankan. Pencarian OpenLibrary dan Gutendex JANGAN diubah: /api/gutenberg/search hanya ditambahkan sebagai opsi ketiga. Hapus akun harus tetap berperilaku sama bagi pengguna.`
 
+**Fase 14g** — `Kerjakan Fase 14g (Pengayaan Kosakata Inti NGSL). Mulai dari scripts/lib/ngsl-enrich.mjs dan uji unitnya. Tulis migrasi 0015_core_words_enrichment.sql tapi jangan jalankan. Skrip hanya UPDATE baris core_words yang ada — jangan INSERT dan jangan ubah band/cefr_estimate. File NGSL tidak di-commit.`
+
 **Fase 15** — `Kerjakan Fase 15 (Mesin latihan + review grammar). Mulai dari lib/exercises/* dan uji unitnya. Latihan kalimat bebas yang lama di halaman topik grammar TETAP ada.`
 
 **Fase 16** — `Kerjakan Fase 16 (Kursus Dasar). Mulai dari lib/course.ts dan uji unitnya. Unit tidak dikunci.`
@@ -53,7 +55,7 @@ Kerjakan HANYA fase yang saya sebut.
    - mengubah handler, state, panggilan API, nama route, atau teks yang bermakna fitur (mis. nama mode) di sub-fase redesign;
    - menyembunyikan fitur sampai tidak bisa dijangkau (≤ 2 ketukan dari navigasi).
    Jika menurutmu sebuah fitur sebaiknya digabung/dihapus: **berhenti dan tanya pemilik**.
-2. **Perubahan perilaku yang diizinkan hanya**: Tongkat Ajaib bisa digeser (PRD §5.4), pintu masuk LingoWise desktop (§5.2), halaman ruang & menu baru (§5.2), lima route API yang dihidupkan (Fase 14f), dan fitur Kursus Dasar (§6).
+2. **Perubahan perilaku yang diizinkan hanya**: Tongkat Ajaib bisa digeser (PRD §5.4), pintu masuk LingoWise desktop (§5.2), halaman ruang & menu baru (§5.2), lima route API yang dihidupkan (Fase 14f), pengayaan Kosakata Inti (Fase 14g, PRD §6.5), dan fitur Kursus Dasar (§6).
 3. **Daftar periksa per fase**: salin baris [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) yang relevan ke laporan, centang setelah diuji, sebut cara mengujinya. Fitur baru yang kamu buat → tambahkan barisnya ke inventaris di commit yang sama.
 4. **Ubah kelas, bukan struktur.** Redesign utamanya mengganti kelas Tailwind & markup pembungkus. Jika struktur komponen harus berubah, pindahkan handler & state apa adanya.
 5. **Semua tema**: setiap halaman diuji terang & gelap; reader juga sepia & kontras tinggi.
@@ -85,7 +87,8 @@ Contoh yang sudah berhasil dipakai di v2: halaman uji reader dengan buku sinteti
 - Tongkat Ajaib saat ini: tombol `fixed bottom-24 right-4 md:bottom-8 md:left-8` di `components/reader/TextDisplay.tsx` (cari "Floating Action Button for Inspect Mode"), state `isInspectMode`.
 - SRS: `calculateSM2` di `lib/spaced-repetition.ts`. Skenario dialog: `lib/dialogue-scenarios.ts`. TTS: `/api/tts`. STT: `hooks/useSpeechToText.ts`.
 - `grammar_topics.slug` adalah primary key (migrasi `0007`); status selesai topik saat ini di `localStorage` (`lib/grammar-progress.ts`).
-- Migrasi terakhir: `0010_translation_academic.sql`. Berikutnya `0011` (cascade profil, 14f), lalu `0012`–`0014` (Fase 15–17).
+- Migrasi terakhir: `0010_translation_academic.sql`. Berikutnya `0011` (cascade profil, 14f), lalu `0012`–`0014` (Fase 15–17), dan `0015` (pengayaan `core_words`, 14g).
+- `core_words` **sudah terisi** oleh pemilik dari "NGSL 1.2 with basic statistics" (2.809 kata; header `Lemma,SFI Rank,…`; `TRUE`/`FALSE` dari Excel tersimpan sebagai `true`/`false`). Kolomnya: `word, band, cefr_estimate, pos, example`. Pembaca: `vocabulary/core/page.tsx`, `vocabulary/core/actions.ts`, `admin/content/page.tsx`.
 - Endpoint tanpa pemanggil UI: `/api/analyze-tone`, `/api/detect-idioms`, `/api/gutenberg/search`, `/api/wotd`, `/api/auth/delete-account` — **pemilik memutuskan: perbaiki & pakai** (Fase 14f).
 - Hapus akun di `settings/page.tsx` memakai `supabase.rpc('delete_user')` (tidak ada di migrasi). FK `profiles.id → auth.users` di baseline tanpa `ON DELETE CASCADE`.
 - Ekspor CSV "translations" di Pengaturan membaca `translation_submissions` (tidak ada di migrasi; baseline punya `translations`).
@@ -118,6 +121,7 @@ Setelah fase selesai, perbarui tabel status di `docs/SESSION_HANDOFF.md`.
 | Fase 13 | Telusuri tiga ruang; pastikan alat favoritmu masih ada; putuskan Q1 |
 | Fase 14x | Telusuri halaman sub-fase itu di HP & desktop dengan FEATURE_INVENTORY di tangan |
 | Fase 14f | Jalankan `0011`; coba Pelajari (Word of the Day), Analisis tone, penanda idiom, cari di Buku Klasik lewat ketiga opsi (OpenLibrary, Gutendex, Gutenberg server), dan hapus akun **dengan akun uji, bukan akun utama** |
+| Fase 14g | Jalankan `0015`; simpan xlsx definisi sebagai CSV UTF-8; `node scripts/enrich-ngsl.mjs --definitions … --forms … --dry-run`, lalu tanpa `--dry-run`; buka Kosakata Inti dan cek definisi muncul |
 | Fase 15 | Jalankan `0012`; buat 5 soal AI → tinjau → terbitkan; kerjakan di HP |
 | Fase 16 | Jalankan `0013`; isi satu unit lengkap; kerjakan dari awal sampai akhir |
 | Fase 17 | Jalankan `0014`; coba Kesalahan Umum & Pasangan Bunyi |

@@ -148,7 +148,15 @@ Detail perbaikan: IMPLEMENTATION_PLAN Fase 14f.
 - **Kesalahan umum**: mis. *I am agree*, lupa *-s* orang ketiga, *he/she* tertukar, *people is*, *since/for*, kata sifat jamak, urutan kata sifat — masing-masing kartu penjelasan + latihan (§6.1).
 - **Pasangan bunyi (minimal pairs)**: *ship/sheep*, *think/sink*, *very/fery*, *bad/bed*, konsonan akhir (*cat/cap*) — dengar (TTS) lalu pilih, dan ucapkan (Pronunciation Clinic).
 
-### 6.5 Paket konten awal
+### 6.5 Kosakata Inti diperkaya (NGSL)
+
+- Kosakata Inti sudah memakai NGSL 1.2 (peringkat → level A1–B2, diimpor pemilik). v4 menambah dua data NGSL yang belum dipakai:
+  - **Definisi bahasa Inggris sederhana** (file *with English definitions*): tampil di kartu Kosakata Inti, ikut tersimpan saat kata ditambahkan ke Review, dan menjadi bahan soal mencocokkan / pilihan ganda tanpa AI (§6.1) serta langkah kosakata unit (§6.2).
+  - **Bentuk kata** (file *lemmatized for teaching*): *searched* dikenali sebagai *search*, sehingga progres Kosakata Inti lebih akurat.
+- Peringkat dan level yang sudah ada tidak berubah. Lisensi CC BY-SA 4.0; atribusi di /help diperluas.
+- Detail: Fase 14g di IMPLEMENTATION_PLAN.
+
+### 6.6 Paket konten awal
 
 - Minimal **10 bacaan per level A1 dan A2** dibuat admin lewat Admin → Konten (AI → draft → tinjau → terbit) sebelum Kursus Dasar dirilis. Ini pekerjaan operasional pemilik, dibantu alat yang sudah ada.
 

@@ -5,7 +5,7 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v3. (Fase 12 di v3 — mode
 **Aturan umum** (lengkapnya di [HANDOFF.md](HANDOFF.md); semua keputusan visual di [DESIGN.md](DESIGN.md))
 - **P1: hanya tampilan yang berubah.** Sebelum dan sesudah setiap fase redesign, buka [FEATURE_INVENTORY.md](FEATURE_INVENTORY.md) dan centang baris yang disentuh. Menghapus elemen UI yang memicu fitur = bug, walaupun fiturnya masih ada di kode.
 - Pola dari v2/v3 tetap wajib (`runAI`, guard admin, `logAdminAction`, `components/ui/*`, `ResponsivePanel`, fallback sebelum migrasi).
-- Migrasi baru mulai `0011` (`0011` = perbaikan cascade profil di 14f; Fase 15–17 memakai `0012`–`0014`). Ditulis, tidak dijalankan.
+- Migrasi baru mulai `0011` (`0011` = perbaikan cascade profil di 14f; Fase 15–17 memakai `0012`–`0014`; `0015` = pengayaan Kosakata Inti di 14g). Ditulis, tidak dijalankan.
 - Verifikasi tiap fase: `npx tsc --noEmit`, lint tanpa temuan baru vs HEAD, build di path pendek, uji unit untuk logika murni, **halaman uji visual sementara** (di salinan build, bukan di repo) untuk komponen yang diubah, di 375px dan 1280px, tema terang dan gelap.
 
 ## Ringkasan fase
@@ -15,7 +15,8 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v3. (Fase 12 di v3 — mode
 | 12 | Fondasi desain v4: token, huruf, tema, komponen dasar | 2–3 hari | v3 |
 | 13 | Navigasi & tiga Ruang (susunan fitur) | 2–3 hari | 12 |
 | 14 | Redesign halaman (bertahap, 14a–14e) + Tongkat Ajaib bisa digeser + **14f: lima route API dihidupkan** | 7–9 hari | 13 |
-| 15 | Mesin latihan terstruktur + review grammar | 4–5 hari | 12 |
+| 14g | Pengayaan Kosakata Inti: definisi & bentuk kata NGSL | 1–2 hari | — (sebelum 15–16) |
+| 15 | Mesin latihan terstruktur + review grammar | 4–5 hari | 12 (memakai 14g bila sudah ada) |
 | 16 | Kursus Dasar: unit A0–A2 | 4–5 hari | 15, 14a |
 | 17 | Modul khas penutur Indonesia | 2–3 hari | 15 |
 
@@ -117,6 +118,52 @@ Kelima route sudah ada tetapi tidak dipanggil UI. **Jangan dihapus**: perbaiki l
 
 ---
 
+## Fase 14g — Pengayaan Kosakata Inti (definisi & bentuk kata NGSL)
+
+Tidak bergantung pada fase lain (hanya `0007`, sudah dijalankan). Sebaiknya selesai **sebelum Fase 15–16**, karena latihan dan unit memakai definisinya. Tidak mengubah peringkat/level yang sudah diimpor pemilik.
+
+**Data (tidak ada di repo; pemilik yang menyimpannya).** Semua dari situs NGSL, lisensi CC BY-SA 4.0:
+- `NGSL_1.2_with_English_definitions.xlsx`: kolom `Word | Definitons` (ejaan "Definitons" memang begitu), 2.809 baris, **urutan tidak menurut frekuensi**. Pemilik menyimpannya sebagai *CSV UTF-8* dari Excel. Skrip **tidak** membaca xlsx, supaya tidak perlu dependensi baru.
+- `NGSL_1.2_lemmatized_for_teaching.csv`: baris diawali `##` adalah komentar; tiap baris = headword lalu bentuk-bentuknya (`search,searches,searched,searching`). Homograf bisa muncul lebih dari sekali. Ada **potongan kontraksi** yang bukan kata (`be,am,m,is,isn,s,are,re,aren,ain,…`).
+- File *basic statistics* (peringkat) **sudah diimpor** pemilik lewat `scripts/import-ngsl.mjs`; tidak diimpor ulang.
+- Jebakan Excel: `true`/`false` tertulis `TRUE`/`FALSE` di semua file. Semua kunci dinormalkan ke huruf kecil (sama seperti `import-ngsl.mjs`).
+
+**14g.1 Migrasi** `0015_core_words_enrichment.sql` (nomor 0015 agar 0012–0014 tidak bergeser; tidak bergantung pada 0011–0014):
+```sql
+ALTER TABLE core_words ADD COLUMN IF NOT EXISTS definition_en TEXT;
+ALTER TABLE core_words ADD COLUMN IF NOT EXISTS forms TEXT[] NOT NULL DEFAULT '{}';
+CREATE INDEX IF NOT EXISTS idx_core_words_forms ON core_words USING GIN (forms);
+```
+RLS tidak berubah (kebijakan `0007` berlaku untuk kolom baru).
+
+**14g.2 Logika murni** `scripts/lib/ngsl-enrich.mjs` (**diuji unit** di `tests/ngsl-enrich.test.mts`):
+- `parseDefinitions(csvText)` → `Map<word, definition>`: kolom dikenali dari header yang diawali `word` dan `defin`; kata di-trim & huruf kecil; spasi definisi dirapikan; kata ganda → definisi digabung dengan `; `.
+- `parseForms(csvText)` → `Map<headword, string[]>`: abaikan baris `##` dan baris kosong; gabungkan homograf (union, tanpa duplikat); buang headword itu sendiri dan **potongan kontraksi** (daftar tetap di modul: `s, m, re, ve, ll, d, t, isn, aren, ain, wasn, weren, don, doesn, didn, hasn, haven, hadn, won, wouldn, couldn, shouldn, mustn, needn, bein`; diuji dengan baris `be`). Hanya bentuk huruf/tanda hubung yang disimpan.
+- Uji minimal: `TRUE` → `true`; `search` → `[searches, searched, searching]`; baris `be` tidak menghasilkan `m`/`s`/`isn`; header `Definitons` dikenali.
+
+**14g.3 Skrip** `scripts/enrich-ngsl.mjs` (pola sama dengan `import-ngsl.mjs`: env `NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`, komentar cara pakai & lisensi di kepala file):
+```
+node scripts/enrich-ngsl.mjs --definitions defs.csv --forms teaching.csv [--dry-run]
+```
+- Membaca semua `core_words.word` dulu, lalu **hanya UPDATE baris yang sudah ada** (`definition_en`, `forms`), per batch ±200. **Tidak pernah INSERT**, tidak menyentuh `band`/`cefr_estimate`/`pos`/`example`.
+- Salah satu argumen boleh dihilangkan (hanya definisi, atau hanya bentuk kata).
+- Laporan akhir: jumlah kata diperbarui, kata di file yang tidak ada di `core_words`, dan kata `core_words` tanpa definisi. `--dry-run` hanya mencetak laporan.
+- Tambahkan petunjuk di Admin → Konten (di sebelah petunjuk `import-ngsl.mjs` yang sudah ada).
+
+**14g.4 Pemakaian di UI** (hanya menambah; semua yang ada tetap. Sebelum `0015` dijalankan, query yang memilih kolom baru jatuh ke query lama saat error `42703`/`PGRST204`):
+- `vocabulary/core/page.tsx`: tampilkan `definition_en` di bawah kata (teks kecil, gaya DESIGN.md). Tanpa definisi → tampilan sekarang.
+- `vocabulary/core/actions.ts` ("Tambah 10 kata ke Review"): saat membuat baris `vocabulary`, isi kolom arti/definisi yang **sudah ada** di skema `vocabulary` (cek skemanya, jangan menambah kolom) dengan `definition_en`. Kata yang sudah dimiliki pengguna tidak ditimpa.
+- `lib/core-words.ts` (baru, diuji unit untuk bagian murninya): `lemmaOf(word, rows)` mencari kata di `word` atau `forms`. Dipakai untuk menghitung status Kosakata Inti, sehingga kata simpanan `searched` dihitung sebagai `search`. Query ke DB memakai `.or('word.eq.x,forms.cs.{x}')`.
+- Fase 15 (ditambahkan ke 15.4): Admin → Konten → Latihan mendapat tombol **"Buat soal dari Kosakata Inti"** yang membuat soal `match` (kata ↔ definisi) dan `mcq` ("apa arti kata ini?") **tanpa AI**; pengecoh diambil dari kata `cefr_estimate` yang sama. Status `draft` seperti soal lain. `exercise-generate` boleh menyertakan definisi di prompt.
+- Fase 16: langkah `vocab` menampilkan `definition_en`.
+- `/help`: tambah satu kalimat bahwa definisi & bentuk kata juga berasal dari NGSL (CC BY-SA 4.0). Atribusi yang ada tetap.
+
+**Bukan bagian 14g:** terjemahan Indonesia per kata (bisa menyusul sebagai draf AI yang ditinjau admin).
+
+**Selesai jika (14g):** uji unit `ngsl-enrich` dan `core-words` lulus; `--dry-run` terhadap file pemilik melaporkan ±2.809 kata cocok (dicatat di laporan; jika file tidak tersedia di sesi, uji dengan potongan contoh dan tandai "perlu dijalankan pemilik"); halaman Kosakata Inti tetap berfungsi sebelum dan sesudah `0015`; FEATURE_INVENTORY ditambah baris: definisi di Kosakata Inti, pengenalan bentuk kata, skrip `enrich-ngsl`; build lulus.
+
+---
+
 ## Fase 15 — Mesin latihan terstruktur + review grammar
 
 **15.1 Skema** (`0012_exercises.sql`)
@@ -166,7 +213,7 @@ create table if not exists grammar_progress (
 - Hasil → `exercise_attempts` + `skill_evidence` (grammar/vocabulary/listening, Fase 10).
 - Review grammar: menyelesaikan topik membuat baris `grammar_progress`; jadwal memakai `calculateSM2` dari `lib/spaced-repetition.ts`. Status selesai di `localStorage` (`lib/grammar-progress.ts`) dimigrasikan sekali ke database saat halaman dibuka (lalu tetap dibaca sebagai cadangan sebelum migrasi dijalankan).
 - Beranda: "Review hari ini" = kosakata jatuh tempo + topik grammar jatuh tempo (`lib/next-step.ts`).
-- Admin → Konten: tab "Latihan" — daftar, filter, edit, terbitkan; "Buat soal dengan AI" (`runAI('exercise-generate', …)`, JSON tervalidasi terhadap `types.ts`) → draft. `logAdminAction` untuk semua aksi.
+- Admin → Konten: tab "Latihan" — daftar, filter, edit, terbitkan; "Buat soal dari Kosakata Inti" (tanpa AI, Fase 14g); "Buat soal dengan AI" (`runAI('exercise-generate', …)`, JSON tervalidasi terhadap `types.ts`) → draft. `logAdminAction` untuk semua aksi.
 
 **Selesai jika:** kelima tipe latihan bisa dikerjakan & dinilai tanpa AI; uji unit `grade.ts`/`session.ts` lulus; review grammar terjadwal; admin bisa membuat soal AI → draft → terbit; build lulus.
 
@@ -174,7 +221,7 @@ create table if not exists grammar_progress (
 
 ## Fase 16 — Kursus Dasar (unit A0–A2)
 
-**16.1 Skema** (`0013_course_units.sql`): `course_units (slug pk, title, cefr_level, sort_order, theme_id, intro_id, steps jsonb, status)` dan `unit_progress (user_id, unit_slug, step_index, completed_at, pk(user_id, unit_slug))`. `steps` = array langkah bertipe: `vocab` (daftar kata / kata inti), `grammar` (topic_slug), `read` (text_id), `listen` (teks untuk TTS), `exercise` (filter soal unit), `speak` (kalimat untuk Pronunciation Clinic atau skenario Dialogue Simulator). Seed 12 unit (judul, level, urutan, intro Indonesia; langkah yang merujuk konten yang belum ada dibiarkan kosong dan ditandai).
+**16.1 Skema** (`0013_course_units.sql`): `course_units (slug pk, title, cefr_level, sort_order, theme_id, intro_id, steps jsonb, status)` dan `unit_progress (user_id, unit_slug, step_index, completed_at, pk(user_id, unit_slug))`. `steps` = array langkah bertipe: `vocab` (daftar kata / kata inti, dengan `definition_en` dari 14g), `grammar` (topic_slug), `read` (text_id), `listen` (teks untuk TTS), `exercise` (filter soal unit), `speak` (kalimat untuk Pronunciation Clinic atau skenario Dialogue Simulator). Seed 12 unit (judul, level, urutan, intro Indonesia; langkah yang merujuk konten yang belum ada dibiarkan kosong dan ditandai).
 - Logika murni `lib/course.ts` (diuji unit): langkah berikutnya, persen selesai, unit yang disarankan.
 
 **16.2 UI**: `app/(dashboard)/kursus/page.tsx` (daftar unit per level, disarankan, tidak dikunci) dan `kursus/[slug]` (pemutar langkah; setiap langkah memakai komponen yang ada: kartu kosakata, ringkasan topik grammar, `TextDisplay` untuk bacaan pendek, TTS, `ExerciseSession`, Pronunciation Clinic). Masuk Ruang I di urutan ke-2 (Fase 13).
@@ -205,5 +252,6 @@ create table if not exists grammar_progress (
 - [ ] Kelima tipe latihan dinilai tanpa AI; review grammar terjadwal.
 - [ ] 12 unit Kursus Dasar tampil; ≥ 10 bacaan published per A1 & A2 (konten pemilik).
 - [ ] Modul kesalahan umum & pasangan bunyi berfungsi.
-- [ ] Migrasi `0011`–`0014` tercantum di `docs/SESSION_HANDOFF.md` untuk dijalankan pemilik.
+- [ ] Kosakata Inti menampilkan definisi; bentuk kata dikenali (14g).
+- [ ] Migrasi `0011`–`0015` tercantum di `docs/SESSION_HANDOFF.md` untuk dijalankan pemilik.
 - [ ] Kelima route API (14f) dipakai di UI dan diuji; ekspor CSV terjemahan membaca tabel yang benar.
