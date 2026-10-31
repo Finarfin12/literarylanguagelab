@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { getRequestUser } from "@/utils/supabase/get-user";
 import Link from "next/link";
 import { BookOpen, BookMarked, RefreshCcw, Clock, CheckCircle2, TrendingUp, ChevronRight, Library, Camera, Sparkles, Compass } from "lucide-react";
 import VocabChart from "@/components/dashboard/VocabChart";
@@ -22,14 +23,34 @@ type RecentSession = {
 };
 
 // Profil untuk personalisasi. learning_goal dari migrasi 0006: jika belum ada, ambil cefr_level saja.
+type LevelTextCandidate = { id: string; title: string; word_count: number | null };
+
 async function loadPersonalization(supabase: Awaited<ReturnType<typeof createClient>>, userId: string | undefined) {
-  if (!userId) return { goal: null as LearningGoal | null, cefr: null as string | null };
+  const empty = { goal: null as LearningGoal | null, cefr: null as string | null, levelTexts: [] as LevelTextCandidate[] };
+  if (!userId) return empty;
   const full = await supabase.from("profiles").select("cefr_level, learning_goal").eq("id", userId).maybeSingle();
+  let goal: LearningGoal | null = null;
+  let cefr: string | null = null;
   if (!full.error) {
-    return { goal: isLearningGoal(full.data?.learning_goal) ? full.data.learning_goal : null, cefr: (full.data?.cefr_level as string | null) ?? null };
+    goal = isLearningGoal(full.data?.learning_goal) ? full.data.learning_goal : null;
+    cefr = (full.data?.cefr_level as string | null) ?? null;
+  } else {
+    const basic = await supabase.from("profiles").select("cefr_level").eq("id", userId).maybeSingle();
+    cefr = (basic.data?.cefr_level as string | null) ?? null;
   }
-  const basic = await supabase.from("profiles").select("cefr_level").eq("id", userId).maybeSingle();
-  return { goal: null as LearningGoal | null, cefr: (basic.data?.cefr_level as string | null) ?? null };
+
+  // Kandidat bacaan sesuai level (Library berjenjang, migrasi 0007). Diambil di sini supaya berjalan
+  // paralel dengan query beranda lain; jika kolom cefr_level belum ada, query error dan saran dilewati.
+  const level = neighborLevels(cefr, 0, 0)[0];
+  if (!level) return { goal, cefr, levelTexts: [] as LevelTextCandidate[] };
+  const { data, error } = await supabase
+    .from("texts")
+    .select("id, title, word_count")
+    .eq("is_public", true)
+    .eq("cefr_level", level)
+    .order("created_at", { ascending: false })
+    .limit(20);
+  return { goal, cefr, levelTexts: error ? [] : ((data || []) as LevelTextCandidate[]) };
 }
 
 const SESSION_COLUMNS = "text_id, time_spent_seconds, last_active_at, texts(title, author)";
@@ -44,8 +65,7 @@ function formatAgo(iso: string | null) {
 }
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { supabase, user } = await getRequestUser();
 
   const now = new Date().toISOString();
   const oneWeekAgo = new Date();
@@ -117,28 +137,12 @@ export default async function DashboardPage() {
       };
     });
 
-  // Bacaan sesuai level (Library berjenjang, migrasi 0007): teks terbit di level pengguna yang belum pernah dibuka.
-  // Jika kolom cefr_level belum ada, query error dan saran ini dilewati.
-  let levelText: { title: string; href: string; minutes?: number } | null = null;
-  const levelRange = neighborLevels(personal.cefr, 0, 0);
-  if (levelRange.length > 0) {
-    const openedIds = new Set(readingSessions.map((s) => s.text_id).filter(Boolean) as string[]);
-    const { data: candidates, error: levelError } = await supabase
-      .from("texts")
-      .select("id, title, word_count")
-      .eq("is_public", true)
-      .eq("cefr_level", levelRange[0])
-      .order("created_at", { ascending: false })
-      .limit(20);
-    const pick = levelError ? null : (candidates || []).find((t) => !openedIds.has(t.id));
-    if (pick) {
-      levelText = {
-        title: pick.title,
-        href: `/read/${pick.id}`,
-        minutes: pick.word_count ? Math.max(1, Math.round(pick.word_count / 200)) : undefined,
-      };
-    }
-  }
+  // Bacaan sesuai level: teks terbit di level pengguna yang belum pernah dibuka
+  const openedIds = new Set(readingSessions.map((s) => s.text_id).filter(Boolean) as string[]);
+  const pick = personal.levelTexts.find((t) => !openedIds.has(t.id));
+  const levelText = pick
+    ? { title: pick.title, href: `/read/${pick.id}`, minutes: pick.word_count ? Math.max(1, Math.round(pick.word_count / 200)) : undefined }
+    : null;
 
   const openReading = continueReading.find((t) => t.progress === null || t.progress < 100) ?? null;
   const nextStep = getNextStep({
