@@ -8,7 +8,7 @@ import { createClient } from "@/utils/supabase/client";
 import { 
   ChevronDown, ChevronRight, LogOut, 
   Library, Briefcase, Sun, Moon, Sparkles, User, Settings,
-  Menu, PanelLeftClose, BookOpen, Trophy, LayoutDashboard, ShieldAlert, BrainCircuit
+  Menu, PanelLeftClose, BookOpen, Trophy, LayoutDashboard, ShieldAlert, BrainCircuit, MessageSquareText
 } from "lucide-react";
 import { getGroupedMenu } from "@/lib/menu-config";
 
@@ -215,6 +215,26 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
               <Sparkles className={`w-5 h-5 ${pathname === '/tools' ? 'text-purple-400' : 'text-purple-500'}`} />
               <span className={`font-bold ${pathname === '/tools' ? 'text-foreground' : 'text-muted-foreground'}`}>
                 Semua Alat
+              </span>
+            </div>
+          </Link>
+
+          {/* Pintu masuk LingoWise AI */}
+          <Link 
+            href="/lingowise"
+            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
+              pathname.startsWith('/lingowise') 
+                ? 'bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)]' 
+                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <MessageSquareText className={`w-5 h-5 ${pathname.startsWith('/lingowise') ? 'text-emerald-400' : 'text-emerald-500'}`} />
+              <span className="flex flex-col">
+                <span className={`font-bold ${pathname.startsWith('/lingowise') ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  LingoWise AI
+                </span>
+                <span className="text-xs font-normal text-muted-foreground/80 leading-snug">Tanya AI soal bahasa dan sastra.</span>
               </span>
             </div>
           </Link>
