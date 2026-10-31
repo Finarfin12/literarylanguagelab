@@ -18,7 +18,8 @@ Turunan dari [PRD.md](PRD.md). Penomoran fase melanjutkan v2 (Fase 0–7; Fase 5
 | 9 | Fondasi belajar dasar (teks berjenjang CEFR, kosakata inti, grammar dasar, adaptasi level) | 4–5 hari | 8 |
 | 10 | Level per keterampilan & Tes Naik Level | 4–5 hari | 9 |
 | 11 | Jalur penerjemahan akademik (teknik, rubrik, ruang kerja segmen, tahap penerjemah) | 5–7 hari | 8 |
-| 12 | Mode kelas (opsional) | 4–5 hari | 11 |
+
+Mode kelas (sebelumnya Fase 12) **dibatalkan** oleh pemilik pada 31 Oktober 2026.
 
 Fase 10 dan 11 menyentuh file yang berbeda, jadi bisa dikerjakan paralel setelah Fase 9 dan Fase 8 selesai.
 
@@ -230,10 +231,10 @@ create table if not exists translation_assessments (
   rubric text not null default 'nababan_2012',
   per_segment jsonb not null,        -- [{ idx, accuracy, acceptability, readability, notes }]
   weighted_score real not null,      -- 1..3
-  assessed_by text not null default 'ai',  -- 'ai' | 'lecturer'
+  assessed_by text not null default 'ai',
   created_at timestamptz default now()
 );
--- RLS: pemilik saja (Fase 12 menambah akses dosen). translation_techniques: baca semua, tulis admin.
+-- RLS: pemilik saja. translation_techniques: baca semua, tulis admin.
 ```
 - Seed 18 teknik Molina & Hurtado Albir dengan nama & definisi Indonesia singkat (tulis sendiri, jangan menyalin buku).
 - Seed feature key: `translation-rubric`, `translation-technique-suggest`.
@@ -261,18 +262,6 @@ create table if not exists translation_assessments (
 - Profil: "Tahap penerjemah" bila `learning_goal='penerjemahan'`.
 
 **Selesai jika:** proyek bisa dibuat, disegmentasi, diterjemahkan per segmen dengan saran TM/glosarium & QA; anotasi teknik manual + saran AI tersimpan; penilaian rubrik tersimpan dan tahap penerjemah tampil; uji unit `lib/translation/*` lulus; build lulus.
-
----
-
-## Fase 12 — Mode kelas (opsional)
-
-- `0011_classes.sql`: role `lecturer` (perbarui check/trigger role di `0002` bila perlu — perhatikan `protect_profile_role()`), tabel `classes`, `class_members`, `assignments`, `submissions`; RLS: dosen membaca pengumpulan kelasnya, mahasiswa hanya miliknya.
-- Admin bisa memberi role `lecturer` (dropdown role yang ada).
-- Dosen: buat kelas (kode undangan), tugas (teks sumber → template proyek, tenggat, rubrik), lihat & nilai pengumpulan (form rubrik; `assessed_by='lecturer'`).
-- Mahasiswa: gabung dengan kode, kerjakan tugas di Ruang Kerja Segmen, kumpulkan.
-- Tanpa peringkat antar-mahasiswa.
-
-**Selesai jika:** alur dosen → tugas → mahasiswa mengumpulkan → dosen menilai berjalan, dan RLS mencegah mahasiswa melihat pengumpulan orang lain (uji dengan dua akun di lingkungan dev/staging, **bukan** produksi).
 
 ---
 

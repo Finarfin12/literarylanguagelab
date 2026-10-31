@@ -28,7 +28,6 @@ Selain itu, pengguna penting aplikasi ini adalah **mahasiswa Sastra Inggris pemi
 | G2 | Pemula (A1–B1) punya jalur belajar | Library bisa difilter per CEFR; minimal 10 teks per level A1–B2; daftar kosakata inti dan 20 topik grammar dasar tersedia |
 | G3 | Level naik berdasarkan bukti kemampuan, bukan poin | Profil menampilkan level per keterampilan; syarat naik level terlihat; Tes Naik Level tersedia |
 | G4 | Mahasiswa penerjemahan bisa menganalisis dan dinilai secara akademik | Anotasi teknik penerjemahan, penilaian rubrik, dan ruang kerja per segmen berfungsi |
-| G5 | (Opsional) Dosen bisa memakai aplikasi di kelas | Dosen membuat tugas, mahasiswa mengumpulkan, dosen memberi nilai rubrik |
 
 ## 3. Bukan tujuan (v3)
 
@@ -37,6 +36,7 @@ Selain itu, pengguna penting aplikasi ini adalah **mahasiswa Sastra Inggris pemi
 - Sertifikat CEFR resmi. Level di aplikasi adalah **estimasi untuk belajar**, bukan sertifikasi.
 - Memakai daftar kata atau materi berlisensi tertutup (mis. Oxford 3000/5000, English Vocabulary Profile) tanpa izin.
 - Aplikasi native. PWA tetap jalur mobile.
+- **Mode kelas** (dosen membuat kelas/tugas, mahasiswa mengumpulkan, dosen menilai). Diputuskan pemilik pada 31 Oktober 2026: tidak diperlukan. Penilaian rubrik di v3 dilakukan oleh AI untuk belajar mandiri.
 
 ## 4. Pengguna
 
@@ -46,7 +46,6 @@ Selain itu, pengguna penting aplikasi ini adalah **mahasiswa Sastra Inggris pemi
 | **Pelajar menengah** (B1–B2) | Melihat kemajuan per keterampilan; tantangan naik level yang jelas |
 | **Mahasiswa Sastra Inggris** | Alat analisis sastra yang ada, dengan nama dan pengelompokan yang lebih jelas |
 | **Mahasiswa peminatan penerjemahan** | Menganalisis teknik penerjemahan, mendapat penilaian rubrik, bekerja per segmen dengan TM & glosarium |
-| **Dosen** (opsional) | Memberi tugas penerjemahan dan menilai dengan rubrik |
 | **Admin** | Menandai level teks, mengelola kosakata inti & topik grammar, meninjau teks berjenjang buatan AI |
 
 ---
@@ -154,19 +153,13 @@ Setiap bukti dicatat ke tabel `skill_evidence`. Level per keterampilan disimpan 
 
 **Tahap kompetensi penerjemah** (terpisah dari CEFR): *Pemula → Berkembang → Mahir*, dari rata-rata skor rubrik 5 terjemahan terakhir (mis. < 2,0 / 2,0–2,5 / > 2,5). Ditampilkan di profil jika tujuan pengguna = `penerjemahan`.
 
-### 5.5 Mode kelas (G5, opsional, terakhir)
-
-- Role baru `lecturer` (dosen). Dosen membuat kelas (kode undangan), tugas (teks sumber, tenggat, rubrik), melihat pengumpulan, memberi nilai/komentar rubrik.
-- Mahasiswa bergabung lewat kode, mengerjakan tugas di Ruang Kerja Segmen, mengumpulkan.
-- Tanpa peringkat antar-mahasiswa.
-
 ---
 
 ## 6. Kebutuhan non-fungsional
 
 | Area | Kebutuhan |
 |---|---|
-| Privasi | Level, bukti keterampilan, dan nilai bersifat pribadi. RLS: hanya pemilik (dan dosen kelasnya, di Fase 12) yang bisa membaca. |
+| Privasi | Level, bukti keterampilan, dan nilai bersifat pribadi. RLS: hanya pemilik yang bisa membaca. |
 | Kejujuran | Level adalah estimasi; UI menyebutnya "estimasi level" dan tidak menjanjikan sertifikasi. |
 | Lisensi | Hanya konten dengan lisensi jelas (NGSL CC BY-SA, domain publik, buatan sendiri/AI). Atribusi di halaman Bantuan. |
 | Biaya AI | Semua panggilan AI baru lewat `runAI()` dengan feature key baru di `lib/ai/features.ts`, tercatat di `ai_usage_logs`, dan kena rate limit. |
@@ -180,7 +173,7 @@ Setiap bukti dicatat ke tabel `skill_evidence`. Level per keterampilan disimpan 
 |---|---|---|
 | Q1 | Sumber daftar kosakata inti? | **NGSL** (lisensi terbuka), dipetakan ke CEFR per band frekuensi |
 | Q2 | Sumber teks berjenjang? | Teks orisinal buatan AI, ditinjau admin sebelum terbit, ditambah teks admin |
-| Q3 | Perlu role `lecturer` baru, atau pakai role `curator` yang sudah ada? | Role baru `lecturer` (Fase 12, opsional) |
+| Q3 | ~~Perlu role `lecturer` untuk mode kelas?~~ | **Diputuskan:** mode kelas tidak dibuat (lihat §3) |
 | Q4 | Rubrik penilaian terjemahan default? | Nababan et al. (2012); bisa ditambah rubrik lain sebagai data |
 | Q5 | Alat mana yang digabung/disembunyikan di "Lainnya"? | Usulan di plan Fase 8.3; **pemilik konfirmasi sebelum dihapus/di-redirect** |
 | Q6 | Apakah level bisa turun? | Tidak pernah otomatis; hanya manual oleh pengguna |

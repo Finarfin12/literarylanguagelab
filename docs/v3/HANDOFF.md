@@ -54,11 +54,6 @@ Kerjakan Fase 11 (Jalur penerjemahan akademik). Mulai dari lib/translation/* bes
 Definisi 18 teknik Molina & Hurtado Albir ditulis ulang singkat dalam bahasa Indonesia (jangan menyalin buku).
 ```
 
-**Fase 12 (opsional)**
-```
-Kerjakan Fase 12 (Mode kelas). Tunjukkan rancangan RLS (SQL) dan tunggu persetujuan saya sebelum menulis UI.
-```
-
 ---
 
 ## Aturan kerja
@@ -156,7 +151,8 @@ node --experimental-transform-types --no-warnings path/ke/test.mts <path-repo>
 - **Posisi baca:** `reading_sessions.last_paragraph_index`/`progress_pct`/`source_key` (migrasi `0005`); buku Gutenberg memakai `source_key = "gutenberg_<id>"`.
 - **Terjemahan:** tabel `translations` (passage, user_translation, ai_feedback, feedback_score). Translation Workshop punya 4 mode evaluasi di `app/api/translation/route.ts` (`MODES`).
 - **Feature flag:** `system_config.features[featureKey] === false` mematikan fitur (dicek di `checkRateLimit` dan `runAI`).
-- **Migrasi yang ada:** `0000`–`0005` (v2) dan `0009` (drop gamifikasi, jangan dijalankan). Nomor berikutnya: `0006`, `0007`, `0008`, `0010`, `0011`.
+- **Migrasi yang ada:** `0000`–`0005` (v2) dan `0009` (drop gamifikasi, jangan dijalankan). Nomor berikutnya: `0006`, `0007`, `0008`, `0010`.
+- **Mode kelas dibatalkan** oleh pemilik (31 Okt 2026). Jangan membuat role `lecturer`, kelas, atau tugas.
 - **`AGENTS.md` tidak ada di repo** (diabaikan `.gitignore`). Panduan Next.js ada di `node_modules/next/dist/docs/`. Aturan sesi ringkas ada di `CLAUDE.md` (root).
 
 ---
@@ -186,4 +182,3 @@ Setelah fase selesai, perbarui tabel status di `docs/SESSION_HANDOFF.md`.
 | Fase 9 | Jalankan migrasi `0006`, `0007`; jalankan skrip impor NGSL; tandai level beberapa teks; buat 1 teks AI dan terbitkan. |
 | Fase 10 | Jalankan `0008`; kerjakan kuis bab & Grammar Clinic beberapa kali; cek profil "Progres menuju …"; coba Tes Naik Level. |
 | Fase 11 | Jalankan `0010`; buat proyek terjemahan, anotasi teknik, nilai dengan rubrik, ekspor CSV. |
-| Fase 12 | Jalankan `0011`; uji dengan dua akun (dosen & mahasiswa) di lingkungan non-produksi. |
