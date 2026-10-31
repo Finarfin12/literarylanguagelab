@@ -1,11 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 
 export default function AnimatedPage({ children, className = "" }: { children: React.ReactNode, className?: string }) {
   const [animationsEnabled, setAnimationsEnabled] = useState(true);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     async function loadPref() {
@@ -21,7 +22,7 @@ export default function AnimatedPage({ children, className = "" }: { children: R
     loadPref();
   }, []);
 
-  if (!animationsEnabled) {
+  if (!animationsEnabled || prefersReducedMotion) {
     return <div className={className}>{children}</div>;
   }
 

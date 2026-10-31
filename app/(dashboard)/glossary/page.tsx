@@ -14,9 +14,9 @@ export default async function GlossaryPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="p-8 max-w-6xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
-         <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+         <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
           <BookOpen className="w-8 h-8 text-amber-500" />
           Glossary Builder
         </h1>
@@ -59,7 +59,7 @@ export default async function GlossaryPage() {
 
         <div className="lg:col-span-2">
           {glossaries?.length === 0 ? (
-            <div className="bg-card shadow-sm border border-dashed border-border rounded-3xl p-12 text-center text-muted-foreground">
+            <div className="bg-card shadow-sm border border-dashed border-border rounded-3xl p-6 md:p-12 text-center text-muted-foreground">
               <Library className="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p>Belum ada istilah glosarium yang ditambahkan.</p>
             </div>

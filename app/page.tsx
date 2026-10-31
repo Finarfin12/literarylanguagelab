@@ -49,7 +49,7 @@ export default async function Home() {
           <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link 
               href="/register"
-              className="group relative px-8 py-4 bg-orange-500 text-white font-bold text-lg rounded-full overflow-hidden shadow-[0_0_40px_rgba(249,115,22,0.3)] hover:shadow-[0_0_60px_rgba(249,115,22,0.5)] transition-all hover:-translate-y-1"
+              className="group relative px-4 md:px-8 py-4 bg-orange-500 text-white font-bold text-lg rounded-full overflow-hidden shadow-[0_0_40px_rgba(249,115,22,0.3)] hover:shadow-[0_0_60px_rgba(249,115,22,0.5)] transition-all hover:-translate-y-1"
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
               <span className="relative flex items-center gap-2">
@@ -69,10 +69,10 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
             {/* Feature 1: Gutenberg (Span 2 cols on Desktop) */}
             <div className="md:col-span-2 relative overflow-hidden rounded-3xl bg-card border border-border shadow-xl hover:shadow-2xl transition-all group">
-              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500">
+              <div className="absolute top-0 right-0 p-4 md:p-8 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500">
                 <Globe2 className="w-48 h-48 text-blue-500" />
               </div>
-              <div className="relative h-full p-8 flex flex-col justify-end">
+              <div className="relative h-full p-4 md:p-8 flex flex-col justify-end">
                 <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-md border border-blue-500/20">
                   <Globe2 className="w-7 h-7 text-blue-500" />
                 </div>
@@ -85,10 +85,10 @@ export default async function Home() {
 
             {/* Feature 2: LingoWise AI */}
             <div className="relative overflow-hidden rounded-3xl bg-card border border-border shadow-xl hover:shadow-2xl transition-all group">
-              <div className="absolute -top-10 -right-10 p-8 opacity-10 group-hover:opacity-20 group-hover:rotate-12 transition-all duration-500">
+              <div className="absolute -top-10 -right-10 p-4 md:p-8 opacity-10 group-hover:opacity-20 group-hover:rotate-12 transition-all duration-500">
                 <BrainCircuit className="w-40 h-40 text-emerald-500" />
               </div>
-              <div className="relative h-full p-8 flex flex-col justify-end">
+              <div className="relative h-full p-4 md:p-8 flex flex-col justify-end">
                 <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-md border border-emerald-500/20">
                   <BrainCircuit className="w-7 h-7 text-emerald-500" />
                 </div>
@@ -101,10 +101,10 @@ export default async function Home() {
 
             {/* Feature 3: Lexicon Bank */}
             <div className="relative overflow-hidden rounded-3xl bg-card border border-border shadow-xl hover:shadow-2xl transition-all group">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-8 opacity-5 group-hover:opacity-10 group-hover:scale-125 transition-all duration-700">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 md:p-8 opacity-5 group-hover:opacity-10 group-hover:scale-125 transition-all duration-700">
                 <BookMarked className="w-56 h-56 text-rose-500" />
               </div>
-              <div className="relative h-full p-8 flex flex-col justify-end items-center text-center">
+              <div className="relative h-full p-4 md:p-8 flex flex-col justify-end items-center text-center">
                 <div className="w-14 h-14 bg-rose-500/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-md border border-rose-500/20">
                   <BookMarked className="w-7 h-7 text-rose-500" />
                 </div>
@@ -120,7 +120,7 @@ export default async function Home() {
                <div className="absolute -bottom-10 right-10 opacity-20 group-hover:opacity-40 group-hover:-translate-y-4 transition-all duration-500">
                 <div className="w-32 h-32 bg-orange-500 rounded-full blur-3xl" />
               </div>
-              <div className="relative h-full p-8 flex flex-col justify-end">
+              <div className="relative h-full p-4 md:p-8 flex flex-col justify-end">
                 <div className="w-14 h-14 bg-orange-500/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-md border border-orange-500/30 text-orange-500 font-bold text-xl">
                   A-Z
                 </div>

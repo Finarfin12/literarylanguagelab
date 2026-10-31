@@ -97,7 +97,7 @@ export default function ToolsDashboardPage() {
   return (
     <AnimatedPage className="p-4 lg:p-8 max-w-7xl mx-auto pb-24">
       <div className="mb-10">
-        <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
           <Wrench className="w-8 h-8 text-brand" />
           Literary Toolkits
         </h1>

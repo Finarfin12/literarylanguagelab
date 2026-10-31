@@ -296,13 +296,13 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
   }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto min-h-screen">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto min-h-screen">
       <Link href="/forum" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors w-max">
         <ArrowLeft className="w-4 h-4" /> Kembali ke Forum
       </Link>
 
       {/* Original Thread Post */}
-      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl mb-8 relative">
+      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-xl mb-8 relative">
         {canEditOrDelete(thread?.user_id || '') && !isEditing && (
            <div className="absolute top-6 right-6 flex items-center gap-2">
              <button 

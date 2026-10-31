@@ -55,11 +55,11 @@ export default async function PublicPortfolioPage({ params }: { params: { userna
     <div className="flex h-screen overflow-hidden bg-background">
       {/* We need the sidebar structure for the public layout too, or just a standalone view */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-8 max-w-5xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
           
           {/* Profile Header */}
-          <div className="bg-card shadow-sm border border-border rounded-3xl p-8 mb-8 flex flex-col md:flex-row items-center gap-8 text-center md:text-left relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-5">
+          <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 mb-8 flex flex-col md:flex-row items-center gap-8 text-center md:text-left relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5">
               <User className="w-64 h-64 text-brand" />
             </div>
             
@@ -76,7 +76,7 @@ export default async function PublicPortfolioPage({ params }: { params: { userna
             <div className="relative z-10 flex-1 w-full">
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
                 <div>
-                  <h1 className="text-4xl font-serif font-bold text-foreground mb-1">{profile.full_name || "Anon Translator"}</h1>
+                  <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground mb-1">{profile.full_name || "Anon Translator"}</h1>
                   <p className="text-xl text-muted-foreground">@{profile.username}</p>
                 </div>
                 
@@ -129,7 +129,7 @@ export default async function PublicPortfolioPage({ params }: { params: { userna
           </h2>
           
           {memories?.length === 0 ? (
-            <div className="bg-muted/50 border border-dashed border-border rounded-3xl p-12 text-center text-muted-foreground">
+            <div className="bg-muted/50 border border-dashed border-border rounded-3xl p-6 md:p-12 text-center text-muted-foreground">
               <p>Belum ada memori terjemahan yang dibagikan secara publik.</p>
             </div>
           ) : (

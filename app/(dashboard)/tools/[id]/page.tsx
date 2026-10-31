@@ -34,7 +34,7 @@ export default function ToolExecutionPage() {
   }, [tool]);
 
   if (!tool) {
-    return <div className="p-8 text-center text-red-500">Tool not found</div>;
+    return <div className="p-4 md:p-8 text-center text-red-500">Tool not found</div>;
   }
 
   const handleExecute = async () => {
@@ -98,7 +98,7 @@ export default function ToolExecutionPage() {
       </button>
 
       <div className="mb-10 border-b border-border pb-6">
-        <h1 className="text-4xl font-serif font-bold text-foreground">{tool.title}</h1>
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">{tool.title}</h1>
         <p className="text-muted-foreground mt-2 text-lg">{tool.description}</p>
       </div>
 
@@ -138,7 +138,7 @@ export default function ToolExecutionPage() {
             <button
               onClick={handleExecute}
               disabled={loading}
-              className="px-8 py-4 bg-brand text-background font-bold rounded-xl hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center gap-2"
+              className="px-4 md:px-8 py-4 bg-brand text-background font-bold rounded-xl hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center gap-2"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Play className="w-5 h-5" />}
               Eksekusi {tool.title}

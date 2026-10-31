@@ -38,12 +38,12 @@ export default function UntranslatablesPage() {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10 text-center">
         <div className="inline-flex items-center justify-center p-4 bg-teal-500/10 rounded-full mb-6">
           <Globe2 className="w-12 h-12 text-teal-500" />
         </div>
-        <h1 className="text-4xl font-serif font-bold text-foreground">Untranslatables Explorer</h1>
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Untranslatables Explorer</h1>
         <p className="text-muted-foreground mt-4 text-lg">Eksplorasi strategi penerjemahan untuk kata-kata bahasa Inggris yang tidak memiliki padanan langsung dalam bahasa Indonesia.</p>
       </div>
 
@@ -65,7 +65,7 @@ export default function UntranslatablesPage() {
       </form>
 
       {result && (
-        <div className="bg-card shadow-sm border border-border rounded-3xl p-8 shadow-xl animate-in fade-in slide-in-from-bottom-8">
+        <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-xl animate-in fade-in slide-in-from-bottom-8">
           <h2 className="text-2xl font-serif font-bold text-teal-500 mb-6 border-b border-border pb-4">Strategy & Analysis</h2>
           <div className="prose dark:prose-invert prose-teal max-w-none prose-headings:font-serif prose-headings:text-teal-500">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>

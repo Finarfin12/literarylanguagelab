@@ -325,10 +325,10 @@ export default function SettingsPage() {
   if (loading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand" /></div>;
 
   return (
-    <div className="flex-1 overflow-y-auto bg-background p-8 lg:p-12">
+    <div className="flex-1 overflow-y-auto bg-background p-4 md:p-8 lg:p-12">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
             <Settings className="w-8 h-8 text-brand" />
             Pengaturan Akun
           </h1>
@@ -357,7 +357,7 @@ export default function SettingsPage() {
           </button>
         </div>
 
-        <form onSubmit={handleSave} className="space-y-6 bg-card border border-foreground/10 shadow-sm p-8 rounded-3xl">
+        <form onSubmit={handleSave} className="space-y-6 bg-card border border-foreground/10 shadow-sm p-4 md:p-8 rounded-3xl">
           
           {/* TAB 1: PROFIL */}
           {activeTab === "profil" && (
@@ -767,7 +767,7 @@ export default function SettingsPage() {
 
         {/* Danger Zone only in Profil Tab */}
         {activeTab === "profil" && (
-          <div className="mt-8 bg-red-500/5 border border-red-500/20 rounded-3xl p-8 animate-in fade-in">
+          <div className="mt-8 bg-red-500/5 border border-red-500/20 rounded-3xl p-4 md:p-8 animate-in fade-in">
             <h3 className="text-xl font-bold text-red-500 flex items-center gap-2 mb-2">
               <AlertTriangle className="w-6 h-6" /> Danger Zone
             </h3>

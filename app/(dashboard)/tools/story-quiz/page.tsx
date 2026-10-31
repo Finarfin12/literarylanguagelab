@@ -70,14 +70,14 @@ export default function StoryQuizPage() {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <Link href="/tools" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors w-max">
         <ArrowLeft className="w-4 h-4" /> Kembali ke Toolkits
       </Link>
 
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
-          <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
             <CheckSquare className="w-8 h-8 text-brand" />
             Story Mode Quiz
           </h1>
@@ -120,7 +120,7 @@ export default function StoryQuizPage() {
 
       {quizData && (
         <div className="space-y-8 animate-in fade-in duration-700">
-          <div className="bg-card shadow-sm backdrop-blur-md border border-brand/20 rounded-3xl p-8 shadow-xl relative overflow-hidden">
+          <div className="bg-card shadow-sm backdrop-blur-md border border-brand/20 rounded-3xl p-4 md:p-8 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
             <h2 className="text-xl font-serif font-bold text-brand mb-6 border-b border-border pb-4">The Story ({genre})</h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-lg font-serif italic text-foreground/90">
@@ -191,7 +191,7 @@ export default function StoryQuizPage() {
               Kirim Jawaban
             </button>
           ) : (
-            <div className="bg-brand/10 border border-brand/30 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
+            <div className="bg-brand/10 border border-brand/30 rounded-3xl p-4 md:p-8 flex flex-col items-center justify-center text-center">
               <Trophy className="w-16 h-16 text-brand mb-4" />
               <h3 className="text-3xl font-serif font-bold text-foreground mb-2">Skor Anda: {score}/5</h3>
               <p className="text-muted-foreground mb-6">Pengetahuan konteks sastra Anda luar biasa!</p>

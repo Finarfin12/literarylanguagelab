@@ -139,13 +139,13 @@ export default function LexiconSearchPage() {
   };
 
   return (
-    <div className="p-8 max-w-5xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <Suspense fallback={null}>
         <SearchParamHandler onSearch={autoSearch} />
       </Suspense>
       
       <div className="mb-10 text-center">
-        <h1 className="text-4xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
           <BookMarked className="w-8 h-8 text-brand" />
           Lexicon Search Engine
         </h1>
@@ -187,12 +187,12 @@ export default function LexiconSearchPage() {
       </form>
 
       {result && result.dictionary && result.dictionary.length > 0 && (
-        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-700">
           
           {/* Header Section */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-border pb-8">
             <div>
-              <h2 className="text-5xl font-serif font-bold text-brand mb-2">{result.dictionary[0].word}</h2>
+              <h2 className="text-3xl md:text-5xl font-serif font-bold text-brand mb-2">{result.dictionary[0].word}</h2>
               <div className="flex items-center gap-4 text-muted-foreground">
                 <span className="font-mono text-lg">{result.dictionary[0].phonetic}</span>
                 

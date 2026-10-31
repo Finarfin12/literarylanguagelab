@@ -100,11 +100,7 @@ export default function PronunciationLab() {
           <button
             onClick={isRecording ? stopRecording : startRecording}
             disabled={!targetText || isProcessing}
-            className={`px-8 py-3 font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 flex items-center gap-2 ${
-              isRecording 
-                ? "bg-red-500 text-white animate-pulse" 
-                : "bg-brand text-background hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(62,207,142,0.4)]"
-            }`}
+            className={`px-4 md:px-8 py-3 font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 flex items-center gap-2 ${ isRecording ? "bg-red-500 text-white animate-pulse" : "bg-brand text-background hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(62,207,142,0.4)]" }`}
           >
             {isProcessing ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -159,7 +155,7 @@ export default function PronunciationLab() {
 
             {score !== null && !isProcessing && (
               <div className={`p-6 sm:p-8 rounded-2xl border flex flex-col items-center justify-center text-center ${getScoreColor(score)}`}>
-                <div className="text-6xl font-bold mb-4">{score}%</div>
+                <div className="text-4xl md:text-6xl font-bold mb-4">{score}%</div>
                 <p className="font-medium">{getScoreMessage(score)}</p>
               </div>
             )}

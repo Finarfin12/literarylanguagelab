@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { MessageSquareQuote, Clock, Keyboard, Volume2, VolumeX, BrainCircuit, Loader2, CheckCircle2, XCircle, BookOpen, Mic, Square, Play, Headphones, Wand2, X } from "lucide-react";
 import WordLookupSidebar from "./WordLookupSidebar";
+import ResponsivePanel from "@/components/ui/ResponsivePanel";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
 import { createClient } from "@/utils/supabase/client";
 import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer";
@@ -28,6 +29,10 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const [contextSentence, setContextSentence] = useState<string | null>(null);
   const [positionOffset, setPositionOffset] = useState<number | null>(null);
   const [activeSidebar, setActiveSidebar] = useState<"lookup" | null>(null);
+  const closeLookup = useCallback(() => {
+    setActiveSidebar(null);
+    window.getSelection()?.removeAllRanges();
+  }, []);
   const [showCompanion, setShowCompanion] = useState(false);
   const [culturalRefs, setCulturalRefs] = useState<CulturalReference[]>([]);
   const [prefs, setPrefs] = useState<any>(null);
@@ -556,7 +561,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
       )}
       {/* Main Reading Area */}
       <div 
-        className={`flex-1 overflow-y-auto transition-all duration-300 relative ${activeSidebar ? 'md:pr-[400px]' : ''}`}
+        className={`flex-1 overflow-y-auto transition-all duration-300 relative ${activeSidebar ? 'lg:pr-[400px]' : ''}`}
         onMouseUp={() => onTextSelect?.()}
         onTouchEnd={() => onTextSelect?.()}
       >
@@ -714,8 +719,14 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
         </div>
       </div>
 
-      {/* Sidebar Area for Word Lookup */}
-      <div className={`fixed inset-x-0 bottom-0 h-[85vh] rounded-t-3xl md:absolute md:inset-auto md:top-0 md:right-0 md:w-[400px] md:h-full md:rounded-none bg-background backdrop-blur-3xl md:border-l border-t md:border-t-0 border-border transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_-10px_50px_rgba(0,0,0,0.5)] md:shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 ${activeSidebar ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}`}>
+      {/* Sidebar Area for Word Lookup: panel samping di ≥ lg, bottom sheet di HP */}
+      <ResponsivePanel
+        open={activeSidebar !== null}
+        onClose={closeLookup}
+        label="Word Lookup"
+        width="400px"
+        desktop="absolute"
+      >
         {activeSidebar === "lookup" && (
           <WordLookupSidebar 
             word={selectedWord} 
@@ -726,13 +737,10 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
             positionOffset={positionOffset}
             dictionaryPrefs={prefs?.dictionary}
             learningPrefs={prefs?.learning}
-            onClose={() => {
-              setActiveSidebar(null);
-              window.getSelection()?.removeAllRanges();
-            }} 
+            onClose={closeLookup} 
           />
         )}
-      </div>
+      </ResponsivePanel>
 
       {/* Quiz Modal Overlay */}
       {showQuizModal && (
@@ -744,7 +752,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
               <p className="text-orange-100 mt-1 relative z-10 text-sm">Mari pastikan Anda memahami bab sebelumnya!</p>
             </div>
             
-            <div className="p-8">
+            <div className="p-4 md:p-8">
               {quizLoading ? (
                 <div className="flex flex-col items-center justify-center py-8">
                   <Loader2 className="w-10 h-10 animate-spin text-orange-500 mb-4" />
@@ -829,7 +837,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
               <p className="text-brand-100 mt-1 relative z-10 text-sm">Dengarkan pertanyaan dan jawab secara lisan.</p>
             </div>
             
-            <div className="p-8">
+            <div className="p-4 md:p-8">
               {listeningLoading && !listeningResult ? (
                 <div className="flex flex-col items-center justify-center py-8">
                   <Loader2 className="w-10 h-10 animate-spin text-brand mb-4" />
@@ -838,7 +846,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
               ) : listeningResult ? (
                 <div className="space-y-6">
                   <div className="text-center mb-6">
-                    <p className="text-5xl font-bold text-brand">{listeningResult.score}</p>
+                    <p className="text-3xl md:text-5xl font-bold text-brand">{listeningResult.score}</p>
                     <p className="text-xs uppercase text-muted-foreground font-bold">Skor Listening</p>
                   </div>
                   <div className="bg-muted/30 p-4 rounded-xl border border-border">
@@ -911,7 +919,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
               <p className="text-blue-100 mt-1 relative z-10 text-sm">Rangkum bab ini dalam 3-5 kalimat!</p>
             </div>
             
-            <div className="p-8">
+            <div className="p-4 md:p-8">
               {!writingResult ? (
                 <div className="space-y-6">
                   <p className="text-muted-foreground text-sm mb-4">Gunakan kata-kata berikut yang telah Anda pelajari dari bab ini:</p>

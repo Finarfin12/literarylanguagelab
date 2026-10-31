@@ -7,6 +7,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { saveBookToCache, getCachedBook } from "@/utils/indexeddb";
 import BookmarkSidebar from "@/components/reader/BookmarkSidebar";
 import TextDisplay from "@/components/reader/TextDisplay";
+import ResponsivePanel from "@/components/ui/ResponsivePanel";
 import SentenceAnalysisSidebar from "@/components/reader/SentenceAnalysisSidebar";
 import TopActions from "@/components/TopActions";
 import VocabFlashcardModal from "@/components/reader/VocabFlashcardModal";
@@ -51,6 +52,8 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   const [selection, setSelection] = useState<{ text: string; position: number } | null>(null);
   const [selectionCoords, setSelectionCoords] = useState<{ x: number; y: number } | null>(null);
   const [analysisOpen, setAnalysisOpen] = useState(false);
+  const closeAnalysis = useCallback(() => setAnalysisOpen(false), []);
+  const closeBookmarks = useCallback(() => setBookmarkOpen(false), []);
   const [analysisSentence, setAnalysisSentence] = useState<string | null>(null);
   const [vocabContextText, setVocabContextText] = useState<string | null>(null);
 
@@ -240,7 +243,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
 
   if (error) {
     return (
-      <div className="p-8 max-w-4xl mx-auto text-center py-20">
+      <div className="p-4 md:p-8 max-w-4xl mx-auto text-center py-20">
         <h2 className="text-2xl font-bold text-rose-500 mb-2">Error</h2>
         <p className="text-muted-foreground">{error}</p>
         <Link href="/gutenberg" className="mt-6 inline-flex items-center gap-2 text-orange-500 hover:underline">
@@ -304,26 +307,23 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         )}
       </div>
 
-      {/* Sidebar Overlay */}
-      <div className={`fixed inset-x-0 bottom-0 h-[85vh] rounded-t-3xl md:absolute md:inset-auto md:top-0 md:right-0 md:w-[450px] md:h-full md:rounded-none bg-background backdrop-blur-3xl md:border-l border-t md:border-t-0 border-border transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_-10px_50px_rgba(0,0,0,0.5)] md:shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 ${analysisOpen ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}`}>
-        {analysisOpen && (
-          <SentenceAnalysisSidebar
-            sentence={analysisSentence}
-            title={bookMeta.title}
-            author={bookMeta.author}
-            onClose={() => setAnalysisOpen(false)}
-          />
-        )}
-      </div>
-
-      {bookmarkOpen && (
-        <BookmarkSidebar
-          onClose={() => setBookmarkOpen(false)}
-          bookmarks={bookmarks}
-          onGoTo={goToPosition}
-          onDelete={deleteBookmark}
+      {/* Sidebar Overlay: panel samping di ≥ lg, bottom sheet di HP */}
+      <ResponsivePanel open={analysisOpen} onClose={closeAnalysis} label="Analisis Kalimat" width="450px" desktop="absolute">
+        <SentenceAnalysisSidebar
+          sentence={analysisSentence}
+          title={bookMeta.title}
+          author={bookMeta.author}
+          onClose={closeAnalysis}
         />
-      )}
+      </ResponsivePanel>
+
+      <BookmarkSidebar
+        open={bookmarkOpen}
+        onClose={closeBookmarks}
+        bookmarks={bookmarks}
+        onGoTo={goToPosition}
+        onDelete={deleteBookmark}
+      />
 
       {vocabContextText && (
         <VocabFlashcardModal 

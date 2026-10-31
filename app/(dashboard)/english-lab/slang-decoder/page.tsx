@@ -221,7 +221,7 @@ export default function SlangDecoderPage() {
           )}
 
           {!result && !loading && (
-             <div className="bg-card border border-border rounded-3xl p-12 text-center text-muted-foreground flex flex-col items-center justify-center">
+             <div className="bg-card border border-border rounded-3xl p-6 md:p-12 text-center text-muted-foreground flex flex-col items-center justify-center">
                 <Search className="w-16 h-16 mb-4 opacity-20" />
                 <p className="text-lg font-medium">Ketik frasa gaul atau singkatan internet di atas.</p>
                 <p className="text-sm mt-2">AI akan menganalisis maknanya dalam konteks budaya pop.</p>

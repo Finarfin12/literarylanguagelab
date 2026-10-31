@@ -57,9 +57,9 @@ export default function ToneAnalyzerPage() {
   };
 
   return (
-    <div className="p-8 max-w-5xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
-        <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
           <FileText className="w-8 h-8 text-brand" />
           Tone Analyzer
         </h1>
@@ -67,7 +67,7 @@ export default function ToneAnalyzerPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-8">
-        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl relative overflow-hidden">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
 
           <div className="flex mb-6 bg-muted rounded-xl p-1">
@@ -117,7 +117,7 @@ export default function ToneAnalyzerPage() {
             <button
               onClick={handleAnalyze}
               disabled={loading}
-              className="px-8 py-4 bg-brand text-background font-bold rounded-xl hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center gap-2"
+              className="px-4 md:px-8 py-4 bg-brand text-background font-bold rounded-xl hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center gap-2"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
               {mode === "detect" ? "Detect Tone" : "Analyze & Transform"}
@@ -126,7 +126,7 @@ export default function ToneAnalyzerPage() {
         </div>
 
         {result && (
-          <div className="bg-card shadow-sm backdrop-blur-2xl border border-border rounded-3xl p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="bg-card shadow-sm backdrop-blur-2xl border border-border rounded-3xl p-4 md:p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
             <h2 className="text-2xl font-serif font-bold text-brand mb-6 border-b border-border pb-4">Analysis Result</h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:font-serif">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>

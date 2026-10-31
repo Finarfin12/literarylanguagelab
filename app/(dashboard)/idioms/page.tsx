@@ -74,9 +74,9 @@ export default function IdiomLibraryPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
-        <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
           <Quote className="w-8 h-8 text-brand" />
           Idiom Library
         </h1>
@@ -115,7 +115,7 @@ export default function IdiomLibraryPage() {
           {loading ? (
             <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-brand" /></div>
           ) : idioms.length === 0 ? (
-            <div className="bg-muted border border-border rounded-3xl p-12 text-center text-muted-foreground">
+            <div className="bg-muted border border-border rounded-3xl p-6 md:p-12 text-center text-muted-foreground">
               <Quote className="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p>Belum ada idiom yang disimpan.</p>
             </div>

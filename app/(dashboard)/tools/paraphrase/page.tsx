@@ -68,14 +68,14 @@ export default function ParaphraseChallengePage() {
   };
 
   return (
-    <div className="p-8 max-w-5xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <Link href="/tools" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors w-max">
         <ArrowLeft className="w-4 h-4" /> Kembali ke Toolkits
       </Link>
 
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
-          <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
             <Edit3 className="w-8 h-8 text-brand" />
             Paraphrase Challenge
           </h1>
@@ -97,7 +97,7 @@ export default function ParaphraseChallengePage() {
       </div>
 
       <div className="grid grid-cols-1 gap-8">
-        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl relative overflow-hidden">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500/0 via-blue-500 to-blue-500/0 opacity-50" />
           
           <div className="flex justify-between items-center mb-6">
@@ -107,7 +107,7 @@ export default function ParaphraseChallengePage() {
             </button>
           </div>
 
-          <div className="bg-background border border-border rounded-2xl p-8 mb-8 min-h-[150px] flex flex-col justify-center">
+          <div className="bg-background border border-border rounded-2xl p-4 md:p-8 mb-8 min-h-[150px] flex flex-col justify-center">
             {loadingChallenge || !challenge ? (
               <div className="flex justify-center items-center gap-3 text-brand">
                 <Loader2 className="w-6 h-6 animate-spin" /> Meracik tantangan sastra...
@@ -144,7 +144,7 @@ export default function ParaphraseChallengePage() {
         </div>
 
         {result && (
-          <div className="bg-card shadow-sm backdrop-blur-2xl border border-brand/30 rounded-3xl p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="bg-card shadow-sm backdrop-blur-2xl border border-brand/30 rounded-3xl p-4 md:p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
             <h2 className="text-2xl font-serif font-bold text-brand mb-6 border-b border-brand/20 pb-4">Feedback Evaluator</h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:font-serif">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>

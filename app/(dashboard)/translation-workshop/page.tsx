@@ -42,9 +42,9 @@ export default function TranslationWorkshopPage() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-8">
-        <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
           <Languages className="w-8 h-8 text-brand" />
           Translation Workshop
         </h1>
@@ -110,7 +110,7 @@ export default function TranslationWorkshopPage() {
         <button
           onClick={handleEvaluate}
           disabled={loading}
-          className="px-10 py-4 bg-gradient-to-r from-brand to-brand-hover text-background font-bold text-lg rounded-2xl hover:shadow-[0_0_30px_rgba(62,207,142,0.4)] hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 flex items-center gap-3"
+          className="px-5 md:px-10 py-4 bg-gradient-to-r from-brand to-brand-hover text-background font-bold text-lg rounded-2xl hover:shadow-[0_0_30px_rgba(62,207,142,0.4)] hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 flex items-center gap-3"
         >
           {loading ? (
             <>
@@ -126,8 +126,8 @@ export default function TranslationWorkshopPage() {
 
       {/* Output Panel */}
       {result && (
-        <div className="bg-card shadow-sm backdrop-blur-2xl border border-brand/30 rounded-3xl p-8 lg:p-12 shadow-2xl relative overflow-hidden mb-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
-          <div className="absolute top-0 right-0 p-8 opacity-5">
+        <div className="bg-card shadow-sm backdrop-blur-2xl border border-brand/30 rounded-3xl p-4 md:p-8 lg:p-12 shadow-2xl relative overflow-hidden mb-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5">
             <Award className="w-64 h-64 text-brand" />
           </div>
           

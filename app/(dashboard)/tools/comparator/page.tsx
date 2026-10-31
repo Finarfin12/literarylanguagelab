@@ -40,7 +40,7 @@ export default function ComparatorPage() {
   return (
     <div className="p-4 sm:p-8 max-w-7xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
-        <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
           <GitCompare className="w-8 h-8 text-rose-500" />
           Side-by-Side Comparator
         </h1>
@@ -75,7 +75,7 @@ export default function ComparatorPage() {
         <button
           onClick={handleCompare}
           disabled={loading || !originalText || !translatedText}
-          className="px-10 py-4 bg-rose-500 text-white font-bold text-lg rounded-2xl hover:bg-rose-600 transition-all duration-300 disabled:opacity-50 flex items-center gap-3 shadow-lg hover:shadow-rose-500/20"
+          className="px-5 md:px-10 py-4 bg-rose-500 text-white font-bold text-lg rounded-2xl hover:bg-rose-600 transition-all duration-300 disabled:opacity-50 flex items-center gap-3 shadow-lg hover:shadow-rose-500/20"
         >
           {loading ? (
             <><Loader2 className="w-6 h-6 animate-spin" /> Menganotasi Strategi...</>
@@ -87,7 +87,7 @@ export default function ComparatorPage() {
 
       {result && (
         <div className="bg-card shadow-sm border border-rose-500/30 rounded-3xl p-5 sm:p-8 lg:p-12 shadow-2xl relative overflow-hidden mb-12 animate-in fade-in slide-in-from-bottom-8">
-          <div className="absolute top-0 right-0 p-8 opacity-5">
+          <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5">
             <BookOpen className="w-64 h-64 text-rose-500" />
           </div>
           

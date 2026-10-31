@@ -253,7 +253,7 @@ function MessagesContent() {
           )}
 
           {conversations.length === 0 && searchResults.length === 0 ? (
-            <div className="text-center p-8 text-muted-foreground">
+            <div className="text-center p-4 md:p-8 text-muted-foreground">
               <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">Belum ada obrolan.</p>
               <p className="text-xs mt-1">Cari nama pengguna untuk memulai.</p>

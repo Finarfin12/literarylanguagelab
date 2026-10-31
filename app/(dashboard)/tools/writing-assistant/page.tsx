@@ -75,7 +75,7 @@ export default function WritingAssistantPage() {
           <PenTool className="w-8 h-8" />
         </div>
         <div>
-          <h1 className="text-4xl font-serif font-bold text-foreground">AI Writing Assistant</h1>
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">AI Writing Assistant</h1>
           <p className="text-muted-foreground mt-2 text-lg">Evaluasi grammar, gaya bahasa (register), dan variasi kalimat esai Anda secara instan.</p>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function WritingAssistantPage() {
               <button 
                 onClick={handleAnalyze}
                 disabled={loading || !text.trim()}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50 shadow-md"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 md:px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50 shadow-md"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
                 Analisis Tulisan
@@ -114,7 +114,7 @@ export default function WritingAssistantPage() {
         {/* Feedback Section */}
         <div className="h-full">
           {loading && (
-            <div className="h-full min-h-[400px] bg-card border border-border rounded-3xl flex flex-col items-center justify-center p-8 text-center">
+            <div className="h-full min-h-[400px] bg-card border border-border rounded-3xl flex flex-col items-center justify-center p-4 md:p-8 text-center">
               <Loader2 className="w-12 h-12 text-blue-500 animate-spin mb-4" />
               <h3 className="text-xl font-bold font-serif text-foreground">AI Sedang Membaca...</h3>
               <p className="text-muted-foreground mt-2">Menganalisis tata bahasa, diksi, dan alur kalimat Anda.</p>
@@ -122,7 +122,7 @@ export default function WritingAssistantPage() {
           )}
 
           {!loading && !result && (
-            <div className="h-full min-h-[400px] bg-muted/30 border border-border border-dashed rounded-3xl flex flex-col items-center justify-center p-8 text-center">
+            <div className="h-full min-h-[400px] bg-muted/30 border border-border border-dashed rounded-3xl flex flex-col items-center justify-center p-4 md:p-8 text-center">
               <Sparkles className="w-16 h-16 text-muted-foreground/30 mb-4" />
               <p className="text-lg text-muted-foreground font-medium">Panel Feedback AI</p>
               <p className="text-muted-foreground mt-1 max-w-sm">Feedback terstruktur akan muncul di sini setelah Anda mengklik tombol analisis.</p>

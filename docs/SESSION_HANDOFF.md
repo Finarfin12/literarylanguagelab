@@ -7,7 +7,9 @@
 | 0 Keamanan | Selesai, di-merge ke `main` (PR #2). Migrasi 0000–0002 **belum dijalankan** di Supabase | `1ea3ceb`, `993914e` |
 | 1 Hapus gamifikasi | Selesai di `main` (lokal) | lihat `git log` |
 | 3 Registry provider AI + tab admin AI | Selesai di `main` (lokal). Migrasi 0003 **belum dijalankan** | lihat `git log` |
-| 2, 4, 5, 6, 7 | Belum dimulai | — |
+| 4 OCR Qwen | Selesai di kode. Uji 10 foto belum (butuh GROQ_API_KEY) | lihat `git log` |
+| 2 Tampilan & mobile | Selesai di kode. Audit visual di HP belum, lihat `docs/mobile-audit.md` | lihat `git log` |
+| 5, 6, 7 | Belum dimulai | — |
 
 **Keputusan pemilik:** Q1 = forum, clubs, messages, jejaring pembaca **tetap ada** (tanpa poin). Q2 = Latihan Harian dan Weekly (Writing) Challenge **dihapus** (berbeda dari asumsi default PRD). Q3–Q5 memakai default.
 
@@ -18,7 +20,8 @@
 
 **Catatan teknis Fase 3:**
 - Semua route AI memanggil `runAI('<feature-key>', …)` dari `lib/ai/run.ts`. Daftar feature key ada di `lib/ai/features.ts` (harus sama dengan seed di migrasi 0003).
-- Route `ocr` sudah memakai routing `ocr` → `qwen/qwen3.8-27b` (vision). Sisa Fase 4: kompresi gambar di klien dan dukungan kamera.
+- Route `ocr` memakai routing `ocr` → `qwen/qwen3.8-27b` (vision), prompt dengan `/no_think`. Halaman OCR mengecilkan gambar di browser, punya tombol Kamera/Galeri, dan bisa scan beberapa halaman berturut-turut.
+- Fase 2: komponen dasar di `components/ui/` (primitives, Tabs, ResponsivePanel). Sidebar reader memakai `ResponsivePanel` (bottom sheet di < 1024px). Tabel admin → kartu di mobile masih tugas Fase 6.
 - `app/api/stt` dan `app/api/tts` masih memanggil Groq langsung (belum lewat registry).
 - `groq-sdk` sudah tidak dipakai oleh kode, tapi belum dihapus dari `package.json`.
 - Build gagal di folder dengan path sangat panjang di Windows (batas 260 karakter); taruh repo di path pendek.

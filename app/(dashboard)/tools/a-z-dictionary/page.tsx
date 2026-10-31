@@ -34,9 +34,9 @@ export default function AZDictionaryPage() {
   }, [activeLetter]);
 
   return (
-    <div className="p-8 max-w-6xl mx-auto min-h-full flex flex-col">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto min-h-full flex flex-col">
       <div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4">
-        <h1 className="text-4xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
           <Library className="w-8 h-8 text-blue-400" />
           A-Z Dictionary Browser
         </h1>

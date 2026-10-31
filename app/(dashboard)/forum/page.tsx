@@ -243,11 +243,11 @@ export default function ForumPage() {
   }
 
   return (
-    <div className="p-8 max-w-5xl mx-auto min-h-screen">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-screen">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div>
-          <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
             <MessageSquare className="w-8 h-8 text-brand" />
             Forum Diskusi
           </h1>
@@ -394,7 +394,7 @@ export default function ForumPage() {
       {/* Admin Category Modal */}
       {showCategoryModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-card border border-foreground/10 shadow-2xl rounded-3xl p-8 max-w-md w-full animate-in zoom-in-95">
+          <div className="bg-card border border-foreground/10 shadow-2xl rounded-3xl p-4 md:p-8 max-w-md w-full animate-in zoom-in-95">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-bold text-foreground font-serif">Tambah Kategori</h3>
               <button onClick={() => setShowCategoryModal(false)} className="text-muted-foreground hover:text-foreground">

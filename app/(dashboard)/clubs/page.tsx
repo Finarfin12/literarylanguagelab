@@ -58,7 +58,7 @@ export default async function ClubsPage() {
             <Users className="w-8 h-8" />
           </div>
           <div>
-            <h1 className="text-4xl font-serif font-bold text-foreground">Reading Clubs</h1>
+            <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Reading Clubs</h1>
             <p className="text-muted-foreground mt-2 text-lg">Bergabunglah dalam grup diskusi dan bedah literatur bersama.</p>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default async function ClubsPage() {
             ))}
           </div>
         ) : (
-          <div className="bg-muted/50 rounded-3xl p-12 border border-border border-dashed text-center">
+          <div className="bg-muted/50 rounded-3xl p-6 md:p-12 border border-border border-dashed text-center">
             <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
             <p className="text-lg text-muted-foreground font-medium">Belum ada klub publik baru yang tersedia.</p>
             <p className="text-muted-foreground mt-1">Jadilah yang pertama untuk membuat ruang diskusimu sendiri!</p>

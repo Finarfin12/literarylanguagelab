@@ -30,14 +30,14 @@ export default async function AdminUsersPage() {
 
   if (error) {
     return (
-      <div className="p-8 text-center text-red-500">
+      <div className="p-4 md:p-8 text-center text-red-500">
         <p>Error loading users: {error.message}</p>
       </div>
     );
   }
 
   return (
-    <div className="p-8 max-w-6xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center gap-4 mb-8 pb-6 border-b border-border">
         <div className="p-3 bg-red-500/10 rounded-xl text-red-500">
           <ShieldAlert className="w-8 h-8" />

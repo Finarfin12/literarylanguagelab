@@ -168,17 +168,17 @@ export default function CreateThreadPage() {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto min-h-[calc(100vh-2rem)] flex flex-col">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto min-h-[calc(100vh-2rem)] flex flex-col">
       <Link href="/forum" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors w-max">
         <ArrowLeft className="w-4 h-4" /> Kembali ke Forum
       </Link>
 
       <div className="mb-8">
-        <h1 className="text-4xl font-serif font-bold text-foreground">Mulai Diskusi Baru</h1>
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Mulai Diskusi Baru</h1>
         <p className="text-muted-foreground mt-2">Pilih kategori yang tepat agar diskusi Anda mudah ditemukan oleh penulis lain.</p>
       </div>
 
-      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl flex-1">
+      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-xl flex-1">
         <form onSubmit={handleSubmit} className="space-y-6 flex flex-col h-full">
           <div>
             <label className="block text-sm font-bold text-foreground mb-2">Kategori Diskusi</label>
@@ -280,7 +280,7 @@ export default function CreateThreadPage() {
             <button
               type="submit"
               disabled={loading || !title.trim() || !content.trim() || !categoryId}
-              className="bg-brand text-background px-8 py-3.5 rounded-xl font-bold flex items-center gap-2 hover:bg-brand-hover hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="bg-brand text-background px-4 md:px-8 py-3.5 rounded-xl font-bold flex items-center gap-2 hover:bg-brand-hover hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {loading ? (
                 <><Loader2 className="w-5 h-5 animate-spin" /> Menerbitkan...</>

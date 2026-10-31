@@ -60,9 +60,9 @@ export default function AddTextPage() {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
-        <h1 className="text-4xl font-serif font-bold text-foreground">Add New Text</h1>
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Add New Text</h1>
         <p className="text-muted-foreground mt-2">Tambahkan teks sastra ke Library, baik dengan menulis sendiri atau meminta bantuan AI.</p>
       </div>
 
@@ -83,7 +83,7 @@ export default function AddTextPage() {
           </button>
         </div>
 
-        <div className="p-8">
+        <div className="p-4 md:p-8">
           {mode === "ai" && (
             <div className="mb-10 bg-brand/5 border border-brand/20 rounded-xl p-6">
               <label className="block text-sm font-medium text-brand mb-2">Prompt (Ide Cerita)</label>
@@ -201,7 +201,7 @@ export default function AddTextPage() {
             </div>
 
             <div className="pt-6 border-t border-foreground/20 flex justify-end">
-              <SubmitButton className="px-8 py-4 rounded-xl bg-gradient-to-r from-brand to-brand-hover text-background font-bold hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-0.5 transition-all duration-300">
+              <SubmitButton className="px-4 md:px-8 py-4 rounded-xl bg-gradient-to-r from-brand to-brand-hover text-background font-bold hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-0.5 transition-all duration-300">
                 Simpan ke Library
               </SubmitButton>
             </div>

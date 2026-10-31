@@ -51,7 +51,7 @@ function ScoreRing({ score }: { score: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-4xl font-bold text-foreground">{score}</span>
+        <span className="text-2xl md:text-4xl font-bold text-foreground">{score}</span>
         <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Skor</span>
       </div>
     </div>
@@ -328,7 +328,7 @@ export default function GrammarClinicPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-card border border-border rounded-3xl p-6 shadow-sm col-span-1 md:col-span-1 flex flex-col justify-center text-center">
               <p className="text-sm text-muted-foreground uppercase tracking-wider font-bold mb-2">Total Sesi</p>
-              <p className="text-5xl font-serif font-bold text-foreground">{stats.totalSessions}</p>
+              <p className="text-3xl md:text-5xl font-serif font-bold text-foreground">{stats.totalSessions}</p>
               <p className="text-sm text-muted-foreground mt-4">Total Kesalahan: <strong>{stats.totalErrors}</strong></p>
               <p className="text-sm text-muted-foreground mt-1">Skor Rata-rata: <strong>{stats.averageScore}</strong></p>
             </div>

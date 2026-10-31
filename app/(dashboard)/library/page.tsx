@@ -33,10 +33,10 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
   }
 
   return (
-    <div className="p-8 max-w-5xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
         <div>
-          <h1 className="text-4xl font-serif font-bold text-foreground">Text Library</h1>
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Text Library</h1>
           <p className="text-muted-foreground mt-2">Pilih teks sastra untuk mulai membaca dan belajar. ({count ?? "?"} teks)</p>
         </div>
         <div className="flex flex-col gap-4">
@@ -70,7 +70,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { q?
       )}
 
       {texts?.length === 0 ? (
-        <div className="text-center p-12 border border-dashed border-border rounded-xl">
+        <div className="text-center p-6 md:p-12 border border-dashed border-border rounded-xl">
           <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-xl font-serif font-bold text-foreground mb-2">Belum ada teks tersedia</h3>
           <p className="text-muted-foreground">Klik tombol "Generate & Add Text" di atas untuk membuat teks karya sastra secara otomatis dengan AI.</p>

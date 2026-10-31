@@ -1,6 +1,7 @@
 "use client";
 
 import { X, BookmarkPlus, Trash2, Highlighter } from "lucide-react";
+import ResponsivePanel from "@/components/ui/ResponsivePanel";
 
 type Bookmark = {
   id: string;
@@ -13,24 +14,25 @@ type Bookmark = {
 };
 
 interface BookmarkSidebarProps {
+  open: boolean;
   bookmarks: Bookmark[];
   onGoTo: (position: number) => void;
   onDelete: (id: string) => void;
   onClose: () => void;
 }
 
-export default function BookmarkSidebar({ bookmarks, onGoTo, onDelete, onClose }: BookmarkSidebarProps) {
+export default function BookmarkSidebar({ open, bookmarks, onGoTo, onDelete, onClose }: BookmarkSidebarProps) {
   const highlights = bookmarks.filter((b) => b.type === "highlight");
   const bookmarksOnly = bookmarks.filter((b) => b.type === "bookmark");
 
   return (
-    <div className="fixed right-0 top-0 h-full w-80 bg-background backdrop-blur-3xl border-l border-border shadow-2xl z-50 flex flex-col animate-in slide-in-from-right duration-300">
+    <ResponsivePanel open={open} onClose={onClose} label="Bookmarks" width="320px">
       <div className="p-4 border-b border-border flex items-center justify-between shrink-0">
         <h3 className="font-bold text-foreground flex items-center gap-2">
           <BookmarkPlus className="w-4 h-4 text-brand" />
           Bookmarks
         </h3>
-        <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground">
+        <button onClick={onClose} aria-label="Tutup" className="p-2.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground">
           <X className="w-4 h-4" />
         </button>
       </div>
@@ -92,6 +94,6 @@ export default function BookmarkSidebar({ bookmarks, onGoTo, onDelete, onClose }
           </div>
         )}
       </div>
-    </div>
+    </ResponsivePanel>
   );
 }

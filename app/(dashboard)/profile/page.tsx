@@ -91,14 +91,14 @@ export default function ProfilePage() {
         <div className="absolute inset-0 bg-grid-white/5 bg-[size:20px_20px]" />
       </div>
 
-      <div className="max-w-5xl mx-auto px-8 relative -mt-20 pb-12">
+      <div className="max-w-5xl mx-auto px-4 md:px-8 relative -mt-20 pb-12">
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row items-start md:items-end gap-6 mb-12">
           <div className="w-40 h-40 rounded-full border-4 border-background bg-muted overflow-hidden shrink-0 shadow-2xl">
             {avatarUrl ? <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><User className="w-16 h-16 text-muted-foreground" /></div>}
           </div>
           <div className="flex-1 mb-2">
-            <h1 className="text-4xl font-serif font-bold text-foreground">{fullName}</h1>
+            <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">{fullName}</h1>
             <p className="text-muted-foreground flex items-center gap-2 mt-1"><CalendarDays className="w-4 h-4" /> Bergabung sejak {joinDate}</p>
             <div className="flex items-center gap-6 mt-4">
               <div className="flex items-center gap-2">
@@ -169,7 +169,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Activity Timeline */}
-            <div className="bg-card border border-border p-8 rounded-3xl">
+            <div className="bg-card border border-border p-4 md:p-8 rounded-3xl">
               <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Clock className="w-5 h-5 text-muted-foreground" /> Aktivitas Terakhir</h3>
               <div className="relative before:absolute before:inset-y-0 before:left-[11px] before:w-px before:bg-border space-y-6">
                 

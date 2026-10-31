@@ -88,7 +88,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
     <>
       <div className="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-serif font-bold text-foreground">Vocabulary Bank</h1>
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Vocabulary Bank</h1>
           <p className="text-muted-foreground mt-2">Kelola kata-kata yang telah Anda simpan dari teks sastra.</p>
           <button 
             onClick={() => setIsFlashcardMode(true)}
@@ -126,7 +126,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
 
       <div className="flex-1 overflow-auto">
         {filteredVocab.length === 0 ? (
-          <div className="text-center p-12 border border-dashed border-border rounded-xl">
+          <div className="text-center p-6 md:p-12 border border-dashed border-border rounded-xl">
             <BookMarked className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-medium text-foreground">Tidak ada kata ditemukan</h3>
             <p className="text-muted-foreground mt-2">Coba ubah kata kunci pencarian atau filter Anda.</p>
@@ -134,7 +134,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-8">
             {filteredVocab.map((item) => (
-              <div key={item.id} className="bg-card border border-foreground/20 rounded-3xl p-8 hover:bg-card shadow-sm transition-all duration-500 group relative flex flex-col h-full shadow-md">
+              <div key={item.id} className="bg-card border border-foreground/20 rounded-3xl p-4 md:p-8 hover:bg-card shadow-sm transition-all duration-500 group relative flex flex-col h-full shadow-md">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h2 className="text-2xl font-serif font-bold text-brand">{item.word}</h2>

@@ -109,7 +109,7 @@ export default function PreviewPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-background min-h-[600px]">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 bg-background min-h-[600px]">
         <Loader2 className="w-12 h-12 animate-spin text-brand mb-6" />
         <h2 className="text-2xl font-serif font-bold animate-pulse text-foreground">Extracting Key Vocabulary...</h2>
         <p className="text-muted-foreground mt-2 text-center max-w-md">
@@ -121,7 +121,7 @@ export default function PreviewPage() {
 
   if (vocabList.length === 0) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-background">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 bg-background">
         <p>Gagal mengekstraksi kosa kata.</p>
         <button onClick={handleStartReading} className="mt-4 px-6 py-2 bg-brand text-white rounded-lg font-bold">Langsung Membaca Saja</button>
       </div>
@@ -130,7 +130,7 @@ export default function PreviewPage() {
 
   if (mode === "intro") {
     return (
-      <div className="flex-1 overflow-y-auto bg-background p-8 lg:p-12 animate-in fade-in zoom-in-95 duration-500">
+      <div className="flex-1 overflow-y-auto bg-background p-4 md:p-8 lg:p-12 animate-in fade-in zoom-in-95 duration-500">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <div className="w-20 h-20 bg-brand/10 text-brand rounded-full flex items-center justify-center mx-auto mb-6">
@@ -153,13 +153,13 @@ export default function PreviewPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button 
               onClick={() => setMode("flashcard")}
-              className="w-full sm:w-auto px-8 py-4 bg-brand text-background font-bold rounded-2xl hover:scale-105 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-2 text-lg"
+              className="w-full sm:w-auto px-4 md:px-8 py-4 bg-brand text-background font-bold rounded-2xl hover:scale-105 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-2 text-lg"
             >
               <BrainCircuit className="w-5 h-5" /> Pelajari Dulu (Pre-learn)
             </button>
             <button 
               onClick={handleStartReading}
-              className="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-border text-foreground font-bold rounded-2xl hover:bg-muted transition-all flex items-center justify-center gap-2 text-lg"
+              className="w-full sm:w-auto px-4 md:px-8 py-4 bg-transparent border-2 border-border text-foreground font-bold rounded-2xl hover:bg-muted transition-all flex items-center justify-center gap-2 text-lg"
             >
               <BookOpen className="w-5 h-5" /> Skip & Mulai Membaca
             </button>

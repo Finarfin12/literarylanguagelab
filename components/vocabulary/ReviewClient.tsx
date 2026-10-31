@@ -83,7 +83,7 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
         {!showAnswer ? (
           <button 
             onClick={() => setShowAnswer(true)}
-            className="px-8 py-3 rounded-full bg-muted hover:bg-muted hover:bg-muted/80 text-foreground border border-border transition-colors flex items-center gap-2"
+            className="px-4 md:px-8 py-3 rounded-full bg-muted hover:bg-muted hover:bg-muted/80 text-foreground border border-border transition-colors flex items-center gap-2"
           >
             <RotateCcw className="w-4 h-4" /> Tampilkan Jawaban
           </button>

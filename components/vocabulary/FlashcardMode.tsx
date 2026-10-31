@@ -24,7 +24,7 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
 
   if (cards.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center">
+      <div className="flex flex-col items-center justify-center p-6 md:p-12 text-center">
         <p className="text-xl text-muted-foreground mb-4">Tidak ada kartu untuk dipelajari.</p>
         <button onClick={onExit} className="px-6 py-2 bg-brand text-background rounded-full font-bold">Kembali</button>
       </div>
@@ -33,7 +33,7 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
 
   if (finished) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center animate-in fade-in duration-1000">
+      <div className="flex flex-col items-center justify-center p-6 md:p-12 text-center animate-in fade-in duration-1000">
         <div className="bg-brand/10 p-6 rounded-full mb-6">
           <CheckCircle2 className="w-16 h-16 text-brand" />
         </div>
@@ -99,8 +99,8 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
         <div className={`w-full h-full transition-all duration-700 transform-style-3d ${showAnswer ? 'rotate-y-180' : ''}`}>
           
           {/* Front (Word) */}
-          <div className={`absolute inset-0 bg-card border-2 border-border shadow-xl rounded-3xl p-10 flex flex-col justify-center items-center text-center backface-hidden ${showAnswer ? 'invisible' : 'visible'}`}>
-            <h2 className="text-5xl font-serif font-bold text-foreground capitalize mb-8">{currentCard.word}</h2>
+          <div className={`absolute inset-0 bg-card border-2 border-border shadow-xl rounded-3xl p-5 md:p-10 flex flex-col justify-center items-center text-center backface-hidden ${showAnswer ? 'invisible' : 'visible'}`}>
+            <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground capitalize mb-8">{currentCard.word}</h2>
             {currentCard.context_sentence && (
               <div className="bg-muted/50 p-6 rounded-xl text-left border-l-4 border-brand max-w-md w-full opacity-80">
                 <p className="text-sm italic font-serif leading-relaxed text-foreground/80">"{currentCard.context_sentence}"</p>
@@ -110,16 +110,16 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
             
             <button 
               onClick={() => setShowAnswer(true)}
-              className="mt-12 px-8 py-4 bg-brand text-background rounded-full font-bold shadow-md hover:scale-105 transition-all flex items-center gap-2 text-lg"
+              className="mt-12 px-4 md:px-8 py-4 bg-brand text-background rounded-full font-bold shadow-md hover:scale-105 transition-all flex items-center gap-2 text-lg"
             >
               <RotateCw className="w-5 h-5" /> Tampilkan Jawaban
             </button>
           </div>
 
           {/* Back (Definition) */}
-          <div className={`absolute inset-0 bg-card border-2 border-brand/30 shadow-2xl shadow-brand/10 rounded-3xl p-8 flex flex-col justify-between backface-hidden transform rotate-y-180 ${showAnswer ? 'visible' : 'invisible'}`}>
+          <div className={`absolute inset-0 bg-card border-2 border-brand/30 shadow-2xl shadow-brand/10 rounded-3xl p-4 md:p-8 flex flex-col justify-between backface-hidden transform rotate-y-180 ${showAnswer ? 'visible' : 'invisible'}`}>
             <div className="overflow-y-auto max-h-[250px] prose prose-sm dark:prose-invert prose-brand flex-1 flex flex-col items-center justify-center text-center mx-auto w-full">
-              <h2 className="text-4xl font-serif font-bold text-brand capitalize mb-6">{currentCard.word}</h2>
+              <h2 className="text-2xl md:text-4xl font-serif font-bold text-brand capitalize mb-6">{currentCard.word}</h2>
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{currentCard.definition || ""}</ReactMarkdown>
             </div>
 

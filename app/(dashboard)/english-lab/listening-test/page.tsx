@@ -436,7 +436,7 @@ export default function ListeningTestPage() {
               <button
                 onClick={submitQuiz}
                 disabled={(mode === "quiz" && Object.keys(answers).length < testData.questions.length) || (mode === "dictation" && !dictationAnswer.trim())}
-                className="px-8 py-4 bg-brand text-background font-bold rounded-xl disabled:opacity-50 transition-all hover:shadow-lg flex items-center gap-2"
+                className="px-4 md:px-8 py-4 bg-brand text-background font-bold rounded-xl disabled:opacity-50 transition-all hover:shadow-lg flex items-center gap-2"
               >
                 <CheckCircle className="w-5 h-5" /> Kumpulkan Jawaban
               </button>

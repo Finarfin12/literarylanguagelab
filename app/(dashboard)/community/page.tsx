@@ -89,10 +89,10 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="p-8 max-w-5xl mx-auto min-h-screen">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-screen">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div>
-          <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
             <Users className="w-8 h-8 text-brand" />
             Jejaring Pembaca
           </h1>

@@ -14,9 +14,9 @@ export default async function LoginPage({
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand/20 via-background to-background">
       <AuthAlert error={error} />
-      <div className="w-full max-w-md rounded-3xl bg-card shadow-sm backdrop-blur-xl p-8 shadow-2xl border border-border transition-all duration-500 hover:shadow-brand/20">
+      <div className="w-full max-w-md rounded-3xl bg-card shadow-sm backdrop-blur-xl p-4 md:p-8 shadow-2xl border border-border transition-all duration-500 hover:shadow-brand/20">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-serif font-bold text-foreground mb-3">
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground mb-3">
             Literary Lab
           </h1>
           <p className="text-muted-foreground">Welcome back. Please log in to continue your journey.</p>

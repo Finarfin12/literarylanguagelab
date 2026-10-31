@@ -14,6 +14,7 @@
   --border: #e2e8f0;
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
+  --danger: #dc2626;
 }
 
 .dark {
@@ -28,6 +29,7 @@
   --border: #2a2d36;
   --muted: #1e212b;
   --muted-foreground: #94a3b8;
+  --danger: #f87171;
 }
 @theme inline {
   --color-background: var(--background);
@@ -41,6 +43,9 @@
   --color-border: var(--border);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-danger: var(--danger);
+  --radius-control: 0.75rem;
+  --radius-card: 1.5rem;
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-serif), ui-serif, Georgia, serif;
 }
@@ -71,4 +76,34 @@ body {
 ::selection {
   background-color: rgba(62, 207, 142, 0.3); /* Brand color transparent */
   color: #ffffff;
+}
+
+/* Fokus keyboard yang selalu terlihat (WCAG 2.4.7) */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Ruang aman untuk notch / home indicator di HP */
+@utility safe-area-pb {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Hormati pengaturan "kurangi gerakan" di perangkat */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -13,7 +13,7 @@ export default async function VocabularyPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="p-8 max-w-6xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <VocabularyBankClient initialVocab={vocab || []} />
     </div>
   );

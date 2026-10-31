@@ -25,7 +25,7 @@ export default function CreateClubModal() {
             onClick={() => setIsOpen(false)}
           ></div>
           
-          <div className="relative bg-card border border-border rounded-3xl shadow-2xl w-full max-w-lg p-8 animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative bg-card border border-border rounded-3xl shadow-2xl w-full max-w-lg p-4 md:p-8 animate-in fade-in zoom-in-95 duration-200">
             <button 
               onClick={() => setIsOpen(false)}
               className="absolute top-6 right-6 text-muted-foreground hover:text-foreground transition-colors"

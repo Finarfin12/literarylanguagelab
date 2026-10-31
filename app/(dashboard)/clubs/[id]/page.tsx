@@ -50,8 +50,8 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
         <ChevronLeft className="w-4 h-4" /> Kembali ke Direktori Klub
       </Link>
       
-      <div className="bg-card shadow-sm border border-border rounded-3xl p-8 mb-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+      <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 mb-8 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5 pointer-events-none">
           <BookOpen className="w-48 h-48 text-brand transform translate-x-8 -translate-y-8" />
         </div>
         
@@ -83,13 +83,13 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
       </div>
 
       {!isMember && (
-        <div className="bg-brand/10 border border-brand/20 rounded-3xl p-8 text-center mb-8">
+        <div className="bg-brand/10 border border-brand/20 rounded-3xl p-4 md:p-8 text-center mb-8">
           <Shield className="w-12 h-12 text-brand mx-auto mb-4" />
           <h2 className="text-2xl font-serif font-bold text-foreground mb-2">Anda Belum Bergabung</h2>
           <p className="text-muted-foreground mb-6">Bergabung dengan grup ini untuk melihat bacaan, berpartisipasi dalam diskusi, dan belajar bersama.</p>
           
           <form action={async () => { "use server"; const { joinClub } = await import("../actions"); await joinClub(group.id); }}>
-            <SubmitButton className="px-8 py-3 bg-brand text-brand-foreground font-bold rounded-xl hover:bg-brand/90 transition-colors shadow-lg">
+            <SubmitButton className="px-4 md:px-8 py-3 bg-brand text-brand-foreground font-bold rounded-xl hover:bg-brand/90 transition-colors shadow-lg">
               Gabung Sekarang
             </SubmitButton>
           </form>

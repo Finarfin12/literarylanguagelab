@@ -73,7 +73,7 @@ export default function SentenceArchitectPage() {
           <Building2 className="w-8 h-8" />
         </div>
         <div>
-          <h1 className="text-4xl font-serif font-bold text-foreground">Sentence Architect</h1>
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Sentence Architect</h1>
           <p className="text-muted-foreground mt-2 text-lg">Bedah struktur anatomi kalimat kompleks dan temukan strategi penerjemahan terbaik.</p>
         </div>
       </div>
@@ -92,7 +92,7 @@ export default function SentenceArchitectPage() {
           <button 
             onClick={handleAnalyze}
             disabled={loading || !text.trim()}
-            className="bg-brand hover:bg-brand/90 text-brand-foreground px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50"
+            className="bg-brand hover:bg-brand/90 text-brand-foreground px-4 md:px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Layers className="w-5 h-5" />}
             Bedah Struktur

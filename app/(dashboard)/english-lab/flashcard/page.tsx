@@ -247,7 +247,7 @@ export default function FlashcardSRSPage() {
         <div className="w-24 h-24 bg-brand/20 text-brand rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-12 h-12" />
         </div>
-        <h1 className="text-4xl font-serif font-bold text-foreground mb-2">Sesi Selesai!</h1>
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground mb-2">Sesi Selesai!</h1>
         <p className="text-xl text-muted-foreground mb-8">Anda telah mereview {total} kata hari ini.</p>
 
         <div className="grid grid-cols-3 gap-4 mb-8 max-w-sm mx-auto">
@@ -365,7 +365,7 @@ export default function FlashcardSRSPage() {
         {mode === "guess-meaning" && (
           <div className="text-center mb-8">
             <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Apa arti dari kata ini?</p>
-            <p className="text-5xl font-serif font-bold text-brand">{currentCard.word}</p>
+            <p className="text-3xl md:text-5xl font-serif font-bold text-brand">{currentCard.word}</p>
           </div>
         )}
 
@@ -381,7 +381,7 @@ export default function FlashcardSRSPage() {
             <p className="text-sm text-muted-foreground uppercase tracking-wider mb-4">Dengarkan dan tuliskan kata yang Anda dengar</p>
             <button
               onClick={() => playAudio(currentCard.word)}
-              className="px-8 py-4 bg-brand/10 border border-brand/30 text-brand font-bold rounded-2xl hover:bg-brand/20 transition-all flex items-center gap-3 mx-auto text-lg"
+              className="px-4 md:px-8 py-4 bg-brand/10 border border-brand/30 text-brand font-bold rounded-2xl hover:bg-brand/20 transition-all flex items-center gap-3 mx-auto text-lg"
             >
               <Volume2 className="w-6 h-6" /> Putar Audio
             </button>
@@ -396,7 +396,7 @@ export default function FlashcardSRSPage() {
               const targetWord = targetWordMatch ? targetWordMatch[1] : currentCard.word;
               // replace targetWord in currentCard.word with blanks, case insensitive
               const displayWord = currentCard.word.replace(new RegExp(targetWord, 'gi'), "____");
-              return <p className="text-4xl font-serif font-bold text-foreground">{displayWord}</p>;
+              return <p className="text-2xl md:text-4xl font-serif font-bold text-foreground">{displayWord}</p>;
             })()}
           </div>
         )}
@@ -484,7 +484,7 @@ export default function FlashcardSRSPage() {
             )}
             <button
               onClick={handleNext}
-              className="mt-4 px-8 py-3 bg-brand text-background font-bold rounded-xl flex items-center gap-2 mx-auto hover:shadow-[0_0_20px_rgba(62,207,142,0.3)] transition-all"
+              className="mt-4 px-4 md:px-8 py-3 bg-brand text-background font-bold rounded-xl flex items-center gap-2 mx-auto hover:shadow-[0_0_20px_rgba(62,207,142,0.3)] transition-all"
             >
               Selanjutnya <ArrowRight className="w-5 h-5" />
             </button>

@@ -121,8 +121,8 @@ export default function LingoWiseClient() {
 
       {/* Right Column: Output */}
       <div className="lg:col-span-7">
-        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl min-h-[600px] h-full flex flex-col relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-8 opacity-5">
+        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-xl min-h-[600px] h-full flex flex-col relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5">
             <Sparkles className="w-64 h-64" />
           </div>
           

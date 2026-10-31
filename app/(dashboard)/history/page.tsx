@@ -120,10 +120,10 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-serif font-bold text-foreground flex items-center gap-3">
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
             <History className="w-8 h-8 text-brand" />
             Archive & Insights
           </h1>
@@ -182,7 +182,7 @@ export default function HistoryPage() {
       </div>
 
       {/* Archive / Activity Log */}
-      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-8 shadow-xl">
+      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-xl">
         <h2 className="text-xl font-serif font-bold text-brand mb-6 border-b border-border pb-4 flex items-center gap-2">
           <Clock className="w-5 h-5" /> Activity Archive
         </h2>

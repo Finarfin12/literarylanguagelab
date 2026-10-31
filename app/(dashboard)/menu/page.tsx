@@ -4,13 +4,45 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { MENU_GROUPS } from "@/lib/menu-config";
-import { User, Settings, LogOut, ChevronRight, HelpCircle, MessageSquare, Sun, Moon } from "lucide-react";
+import { User, Settings, LogOut, ChevronRight, ChevronDown, HelpCircle, MessageSquare, Sun, Moon, Search, Home, ShieldAlert } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import AnimatedPage from "@/components/AnimatedPage";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
+// Halaman inti yang di desktop ada di Sidebar, bukan di MENU_GROUPS
+const CORE_GROUP = {
+  title: "Utama",
+  icon: Home,
+  color: "text-brand",
+  items: [
+    { name: "Dashboard", path: "/dashboard" },
+    { name: "Text Library", path: "/library" },
+    { name: "Public Domain Books", path: "/gutenberg" },
+    { name: "A-Z Dictionary", path: "/tools/a-z-dictionary" },
+    { name: "All Toolkits Hub", path: "/tools" },
+    { name: "LingoWise AI", path: "/lingowise" },
+    { name: "Pesan", path: "/messages" },
+    { name: "Profil", path: "/profile" },
+  ],
+};
+
+const ADMIN_GROUP = {
+  title: "Admin",
+  icon: ShieldAlert,
+  color: "text-red-500",
+  items: [
+    { name: "Pengguna", path: "/admin/users" },
+    { name: "Provider AI", path: "/admin/providers" },
+    { name: "Model", path: "/admin/models" },
+    { name: "Routing Fitur", path: "/admin/routing" },
+  ],
+};
+
 export default function MobileMenuPage() {
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [query, setQuery] = useState("");
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const supabase = createClient();
   const unreadMessages = useUnreadMessages();
   const { theme, setTheme } = useTheme();
@@ -29,10 +61,23 @@ export default function MobileMenuPage() {
           name: user.user_metadata?.full_name || "Reader",
           avatar: user.user_metadata?.avatar_url,
         });
+        const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+        setIsAdmin(profile?.role === "admin");
       }
     }
     loadUser();
   }, [supabase]);
+
+  const searching = query.trim().length > 0;
+  const q = query.trim().toLowerCase();
+  const groups = [CORE_GROUP, ...MENU_GROUPS, ...(isAdmin ? [ADMIN_GROUP] : [])]
+    .map((g) => ({
+      ...g,
+      items: searching
+        ? g.items.filter((i) => i.name.toLowerCase().includes(q) || g.title.toLowerCase().includes(q))
+        : g.items,
+    }))
+    .filter((g) => g.items.length > 0);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -80,30 +125,57 @@ export default function MobileMenuPage() {
         </Link>
       </div>
 
+      {/* Pencarian fitur */}
+      <div className="relative mb-6">
+        <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Cari fitur, mis. OCR, flashcard, forum..."
+          aria-label="Cari fitur"
+          className="w-full min-h-[48px] pl-11 pr-4 bg-card border border-border rounded-2xl text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand"
+        />
+      </div>
+
       {/* Accordion Menu List */}
-      <div className="space-y-6">
-        {MENU_GROUPS.map((group) => {
+      <div className="space-y-4">
+        {groups.length === 0 && (
+          <p className="text-center text-sm text-muted-foreground py-8">Tidak ada fitur yang cocok dengan &quot;{query}&quot;.</p>
+        )}
+        {groups.map((group) => {
           const Icon = group.icon;
+          // Saat mencari, semua grup yang cocok selalu terbuka
+          const isOpen = searching || !collapsed[group.title];
           return (
             <div key={group.title} className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
-              <div className="px-5 py-4 border-b border-border/50 bg-muted/20 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setCollapsed((c) => ({ ...c, [group.title]: !c[group.title] }))}
+                aria-expanded={isOpen}
+                className="w-full px-5 min-h-[56px] bg-muted/20 flex items-center gap-3 text-left"
+              >
                 <Icon className={`w-5 h-5 ${group.color}`} />
-                <h3 className="font-bold font-serif text-foreground">{group.title}</h3>
-              </div>
-              <div className="divide-y divide-border/50">
-                {group.items.map((item) => (
-                  <Link 
-                    key={item.name} 
-                    href={item.path}
-                    className="flex items-center justify-between px-5 py-4 hover:bg-muted transition-colors group"
-                  >
-                    <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                      {item.name}
-                    </span>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground opacity-50 group-hover:opacity-100 transition-opacity" />
-                  </Link>
-                ))}
-              </div>
+                <h3 className="font-bold font-serif text-foreground flex-1">{group.title}</h3>
+                <span className="text-xs text-muted-foreground">{group.items.length}</span>
+                <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
+              </button>
+              {isOpen && (
+                <div className="divide-y divide-border/50 border-t border-border/50">
+                  {group.items.map((item) => (
+                    <Link 
+                      key={item.path} 
+                      href={item.path}
+                      className="flex items-center justify-between px-5 min-h-[48px] hover:bg-muted transition-colors group"
+                    >
+                      <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                        {item.name}
+                      </span>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground opacity-50 group-hover:opacity-100 transition-opacity" />
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}

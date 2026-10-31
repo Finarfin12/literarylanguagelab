@@ -190,12 +190,12 @@ export default function GutenbergSearchPage() {
   if (!mounted) return null;
 
   return (
-    <div className="p-8 max-w-6xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10 text-center">
         <div className="inline-flex items-center justify-center p-4 bg-orange-500/10 rounded-full mb-6">
           <BookOpen className="w-12 h-12 text-orange-500" />
         </div>
-        <h1 className="text-4xl font-serif font-bold text-foreground">Public Domain Books</h1>
+        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Public Domain Books</h1>
         <p className="text-muted-foreground mt-4 text-lg max-w-2xl mx-auto">
           Cari dan baca lebih dari 70.000+ buku sastra klasik secara gratis langsung dari arsip Project Gutenberg. Baca secara utuh, tanpa gangguan.
         </p>
@@ -248,7 +248,7 @@ export default function GutenbergSearchPage() {
         <button
           type="submit"
           disabled={loading}
-          className="absolute right-2 top-2 bottom-2 px-8 bg-orange-500 text-white font-bold rounded-full hover:bg-orange-600 transition-colors disabled:opacity-50"
+          className="absolute right-2 top-2 bottom-2 px-4 md:px-8 bg-orange-500 text-white font-bold rounded-full hover:bg-orange-600 transition-colors disabled:opacity-50"
         >
           {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Search"}
         </button>
@@ -330,7 +330,7 @@ export default function GutenbergSearchPage() {
               <button
                 onClick={loadMore}
                 disabled={loadingMore}
-                className="px-8 py-3 bg-muted border border-border text-foreground font-bold rounded-full hover:bg-orange-500 hover:border-orange-500 hover:text-white transition-colors disabled:opacity-50 flex items-center gap-2"
+                className="px-4 md:px-8 py-3 bg-muted border border-border text-foreground font-bold rounded-full hover:bg-orange-500 hover:border-orange-500 hover:text-white transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 {loadingMore && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loadingMore ? "Memuat..." : "Muat Lebih Banyak"}
