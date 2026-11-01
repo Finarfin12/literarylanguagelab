@@ -90,13 +90,13 @@ export default function SentenceAnalysisSidebar({ sentence, title, author, onClo
     if (t.includes("object")) return "bg-green-500/10 text-green-500 border-green-500/20";
     if (t.includes("modifier")) return "bg-purple-500/10 text-purple-500 border-purple-500/20";
     if (t.includes("conjunction")) return "bg-orange-500/10 text-orange-500 border-orange-500/20";
-    return "bg-brand/10 text-brand border-brand/20";
+    return "bg-brand-tint text-brand-ink border-brand/20";
   };
 
   if (!sentence) return null;
 
   return (
-    <div className="flex flex-col h-full bg-card shadow-xl overflow-hidden">
+    <div className="flex flex-col h-full bg-card overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
         <div>
@@ -131,7 +131,7 @@ export default function SentenceAnalysisSidebar({ sentence, title, author, onClo
       </div>
 
       {/* Target Sentence Display */}
-      <div className="p-4 bg-brand/5 border-b border-brand/10">
+      <div className="p-4 bg-brand-tint border-b border-brand/10">
         <p className="text-sm italic font-serif leading-relaxed text-foreground opacity-90 border-l-2 border-brand pl-3">
           "{sentence}"
         </p>
@@ -140,9 +140,9 @@ export default function SentenceAnalysisSidebar({ sentence, title, author, onClo
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto p-5">
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-40 space-y-4 text-brand">
+          <div className="flex flex-col items-center justify-center h-40 space-y-4 text-brand-ink">
             <div className="relative">
-              <div className="absolute inset-0 bg-brand/20 blur-xl rounded-full"></div>
+              <div className="absolute inset-0 bg-brand-tint rounded-full"></div>
               <SparklesIcon className="w-8 h-8 animate-pulse relative z-10" />
             </div>
             <p className="text-sm font-medium animate-pulse text-muted-foreground">Menganalisis kalimat...</p>
@@ -150,7 +150,7 @@ export default function SentenceAnalysisSidebar({ sentence, title, author, onClo
         ) : activeMode === "sentence-grammar" && result && typeof result === "object" ? (
           <div className="space-y-6">
             <h3 className="text-lg font-bold text-foreground flex items-center gap-2 mb-2">
-              <GitMerge className="w-5 h-5 text-brand" /> Dependency Tree
+              <GitMerge className="w-5 h-5 text-brand-ink" /> Dependency Tree
             </h3>
             <div className="space-y-4">
               {(result as any).tree?.map((clause: any, idx: number) => (

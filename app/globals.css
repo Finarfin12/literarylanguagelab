@@ -126,12 +126,13 @@ body {
 
 /* Utilities for literature text */
 .prose-literature {
-  @apply text-xl md:text-2xl font-serif leading-[2.2] tracking-[0.02em] text-foreground/90;
+  /* Warna diwarisi dari tema reader (terang/sepia/gelap/kontras tinggi); ukuran & jarak bisa diubah pengguna */
+  @apply text-[19px] md:text-xl font-serif leading-[1.75] tracking-[0.01em];
 }
 
 .prose-literature p {
   /* drop-shadow per paragraf dihapus: mahal di-render pada teks panjang, terutama di HP */
-  @apply mb-10 text-justify;
+  @apply mb-6 text-justify;
   text-indent: 1.5em;
 }
 

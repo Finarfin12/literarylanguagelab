@@ -55,10 +55,12 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 | Fitur | Detail yang wajib tetap ada |
 |---|---|
 | Pagination | Hal x/y, pilihan bab, progress bar, tombol Sebelumnya/Berikutnya, lompat `#block-N`, posisi tersimpan (localStorage + `reading_sessions`) |
+| **(14b)** Reader v4: kertas hangat (terang `paper`/`ink`, sepia `#43352a`, gelap `#17150f`, kontras tinggi tetap), header tipis, progress 3 px, teks bacaan 19/20 px × 1,75 mewarisi warna tema, modal tanpa blur, target sentuh ≥44 px (tombol per paragraf, select, Beginner Mode) | `TextDisplay.tsx`, `ReaderBlock.tsx`, `app/globals.css` |
 | Header baca | Estimasi waktu baca, petunjuk shortcut keyboard, tombol **Ask AI Companion** |
 | Beginner Mode | Level A2/B1, tata letak **Ganti Teks (Inline) / Berdampingan (Bawah) / Layar Belah (Split)** |
 | Per paragraf | TTS **Read Aloud** (browser atau Groq), **Bedah Sintaksis** (Subjek/Verba/Objek + legenda) |
 | **Tongkat Ajaib (Inspect Mode)** | Tombol melayang; saat aktif, kalimat bisa diketuk → modal berisi kalimat, Read Aloud, Bedah Sintaksis. **v4: tombol bisa digeser** |
+| **(14b, ✅)** Tongkat Ajaib bisa digeser: ketuk (≤6 px) = nyala/mati, geser = pindah lalu menempel ke tepi kiri/kanan, posisi di `localStorage` `reader-wand-pos`, Alt+panah, `aria-pressed`, disembunyikan saat Word Lookup terbuka. Uji: `tests/drag-fab.test.mts` (12) + drag/ketuk/keyboard/muat ulang di halaman uji 375px | `lib/reader/drag-fab.ts`, `components/reader/MagicWandButton.tsx` |
 | Word Lookup (pilih kata) | Lihat C.2 |
 | Referensi budaya | Frasa bertanda + tooltip (penjelasan, padanan Indonesia, asal) |
 | Kuis pemahaman (Comprehension Checkpoint) | Muncul di judul bab; jawaban tersimpan sebagai bukti membaca |

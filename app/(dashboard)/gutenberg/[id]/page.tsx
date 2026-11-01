@@ -229,7 +229,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   return (
     <div className="max-w-4xl mx-auto bg-card min-h-screen lg:border-x border-border relative">
       <div className="sticky top-0 bg-card border-b border-border px-3 py-2 md:p-4 pr-24 sm:pr-32 flex items-center justify-between z-10">
-        <Link href="/gutenberg" aria-label="Kembali ke pencarian" className="p-2.5 bg-muted hover:bg-brand-hover hover:text-white rounded-full transition-colors shrink-0">
+        <Link href="/gutenberg" aria-label="Kembali ke pencarian" className="p-2.5 bg-muted hover:bg-brand-solid hover:text-on-brand rounded-full transition-colors shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1 text-center truncate px-4">
@@ -238,11 +238,11 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         </div>
         <div className="flex items-center gap-1 shrink-0">
           <TopActions className="hidden sm:flex items-center gap-1 mr-2" />
-          {cached && <Check className="w-4 h-4 text-brand" />}
-          <button onClick={handleGenerateVocab} className="p-2.5 bg-brand/10 text-brand rounded-xl hover:bg-brand/20 transition-colors" title="Generate Chapter Vocab" aria-label="Kosa kata bab ini">
+          {cached && <Check className="w-4 h-4 text-brand-ink" />}
+          <button onClick={handleGenerateVocab} className="p-2.5 bg-brand-tint text-brand-ink rounded-control hover:bg-brand-tint/70 transition-colors" title="Generate Chapter Vocab" aria-label="Kosa kata bab ini">
             <BrainCircuit className="w-4 h-4" />
           </button>
-          <button onClick={() => setBookmarkOpen(!bookmarkOpen)} className="p-2.5 bg-muted rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-brand" aria-label="Bookmark">
+          <button onClick={() => setBookmarkOpen(!bookmarkOpen)} className="p-2.5 bg-muted rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-brand-ink" aria-label="Bookmark">
             <BookmarkPlus className="w-4 h-4" />
           </button>
         </div>
@@ -261,7 +261,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         
         {selectionCoords && selection && (
           <div 
-            className="absolute z-50 flex items-center gap-1 bg-card border border-border shadow-lg rounded-xl p-1 animate-in zoom-in-95 duration-200"
+            className="absolute z-50 flex items-center gap-1 bg-card border border-border shadow-[0_4px_16px_rgba(31,36,32,0.18)] rounded-control p-1 animate-in zoom-in-95 duration-200"
             style={{ 
               left: Math.max(10, selectionCoords.x - 60), 
               top: Math.max(10, selectionCoords.y - 50) 
@@ -271,7 +271,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
               <Highlighter className="w-4 h-4" /> <span className="hidden sm:inline">Sorot</span>
             </button>
             <div className="w-px h-6 bg-border mx-1"></div>
-            <button onClick={addBookmark} className="p-2 hover:bg-muted text-brand rounded-lg flex items-center gap-2 text-sm font-medium transition-colors" title="Bookmark">
+            <button onClick={addBookmark} className="p-2 hover:bg-muted text-brand-ink rounded-lg flex items-center gap-2 text-sm font-medium transition-colors" title="Bookmark">
               <BookmarkPlus className="w-4 h-4" /> <span className="hidden sm:inline">Tandai</span>
             </button>
             <div className="w-px h-6 bg-border mx-1"></div>

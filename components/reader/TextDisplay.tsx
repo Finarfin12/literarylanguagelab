@@ -10,6 +10,7 @@ import { createClient } from "@/utils/supabase/client";
 import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer";
 import ReaderBlock, { type ReaderUnit } from "./ReaderBlock";
 import InteractiveParagraph from "./InteractiveParagraph";
+import MagicWandButton from "./MagicWandButton";
 import { paginate, pageOfBlock, chapterMarks } from "@/lib/reader-pages";
 import { beginnerModeLevel } from "@/lib/cefr";
 import { Search } from "lucide-react";
@@ -648,9 +649,9 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const widthClass = readPrefs.text_width === "narrow" ? "max-w-xl" : 
                      readPrefs.text_width === "wide" ? "max-w-5xl" : "max-w-3xl";
 
-  let themeClass = readPrefs.theme === "dark" ? "bg-gray-900 text-gray-100" :
-                   readPrefs.theme === "sepia" ? "bg-[#f4ecd8] text-[#5b4636]" : 
-                   "bg-background text-foreground"; // Default to global theme for 'light'
+  let themeClass = readPrefs.theme === "dark" ? "bg-[#17150f] text-[#ede6d6]" :
+                   readPrefs.theme === "sepia" ? "bg-[#f4ecd8] text-[#43352a]" : 
+                   "bg-paper text-ink"; // Terang: kertas hangat (DESIGN.md §3.3); mengikuti tema gelap global lewat token
 
   if (displayPrefs.high_contrast) {
     if (readPrefs.theme === "dark") {
@@ -743,7 +744,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                 aria-label="Lompat ke bab"
                 value={[...chapters].reverse().find((c) => c.page <= pageIndex)?.index ?? ""}
                 onChange={(e) => goToBlock(Number(e.target.value))}
-                className="min-w-0 max-w-[45vw] md:max-w-xs bg-muted border border-border rounded-lg px-2 py-1.5 text-sm text-foreground truncate"
+                className="min-w-0 max-w-[45vw] md:max-w-xs min-h-[44px] bg-muted border border-border rounded-control px-2 py-1.5 text-sm text-foreground truncate"
               >
                 <option value="" disabled>Bab…</option>
                 {chapters.map((c) => (
@@ -760,7 +761,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           </div>
           <button 
             onClick={() => setShowCompanion(true)} 
-            className="shrink-0 min-h-[40px] px-4 py-2 bg-brand-solid hover:bg-brand-hover text-on-brand rounded-full font-medium flex items-center gap-2 text-sm"
+            className="shrink-0 min-h-[44px] px-4 py-2 bg-brand-solid hover:bg-brand-hover text-on-brand rounded-full font-medium flex items-center gap-2 text-sm"
           >
             <MessageSquareQuote className="w-4 h-4" />
             <span className="hidden md:inline">Ask AI Companion</span>
@@ -769,26 +770,26 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
         </div>
 
         {pages.length > 1 && (
-          <div className="sticky top-[53px] z-20 h-1 bg-muted" aria-hidden="true">
+          <div className="sticky top-[53px] z-20 h-[3px] bg-rule" aria-hidden="true">
             <div className="h-full bg-brand" style={{ width: `${((pageIndex + 1) / pages.length) * 100}%` }} />
           </div>
         )}
 
         {/* Global Controls for Beginner Mode */}
         <div className="bg-muted/30 border-b border-border px-4 md:px-6 py-2 md:py-3 flex flex-wrap items-center justify-center gap-3 md:gap-4 text-sm z-10 relative">
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-2 cursor-pointer min-h-[44px]">
             <input type="checkbox" checked={isBeginnerMode} onChange={e => setIsBeginnerMode(e.target.checked)} className="w-4 h-4 accent-brand" />
             <span className="font-bold">Beginner Mode</span>
           </label>
           
           {isBeginnerMode && (
             <div className="flex items-center gap-4 animate-in fade-in slide-in-from-left-4">
-              <select value={beginnerLevel} onChange={e => setBeginnerLevel(e.target.value)} className="bg-background border border-border rounded-lg px-2 py-1 text-sm focus:outline-none">
+              <select value={beginnerLevel} onChange={e => setBeginnerLevel(e.target.value)} className="bg-card border border-border rounded-control px-2 py-1 min-h-[44px] text-sm focus:outline-none focus:border-brand-solid">
                 <option value="A2">Level A2 (Dasar)</option>
                 <option value="B1">Level B1 (Menengah)</option>
                 <option value="B2">Level B2 (Menengah atas)</option>
               </select>
-              <select value={beginnerLayout} onChange={e => setBeginnerLayout(e.target.value as any)} className="bg-background border border-border rounded-lg px-2 py-1 text-sm focus:outline-none">
+              <select value={beginnerLayout} onChange={e => setBeginnerLayout(e.target.value as any)} className="bg-card border border-border rounded-control px-2 py-1 min-h-[44px] text-sm focus:outline-none focus:border-brand-solid">
                 <option value="inline">Ganti Teks (Inline)</option>
                 <option value="below">Berdampingan (Bawah)</option>
                 <option value="split">Layar Belah (Split)</option>
@@ -810,14 +811,14 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
         <div className={`${widthClass} mx-auto px-4 md:px-8 py-8 md:py-12`}>
           {pageIndex === 0 && (
           <header className="mb-8 md:mb-12 text-center">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: dyslexicStyle.fontFamily ? dyslexicStyle.fontFamily : 'inherit' }}>{title}</h1>
+            <h1 className={`text-[28px] md:text-4xl font-medium leading-[1.15] mb-4 ${readPrefs.font_family === "sans-serif" ? "font-sans font-bold" : "font-serif"}`} style={dyslexicStyle.fontFamily ? { fontFamily: dyslexicStyle.fontFamily } : undefined}>{title}</h1>
             <p className="text-lg md:text-xl italic opacity-80">by {author}</p>
           </header>
           )}
 
           <div 
             ref={contentRef}
-            className={`prose-literature ${fontClass} leading-loose opacity-90`}
+            className={`prose-literature ${fontClass}`}
             style={customStyle}
             role={displayPrefs.screen_reader ? "article" : undefined}
             aria-label={displayPrefs.screen_reader ? `Buku: ${title} oleh ${author}` : undefined}
@@ -852,7 +853,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
               <button
                 onClick={() => goToPage(pageIndex - 1)}
                 disabled={pageIndex === 0}
-                className="flex-1 sm:flex-none min-h-[48px] px-4 rounded-xl border border-border bg-card hover:bg-muted disabled:opacity-40 flex items-center justify-center gap-2 text-sm font-bold"
+                className="flex-1 sm:flex-none min-h-[48px] px-4 rounded-control border border-border bg-card hover:bg-muted disabled:opacity-40 flex items-center justify-center gap-2 text-sm font-bold"
               >
                 <ChevronLeft className="w-4 h-4" /> Sebelumnya
               </button>
@@ -862,7 +863,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
               <button
                 onClick={() => goToPage(pageIndex + 1)}
                 disabled={pageIndex >= pages.length - 1}
-                className="flex-1 sm:flex-none min-h-[48px] px-4 rounded-xl bg-brand text-background hover:bg-brand-hover disabled:opacity-40 flex items-center justify-center gap-2 text-sm font-bold"
+                className="flex-1 sm:flex-none min-h-[48px] px-4 rounded-control bg-brand-solid text-on-brand hover:bg-brand-hover disabled:opacity-40 flex items-center justify-center gap-2 text-sm font-bold"
               >
                 Berikutnya <ChevronRight className="w-4 h-4" />
               </button>
@@ -896,8 +897,8 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
 
       {/* Quiz Modal Overlay */}
       {showQuizModal && (
-        <div className="absolute inset-0 z-[100] bg-background/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
-          <div className="bg-card border border-border shadow-2xl rounded-3xl max-w-lg w-full overflow-hidden">
+        <div className="absolute inset-0 z-[100] bg-black/40 flex flex-col items-center justify-center p-6 animate-in fade-in duration-300">
+          <div className="bg-card border border-border shadow-[0_8px_32px_rgba(31,36,32,0.18)] rounded-card max-w-lg w-full overflow-hidden">
             <div className="bg-brand-solid p-6 text-on-brand text-center relative overflow-hidden">
               <BrainCircuit className="w-24 h-24 absolute -right-4 -top-4 opacity-20" />
               <h3 className="text-2xl font-bold font-serif relative z-10">Comprehension Checkpoint</h3>
@@ -981,8 +982,8 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
 
       {/* Listening Modal Overlay */}
       {showListeningModal && (
-        <div className="absolute inset-0 z-[100] bg-background/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
-          <div className="bg-card border border-border shadow-2xl rounded-3xl max-w-lg w-full overflow-hidden">
+        <div className="absolute inset-0 z-[100] bg-black/40 flex flex-col items-center justify-center p-6 animate-in fade-in duration-300">
+          <div className="bg-card border border-border shadow-[0_8px_32px_rgba(31,36,32,0.18)] rounded-card max-w-lg w-full overflow-hidden">
             <div className="bg-brand p-6 text-white text-center relative overflow-hidden">
               <Headphones className="w-24 h-24 absolute -right-4 -top-4 opacity-20" />
               <h3 className="text-2xl font-bold font-serif relative z-10">Listening Challenge</h3>
@@ -1063,8 +1064,8 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
 
       {/* Writing Prompt Overlay */}
       {showWritingPrompt && (
-        <div className="absolute inset-0 z-[100] bg-background/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
-          <div className="bg-card border border-border shadow-2xl rounded-3xl max-w-2xl w-full overflow-hidden">
+        <div className="absolute inset-0 z-[100] bg-black/40 flex flex-col items-center justify-center p-6 animate-in fade-in duration-300">
+          <div className="bg-card border border-border shadow-[0_8px_32px_rgba(31,36,32,0.18)] rounded-card max-w-2xl w-full overflow-hidden">
             <div className="bg-brand-solid p-6 text-on-brand text-center relative overflow-hidden">
               <BookOpen className="w-24 h-24 absolute -right-4 -top-4 opacity-20" />
               <h3 className="text-2xl font-bold font-serif relative z-10">Latihan Menulis</h3>
@@ -1180,21 +1181,19 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
         />
       )}
 
-      {/* Floating Action Button for Inspect Mode */}
-      <button
-        onClick={() => {
+      {/* Tongkat Ajaib (Inspect Mode): bisa digeser, menempel ke tepi; disembunyikan saat panel Word Lookup terbuka */}
+      <MagicWandButton
+        active={isInspectMode}
+        hidden={activeSidebar !== null}
+        onToggle={() => {
           setIsInspectMode(!isInspectMode);
           if (isInspectMode) setInspectedSentence(null);
         }}
-        className={`fixed bottom-24 right-4 md:bottom-8 md:left-8 md:right-auto z-[90] p-4 rounded-full shadow-lg transition-all flex items-center justify-center gap-2 group ${isInspectMode ? 'bg-brand text-white animate-pulse' : 'bg-card border border-border text-foreground hover:bg-muted'}`}
-        title={isInspectMode ? "Matikan Tongkat Ajaib" : "Aktifkan Tongkat Ajaib"}
-      >
-        <Wand2 className="w-6 h-6" />
-      </button>
+      />
 
       {/* Inspect Mode Bottom Sheet */}
       {isInspectMode && inspectedSentence && (
-        <div className="fixed inset-x-0 bottom-0 md:inset-auto md:bottom-8 md:left-1/2 md:-translate-x-1/2 z-[100] bg-background/95 border-t md:border border-border rounded-t-3xl md:rounded-3xl shadow-2xl p-6 md:w-[600px] animate-in slide-in-from-bottom-8">
+        <div className="fixed inset-x-0 bottom-0 md:inset-auto md:bottom-8 md:left-1/2 md:-translate-x-1/2 z-[100] bg-card border-t md:border border-border rounded-t-[20px] md:rounded-card shadow-[0_-8px_32px_rgba(31,36,32,0.18)] p-6 md:w-[600px] animate-in slide-in-from-bottom-8">
           <div className="flex justify-between items-start mb-4">
             <h3 className="font-bold text-foreground flex items-center gap-2">
               <Wand2 className="w-5 h-5 text-brand" />
@@ -1205,7 +1204,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
             </button>
           </div>
           
-          <div className="bg-muted/50 p-4 rounded-2xl mb-6">
+          <div className="bg-muted p-4 rounded-card mb-6">
             <p className="text-lg font-serif italic text-foreground leading-relaxed">
               "{inspectedSentence}"
             </p>

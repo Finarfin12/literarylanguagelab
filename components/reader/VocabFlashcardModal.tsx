@@ -110,8 +110,8 @@ export default function VocabFlashcardModal({ textContext, textId, onClose }: Vo
 
   if (loading) {
     return (
-      <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-300">
-        <Loader2 className="w-12 h-12 animate-spin text-brand mb-6" />
+      <div className="fixed inset-0 z-[100] bg-background/95 flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-300">
+        <Loader2 className="w-12 h-12 animate-spin text-brand-ink mb-6" />
         <h2 className="text-2xl font-serif font-bold animate-pulse text-foreground text-center px-4">Extracting Chapter Vocabulary...</h2>
         <p className="text-muted-foreground mt-2 text-center max-w-md px-4">
           AI sedang menganalisis bagian buku ini untuk menemukan kata-kata penting secara on-demand.
@@ -126,18 +126,18 @@ export default function VocabFlashcardModal({ textContext, textId, onClose }: Vo
   const isSaved = savedWords.has(currentWord.word);
 
   return (
-    <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-md flex flex-col items-center justify-center p-4 sm:p-8 animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[100] bg-background/95 flex flex-col items-center justify-center p-4 sm:p-8 animate-in fade-in duration-300">
       
       <button 
         onClick={onClose}
-        className="absolute top-6 right-6 p-2 bg-muted text-muted-foreground hover:bg-brand-hover hover:text-white rounded-full transition-colors z-10"
+        className="absolute top-4 right-4 w-11 h-11 flex items-center justify-center bg-muted text-muted-foreground hover:bg-brand-solid hover:text-on-brand rounded-full transition-colors z-10"
         title="Tutup & Kembali Membaca"
       >
         <X className="w-6 h-6" />
       </button>
 
       <div className="text-center mb-6 mt-10">
-        <div className="w-12 h-12 bg-brand/10 text-brand rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-12 h-12 bg-brand-tint text-brand-ink rounded-full flex items-center justify-center mx-auto mb-4">
           <BrainCircuit className="w-6 h-6" />
         </div>
         <h2 className="text-2xl font-serif font-bold text-foreground mb-1">Chapter Vocabulary</h2>
@@ -157,15 +157,15 @@ export default function VocabFlashcardModal({ textContext, textId, onClose }: Vo
         <div className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${showAnswer ? "[transform:rotateY(180deg)]" : ""}`}>
           
           {/* Front */}
-          <div className="absolute inset-0 [backface-visibility:hidden] bg-card border border-border shadow-2xl rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center">
+          <div className="absolute inset-0 [backface-visibility:hidden] bg-card border border-border shadow-[0_8px_32px_rgba(31,36,32,0.18)] rounded-card p-6 sm:p-10 flex flex-col items-center justify-center text-center">
             <h2 className="text-4xl sm:text-5xl font-serif font-bold text-foreground mb-6">{currentWord.word}</h2>
             <p className="text-muted-foreground flex items-center gap-2 text-sm"><BrainCircuit className="w-4 h-4" /> Klik untuk melihat arti</p>
           </div>
 
           {/* Back */}
-          <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center">
+          <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 rounded-card p-6 sm:p-10 flex flex-col items-center justify-center text-center">
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground mb-3 sm:mb-4">{currentWord.word}</h2>
-            <div className="text-lg sm:text-xl text-brand font-medium mb-4 sm:mb-6"><Markdown>{currentWord.definition}</Markdown></div>
+            <div className="text-lg sm:text-xl text-brand-ink font-medium mb-4 sm:mb-6"><Markdown>{currentWord.definition}</Markdown></div>
             <div className="bg-muted/50 p-3 sm:p-4 rounded-xl text-sm italic text-muted-foreground border-l-4 border-l-brand w-full">
               "{currentWord.example}"
             </div>
@@ -196,7 +196,7 @@ export default function VocabFlashcardModal({ textContext, textId, onClose }: Vo
         </button>
         <button 
           onClick={handleNextCard}
-          className="p-3 sm:p-4 rounded-2xl bg-brand text-background shadow-lg shadow-brand/20 hover:scale-[1.02] active:scale-95 transition-all flex-[2] flex items-center justify-center gap-2 font-bold text-base sm:text-lg"
+          className="p-3 sm:p-4 rounded-2xl bg-brand-solid text-on-brand hover:scale-[1.02] active:scale-95 transition-all flex-[2] flex items-center justify-center gap-2 font-bold text-base sm:text-lg"
         >
           {cardIndex === vocabList.length - 1 ? "Selesai" : "Selanjutnya"} <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>

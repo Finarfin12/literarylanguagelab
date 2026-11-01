@@ -29,7 +29,7 @@ export default function BookmarkSidebar({ open, bookmarks, onGoTo, onDelete, onC
     <ResponsivePanel open={open} onClose={onClose} label="Bookmarks" width="320px">
       <div className="p-4 border-b border-border flex items-center justify-between shrink-0">
         <h3 className="font-bold text-foreground flex items-center gap-2">
-          <BookmarkPlus className="w-4 h-4 text-brand" />
+          <BookmarkPlus className="w-4 h-4 text-brand-ink" />
           Bookmarks
         </h3>
         <button onClick={onClose} aria-label="Tutup" className="p-2.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground">
@@ -51,7 +51,7 @@ export default function BookmarkSidebar({ open, bookmarks, onGoTo, onDelete, onC
               {bookmarksOnly.map((b) => (
                 <div
                   key={b.id}
-                  className="bg-muted rounded-xl p-3 cursor-pointer hover:bg-brand/10 transition-colors group"
+                  className="bg-muted rounded-xl p-3 cursor-pointer hover:bg-brand-tint transition-colors group"
                   onClick={() => onGoTo(b.position)}
                 >
                   <div className="flex items-center justify-between">
@@ -76,7 +76,7 @@ export default function BookmarkSidebar({ open, bookmarks, onGoTo, onDelete, onC
               {highlights.map((h) => (
                 <div
                   key={h.id}
-                  className="rounded-xl p-3 cursor-pointer hover:bg-brand/10 transition-colors group border-l-4"
+                  className="rounded-xl p-3 cursor-pointer hover:bg-brand-tint transition-colors group border-l-4"
                   style={{ borderLeftColor: h.color || "#FFEB3B", backgroundColor: `${h.color || "#FFEB3B"}10` }}
                   onClick={() => onGoTo(h.position)}
                 >

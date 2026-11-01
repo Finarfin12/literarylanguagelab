@@ -269,28 +269,28 @@ export default function WordLookupSidebar({ word, contextSentence, textId, posit
   if (!word) return null;
 
   return (
-    <div className="flex flex-col h-full bg-background backdrop-blur-xl relative overflow-hidden">
+    <div className="flex flex-col h-full bg-background relative overflow-hidden">
       <div className="p-4 border-b border-border flex items-center justify-between z-10 relative">
         <div className="flex items-center gap-3">
-          <h2 className="text-xl font-serif font-bold text-foreground truncate max-w-[150px] flex items-center gap-2">
+          <h2 className="text-xl font-serif font-medium text-foreground truncate max-w-[150px] flex items-center gap-2">
             {word}
             {emoji && <span className="text-2xl ml-1">{emoji}</span>}
           </h2>
           <button 
             onClick={speakWord} 
-            className="p-1.5 bg-brand/10 text-brand rounded-full hover:bg-brand/20 transition-colors"
+            className="w-11 h-11 flex items-center justify-center bg-brand-tint text-brand-ink rounded-full hover:bg-brand-tint/70 transition-colors"
             title="Listen to pronunciation"
           >
             <Volume2 className="w-4 h-4" />
           </button>
         </div>
-        <button onClick={onClose} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-full text-muted-foreground transition-colors">
+        <button onClick={onClose} className="w-11 h-11 flex items-center justify-center hover:bg-muted rounded-full text-muted-foreground transition-colors" aria-label="Tutup Word Lookup">
           <X className="w-5 h-5" />
         </button>
       </div>
 
       {/* 12 Modes Grid */}
-      <div className="p-4 grid grid-cols-3 gap-2 border-b border-border z-10 relative overflow-y-auto max-h-[30vh]">
+      <div className="p-4 grid grid-cols-4 gap-2 border-b border-border z-10 relative overflow-y-auto max-h-[40vh]">
         {MODES.map((m) => {
           const Icon = m.icon;
           const isActive = activeMode === m.id;
@@ -299,10 +299,10 @@ export default function WordLookupSidebar({ word, contextSentence, textId, posit
               key={m.id}
               onClick={() => fetchAnalysis(word, m.id)}
               disabled={loading && !isActive}
-              className={`flex flex-col items-center gap-1 p-2 rounded-xl text-[10px] font-medium transition-all text-center ${
+              className={`flex flex-col items-center justify-center gap-0.5 min-h-[56px] p-1.5 rounded-control text-[11px] font-medium transition-colors text-center ${
                 isActive 
-                  ? "bg-brand/20 text-brand border border-brand/30 shadow-inner" 
-                  : "bg-muted text-muted-foreground hover:bg-muted hover:bg-muted/80 border border-transparent"
+                  ? "bg-brand-tint text-brand-ink border border-brand-solid" 
+                  : "bg-muted text-muted-foreground hover:text-foreground border border-transparent"
               } ${(loading && !isActive) ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <Icon className="w-4 h-4 mb-1" />
@@ -313,13 +313,13 @@ export default function WordLookupSidebar({ word, contextSentence, textId, posit
       </div>
 
       <div className="flex-1 overflow-y-auto p-6 z-10 relative">
-        <div className="bg-card shadow-sm border border-border rounded-2xl p-4 mb-6">
+        <div className="bg-card border border-border rounded-card p-4 mb-6">
           <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider font-bold">Konteks Kalimat</p>
           <p className="text-sm italic text-foreground/80 leading-relaxed">"{contextSentence}"</p>
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-12 text-brand">
+          <div className="flex flex-col items-center justify-center py-12 text-brand-ink">
             <Loader2 className="w-10 h-10 animate-spin mb-4" />
             <p className="text-sm font-medium animate-pulse">Menjalankan {MODES.find(m => m.id === activeMode)?.label}...</p>
           </div>
@@ -334,13 +334,13 @@ export default function WordLookupSidebar({ word, contextSentence, textId, posit
               <div className="space-y-3 mt-4">
                 <p className="text-sm font-medium text-foreground mb-4">Literary Collocations for <strong>{word}</strong>:</p>
                 {result && JSON.parse(result).map((col: string, idx: number) => (
-                  <div key={idx} className="p-3 bg-brand/5 border border-brand/20 rounded-xl text-brand font-serif text-lg text-center">
+                  <div key={idx} className="p-3 bg-brand-tint border border-brand/30 rounded-control text-brand-ink font-serif text-lg text-center">
                     {col}
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="prose prose-sm dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:text-brand prose-headings:font-serif">
+              <div className="prose prose-sm dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:text-brand-ink prose-headings:font-serif">
                 {result && <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>}
               </div>
             )}
@@ -352,10 +352,10 @@ export default function WordLookupSidebar({ word, contextSentence, textId, posit
         <button 
           onClick={() => handleSaveToVocab()}
           disabled={saving || saved || loading}
-          className={`w-full py-3 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all ${
+          className={`w-full min-h-[48px] py-3 rounded-control flex items-center justify-center gap-2 font-semibold text-sm transition-colors ${
             saved 
               ? "bg-brand-tint text-brand-ink border border-brand/30" 
-              : "bg-brand text-background"
+              : "bg-brand-solid text-on-brand"
           } disabled:opacity-50`}
         >
           {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <BookmarkPlus className="w-5 h-5" />}

@@ -80,7 +80,7 @@ export default function ReadingCompanionSidebar({ title, author, content, onClos
   }
 
   return (
-    <div className="fixed bottom-4 right-4 left-4 md:left-auto md:bottom-8 md:right-8 md:w-[450px] h-[75vh] max-h-[800px] bg-card md:bg-background/95 border border-border rounded-3xl shadow-2xl flex flex-col overflow-hidden z-[100] animate-in slide-in-from-bottom-8 zoom-in-95">
+    <div className="fixed bottom-4 right-4 left-4 md:left-auto md:bottom-8 md:right-8 md:w-[450px] h-[75vh] max-h-[800px] bg-card md:bg-background/95 border border-border rounded-card shadow-[0_8px_32px_rgba(31,36,32,0.18)] flex flex-col overflow-hidden z-[100] animate-in slide-in-from-bottom-8 zoom-in-95">
       {/* Header */}
       <div className="p-4 md:p-5 border-b border-border flex items-center justify-between z-10 bg-card md:bg-background/80">
         <div className="flex items-center gap-3">

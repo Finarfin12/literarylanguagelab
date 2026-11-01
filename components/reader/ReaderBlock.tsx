@@ -82,11 +82,11 @@ function ReaderBlock({
         />
       </div>
       {!isHeading && (
-        <div className="w-9 pt-1 shrink-0 flex flex-col gap-1 items-center justify-start">
+        <div className="w-11 pt-1 shrink-0 flex flex-col gap-1 items-center justify-start">
           {ttsEnabled && (
             <button
               onClick={() => onToggleSpeech(block.text, index)}
-              className={`p-2 rounded-full ${speaking ? "opacity-100 bg-brand/20 text-brand animate-pulse" : "opacity-40 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"}`}
+              className={`w-11 h-11 flex items-center justify-center rounded-full ${speaking ? "opacity-100 bg-brand-tint text-brand-ink animate-pulse" : "opacity-40 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"}`}
               title={speaking ? "Stop Reading" : "Read Aloud"}
               aria-label={speaking ? "Hentikan suara" : "Bacakan paragraf"}
             >
@@ -95,7 +95,7 @@ function ReaderBlock({
           )}
           <button
             onClick={() => onToggleSyntax(index)}
-            className={`p-2 rounded-full ${showSyntax ? "opacity-100 bg-blue-500/20 text-blue-500" : "opacity-40 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 bg-muted text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500"}`}
+            className={`w-11 h-11 flex items-center justify-center rounded-full ${showSyntax ? "opacity-100 bg-blue-500/20 text-blue-500" : "opacity-40 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 bg-muted text-muted-foreground hover:bg-blue-500/10 hover:text-blue-500"}`}
             title={showSyntax ? "Tutup Bedah Sintaksis" : "Bedah Sintaksis"}
             aria-label={showSyntax ? "Tutup bedah sintaksis" : "Bedah sintaksis"}
           >
