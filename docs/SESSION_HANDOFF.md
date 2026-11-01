@@ -19,6 +19,7 @@
 | 14g (v4) Pengayaan Kosakata Inti (definisi & bentuk kata NGSL) | Selesai di kode. Migrasi `0015_core_words_enrichment.sql` **belum dijalankan**; setelah itu jalankan `scripts/enrich-ngsl.mjs` (`--dry-run` dulu) dengan CSV definisi & bentuk kata | lihat `git log` |
 | 12 (v4) Fondasi desain | Selesai di kode (token warna v4, Source Sans 3 + Alegreya + Michelangelus via `local()`, komponen dasar + `Eyebrow`/`SectionHeading`/`BookSpine`/`ProgressBar`, `tests/contrast.test.mts`, `scripts/v4-restyle.mjs` sudah dijalankan; laporan `docs/v4/restyle-report.md`). Tanpa migrasi. Tinjauan manual tersisa di laporan (gradasi/blur/animate-pulse, berkas pengecualian) untuk Fase 14 | lihat `git log` |
 | 13 (v4) Navigasi & tiga Ruang | Selesai di kode (`lib/rooms.ts`, `/ruang`, `/ruang/[slug]`, Sidebar & Menu HP per ruang, bottom nav Q1, cookie `lll_onboarded` terikat id pengguna, `tests/menu-coverage.test.mts`). 13.5 "5 alat ke Lainnya" **dilewati** atas keputusan pemilik (menu lama 62 item, 56 non-advanced; kriteria ≤30 tidak relevan lagi karena navigasi per ruang). Tanpa migrasi | lihat `git log` |
+| 14a (v4) Beranda & ruang | Selesai di kode (Beranda, onboarding, LevelProgressCard, TranslatorStageCard, grafik; halaman ruang sudah v4 sejak Fase 13). Tanpa migrasi | lihat `git log` |
 
 **Handoff sesi terbaru (1 Nov 2026): [`HANDOFF_NEXT_SESSION.md`](HANDOFF_NEXT_SESSION.md)** — keadaan repo, status migrasi, tindakan menunggu pemilik, jebakan, resep verifikasi, dan prompt pembuka.
 

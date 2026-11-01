@@ -36,6 +36,7 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 | Login & daftar (email + OAuth) | `app/(auth)/login`, `app/(auth)/register`, `app/(auth)/actions.ts`, `components/ui/OAuthButtons.tsx` |
 | Onboarding 3 langkah (level / tujuan / waktu), bisa dilewati | `app/(dashboard)/onboarding/` |
 | Beranda: Langkah berikutnya (`lib/next-step.ts`), alat sesuai tujuan, Lanjutkan Membaca (+progres, termasuk Gutenberg), Kosa Kata Hari Ini, Progres Pribadi + grafik, pintasan, loading skeleton | `app/(dashboard)/dashboard/` |
+| **(14a, ✅ diuji 375px/1280px, terang/gelap, keadaan kosong)** Beranda v4: sapaan serif, Langkah berikutnya + Kosa Kata Hari Ini, rak Lanjutkan Membaca (sampul, progres), blok baru "Tiga ruang belajar" (tanda Tujuanmu), Progres Pribadi + grafik (warna ikut tema), Alat untuk kamu, pintasan, skeleton | `app/(dashboard)/dashboard/`, `components/dashboard/VocabChart.tsx` |
 
 ## C. Membaca (Library, Buku Klasik, Reader)
 

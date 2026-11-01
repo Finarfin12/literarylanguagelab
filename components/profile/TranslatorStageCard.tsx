@@ -34,11 +34,11 @@ export default function TranslatorStageCard() {
   if (!data || !data.show) return null;
 
   return (
-    <div className="bg-card border border-border rounded-3xl p-6 mb-8">
-      <h2 className="text-lg font-bold mb-1 flex items-center gap-2"><Languages className="w-5 h-5 text-brand" /> Tahap penerjemah</h2>
+    <div className="bg-card border border-border rounded-card p-5 md:p-7 mb-8">
+      <h2 className="font-serif text-xl font-medium mb-1 flex items-center gap-2"><Languages className="w-5 h-5 text-brand-ink" aria-hidden="true" /> Tahap penerjemah</h2>
       {data.stage ? (
         <>
-          <p className="text-2xl font-serif font-bold text-foreground mt-2">{data.stage.stage}</p>
+          <p className="text-2xl font-serif font-medium text-foreground mt-2">{data.stage.stage}</p>
           <p className="text-sm text-muted-foreground mt-1">
             Rata-rata skor rubrik {data.stage.average.toFixed(2)} dari 3, berdasarkan {data.stage.count} penilaian terakhir.
           </p>
@@ -47,7 +47,7 @@ export default function TranslatorStageCard() {
       ) : (
         <p className="text-sm text-muted-foreground mt-2">
           Belum ada penilaian. Nilai terjemahanmu dengan rubrik di{" "}
-          <Link href="/translation-workspace" className="text-brand underline">Ruang Kerja Segmen</Link> atau mode Rubrik di Translation Workshop.
+          <Link href="/translation-workspace" className="text-brand-ink underline">Ruang Kerja Segmen</Link> atau mode Rubrik di Translation Workshop.
         </p>
       )}
     </div>

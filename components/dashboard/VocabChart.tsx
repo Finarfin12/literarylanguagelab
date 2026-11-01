@@ -24,9 +24,9 @@ export default function VocabChart({ data }: VocabChartProps) {
   }
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
       <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
         <XAxis 
           dataKey="date" 
           stroke="currentColor" 
@@ -42,16 +42,16 @@ export default function VocabChart({ data }: VocabChartProps) {
           allowDecimals={false}
         />
         <Tooltip 
-          contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
-          itemStyle={{ color: '#3ECF8E' }}
+          contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--foreground)' }}
+          itemStyle={{ color: 'var(--brand-ink)' }}
         />
         <Line 
           type="monotone" 
           dataKey="count" 
-          stroke="#3ECF8E" 
+          stroke="var(--brand)" 
           strokeWidth={3} 
-          dot={{ r: 4, fill: '#3ECF8E', strokeWidth: 2, stroke: '#1A1A1A' }} 
-          activeDot={{ r: 6, fill: '#3ECF8E', stroke: '#fff', strokeWidth: 2 }} 
+          dot={{ r: 4, fill: 'var(--brand)', strokeWidth: 2, stroke: 'var(--card)' }} 
+          activeDot={{ r: 6, fill: 'var(--brand)', stroke: 'var(--card)', strokeWidth: 2 }} 
         />
       </LineChart>
     </ResponsiveContainer>

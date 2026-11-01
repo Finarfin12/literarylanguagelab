@@ -1,10 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
 import { getRequestUser } from "@/utils/supabase/get-user";
 import Link from "next/link";
-import { BookOpen, BookMarked, RefreshCcw, Clock, CheckCircle2, TrendingUp, ChevronRight, Library, Camera, Sparkles, Compass } from "lucide-react";
+import { BookOpen, BookMarked, Clock, CheckCircle2, TrendingUp, ChevronRight, Library, Camera, Sparkles } from "lucide-react";
 import VocabChart from "@/components/dashboard/VocabChart";
 import AnimatedPage from "@/components/AnimatedPage";
-import { ButtonLink, Card, CardTitle, EmptyState } from "@/components/ui/primitives";
+import { Badge, BookSpine, ButtonLink, Card, CardTitle, EmptyState, Eyebrow, ProgressBar, SectionHeading } from "@/components/ui/primitives";
+import { LEARNING_ROOMS } from "@/lib/rooms";
 import { getNextStep } from "@/lib/next-step";
 import { neighborLevels } from "@/lib/cefr";
 import { loadLevelContext } from "@/lib/skill-evidence";
@@ -185,93 +186,42 @@ export default async function DashboardPage() {
   const stats = [
     { icon: Clock, color: "text-foreground", label: "Waktu baca minggu ini", value: weeklyMinutes, unit: "menit" },
     { icon: CheckCircle2, color: "text-foreground", label: "Teks dibaca", value: completedTexts },
-    { icon: TrendingUp, color: "text-brand", label: "Review minggu ini", value: reviewedThisWeek },
+    { icon: TrendingUp, color: "text-brand-ink", label: "Review minggu ini", value: reviewedThisWeek },
     { icon: BookMarked, color: "text-foreground", label: "Total kosa kata", value: vocabCount },
   ];
 
+  const displayName = user?.user_metadata?.full_name || "Scholar";
+
   return (
-    <AnimatedPage className="p-4 lg:p-8 max-w-6xl mx-auto pb-24">
-      <div className="mb-6 md:mb-8">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">
-          Ruang Belajar, {user?.user_metadata?.full_name || "Scholar"}
-        </h1>
-        <p className="text-muted-foreground mt-1 md:mt-2 md:text-lg">Lanjutkan bacaan dan ulangi kosa kata yang sudah waktunya.</p>
-      </div>
+    <AnimatedPage className="px-4 md:px-6 py-6 lg:py-8 max-w-[960px] mx-auto pb-24">
+      {/* Sapaan */}
+      <header className="mb-8">
+        <Eyebrow>Ruang belajar</Eyebrow>
+        <h1 className="font-serif text-[32px] md:text-[44px] font-medium leading-[1.1] text-foreground mt-1">Halo, {displayName}</h1>
+        <p className="text-muted-foreground mt-2 md:text-lg">Lanjutkan bacaan dan ulangi kosa kata yang sudah waktunya.</p>
+      </header>
 
-      {/* Langkah berikutnya */}
-      <Card className="mb-4 md:mb-6 border-brand/30 bg-brand/5">
-        <CardTitle icon={<Compass className="w-5 h-5 text-brand" />}>Langkah berikutnya</CardTitle>
-        <p className="text-lg md:text-xl font-serif font-bold text-foreground">{nextStep.title}</p>
-        <p className="text-sm text-muted-foreground mt-1">{nextStep.reason}</p>
-        <div className="mt-4">
-          <ButtonLink href={nextStep.href}>Mulai</ButtonLink>
-        </div>
-      </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-6">
-        {/* Lanjutkan Membaca */}
-        <Card className="lg:col-span-2">
-          <CardTitle
-            icon={<BookOpen className="w-5 h-5 text-brand-ink" />}
-            action={
-              <Link href="/library" className="text-sm font-bold text-brand flex items-center gap-1 min-h-[44px]">
-                Library <ChevronRight className="w-4 h-4" />
-              </Link>
-            }
-          >
-            Lanjutkan Membaca
-          </CardTitle>
-          {continueReading.length > 0 ? (
-            <ul className="divide-y divide-border -mx-2">
-              {continueReading.map((t) => (
-                <li key={t.id}>
-                  <Link href={t.href} className="flex items-center gap-3 px-2 py-3 min-h-[56px] rounded-control hover:bg-muted transition-colors">
-                    <div className="w-10 h-10 rounded-control bg-muted flex items-center justify-center shrink-0">
-                      <BookOpen className="w-5 h-5 text-brand-ink" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-bold text-foreground truncate">{t.title}</p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {t.author ? `${t.author} · ` : ""}
-                        {formatAgo(t.lastActive)}
-                        {t.progress !== null && ` · ${Math.round(t.progress)}%`}
-                      </p>
-                      {t.progress !== null && (
-                        <div className="h-1 mt-1.5 rounded-full bg-muted overflow-hidden" aria-hidden="true">
-                          <div className="h-full bg-brand-solid" style={{ width: `${Math.min(100, t.progress)}%` }} />
-                        </div>
-                      )}
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <EmptyState
-              icon={<Library className="w-8 h-8" />}
-              title="Belum ada bacaan"
-              description="Pilih teks dari Library atau buku klasik dari Public Domain Books."
-              action={
-                <div className="flex flex-wrap gap-2 justify-center">
-                  <ButtonLink href="/library">Buka Library</ButtonLink>
-                  <ButtonLink href="/gutenberg" variant="secondary">Buku Klasik</ButtonLink>
-                </div>
-              }
-            />
-          )}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-10">
+        {/* Langkah berikutnya */}
+        <Card className="lg:col-span-2 border-brand-solid/40 bg-brand-tint/40 flex flex-col">
+          <Eyebrow active className="mb-2">Langkah berikutnya</Eyebrow>
+          <p className="font-serif text-[22px] md:text-[26px] font-medium leading-[1.2] text-foreground">{nextStep.title}</p>
+          <p className="text-sm md:text-base text-muted-foreground mt-2">{nextStep.reason}</p>
+          <div className="mt-5">
+            <ButtonLink href={nextStep.href}>Mulai</ButtonLink>
+          </div>
         </Card>
 
         {/* Kosakata Jatuh Tempo */}
         <Card className="flex flex-col">
-          <CardTitle icon={<RefreshCcw className="w-5 h-5 text-brand" />}>Kosa Kata Hari Ini</CardTitle>
-          <p className="text-2xl md:text-4xl font-serif font-bold text-foreground">
+          <Eyebrow className="mb-2">Kosa Kata Hari Ini</Eyebrow>
+          <p className="font-serif text-[32px] md:text-[40px] font-medium leading-none text-foreground nums">
             {dueCount} <span className="text-sm font-sans font-normal text-muted-foreground">kata menunggu review</span>
           </p>
           {dueWords.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-3">
               {dueWords.map((w) => (
-                <span key={w.id} className="text-xs px-2 py-1 rounded-full bg-muted text-foreground">
+                <span key={w.id} className="text-xs px-2.5 py-1 rounded-full bg-muted text-foreground">
                   {w.word}
                 </span>
               ))}
@@ -285,18 +235,96 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
+      {/* Lanjutkan Membaca (rak bacaan) */}
+      <section className="mb-10" aria-labelledby="rak-bacaan">
+        <SectionHeading
+          action={
+            <Link href="/library" className="font-semibold text-brand-ink flex items-center gap-1 min-h-[44px]">
+              Library <ChevronRight className="w-4 h-4" aria-hidden="true" />
+            </Link>
+          }
+        >
+          <span id="rak-bacaan">Lanjutkan Membaca</span>
+        </SectionHeading>
+        {continueReading.length > 0 ? (
+          <ul className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+            {continueReading.map((t) => (
+              <li key={t.id}>
+                <Link href={t.href} className="flex gap-4 h-full p-4 rounded-card border border-border bg-card hover:border-brand-solid transition-colors">
+                  <BookSpine title={t.title} subtitle={t.author ?? undefined} className="w-16" />
+                  <div className="min-w-0 flex-1 flex flex-col">
+                    <p className="font-serif text-lg font-medium leading-tight text-foreground line-clamp-2">{t.title}</p>
+                    <p className="text-xs text-muted-foreground mt-1 truncate">
+                      {t.author ? `${t.author} · ` : ""}
+                      {formatAgo(t.lastActive)}
+                    </p>
+                    {t.progress !== null && (
+                      <div className="mt-auto pt-3">
+                        <ProgressBar value={t.progress} label={`Progres membaca ${t.title}`} />
+                        <p className="text-xs text-muted-foreground mt-1 nums">{Math.round(t.progress)}%</p>
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Card>
+            <EmptyState
+              icon={<Library className="w-8 h-8" />}
+              title="Belum ada bacaan"
+              description="Pilih teks dari Library atau buku klasik dari Public Domain Books."
+              action={
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <ButtonLink href="/library">Buka Library</ButtonLink>
+                  <ButtonLink href="/gutenberg" variant="secondary">Buku Klasik</ButtonLink>
+                </div>
+              }
+            />
+          </Card>
+        )}
+      </section>
+
+      {/* Tiga ruang belajar */}
+      <section className="mb-10" aria-labelledby="tiga-ruang">
+        <SectionHeading
+          action={
+            <Link href="/ruang" className="font-semibold text-brand-ink flex items-center gap-1 min-h-[44px]">
+              Semua ruang <ChevronRight className="w-4 h-4" aria-hidden="true" />
+            </Link>
+          }
+        >
+          <span id="tiga-ruang">Tiga ruang belajar</span>
+        </SectionHeading>
+        <ul className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+          {LEARNING_ROOMS.map((room) => (
+            <li key={room.slug}>
+              <Link href={`/ruang/${room.slug}`} className="block h-full p-5 rounded-card border border-border bg-card hover:border-brand-solid transition-colors">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Eyebrow active={room.goal === personal.goal}>{room.eyebrow}</Eyebrow>
+                  {room.goal === personal.goal && <Badge>Tujuanmu</Badge>}
+                </div>
+                <p className="font-serif text-xl font-medium leading-tight text-foreground mt-1">{room.title}</p>
+                <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{room.description}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       {/* Progres Pribadi */}
       <Card>
-        <CardTitle icon={<TrendingUp className="w-5 h-5 text-brand" />}>Progres Pribadi</CardTitle>
+        <CardTitle icon={<TrendingUp className="w-5 h-5 text-brand-ink" />}>Progres Pribadi</CardTitle>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
           {stats.map(({ icon: Icon, color, label, value, unit }) => (
-            <div key={label} className="rounded-control bg-muted/50 p-3 md:p-4">
-              <Icon className={`w-4 h-4 ${color} mb-2`} />
-              <p className="text-2xl md:text-3xl font-serif font-bold text-foreground">
+            <div key={label} className="rounded-control bg-muted p-3 md:p-4">
+              <Icon className={`w-4 h-4 ${color} mb-2`} aria-hidden="true" />
+              <p className="font-serif text-[28px] md:text-3xl font-medium leading-none text-foreground nums">
                 {value}
                 {unit && <span className="text-sm font-sans font-normal text-muted-foreground"> {unit}</span>}
               </p>
-              <p className="text-xs text-muted-foreground mt-1">{label}</p>
+              <p className="text-xs text-muted-foreground mt-1.5">{label}</p>
             </div>
           ))}
         </div>
@@ -308,13 +336,13 @@ export default async function DashboardPage() {
 
       {/* Alat untuk kamu */}
       <Card className="mt-4 md:mt-6">
-        <CardTitle icon={<Sparkles className="w-5 h-5 text-brand" />}>Alat untuk kamu</CardTitle>
+        <CardTitle icon={<Sparkles className="w-5 h-5 text-brand-ink" />}>Alat untuk kamu</CardTitle>
         <p className="text-sm text-muted-foreground -mt-2 mb-4">Dipilih untuk tujuan: {GOAL_LABELS[goalForTools].title.toLowerCase()}. Ubah di Pengaturan.</p>
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {recommendedTools.map((t) => (
             <li key={t.path}>
               <Link href={t.path} className="block h-full p-3 min-h-[56px] rounded-control border border-border bg-card hover:bg-muted transition-colors">
-                <span className="block text-sm font-bold text-foreground">{t.name}</span>
+                <span className="block text-sm font-semibold text-foreground">{t.name}</span>
                 <span className="block text-xs text-muted-foreground mt-0.5">{t.description}</span>
               </Link>
             </li>
@@ -330,8 +358,8 @@ export default async function DashboardPage() {
           { href: "/vocabulary", label: "Bank Kosakata", icon: BookMarked },
           { href: "/tools", label: "Semua Alat", icon: Sparkles },
         ].map(({ href, label, icon: Icon }) => (
-          <Link key={href} href={href} className="flex items-center gap-2 p-3 min-h-[48px] rounded-control border border-border bg-card hover:bg-muted text-sm font-bold text-foreground transition-colors">
-            <Icon className="w-4 h-4 text-brand shrink-0" /> {label}
+          <Link key={href} href={href} className="flex items-center gap-2 p-3 min-h-[48px] rounded-control border border-border bg-card hover:bg-muted text-sm font-semibold text-foreground transition-colors">
+            <Icon className="w-4 h-4 text-brand-ink shrink-0" aria-hidden="true" /> {label}
           </Link>
         ))}
       </div>

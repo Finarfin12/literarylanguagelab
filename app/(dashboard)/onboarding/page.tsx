@@ -28,14 +28,14 @@ function Option({ selected, onClick, title, description }: { selected: boolean; 
       onClick={onClick}
       aria-pressed={selected}
       className={`w-full min-h-[56px] px-4 py-3 rounded-control border text-left flex items-center gap-3 transition-colors ${
-        selected ? "border-brand bg-brand/10" : "border-border bg-card hover:bg-muted"
+        selected ? "border-brand-solid bg-brand-tint" : "border-border bg-card hover:bg-muted"
       }`}
     >
       <span className="flex-1">
-        <span className="block font-bold text-foreground">{title}</span>
+        <span className="block font-semibold text-foreground">{title}</span>
         {description && <span className="block text-sm text-muted-foreground">{description}</span>}
       </span>
-      {selected && <Check className="w-5 h-5 text-brand shrink-0" />}
+      {selected && <Check className="w-5 h-5 text-brand-ink shrink-0" aria-hidden="true" />}
     </button>
   );
 }
@@ -66,15 +66,16 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="p-4 lg:p-8 max-w-xl mx-auto pb-24">
+    <div className="px-4 md:px-6 py-6 lg:py-8 max-w-xl mx-auto pb-24">
       <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground">Selamat datang di Literary Lab</h1>
+        <p className="text-[11px] md:text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground mb-1">Selamat datang</p>
+        <h1 className="font-serif text-[28px] md:text-4xl font-medium leading-[1.15] text-foreground">Literary Lab</h1>
         <p className="text-muted-foreground mt-1">Tiga pertanyaan singkat supaya beranda kamu pas. Bisa diubah kapan saja di Pengaturan.</p>
       </div>
 
       <ol className="flex items-center gap-2 mb-4" aria-label="Langkah onboarding">
         {STEPS.map((label, i) => (
-          <li key={label} className={`flex-1 text-center text-xs font-bold py-2 rounded-control ${i === step ? "bg-brand text-background" : i < step ? "bg-brand/10 text-brand" : "bg-muted text-muted-foreground"}`}>
+          <li key={label} className={`flex-1 text-center text-xs font-bold py-2 rounded-control ${i === step ? "bg-brand-solid text-on-brand" : i < step ? "bg-brand-tint text-brand-ink" : "bg-muted text-muted-foreground"}`}>
             {i + 1}. {label}
           </li>
         ))}
@@ -83,7 +84,7 @@ export default function OnboardingPage() {
       <Card>
         {step === 0 && (
           <fieldset className="space-y-2">
-            <legend className="font-bold text-foreground mb-3">Level bahasa Inggris kamu?</legend>
+            <legend className="font-serif text-xl font-medium text-foreground mb-3">Level bahasa Inggris kamu?</legend>
             <Option
               selected={level === LEVEL_UNKNOWN}
               onClick={() => setLevel(LEVEL_UNKNOWN)}
@@ -98,7 +99,7 @@ export default function OnboardingPage() {
 
         {step === 1 && (
           <fieldset className="space-y-2">
-            <legend className="font-bold text-foreground mb-3">Tujuan utama?</legend>
+            <legend className="font-serif text-xl font-medium text-foreground mb-3">Tujuan utama?</legend>
             {LEARNING_GOALS.map((g) => (
               <Option key={g} selected={goal === g} onClick={() => setGoal(g)} title={GOAL_LABELS[g].title} description={GOAL_LABELS[g].description} />
             ))}
@@ -107,7 +108,7 @@ export default function OnboardingPage() {
 
         {step === 2 && (
           <fieldset className="space-y-2">
-            <legend className="font-bold text-foreground mb-3">Waktu belajar per hari?</legend>
+            <legend className="font-serif text-xl font-medium text-foreground mb-3">Waktu belajar per hari?</legend>
             {DAILY_MINUTES.map((m) => (
               <Option key={m} selected={minutes === m} onClick={() => setMinutes(m)} title={m === 30 ? "30 menit atau lebih" : `${m} menit`} />
             ))}
