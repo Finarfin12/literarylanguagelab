@@ -3,11 +3,31 @@
 import { useState, useEffect, useRef, memo } from "react";
 import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer";
 import { Loader2 } from "lucide-react";
+import { chunkText } from "@/lib/reader/sentence-chunks";
 
 interface SyntaxToken {
   word: string;
   role: "Subject" | "Verb" | "Object" | "Other";
 }
+
+/** Satu potongan teks ke /api/highlight-syntax; mengembalikan token atau pesan error dari server. */
+async function fetchSyntaxChunk(text: string): Promise<{ tokens: SyntaxToken[]; error?: undefined } | { tokens?: undefined; error: string }> {
+  try {
+    const res = await fetch("/api/highlight-syntax", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && Array.isArray(data.tokens)) return { tokens: data.tokens };
+    return { error: typeof data.error === "string" ? `Gagal membedah sintaksis: ${data.error}` : "Gagal membedah sintaksis. Server sibuk." };
+  } catch {
+    return { error: "Gagal membedah sintaksis. Periksa koneksi." };
+  }
+}
+
+/** Jumlah potongan yang dibedah bersamaan (menjaga batas permintaan per menit). */
+const SYNTAX_PARALLEL = 3;
 
 interface InteractiveParagraphProps {
   text: string;
@@ -105,17 +125,27 @@ function InteractiveParagraph({
       loadingSyntaxRef.current = true;
       setLoadingSyntax(true);
       try {
-        const res = await fetch("/api/highlight-syntax", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text })
-        });
-        const data = await res.json();
-        if (isMounted && data.tokens) {
+        // Paragraf dipecah per 2 kalimat: paragraf panjang membuat AI mengembalikan JSON terlalu besar/tidak valid
+        const chunks = chunkText(text);
+        const results: (SyntaxToken[] | null)[] = new Array(chunks.length).fill(null);
+        let lastError = "";
+        for (let i = 0; i < chunks.length; i += SYNTAX_PARALLEL) {
+          await Promise.all(
+            chunks.slice(i, i + SYNTAX_PARALLEL).map(async (chunk, j) => {
+              const r = await fetchSyntaxChunk(chunk);
+              if (r.tokens) results[i + j] = r.tokens;
+              else lastError = r.error;
+            })
+          );
+          if (!isMounted) return;
+        }
+        if (!isMounted) return;
+        if (results.every((r) => r === null)) {
+          setErrorSyntax(lastError || "Gagal membedah sintaksis.");
+        } else {
+          // Potongan yang gagal tetap tampil sebagai teks biasa (peran "Other") agar paragraf tidak hilang
           syntaxTokensRef.current = true;
-          setSyntaxTokens(data.tokens);
-        } else if (isMounted) {
-          setErrorSyntax("Gagal membedah sintaksis. Server sibuk.");
+          setSyntaxTokens(results.flatMap((r, i) => r ?? [{ word: chunks[i], role: "Other" as const }]));
         }
       } catch (e) {
         console.error("Failed to fetch syntax", e);

@@ -42,15 +42,31 @@ IMPORTANT: Only output valid JSON without markdown wrapping or extra commentary.
         { role: "user", content: text }
       ],
       temperature: 0.1,
+      max_tokens: 2048,
       response_format: { type: "json_object" },
     }, { userId: user?.id });
 
-    const content = response.content?.trim() || "{}";
-    const data = JSON.parse(content);
+    // Model kadang membungkus JSON dengan ```; ambil objek JSON terluar saja
+    const raw = response.content?.trim() || "{}";
+    const start = raw.indexOf("{");
+    const end = raw.lastIndexOf("}");
+    let data: { tokens?: unknown };
+    try {
+      data = JSON.parse(start >= 0 && end > start ? raw.slice(start, end + 1) : raw);
+    } catch {
+      return NextResponse.json({ error: "AI mengembalikan JSON tidak valid. Coba lagi." }, { status: 502 });
+    }
+    const tokens = Array.isArray(data.tokens)
+      ? data.tokens.filter((t): t is { word: string; role: string } => !!t && typeof (t as { word?: unknown }).word === "string")
+      : [];
+    if (tokens.length === 0) {
+      return NextResponse.json({ error: "AI tidak mengembalikan hasil bedah. Coba lagi." }, { status: 502 });
+    }
 
-    return NextResponse.json(data);
+    return NextResponse.json({ tokens });
   } catch (error: unknown) {
     console.error("Syntax Highlighting Error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    // Galat dari penyedia AI (mis. 400 "Failed to validate JSON") tidak diteruskan mentah ke pengguna
+    return NextResponse.json({ error: "Layanan AI gagal memproses teks ini. Coba lagi." }, { status: 500 });
   }
 }
