@@ -169,7 +169,7 @@ export default function WorkspaceEditor({
       </Link>
 
       <div className="mt-2 mb-6">
-        <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground">{project.title}</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">{project.title}</h1>
         {project.brief && <p className="text-sm text-muted-foreground mt-1">Brief: {project.brief}</p>}
         <p className="text-sm text-muted-foreground mt-2">
           {doneCount}/{segments.length} segmen selesai · {warnings.length} peringatan
@@ -193,9 +193,9 @@ export default function WorkspaceEditor({
         {visible.map((seg) => {
           const segWarnings = warningsByIdx.get(seg.idx) ?? [];
           return (
-            <li key={seg.id} className={`bg-card border rounded-2xl p-4 ${selectedId === seg.id ? "border-brand" : "border-border"}`}>
+            <li key={seg.id} className={`bg-card border rounded-card p-4 ${selectedId === seg.id ? "border-brand" : "border-border"}`}>
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-bold text-brand">#{seg.idx + 1}</span>
+                <span className="text-xs font-bold text-brand-ink">#{seg.idx + 1}</span>
                 {segWarnings.length > 0 && <span className="text-xs font-bold text-warning-ink ">{segWarnings.length} peringatan</span>}
                 <span className="flex-1" />
                 <span className="text-xs text-muted-foreground" aria-live="polite">{stateLabel(seg.id)}</span>
@@ -253,7 +253,7 @@ export default function WorkspaceEditor({
       {/* Hasil rubrik */}
       {assessment && (
         <Card className="mt-8">
-          <CardTitle icon={<Award className="w-5 h-5 text-brand" />}>Penilaian rubrik (Nababan et al., 2012)</CardTitle>
+          <CardTitle icon={<Award className="w-5 h-5 text-brand-ink" />}>Penilaian rubrik (Nababan et al., 2012)</CardTitle>
           <p className="text-foreground">Skor akhir tertimbang: <strong>{assessment.weighted_score.toFixed(2)}</strong> dari 3 <span className="text-xs text-muted-foreground">(akurasi : keberterimaan : keterbacaan = 3 : 2 : 1)</span></p>
           <p className="text-xs text-muted-foreground mb-3">Dinilai AI untuk belajar mandiri, bukan penilaian resmi.</p>
           <ul className="space-y-2 text-sm">

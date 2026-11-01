@@ -81,48 +81,48 @@ export default function TranslationWorkshopPage() {
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-8">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-          <Languages className="w-8 h-8 text-brand" />
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+          <Languages className="w-8 h-8 text-brand-ink" />
           Translation Workshop
         </h1>
         <p className="text-muted-foreground mt-2 text-lg">Ruang kerja penerjemahan sastra. Latih kepekaan Anda dalam mentransfer makna, nuansa, dan citraan dari bahasa Inggris ke bahasa Indonesia.</p>
       </div>
 
       {/* Mode Selection */}
-      <div className="flex flex-wrap items-center gap-4 mb-8 bg-card shadow-sm border border-border p-2 rounded-2xl">
+      <div className="flex flex-wrap items-center gap-4 mb-8 bg-card border border-border p-2 rounded-card">
         <button 
           onClick={() => setMode("general")}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "general" ? "bg-brand text-background shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-control font-medium transition-all ${mode === "general" ? "bg-brand-solid text-on-brand " : "text-muted-foreground hover:bg-muted"}`}
         >
           <CheckCircle2 className="w-4 h-4" /> Feedback Umum
         </button>
         <button 
           onClick={() => setMode("equivalence")}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "equivalence" ? "bg-brand-solid text-on-brand shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-control font-medium transition-all ${mode === "equivalence" ? "bg-brand-solid text-on-brand " : "text-muted-foreground hover:bg-muted"}`}
         >
           <ArrowLeftRight className="w-4 h-4" /> Equivalence Checker
         </button>
         <button 
           onClick={() => setMode("register")}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "register" ? "bg-warning-ink text-on-brand shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-control font-medium transition-all ${mode === "register" ? "bg-warning-ink text-on-brand " : "text-muted-foreground hover:bg-muted"}`}
         >
           <FileType2 className="w-4 h-4" /> Register Matcher
         </button>
         <button 
           onClick={() => setMode("back_translation")}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "back_translation" ? "bg-brand-solid text-on-brand shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-control font-medium transition-all ${mode === "back_translation" ? "bg-brand-solid text-on-brand " : "text-muted-foreground hover:bg-muted"}`}
         >
           <RotateCcw className="w-4 h-4" /> Back-Translation
         </button>
         <button 
           onClick={() => setMode("rubric")}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "rubric" ? "bg-brand-solid text-on-brand shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-control font-medium transition-all ${mode === "rubric" ? "bg-brand-solid text-on-brand " : "text-muted-foreground hover:bg-muted"}`}
         >
           <Scale className="w-4 h-4" /> Rubrik (Nababan)
         </button>
         <button 
           onClick={() => setMode("technique")}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${mode === "technique" ? "bg-brand-solid text-on-brand shadow-md" : "text-muted-foreground hover:bg-muted"}`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-control font-medium transition-all ${mode === "technique" ? "bg-brand-solid text-on-brand " : "text-muted-foreground hover:bg-muted"}`}
         >
           <Tags className="w-4 h-4" /> Teknik Penerjemahan
         </button>
@@ -131,25 +131,25 @@ export default function TranslationWorkshopPage() {
       {/* Split Screen Workspace */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Original Text */}
-        <div className="bg-card shadow-sm border border-border rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col">
+        <div className="bg-card border border-border rounded-card p-6 relative overflow-hidden flex flex-col">
           <div className="absolute top-0 left-0 right-0 h-1 bg-muted opacity-50" />
           <h2 className="text-sm font-bold text-brand-ink mb-4 uppercase tracking-wider">Original Text (English)</h2>
           <textarea
             value={originalText}
             onChange={(e) => setOriginalText(e.target.value)}
             placeholder="Paste teks sastra asli di sini..."
-            className="w-full flex-1 min-h-[300px] bg-background border border-border rounded-2xl p-5 text-foreground font-serif text-lg leading-relaxed focus:ring-1 focus:ring-border focus:border-border focus:outline-none resize-none"
+            className="w-full flex-1 min-h-[300px] bg-background border border-border rounded-card p-5 text-foreground font-serif text-lg leading-relaxed focus:ring-1 focus:ring-border focus:border-border focus:outline-none resize-none"
           ></textarea>
         </div>
 
         {/* Translation Text */}
-        <div className="bg-card shadow-sm border border-border rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col">
-          <h2 className="text-sm font-bold text-brand mb-4 uppercase tracking-wider">Your Translation (Indonesian)</h2>
+        <div className="bg-card border border-border rounded-card p-6 relative overflow-hidden flex flex-col">
+          <h2 className="text-sm font-bold text-brand-ink mb-4 uppercase tracking-wider">Your Translation (Indonesian)</h2>
           <textarea
             value={translatedText}
             onChange={(e) => setTranslatedText(e.target.value)}
             placeholder="Ketik terjemahan Anda di sini..."
-            className="w-full flex-1 min-h-[300px] bg-background border border-border rounded-2xl p-5 text-foreground font-serif text-lg leading-relaxed focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
+            className="w-full flex-1 min-h-[300px] bg-background border border-border rounded-card p-5 text-foreground font-serif text-lg leading-relaxed focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
           ></textarea>
         </div>
       </div>
@@ -158,7 +158,7 @@ export default function TranslationWorkshopPage() {
         <button
           onClick={handleEvaluate}
           disabled={loading}
-          className="px-5 md:px-10 py-4 bg-brand-solid hover:bg-brand-hover text-on-brand font-bold text-lg rounded-2xl transition-all duration-300 disabled:opacity-50 flex items-center gap-3"
+          className="px-5 md:px-10 py-4 bg-brand-solid hover:bg-brand-hover text-on-brand font-bold text-lg rounded-card transition-all duration-300 disabled:opacity-50 flex items-center gap-3"
         >
           {loading ? (
             <>
@@ -173,18 +173,18 @@ export default function TranslationWorkshopPage() {
       </div>
 
       <p className="text-center text-sm text-muted-foreground -mt-6 mb-10">
-        Untuk teks panjang kalimat demi kalimat, pakai <Link href="/translation-workspace" className="text-brand underline">Ruang Kerja Segmen</Link>.
+        Untuk teks panjang kalimat demi kalimat, pakai <Link href="/translation-workspace" className="text-brand-ink underline">Ruang Kerja Segmen</Link>.
       </p>
 
       {/* Hasil mode rubrik */}
       {rubric && (
-        <div className="bg-card border border-brand/30 rounded-3xl p-4 md:p-8 mb-12">
-          <h2 className="text-xl font-serif font-bold text-brand mb-2">Penilaian rubrik (Nababan et al., 2012)</h2>
+        <div className="bg-card border border-brand/30 rounded-card p-4 md:p-8 mb-12">
+          <h2 className="text-xl font-serif font-medium text-brand-ink mb-2">Penilaian rubrik (Nababan et al., 2012)</h2>
           <p className="text-foreground">Skor akhir tertimbang: <strong>{Number(rubric.weightedScore).toFixed(2)}</strong> dari 3 <span className="text-xs text-muted-foreground">(akurasi : keberterimaan : keterbacaan = 3 : 2 : 1)</span></p>
           <p className="text-xs text-muted-foreground mb-4">{rubric.saved ? "Tersimpan di riwayat penilaianmu." : "Belum tersimpan (migrasi 0010 belum dijalankan)."} Dinilai AI untuk belajar mandiri.</p>
           <ul className="space-y-2 text-sm">
             {rubric.perSegment.map((p) => (
-              <li key={p.idx} className="border border-border rounded-xl p-3">
+              <li key={p.idx} className="border border-border rounded-control p-3">
                 <p className="font-bold">Segmen {p.idx + 1}: akurasi {p.accuracy}, keberterimaan {p.acceptability}, keterbacaan {p.readability}</p>
                 {p.notes && <div className="text-muted-foreground"><Markdown>{p.notes}</Markdown></div>}
               </li>
@@ -195,14 +195,14 @@ export default function TranslationWorkshopPage() {
 
       {/* Hasil mode teknik */}
       {suggestions && (
-        <div className="bg-card border border-border rounded-3xl p-4 md:p-8 mb-12">
-          <h2 className="text-xl font-serif font-bold text-foreground mb-4">Teknik penerjemahan yang terdeteksi</h2>
+        <div className="bg-card border border-border rounded-card p-4 md:p-8 mb-12">
+          <h2 className="text-xl font-serif font-medium text-foreground mb-4">Teknik penerjemahan yang terdeteksi</h2>
           {suggestions.length === 0 ? (
             <p className="text-muted-foreground">AI tidak menemukan teknik yang jelas pada teks ini.</p>
           ) : (
             <ul className="space-y-3 text-sm">
               {suggestions.map((s, i) => (
-                <li key={i} className="border border-border rounded-xl p-3">
+                <li key={i} className="border border-border rounded-control p-3">
                   <p className="font-bold text-foreground">{s.technique_name}</p>
                   <p className="italic text-muted-foreground">&ldquo;{s.source_span}&rdquo; → &ldquo;{s.target_span}&rdquo;</p>
                   {s.reason && <p>{s.reason}</p>}
@@ -216,16 +216,16 @@ export default function TranslationWorkshopPage() {
 
       {/* Output Panel */}
       {result && (
-        <div className="bg-card shadow-sm border border-brand/30 rounded-3xl p-4 md:p-8 lg:p-12 shadow-2xl relative overflow-hidden mb-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="bg-card border border-brand/30 rounded-card p-4 md:p-8 lg:p-12 relative overflow-hidden mb-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
           <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5">
-            <Award className="w-64 h-64 text-brand" />
+            <Award className="w-64 h-64 text-brand-ink" />
           </div>
           
           <div className="relative z-10">
-            <h2 className="text-2xl font-serif font-bold text-brand mb-8 flex items-center gap-3 border-b border-brand/20 pb-4">
+            <h2 className="text-2xl font-serif font-medium text-brand-ink mb-8 flex items-center gap-3 border-b border-brand/20 pb-4">
               <CheckCircle2 className="w-8 h-8" /> Feedback & Grading
             </h2>
-            <div className="prose dark:prose-invert prose-brand max-w-none prose-lg prose-headings:font-serif prose-headings:text-brand prose-p:leading-relaxed prose-li:text-foreground/90">
+            <div className="prose dark:prose-invert prose-brand max-w-none prose-lg prose-headings:font-serif prose-headings:text-brand-ink prose-p:leading-relaxed prose-li:text-foreground/90">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
             </div>
           </div>

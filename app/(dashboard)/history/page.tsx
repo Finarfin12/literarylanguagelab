@@ -123,8 +123,8 @@ export default function HistoryPage() {
     <div className="p-4 md:p-8 max-w-6xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-            <History className="w-8 h-8 text-brand" />
+          <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+            <History className="w-8 h-8 text-brand-ink" />
             Archive & Insights
           </h1>
           <p className="text-muted-foreground mt-2 text-lg">Riwayat aktivitas dan ringkasan pembelajaran mingguan Anda.</p>
@@ -132,7 +132,7 @@ export default function HistoryPage() {
         
         <button 
           onClick={handleExportCSV}
-          className="flex items-center gap-2 bg-foreground/5 hover:bg-brand/10 text-foreground hover:text-brand px-6 py-3 rounded-xl font-bold transition-all border border-foreground/10"
+          className="flex items-center gap-2 bg-foreground/5 hover:bg-brand-tint text-foreground hover:text-brand-ink px-6 py-3 rounded-control font-bold transition-all border border-foreground/10"
         >
           <TrendingUp className="w-4 h-4" /> Export CSV / Anki
         </button>
@@ -140,67 +140,67 @@ export default function HistoryPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         {/* Weekly Insights Cards */}
-        <div className="bg-card shadow-sm border border-brand/20 rounded-3xl p-6 shadow-xl flex items-center gap-4">
-          <div className="w-12 h-12 bg-brand/10 text-brand rounded-2xl flex items-center justify-center shrink-0">
+        <div className="bg-card border border-brand/20 rounded-card p-6 flex items-center gap-4">
+          <div className="w-12 h-12 bg-brand-tint text-brand-ink rounded-card flex items-center justify-center shrink-0">
             <BookOpen className="w-6 h-6" />
           </div>
           <div>
             <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Words Mastered</p>
-            <p className="text-3xl font-serif font-bold text-foreground">{wordsMastered}</p>
+            <p className="text-3xl font-serif font-medium text-foreground">{wordsMastered}</p>
           </div>
         </div>
 
-        <div className="bg-card shadow-sm border border-border rounded-3xl p-6 shadow-xl flex items-center gap-4">
-          <div className="w-12 h-12 bg-muted text-brand-ink rounded-2xl flex items-center justify-center shrink-0">
+        <div className="bg-card border border-border rounded-card p-6 flex items-center gap-4">
+          <div className="w-12 h-12 bg-muted text-brand-ink rounded-card flex items-center justify-center shrink-0">
             <Activity className="w-6 h-6" />
           </div>
           <div>
             <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Analyses Run</p>
-            <p className="text-3xl font-serif font-bold text-foreground">{analysesRun}</p>
+            <p className="text-3xl font-serif font-medium text-foreground">{analysesRun}</p>
           </div>
         </div>
 
-        <div className="bg-card shadow-sm border border-border rounded-3xl p-6 shadow-xl flex items-center gap-4">
-          <div className="w-12 h-12 bg-muted text-foreground rounded-2xl flex items-center justify-center shrink-0">
+        <div className="bg-card border border-border rounded-card p-6 flex items-center gap-4">
+          <div className="w-12 h-12 bg-muted text-foreground rounded-card flex items-center justify-center shrink-0">
             <Clock className="w-6 h-6" />
           </div>
           <div>
             <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Time Spent</p>
-            <p className="text-3xl font-serif font-bold text-foreground">{formatDuration(timeSpentSeconds)}</p>
+            <p className="text-3xl font-serif font-medium text-foreground">{formatDuration(timeSpentSeconds)}</p>
           </div>
         </div>
 
-        <div className="bg-card shadow-sm border border-danger/30 rounded-3xl p-6 shadow-xl flex items-center gap-4">
-          <div className="w-12 h-12 bg-danger-tint text-danger rounded-2xl flex items-center justify-center shrink-0">
+        <div className="bg-card border border-danger/30 rounded-card p-6 flex items-center gap-4">
+          <div className="w-12 h-12 bg-danger-tint text-danger rounded-card flex items-center justify-center shrink-0">
             <Frown className="w-6 h-6" />
           </div>
           <div>
             <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Weak Areas</p>
-            <p className="text-3xl font-serif font-bold text-foreground">{weakWords} Kata</p>
+            <p className="text-3xl font-serif font-medium text-foreground">{weakWords} Kata</p>
           </div>
         </div>
       </div>
 
       {/* Archive / Activity Log */}
-      <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-xl">
-        <h2 className="text-xl font-serif font-bold text-brand mb-6 border-b border-border pb-4 flex items-center gap-2">
+      <div className="bg-card border border-border rounded-card p-4 md:p-8 ">
+        <h2 className="text-xl font-serif font-medium text-brand-ink mb-6 border-b border-border pb-4 flex items-center gap-2">
           <Clock className="w-5 h-5" /> Activity Archive
         </h2>
         
         <div className="space-y-4">
           {loading ? (
             <div className="animate-pulse space-y-4">
-              {[1,2,3].map(i => <div key={i} className="h-16 bg-muted rounded-xl"></div>)}
+              {[1,2,3].map(i => <div key={i} className="h-16 bg-muted rounded-control"></div>)}
             </div>
           ) : logs.length === 0 ? (
             <div className="text-center py-10 flex flex-col items-center">
               <Frown className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-xl font-serif font-bold text-muted-foreground">Belum ada aktivitas</p>
+              <p className="text-xl font-serif font-medium text-muted-foreground">Belum ada aktivitas</p>
               <p className="text-sm text-muted-foreground mt-2">Gunakan alat-alat di LingoWise untuk mengisi log ini.</p>
             </div>
           ) : (
             logs.map(log => (
-              <div key={log.id} className="flex items-center justify-between p-4 bg-muted hover:bg-muted hover:bg-muted/80 transition-colors rounded-xl border border-border">
+              <div key={log.id} className="flex items-center justify-between p-4 bg-muted hover:bg-muted transition-colors rounded-control border border-border">
                 <div className="flex items-center gap-4">
                   <div className="w-2 h-2 rounded-full bg-brand"></div>
                   <span className="text-foreground font-medium">{log.action_type}</span>

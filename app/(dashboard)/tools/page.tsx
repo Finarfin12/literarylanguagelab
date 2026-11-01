@@ -37,8 +37,8 @@ export default function ToolsDashboardPage() {
       ...t, 
       path: `/tools/${t.id}`, 
       category: "Targeted Transformers", 
-      colorClass: "text-brand", 
-      bgClass: "bg-brand/10", 
+      colorClass: "text-brand-ink", 
+      bgClass: "bg-brand-tint", 
       borderClass: "hover:border-brand/30" 
     })),
     ...textareaTools.map(t => ({ 
@@ -97,8 +97,8 @@ export default function ToolsDashboardPage() {
   return (
     <AnimatedPage className="p-4 lg:p-8 max-w-7xl mx-auto pb-24">
       <div className="mb-10">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-          <Wrench className="w-8 h-8 text-brand" />
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+          <Wrench className="w-8 h-8 text-brand-ink" />
           Literary Toolkits
         </h1>
         <p className="text-muted-foreground mt-2 text-lg">Kumpulan alat spesifik untuk membedah, menganalisis, dan merombak karya sastra.</p>
@@ -113,15 +113,15 @@ export default function ToolsDashboardPage() {
             placeholder="Cari alat (contoh: 'Translator', 'Quiz', 'Idiom')..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-2xl text-foreground focus:outline-none focus:ring-2 focus:ring-brand shadow-sm transition-all"
+            className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-card text-foreground focus:outline-none focus:ring-2 focus:ring-brand transition-all"
           />
         </div>
         <div className="relative shrink-0 w-full md:w-64">
-          <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand pointer-events-none" />
+          <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-ink pointer-events-none" />
           <select 
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full pl-12 pr-10 py-3 bg-card border border-border rounded-2xl text-foreground font-bold text-sm focus:outline-none focus:ring-2 focus:ring-brand shadow-sm appearance-none cursor-pointer transition-all hover:border-brand/50"
+            className="w-full pl-12 pr-10 py-3 bg-card border border-border rounded-card text-foreground font-bold text-sm focus:outline-none focus:ring-2 focus:ring-brand appearance-none cursor-pointer transition-all hover:border-brand/50"
           >
             {CATEGORIES.map(cat => (
               <option key={cat} value={cat}>{cat === "All" ? "Semua Kategori" : cat}</option>
@@ -136,7 +136,7 @@ export default function ToolsDashboardPage() {
       </div>
 
       {filteredTools.length === 0 ? (
-        <div className="text-center py-20 bg-muted/50 rounded-3xl border border-dashed border-border">
+        <div className="text-center py-20 bg-muted/50 rounded-card border border-dashed border-border">
           <Search className="w-12 h-12 text-muted-foreground opacity-50 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-foreground">Tidak Ditemukan</h3>
           <p className="text-muted-foreground mt-2">Tidak ada alat yang cocok dengan pencarian "{searchQuery}".</p>
@@ -159,9 +159,9 @@ export default function ToolsDashboardPage() {
                       <Link 
                         key={tool.id} 
                         href={tool.path} 
-                        className={`bg-card shadow-sm border border-border rounded-2xl p-6 hover:bg-muted transition-all duration-300 hover:shadow-lg active:scale-[0.98] group ${tool.borderClass}`}
+                        className={`bg-card  border border-border rounded-card p-6 hover:bg-muted transition-all duration-300  active:scale-[0.98] group ${tool.borderClass}`}
                       >
-                        <div className={`${tool.bgClass} w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                        <div className={`${tool.bgClass} w-12 h-12 rounded-control flex items-center justify-center mb-4  transition-transform`}>
                           <Icon className={`w-6 h-6 ${tool.colorClass}`} />
                         </div>
                         <h3 className="text-lg font-bold text-foreground mb-2">{tool.title}</h3>

@@ -141,6 +141,8 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 | Translation Timelapse | `tools/translation-timelapse` |
 | Tahap penerjemah di profil | `components/profile/TranslatorStageCard.tsx` |
 
+> **(14d, ✅ sebagian)** Bagian F dan G bergaya v4 lewat perapian kelas (kartu `rounded-card`, hijau `brand-solid`/`brand-ink`, judul serif, tanpa bayangan/blur/hover melompat); tombol utama Comparator tidak lagi merah muda. Diuji di 375px (terang) lewat pemeriksaan otomatis: Toolkits Hub, Tone & Gaya, Alter Ego, Annotations, Comparator, Cultural Context, Parallel Text, Timelapse, Untranslatables, LingoWise, Archive & Insights, Translation Workshop, Ruang Kerja Segmen (daftar), Translation Memory — tanpa luapan, target sentuh ≥44 px, kontras ≥4.5:1 (kecuali tombol nonaktif). **Belum teruji tanpa login:** `tools/[id]` (28 alat), editor segmen dan hasil analisis (hanya tsc/build). Warna anotasi, tanda diff, grafik tetap (pengecualian DESIGN §3.4).
+
 ## H. Komunitas
 
 | Fitur | Lokasi |

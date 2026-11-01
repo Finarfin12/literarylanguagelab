@@ -22,6 +22,7 @@
 | 14a (v4) Beranda & ruang | Selesai di kode (Beranda, onboarding, LevelProgressCard, TranslatorStageCard, grafik; halaman ruang sudah v4 sejak Fase 13). Tanpa migrasi | lihat `git log` |
 | 14b (v4) Reader & Word Lookup + Tongkat Ajaib bisa digeser | Selesai di kode (`lib/reader/drag-fab.ts` + uji, `MagicWandButton`, reader/Word Lookup/panel/modal bergaya v4). Tanpa migrasi. Word Lookup 16 mode, Sentence Analysis, Bookmark, Companion, VocabFlashcardModal baru diuji lewat tsc/build (butuh login) | lihat `git log` |
 | 14c (v4) Kosakata & English Lab | Selesai di kode (perapian kelas di 26 file, 13 gradasi/garis dekoratif dihapus, pop-up SweetAlert2 mengikuti token, target sentuh). Tanpa migrasi | lihat `git log` |
+| 14d (v4) Sastra & Terjemah | Selesai di kode (18 file dirapikan, target sentuh, tombol Comparator). Tanpa migrasi. `tools/[id]` dan editor segmen belum teruji tanpa login | lihat `git log` |
 
 **Handoff sesi terbaru (1 Nov 2026): [`HANDOFF_NEXT_SESSION.md`](HANDOFF_NEXT_SESSION.md)** — keadaan repo, status migrasi, tindakan menunggu pemilik, jebakan, resep verifikasi, dan prompt pembuka.
 

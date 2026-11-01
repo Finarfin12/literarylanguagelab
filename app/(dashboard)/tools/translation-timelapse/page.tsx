@@ -74,13 +74,13 @@ export default function TimelapsePage() {
   const compareRev = revisions.find(r => r.version === compareVersion);
   const latestRev = revisions.length > 0 ? revisions[revisions.length - 1] : null;
 
-  if (loading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand" /></div>;
+  if (loading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand-ink" /></div>;
 
   return (
     <div className="p-4 md:p-8 min-h-full animate-in fade-in duration-300">
       <div className="flex items-center gap-4 mb-6">
         <Link href="/tools" className="flex items-center gap-2 text-muted-foreground hover:text-foreground"><ArrowLeft className="w-4 h-4" /></Link>
-        <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground flex items-center gap-3"><Clock className="w-7 h-7 text-brand" />Translation Timelapse</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3"><Clock className="w-7 h-7 text-brand-ink" />Translation Timelapse</h1>
       </div>
 
       {!selected ? (
@@ -90,7 +90,7 @@ export default function TimelapsePage() {
             <p className="text-muted-foreground text-sm">Belum ada terjemahan tersimpan. Translate di reader dulu.</p>
           ) : (
             translations.map((t) => (
-              <button key={t.id} onClick={() => selectTranslation(t)} className="w-full text-left bg-card border border-border rounded-2xl p-4 hover:border-brand/30 hover:bg-muted transition-all group">
+              <button key={t.id} onClick={() => selectTranslation(t)} className="w-full text-left bg-card border border-border rounded-card p-4 hover:border-brand/30 hover:bg-muted transition-all group">
                 <p className="text-sm font-bold text-foreground mb-1">{t.texts?.title || "Untitled"}</p>
                 <p className="text-xs text-muted-foreground line-clamp-2 italic mb-2">"{t.user_translation}"</p>
                 <span className="text-[10px] text-muted-foreground">{new Date(t.created_at).toLocaleDateString("id-ID")}</span>
@@ -100,12 +100,12 @@ export default function TimelapsePage() {
         </div>
       ) : (
         <div className="space-y-6">
-          <button onClick={() => setSelected(null)} className="flex items-center gap-2 text-sm text-brand hover:underline"><ChevronLeft className="w-4 h-4" />Kembali ke list</button>
+          <button onClick={() => setSelected(null)} className="flex items-center gap-2 text-sm text-brand-ink hover:underline"><ChevronLeft className="w-4 h-4" />Kembali ke list</button>
           <blockquote className="border-l-2 border-brand/30 pl-4 text-sm font-serif italic text-foreground/80">{selected.original_passage}</blockquote>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-card border border-border rounded-2xl p-4 md:p-6">
-              <h3 className="font-bold text-foreground mb-3 flex items-center gap-2"><GitCompare className="w-4 h-4 text-brand" />Evolution</h3>
+            <div className="bg-card border border-border rounded-card p-4 md:p-6">
+              <h3 className="font-bold text-foreground mb-3 flex items-center gap-2"><GitCompare className="w-4 h-4 text-brand-ink" />Evolution</h3>
               {revisions.length === 0 ? (
                 <p className="text-sm text-muted-foreground">Belum ada revision. Tambahkan versi pertama.</p>
               ) : (
@@ -116,12 +116,12 @@ export default function TimelapsePage() {
                     <span>V{latestRev?.version}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-muted rounded-xl p-3">
+                    <div className="bg-muted rounded-control p-3">
                       <span className="text-[10px] font-bold text-muted-foreground uppercase">V{compareRev?.version || "-"}</span>
                       <p className="text-xs text-foreground mt-1">{compareRev?.content || "-"}</p>
                     </div>
-                    <div className="bg-brand/5 rounded-xl p-3 border border-brand/10">
-                      <span className="text-[10px] font-bold text-brand uppercase">V{latestRev?.version || "-"}</span>
+                    <div className="bg-brand-tint rounded-control p-3 border border-brand/10">
+                      <span className="text-[10px] font-bold text-brand-ink uppercase">V{latestRev?.version || "-"}</span>
                       <p className="text-xs text-foreground mt-1">{latestRev?.content || "-"}</p>
                     </div>
                   </div>
@@ -129,10 +129,10 @@ export default function TimelapsePage() {
               )}
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-4 md:p-6 space-y-4">
-              <h3 className="font-bold text-foreground flex items-center gap-2"><Plus className="w-4 h-4 text-brand" />Add Revision</h3>
-              <textarea value={addContent} onChange={(e) => setAddContent(e.target.value)} rows={3} placeholder="New translation version..." className="w-full bg-background border border-border rounded-xl p-3 text-sm focus:ring-1 focus:ring-brand outline-none resize-none" />
-              <button onClick={handleAddRevision} disabled={saving || !addContent.trim()} className="w-full py-2.5 bg-brand text-background font-bold rounded-xl disabled:opacity-50 flex items-center justify-center gap-2">
+            <div className="bg-card border border-border rounded-card p-4 md:p-6 space-y-4">
+              <h3 className="font-bold text-foreground flex items-center gap-2"><Plus className="w-4 h-4 text-brand-ink" />Add Revision</h3>
+              <textarea value={addContent} onChange={(e) => setAddContent(e.target.value)} rows={3} placeholder="New translation version..." className="w-full bg-background border border-border rounded-control p-3 text-sm focus:ring-1 focus:ring-brand outline-none resize-none" />
+              <button onClick={handleAddRevision} disabled={saving || !addContent.trim()} className="w-full py-2.5 bg-brand-solid text-on-brand font-bold rounded-control disabled:opacity-50 flex items-center justify-center gap-2">
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Save Revision
               </button>
             </div>

@@ -158,7 +158,7 @@ export default function SegmentPanel({
             <ul className="space-y-2">
               {matches.map((m, i) => (
                 <li key={i} className="border border-border rounded-control p-2 text-sm">
-                  <p className="text-xs font-bold text-brand">{Math.round(m.score * 100)}% cocok</p>
+                  <p className="text-xs font-bold text-brand-ink">{Math.round(m.score * 100)}% cocok</p>
                   <p className="text-muted-foreground italic">{m.source}</p>
                   <p className="text-foreground">{m.target}</p>
                   <Button variant="secondary" className="mt-2" onClick={() => onUseTm(m.target)}>Pakai terjemahan ini</Button>
@@ -201,7 +201,7 @@ export default function SegmentPanel({
               {annotations.map((a) => (
                 <li key={a.id} className="border border-border rounded-control p-2 text-sm flex items-start gap-2">
                   <span className="flex-1 min-w-0">
-                    <span className="block text-xs font-bold text-brand">{nameOf(a.technique_key)}{a.suggested_by_ai ? " · saran AI" : ""}</span>
+                    <span className="block text-xs font-bold text-brand-ink">{nameOf(a.technique_key)}{a.suggested_by_ai ? " · saran AI" : ""}</span>
                     <span className="block text-muted-foreground italic">&ldquo;{a.source_span}&rdquo;</span>
                     <span className="block text-foreground">&ldquo;{a.target_span}&rdquo;</span>
                   </span>
@@ -242,8 +242,8 @@ export default function SegmentPanel({
             {suggestions.length > 0 && (
               <ul className="mt-3 space-y-2">
                 {suggestions.map((s, i) => (
-                  <li key={i} className="border border-brand/30 bg-brand/5 rounded-control p-2 text-sm">
-                    <p className="text-xs font-bold text-brand">{nameOf(s.technique_key)}</p>
+                  <li key={i} className="border border-brand/30 bg-brand-tint rounded-control p-2 text-sm">
+                    <p className="text-xs font-bold text-brand-ink">{nameOf(s.technique_key)}</p>
                     <p className="text-muted-foreground italic">&ldquo;{s.source_span}&rdquo;</p>
                     <p className="text-foreground">&ldquo;{s.target_span}&rdquo;</p>
                     {s.reason && <p className="text-xs text-muted-foreground mt-1">{s.reason}</p>}

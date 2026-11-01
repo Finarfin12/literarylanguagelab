@@ -36,18 +36,18 @@ export default function ParallelTextPage() {
   return (
     <div className="p-4 md:p-8 min-h-full animate-in fade-in duration-300">
       <div className="flex items-center gap-4 mb-6">
-        <Link href="/tools" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+        <Link href="/tools" className="flex items-center gap-2 min-h-[44px] text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="w-4 h-4" /> Kembali
         </Link>
-        <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground flex items-center gap-3">
-          <Columns2 className="w-7 h-7 text-brand" />
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+          <Columns2 className="w-7 h-7 text-brand-ink" />
           Parallel Text Mode
         </h1>
       </div>
       <p className="text-muted-foreground mb-6">Baca dua bahasa berdampingan dengan scroll tersinkronisasi. Paste teks English dan terjemahan Indonesian, lalu bandingkan.</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-[calc(100vh-220px)]">
-        <div className="flex flex-col bg-card border border-border rounded-2xl overflow-hidden">
+        <div className="flex flex-col bg-card border border-border rounded-card overflow-hidden">
           <div className="p-3 border-b border-border bg-muted/50 shrink-0">
             <span className="text-xs font-bold text-brand-ink uppercase tracking-wider">English</span>
           </div>
@@ -59,9 +59,9 @@ export default function ParallelTextPage() {
           />
         </div>
 
-        <div className="flex flex-col bg-card border border-border rounded-2xl overflow-hidden">
+        <div className="flex flex-col bg-card border border-border rounded-card overflow-hidden">
           <div className="p-3 border-b border-border bg-muted/50 shrink-0">
-            <span className="text-xs font-bold text-brand uppercase tracking-wider">Indonesian</span>
+            <span className="text-xs font-bold text-brand-ink uppercase tracking-wider">Indonesian</span>
           </div>
           <textarea
             value={indonesian}
@@ -75,7 +75,7 @@ export default function ParallelTextPage() {
       {/* Sync-scroll preview */}
       {english && indonesian && (
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div ref={leftRef} onScroll={() => handleScroll("left")} className="bg-card border border-border rounded-2xl p-4 max-h-80 overflow-y-auto">
+          <div ref={leftRef} onScroll={() => handleScroll("left")} className="bg-card border border-border rounded-card p-4 max-h-80 overflow-y-auto">
             <h3 className="text-sm font-bold text-brand-ink mb-3 uppercase tracking-wider">Preview (English)</h3>
             {enSentences.map((s, i) => (
               <p
@@ -88,14 +88,14 @@ export default function ParallelTextPage() {
               </p>
             ))}
           </div>
-          <div ref={rightRef} onScroll={() => handleScroll("right")} className="bg-card border border-border rounded-2xl p-4 max-h-80 overflow-y-auto">
-            <h3 className="text-sm font-bold text-brand mb-3 uppercase tracking-wider">Preview (Indonesian)</h3>
+          <div ref={rightRef} onScroll={() => handleScroll("right")} className="bg-card border border-border rounded-card p-4 max-h-80 overflow-y-auto">
+            <h3 className="text-sm font-bold text-brand-ink mb-3 uppercase tracking-wider">Preview (Indonesian)</h3>
             {idSentences.map((s, i) => (
               <p
                 key={i}
                 onMouseEnter={() => setSyncedSentence(i)}
                 onMouseLeave={() => setSyncedSentence(null)}
-                className={`p-2 rounded-lg transition-colors text-sm leading-relaxed mb-1 ${syncedSentence === i ? "bg-brand/10 border border-brand/20" : ""}`}
+                className={`p-2 rounded-lg transition-colors text-sm leading-relaxed mb-1 ${syncedSentence === i ? "bg-brand-tint border border-brand/20" : ""}`}
               >
                 {s}
               </p>

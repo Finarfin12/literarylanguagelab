@@ -22,8 +22,8 @@ export default async function TranslationWorkspacePage() {
   return (
     <AnimatedPage className="p-4 lg:p-8 max-w-4xl mx-auto pb-24">
       <div className="mb-6">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-          <Columns3 className="w-7 h-7 text-brand" /> Ruang Kerja Segmen
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+          <Columns3 className="w-7 h-7 text-brand-ink" /> Ruang Kerja Segmen
         </h1>
         <p className="text-muted-foreground mt-2">
           Terjemahkan teks panjang kalimat demi kalimat dengan bantuan Translation Memory, glosarium, pemeriksaan otomatis, anotasi teknik, dan penilaian rubrik.
@@ -44,13 +44,13 @@ export default async function TranslationWorkspacePage() {
           </Card>
 
           <section aria-labelledby="proyek-saya">
-            <h2 id="proyek-saya" className="text-lg font-bold font-serif mb-3">Proyek saya</h2>
+            <h2 id="proyek-saya" className="text-lg font-medium font-serif mb-3">Proyek saya</h2>
             {error ? (
               <p className="text-sm text-danger">Gagal memuat proyek.</p>
             ) : !projects || projects.length === 0 ? (
-              <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6 text-center">Belum ada proyek. Buat yang pertama di atas.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-border rounded-control p-6 text-center">Belum ada proyek. Buat yang pertama di atas.</p>
             ) : (
-              <ul className="divide-y divide-border bg-card border border-border rounded-2xl overflow-hidden">
+              <ul className="divide-y divide-border bg-card border border-border rounded-card overflow-hidden">
                 {projects.map((p) => (
                   <li key={p.id} className="flex items-center">
                     <Link href={`/translation-workspace/${p.id}`} className="flex-1 min-w-0 flex items-center gap-3 px-4 min-h-[64px] py-2 hover:bg-muted transition-colors">
