@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, memo } from "react";
 import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer";
 import { Loader2 } from "lucide-react";
 import { chunkText } from "@/lib/reader/sentence-chunks";
+import { alignTokens } from "@/lib/reader/syntax-align";
 
 interface SyntaxToken {
   word: string;
@@ -133,7 +134,7 @@ function InteractiveParagraph({
           await Promise.all(
             chunks.slice(i, i + SYNTAX_PARALLEL).map(async (chunk, j) => {
               const r = await fetchSyntaxChunk(chunk);
-              if (r.tokens) results[i + j] = r.tokens;
+              if (r.tokens) results[i + j] = alignTokens(chunk, r.tokens);
               else lastError = r.error;
             })
           );
@@ -174,7 +175,7 @@ function InteractiveParagraph({
             {errorSyntax} <CulturalTextRenderer text={text} references={culturalRefs} />
           </div>
         ) : syntaxTokens ? (
-          <div className="leading-loose">
+          <div className="leading-loose whitespace-pre-line">
             {syntaxTokens.map((token, i) => {
               let bgClass = "";
               if (token.role === "Subject") bgClass = "bg-blue-500/30 border-b-2 border-blue-500 rounded-sm px-0.5";
@@ -182,7 +183,7 @@ function InteractiveParagraph({
               else if (token.role === "Object") bgClass = "bg-yellow-500/30 border-b-2 border-yellow-500 rounded-sm px-0.5";
               
               return (
-                <span key={i} className={`mr-1 ${bgClass}`}>
+                <span key={i} className={bgClass}>
                   {token.word}
                 </span>
               );

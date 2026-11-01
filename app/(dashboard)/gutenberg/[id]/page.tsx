@@ -73,27 +73,49 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   useEffect(() => { localStorage.setItem(`gutenberg-progress-${gutenbergId}`, JSON.stringify({ bookmarks })); }, [bookmarks, gutenbergId]);
 
   useEffect(() => {
+    // Judul/penulis yang tidak berguna (placeholder atau sisa cache lama yang tersimpan salah) dianggap belum ada
+    const isPlaceholder = (v?: string | null) => !v || ["Unknown", "Unknown Title", "Unknown Author", "Loading...", "Project Gutenberg"].includes(v);
+
+    async function fetchMeta(): Promise<BookMeta | null> {
+      try {
+        const metaRes = await fetch(`/api/gutenberg/${gutenbergId}`);
+        if (!metaRes.ok) return null;
+        const meta = await metaRes.json();
+        const title = meta.title as string | undefined;
+        const author = meta.authors?.map((a: { name: string }) => a.name.split(",").reverse().join(" ").trim()).join(", ") as string | undefined;
+        if (isPlaceholder(title)) return null;
+        return { title: title as string, author: author || "Unknown Author" };
+      } catch {
+        return null;
+      }
+    }
+
     async function loadBook() {
       try {
+        const paramTitle = searchParams.get("title");
+        const paramAuthor = searchParams.get("author");
+
         const cachedData = await getCachedBook(gutenbergId);
         if (cachedData) {
-          setBookMeta({ title: cachedData.title, author: cachedData.author });
+          let meta: BookMeta = { title: cachedData.title, author: cachedData.author };
+          // Cache lama bisa berisi "Unknown" (bug closure basi): pulihkan dari parameter URL atau API metadata
+          if (isPlaceholder(meta.title)) {
+            const healed: BookMeta | null = paramTitle ? { title: paramTitle, author: paramAuthor || meta.author } : await fetchMeta();
+            if (healed) {
+              meta = healed;
+              saveBookToCache({ ...cachedData, title: meta.title, author: meta.author });
+            }
+          }
+          setBookMeta(meta);
           setBookBlocks(cachedData.blocks as BookBlock[]);
           setCached(true);
           setLoading(false);
           return;
         }
 
-        if (!searchParams.get("title")) {
-          const metaRes = await fetch(`/api/gutenberg/${gutenbergId}`);
-          if (metaRes.ok) {
-            const meta = await metaRes.json();
-            setBookMeta({
-              title: meta.title || "Unknown Title",
-              author: meta.authors?.map((a: { name: string }) => a.name.split(",").reverse().join(" ")).join(", ") || "Unknown Author",
-            });
-          }
-        }
+        // Judul: parameter URL (dari pencarian) → API metadata (mis. dari "Lanjutkan Membaca") → placeholder
+        let meta: BookMeta | null = paramTitle ? { title: paramTitle, author: paramAuthor || "Unknown Author" } : await fetchMeta();
+        if (meta) setBookMeta(meta);
 
         const txtUrl = `https://www.gutenberg.org/cache/epub/${gutenbergId}/pg${gutenbergId}.txt`;
         const textRes = await fetch(`/api/gutenberg/text?url=${encodeURIComponent(txtUrl)}`);
@@ -101,10 +123,12 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
         const data = await textRes.json();
         setBookBlocks(data.blocks);
 
+        meta = meta ?? { title: data.title || "Unknown Title", author: "Unknown Author" };
+        setBookMeta(meta);
         saveBookToCache({
           id: gutenbergId,
-          title: bookMeta.title !== "Loading..." ? bookMeta.title : data.title || "Unknown",
-          author: bookMeta.author !== "Project Gutenberg" ? bookMeta.author : "Unknown",
+          title: meta.title,
+          author: meta.author,
           blocks: data.blocks,
           cachedAt: Date.now(),
         });
