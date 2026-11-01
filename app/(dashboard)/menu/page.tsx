@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { getGroupedMenu, type MenuGroup } from "@/lib/menu-config";
-import { User, Settings, LogOut, ChevronRight, ChevronDown, HelpCircle, MessageSquare, Sun, Moon, Search, Home, ShieldAlert } from "lucide-react";
+import { MENU_GROUPS, type MenuGroup } from "@/lib/menu-config";
+import { ROOMS, resolveItem } from "@/lib/rooms";
+import { User, Settings, LogOut, ChevronRight, ChevronDown, HelpCircle, MessageSquare, Sun, Moon, Search, Home, ShieldAlert, GraduationCap, BookOpen, Languages, BookMarked, Users, type LucideIcon } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import AnimatedPage from "@/components/AnimatedPage";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
@@ -16,15 +17,32 @@ const CORE_GROUP: MenuGroup = {
   color: "text-brand",
   items: [
     { name: "Beranda", path: "/dashboard", description: "Langkah berikutnya dan ringkasan belajarmu." },
-    { name: "Text Library", path: "/library", description: "Koleksi teks bacaan dengan filter level." },
-    { name: "Public Domain Books", path: "/gutenberg", description: "Ribuan karya sastra domain publik dari Project Gutenberg." },
-    { name: "A-Z Dictionary", path: "/tools/a-z-dictionary", description: "Cari arti dan contoh kata dengan cepat." },
+    { name: "Ruang belajar", path: "/ruang", description: "Tiga ruang belajar, Koleksi saya, dan Komunitas." },
     { name: "Semua Alat", path: "/tools", description: "Daftar lengkap alat bantu belajar." },
     { name: "LingoWise AI", path: "/lingowise", description: "Asisten AI untuk bertanya soal bahasa dan sastra." },
     { name: "Pesan", path: "/messages", description: "Kotak masuk pesan dari pengguna lain." },
     { name: "Profil", path: "/profile", description: "Profil dan progres belajarmu." },
   ],
 };
+
+const ROOM_ICONS: Record<string, LucideIcon> = {
+  "belajar-dasar": GraduationCap,
+  "baca-sastra": BookOpen,
+  terjemah: Languages,
+  koleksi: BookMarked,
+  komunitas: Users,
+};
+
+/** Ruang → grup menu HP (semua item, urutan ruang). Pencarian mencari di semua grup ini. */
+function roomGroups(): MenuGroup[] {
+  const menu = MENU_GROUPS.flatMap((g) => g.items);
+  return ROOMS.map((room) => ({
+    title: `${room.eyebrow === room.title ? "" : room.eyebrow + " · "}${room.title}`,
+    icon: ROOM_ICONS[room.slug] ?? Home,
+    color: "text-foreground",
+    items: Array.from(new Set(room.sections.flatMap((s) => s.paths))).map((p) => resolveItem(p, menu)),
+  }));
+}
 
 const ADMIN_GROUP: MenuGroup = {
   title: "Admin",
@@ -75,7 +93,7 @@ export default function MobileMenuPage() {
 
   const searching = query.trim().length > 0;
   const q = query.trim().toLowerCase();
-  const groups = [CORE_GROUP, ...getGroupedMenu(), ...(isAdmin ? [ADMIN_GROUP] : [])]
+  const groups = [CORE_GROUP, ...roomGroups(), ...(isAdmin ? [ADMIN_GROUP] : [])]
     .map((g) => ({
       ...g,
       items: searching

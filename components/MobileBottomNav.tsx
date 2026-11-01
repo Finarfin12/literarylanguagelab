@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, BookOpen, BookMarked, Sparkles, Menu } from "lucide-react";
+import { LayoutDashboard, BookOpen, BookMarked, Library, Menu } from "lucide-react";
 
-// Bottom nav v2: Beranda · Baca · Kosakata · Alat · Menu.
+// Bottom nav v4 (keputusan Q1): Beranda · Baca · Kosakata · Ruang · Menu. Alat tetap lewat Menu → Semua alat.
 // `match` menentukan halaman mana yang menyalakan tab tersebut.
 const NAV_ITEMS = [
   { name: "Beranda", path: "/dashboard", icon: LayoutDashboard, match: ["/dashboard"] },
   { name: "Baca", path: "/library", icon: BookOpen, match: ["/library", "/read", "/gutenberg", "/preview"] },
   { name: "Kosakata", path: "/vocabulary", icon: BookMarked, match: ["/vocabulary", "/review", "/idioms", "/glossary"] },
-  { name: "Alat", path: "/tools", icon: Sparkles, match: ["/tools", "/lingowise", "/english-lab", "/translation"] },
+  { name: "Ruang", path: "/ruang", icon: Library, match: ["/ruang", "/tools", "/lingowise", "/english-lab", "/translation"] },
   { name: "Menu", path: "/menu", icon: Menu, match: ["/menu"] },
 ];
 

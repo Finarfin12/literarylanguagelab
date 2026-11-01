@@ -1,4 +1,5 @@
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { ONBOARDED_COOKIE, isOnboardedCookie } from "@/lib/onboarding-cookie";
 import { redirect } from "next/navigation";
 import { getRequestUser } from "@/utils/supabase/get-user";
 import Sidebar from "@/components/Sidebar";
@@ -20,7 +21,9 @@ export default async function DashboardLayout({
   // Jika kolom belum ada (migrasi 0006 belum dijalankan) query error → jangan redirect.
   const pathname = (await headers()).get("x-pathname") ?? "";
   const skipOnboarding = pathname.startsWith("/onboarding") || pathname.startsWith("/english-lab/placement-test");
-  if (!skipOnboarding) {
+  // Cookie lll_onboarded (diset proxy.ts / onboarding) melewati query; tanpa cookie, perilaku lama.
+  const onboardedCookie = (await cookies()).get(ONBOARDED_COOKIE)?.value;
+  if (!skipOnboarding && !isOnboardedCookie(onboardedCookie, user.id)) {
     const { data: profile, error } = await supabase.from("profiles").select("onboarded_at").eq("id", user.id).maybeSingle();
     if (!error && profile && !profile.onboarded_at) {
       redirect("/onboarding");

@@ -7,10 +7,11 @@ import { useTheme } from "next-themes";
 import { createClient } from "@/utils/supabase/client";
 import { 
   ChevronDown, ChevronRight, LogOut, 
-  Library, Briefcase, Sun, Moon, Sparkles, User, Settings,
-  Menu, PanelLeftClose, BookOpen, Trophy, LayoutDashboard, ShieldAlert, BrainCircuit, MessageSquareText
+  Sun, Moon, Sparkles, User, Settings,
+  Menu, PanelLeftClose, LayoutDashboard, ShieldAlert, BrainCircuit, MessageSquareText
 } from "lucide-react";
-import { getGroupedMenu } from "@/lib/menu-config";
+import { MENU_GROUPS } from "@/lib/menu-config";
+import { ROOMS, resolveItem } from "@/lib/rooms";
 
 interface SidebarProps {
   userEmail?: string;
@@ -63,11 +64,9 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
   }, [pathname, isMobile]);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
-  const toggleGroup = (title: string) => {
-    setOpenGroups(prev => ({
-      ...prev,
-      [title]: !prev[title]
-    }));
+  const menu = MENU_GROUPS.flatMap((g) => g.items);
+  const toggleGroup = (slug: string, currentlyOpen: boolean) => {
+    setOpenGroups((prev) => ({ ...prev, [slug]: !currentlyOpen }));
   };
 
   const [mounted, setMounted] = useState(false);
@@ -97,8 +96,8 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
         </button>
       )}
 
-      <aside className={`hidden lg:flex transition-all duration-300 ease-in-out border-r border-border bg-background backdrop-blur-2xl flex-col shadow-2xl relative z-40 h-full ${
-        isSidebarOpen ? "w-80 translate-x-0" : "w-0 -translate-x-full opacity-0 overflow-hidden border-none"
+      <aside className={`hidden lg:flex transition-all duration-300 ease-in-out border-r border-border bg-muted flex-col relative z-40 h-full ${
+        isSidebarOpen ? "w-72 translate-x-0" : "w-0 -translate-x-full opacity-0 overflow-hidden border-none"
       }`}>
         <div className="p-6 shrink-0 flex items-center justify-between">
           <h2 className="text-2xl font-serif font-bold text-brand flex items-center gap-2 whitespace-nowrap">
@@ -134,153 +133,67 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
       )}
 
       <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
-        <div className="space-y-4 pb-8">
+        <div className="space-y-2 pb-8">
 
-          {/* Standalone Dashboard Link */}
-          <Link 
+          {/* Beranda */}
+          <Link
             href="/dashboard"
-            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
-              pathname === '/dashboard' 
-                ? 'bg-brand/10 border-brand/20' 
-                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
+            aria-current={pathname === "/dashboard" ? "page" : undefined}
+            className={`w-full flex items-center gap-3 px-4 min-h-[48px] rounded-control transition-colors ${
+              pathname === "/dashboard" ? "bg-brand-tint text-brand-ink" : "text-foreground hover:bg-card"
             }`}
           >
-            <div className="flex items-center gap-3">
-              <LayoutDashboard className={`w-5 h-5 ${pathname === '/dashboard' ? 'text-brand' : 'text-brand/70'}`} />
-              <span className={`font-bold ${pathname === '/dashboard' ? 'text-foreground' : 'text-muted-foreground'}`}>
-                Beranda
-              </span>
-            </div>
-          </Link>
-          
-          {/* Pintasan utama */}
-          <Link 
-            href="/library"
-            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
-              pathname.startsWith('/library') 
-                ? 'bg-muted border-border' 
-                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <Library className={`w-5 h-5 ${pathname.startsWith('/library') ? 'text-brand-ink' : 'text-brand-ink'}`} />
-              <span className={`font-bold ${pathname.startsWith('/library') ? 'text-foreground' : 'text-muted-foreground'}`}>
-                Text Library
-              </span>
-            </div>
+            <LayoutDashboard className="w-5 h-5" aria-hidden="true" />
+            <span className="font-semibold">Beranda</span>
           </Link>
 
-          <Link 
-            href="/gutenberg"
-            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
-              pathname.startsWith('/gutenberg') 
-                ? 'bg-muted border-border' 
-                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <BookOpen className={`w-5 h-5 ${pathname.startsWith('/gutenberg') ? 'text-foreground' : 'text-foreground'}`} />
-              <span className={`font-bold ${pathname.startsWith('/gutenberg') ? 'text-foreground' : 'text-muted-foreground'}`}>
-                Public Domain Books
-              </span>
-            </div>
-          </Link>
+          <p className="px-4 pt-4 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Ruang belajar</p>
 
-          <Link 
-            href="/tools/a-z-dictionary"
-            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
-              pathname === '/tools/a-z-dictionary' 
-                ? 'bg-brand-tint border-brand/30' 
-                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <BookOpen className={`w-5 h-5 ${pathname === '/tools/a-z-dictionary' ? 'text-brand-ink' : 'text-brand-ink'}`} />
-              <span className={`font-bold ${pathname === '/tools/a-z-dictionary' ? 'text-foreground' : 'text-muted-foreground'}`}>
-                A-Z Browser
-              </span>
-            </div>
-          </Link>
-
-          {/* Standalone Toolkits Hub Link */}
-          <Link 
-            href="/tools"
-            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
-              pathname === '/tools' 
-                ? 'bg-muted border-border' 
-                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <Sparkles className={`w-5 h-5 ${pathname === '/tools' ? 'text-foreground' : 'text-foreground'}`} />
-              <span className={`font-bold ${pathname === '/tools' ? 'text-foreground' : 'text-muted-foreground'}`}>
-                Semua Alat
-              </span>
-            </div>
-          </Link>
-
-          {/* Pintu masuk LingoWise AI */}
-          <Link 
-            href="/lingowise"
-            className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
-              pathname.startsWith('/lingowise') 
-                ? 'bg-brand-tint border-brand/30' 
-                : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <MessageSquareText className={`w-5 h-5 ${pathname.startsWith('/lingowise') ? 'text-brand-ink' : 'text-brand-ink'}`} />
-              <span className="flex flex-col">
-                <span className={`font-bold ${pathname.startsWith('/lingowise') ? 'text-foreground' : 'text-muted-foreground'}`}>
-                  LingoWise AI
-                </span>
-                <span className="text-xs font-normal text-muted-foreground/80 leading-snug">Tanya AI soal bahasa dan sastra.</span>
-              </span>
-            </div>
-          </Link>
-
-          {getGroupedMenu().map((group) => {
-            const Icon = group.icon;
-            const isOpen = openGroups[group.title] ?? (group.title === "Baca & Pahami");
-            
-            // Check if any child is active
-            const isChildActive = group.items.some(item => pathname === item.path);
-
+          {ROOMS.map((room) => {
+            const paths = Array.from(new Set(room.sections.flatMap((s) => s.paths)));
+            const isRoomActive = pathname === `/ruang/${room.slug}`;
+            const hasActiveChild = paths.some((p) => pathname === p);
+            const isOpen = openGroups[room.slug] ?? (isRoomActive || hasActiveChild);
             return (
-              <div key={group.title} className="bg-muted rounded-2xl overflow-hidden border border-border">
-                <button 
-                  onClick={() => toggleGroup(group.title)}
-                  className="w-full flex items-center justify-between p-4 hover:bg-muted transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon className={`w-5 h-5 ${group.color}`} />
-                    <span className={`font-bold ${isChildActive ? 'text-foreground' : 'text-muted-foreground'}`}>
-                      {group.title}
-                    </span>
-                  </div>
-                  {isOpen ? <ChevronDown className="w-4 h-4 text-muted-foreground" /> : <ChevronRight className="w-4 h-4 text-muted-foreground" />}
-                </button>
-                
+              <div key={room.slug}>
+                <div className="flex items-stretch">
+                  <Link
+                    href={`/ruang/${room.slug}`}
+                    aria-current={isRoomActive ? "page" : undefined}
+                    className={`flex-1 min-w-0 flex flex-col justify-center px-4 min-h-[48px] rounded-control transition-colors ${
+                      isRoomActive ? "bg-brand-tint" : "hover:bg-card"
+                    }`}
+                  >
+                    <span className={`text-[11px] font-bold uppercase tracking-[0.14em] ${isRoomActive ? "text-brand-ink" : "text-muted-foreground"}`}>{room.eyebrow}</span>
+                    <span className={`font-serif text-base leading-tight ${hasActiveChild || isRoomActive ? "text-foreground font-medium" : "text-foreground"}`}>{room.title}</span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(room.slug, isOpen)}
+                    aria-expanded={isOpen}
+                    aria-label={`${isOpen ? "Ciutkan" : "Buka"} daftar alat ${room.title}`}
+                    className="w-11 shrink-0 flex items-center justify-center text-muted-foreground hover:text-foreground"
+                  >
+                    {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                  </button>
+                </div>
+
                 {isOpen && (
-                  <div className="px-4 pb-4 space-y-1">
-                    {group.items.map((item) => {
+                  <div className="ml-4 pl-3 border-l border-border space-y-0.5 mb-2">
+                    {paths.map((p) => {
+                      const item = resolveItem(p, menu);
                       const isActive = pathname === item.path;
                       return (
-                        <Link 
-                          key={item.name} 
+                        <Link
+                          key={p}
                           href={item.path}
-                          onClick={() => {
-                            if (isMobile) setIsSidebarOpen(false);
-                          }}
-                          className={`flex items-center justify-between text-sm py-2.5 px-4 rounded-xl transition-all duration-200 group ${isActive 
-                            ? `bg-muted hover:bg-muted/80 ${group.color} font-bold` 
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground hover:translate-x-1"
+                          aria-current={isActive ? "page" : undefined}
+                          className={`block text-sm py-2 px-3 rounded-control transition-colors ${
+                            isActive ? "bg-brand-tint text-brand-ink font-semibold" : "text-muted-foreground hover:bg-card hover:text-foreground"
                           }`}
                         >
-                          <span className="flex-1">
-                            {item.name}
-                            <span className="block text-xs font-normal text-muted-foreground/80 leading-snug">{item.description}</span>
-                          </span>
+                          {item.name}
+                          {item.description && <span className="block text-xs font-normal text-muted-foreground leading-snug">{item.description}</span>}
                         </Link>
                       );
                     })}
@@ -290,21 +203,45 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             );
           })}
 
+          <p className="px-4 pt-4 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Pintasan</p>
+
+          {/* Pintu masuk LingoWise AI (juga ada di Ruang II) */}
+          <Link
+            href="/lingowise"
+            aria-current={pathname.startsWith("/lingowise") ? "page" : undefined}
+            className={`w-full flex items-center gap-3 px-4 py-2.5 min-h-[48px] rounded-control transition-colors ${
+              pathname.startsWith("/lingowise") ? "bg-brand-tint" : "hover:bg-card"
+            }`}
+          >
+            <MessageSquareText className="w-5 h-5 text-brand-ink" aria-hidden="true" />
+            <span className="flex flex-col">
+              <span className="font-semibold text-foreground">LingoWise AI</span>
+              <span className="text-xs font-normal text-muted-foreground leading-snug">Tanya AI soal bahasa dan sastra.</span>
+            </span>
+          </Link>
+
+          {/* Semua alat (Toolkits Hub) */}
+          <Link
+            href="/tools"
+            aria-current={pathname === "/tools" ? "page" : undefined}
+            className={`w-full flex items-center gap-3 px-4 min-h-[48px] rounded-control transition-colors ${
+              pathname === "/tools" ? "bg-brand-tint text-brand-ink" : "text-foreground hover:bg-card"
+            }`}
+          >
+            <Sparkles className="w-5 h-5" aria-hidden="true" />
+            <span className="font-semibold">Semua alat</span>
+          </Link>
+
           {isAdmin && (
-            <Link 
+            <Link
               href="/admin"
-              className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
-                pathname.startsWith('/admin') 
-                  ? 'bg-danger-tint border-danger/30' 
-                  : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
+              aria-current={pathname.startsWith("/admin") ? "page" : undefined}
+              className={`w-full flex items-center gap-3 px-4 min-h-[48px] rounded-control transition-colors ${
+                pathname.startsWith("/admin") ? "bg-danger-tint" : "hover:bg-card"
               }`}
             >
-              <div className="flex items-center gap-3">
-                <ShieldAlert className={`w-5 h-5 ${pathname.startsWith('/admin') ? 'text-danger' : 'text-danger'}`} />
-                <span className={`font-bold ${pathname.startsWith('/admin') ? 'text-foreground' : 'text-muted-foreground'}`}>
-                  Admin Panel
-                </span>
-              </div>
+              <ShieldAlert className="w-5 h-5 text-danger" aria-hidden="true" />
+              <span className="font-semibold text-foreground">Admin Panel</span>
             </Link>
           )}
         </div>

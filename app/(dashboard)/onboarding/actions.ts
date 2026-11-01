@@ -1,6 +1,8 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
+import { ONBOARDED_COOKIE, onboardedCookieOptions } from "@/lib/onboarding-cookie";
 import {
   LEVEL_UNKNOWN,
   isCefrLevel,
@@ -52,6 +54,8 @@ export async function saveOnboarding(input: OnboardingInput): Promise<Onboarding
     }
     return { ok: false, error: "Gagal menyimpan. Coba lagi." };
   }
+
+  (await cookies()).set(ONBOARDED_COOKIE, user.id, onboardedCookieOptions());
 
   const next = !input.skipped && input.level === LEVEL_UNKNOWN ? "/english-lab/placement-test" : "/dashboard";
   return { ok: true, next };
