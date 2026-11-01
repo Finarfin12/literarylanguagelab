@@ -74,7 +74,7 @@ export default function PronunciationLab() {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-card border border-border rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden">
+      <div className="bg-card border border-border rounded-card p-5 sm:p-8 relative overflow-hidden">
         <div className="mb-6">
           <label className="block text-sm font-bold text-foreground uppercase tracking-wider mb-3">Teks Target (English)</label>
           <textarea
@@ -84,7 +84,7 @@ export default function PronunciationLab() {
               setScore(null);
             }}
             placeholder="Masukkan kata atau kalimat bahasa Inggris yang ingin Anda latih pelafalannya..."
-            className="w-full h-32 bg-background border border-border rounded-2xl p-4 text-foreground font-serif text-lg focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
+            className="w-full h-32 bg-background border border-border rounded-card p-4 text-foreground font-serif text-lg focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none"
           ></textarea>
         </div>
 
@@ -92,7 +92,7 @@ export default function PronunciationLab() {
           <button
             onClick={handleTTS}
             disabled={!targetText}
-            className="px-6 py-3 bg-muted hover:bg-muted/80 text-foreground font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center gap-2"
+            className="px-6 py-3 bg-muted hover:bg-muted/80 text-foreground font-medium rounded-control transition-colors disabled:opacity-50 flex items-center gap-2"
           >
             <Volume2 className="w-5 h-5" /> Dengarkan Contoh
           </button>
@@ -100,7 +100,7 @@ export default function PronunciationLab() {
           <button
             onClick={isRecording ? stopRecording : startRecording}
             disabled={!targetText || isProcessing}
-            className={`px-4 md:px-8 py-3 font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 flex items-center gap-2 ${ isRecording ? "bg-danger text-on-brand animate-pulse" : "bg-brand text-background" }`}
+            className={`px-4 md:px-8 py-3 font-bold rounded-control  transition-all disabled:opacity-50 flex items-center gap-2 ${ isRecording ? "bg-danger text-on-brand animate-pulse" : "bg-brand-solid text-on-brand" }`}
           >
             {isProcessing ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -117,14 +117,14 @@ export default function PronunciationLab() {
         </div>
 
         {error && (
-          <div className="mt-6 p-4 rounded-xl bg-danger-tint text-danger border border-danger/30 text-sm">
+          <div className="mt-6 p-4 rounded-control bg-danger-tint text-danger border border-danger/30 text-sm">
             {error}
           </div>
         )}
       </div>
 
       {(transcript || isProcessing) && (
-        <div className="bg-card border border-border rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden">
+        <div className="bg-card border border-border rounded-card p-5 sm:p-8 relative overflow-hidden">
           <h2 className="text-xl font-bold mb-6 border-b border-border pb-4">Hasil Evaluasi</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -142,7 +142,7 @@ export default function PronunciationLab() {
                 <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Yang Terdeteksi</p>
                 <div className="min-h-[2rem]">
                   {isProcessing ? (
-                    <div className="flex items-center gap-2 text-brand">
+                    <div className="flex items-center gap-2 text-brand-ink">
                       <Loader2 className="w-4 h-4 animate-spin" />
                       <span className="text-sm">Memproses audio...</span>
                     </div>
@@ -154,7 +154,7 @@ export default function PronunciationLab() {
             </div>
 
             {score !== null && !isProcessing && (
-              <div className={`p-6 sm:p-8 rounded-2xl border flex flex-col items-center justify-center text-center ${getScoreColor(score)}`}>
+              <div className={`p-6 sm:p-8 rounded-card border flex flex-col items-center justify-center text-center ${getScoreColor(score)}`}>
                 <div className="text-4xl md:text-6xl font-bold mb-4">{score}%</div>
                 <p className="font-medium">{getScoreMessage(score)}</p>
               </div>

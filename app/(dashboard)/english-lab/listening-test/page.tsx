@@ -21,7 +21,7 @@ interface TestData {
 
 const LEVELS: { id: Level; label: string; color: string; bg: string; border: string }[] = [
   { id: "A1", label: "Beginner", color: "text-foreground", bg: "bg-muted", border: "border-border" },
-  { id: "A2", label: "Elementary", color: "text-brand", bg: "bg-brand/10", border: "border-brand/30" },
+  { id: "A2", label: "Elementary", color: "text-brand-ink", bg: "bg-brand-tint", border: "border-brand/30" },
   { id: "B1", label: "Intermediate", color: "text-foreground", bg: "bg-muted", border: "border-border" },
   { id: "B2", label: "Upper Int.", color: "text-foreground", bg: "bg-muted", border: "border-border" },
 ];
@@ -264,8 +264,8 @@ export default function ListeningTestPage() {
   return (
     <div className="p-4 sm:p-8 max-w-4xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
-          <Headphones className="w-8 h-8 text-brand" />
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center justify-center gap-3">
+          <Headphones className="w-8 h-8 text-brand-ink" />
           Listening Comprehension Test
         </h1>
         <p className="text-muted-foreground mt-2 text-base sm:text-lg">Latih pendengaran Anda dengan audio yang disesuaikan dengan tingkat CEFR.</p>
@@ -273,8 +273,7 @@ export default function ListeningTestPage() {
 
       {/* Configuration Panel */}
       {!testData && !loading && (
-        <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 shadow-sm relative overflow-hidden max-w-2xl mx-auto">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
+        <div className="bg-card border border-border rounded-card p-4 sm:p-8 relative overflow-hidden max-w-2xl mx-auto">
           
           <div className="mb-6">
             <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">Tingkat Kesulitan (CEFR)</h3>
@@ -283,7 +282,7 @@ export default function ListeningTestPage() {
                 <button
                   key={lvl.id}
                   onClick={() => setLevel(lvl.id)}
-                  className={`p-3 rounded-2xl border text-center transition-all ${
+                  className={`p-3 rounded-card border text-center transition-all ${
                     level === lvl.id ? `${lvl.bg} ${lvl.border} ring-1 ring-${lvl.color.split('-')[1]}-500` : "border-border hover:border-foreground/30 bg-background"
                   }`}
                 >
@@ -299,16 +298,16 @@ export default function ListeningTestPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setMode("quiz")}
-                className={`flex-1 p-4 rounded-2xl border transition-all ${mode === "quiz" ? "bg-brand/10 border-brand/30 ring-1 ring-brand/50" : "bg-background border-border"}`}
+                className={`flex-1 p-4 rounded-card border transition-all ${mode === "quiz" ? "bg-brand-tint border-brand/30 ring-1 ring-brand/50" : "bg-background border-border"}`}
               >
-                <p className={`font-bold ${mode === "quiz" ? "text-brand" : "text-foreground"}`}>Quiz Pilihan Ganda</p>
+                <p className={`font-bold ${mode === "quiz" ? "text-brand-ink" : "text-foreground"}`}>Quiz Pilihan Ganda</p>
                 <p className="text-xs text-muted-foreground mt-1">Jawab pertanyaan dari audio.</p>
               </button>
               <button
                 onClick={() => setMode("dictation")}
-                className={`flex-1 p-4 rounded-2xl border transition-all ${mode === "dictation" ? "bg-brand/10 border-brand/30 ring-1 ring-brand/50" : "bg-background border-border"}`}
+                className={`flex-1 p-4 rounded-card border transition-all ${mode === "dictation" ? "bg-brand-tint border-brand/30 ring-1 ring-brand/50" : "bg-background border-border"}`}
               >
-                <p className={`font-bold ${mode === "dictation" ? "text-brand" : "text-foreground"}`}>Dikte (Dictation)</p>
+                <p className={`font-bold ${mode === "dictation" ? "text-brand-ink" : "text-foreground"}`}>Dikte (Dictation)</p>
                 <p className="text-xs text-muted-foreground mt-1">Ketik apa yang Anda dengar.</p>
               </button>
             </div>
@@ -317,7 +316,7 @@ export default function ListeningTestPage() {
           <div className="space-y-4">
             <button
               onClick={generateTest}
-              className="w-full py-4 bg-brand text-background font-bold rounded-xl text-lg transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 bg-brand-solid text-on-brand font-bold rounded-control text-lg transition-all flex items-center justify-center gap-2"
             >
               <Headphones className="w-5 h-5" /> Generate Test Baru
             </button>
@@ -338,7 +337,7 @@ export default function ListeningTestPage() {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full py-3 bg-muted hover:bg-muted/80 text-foreground font-bold rounded-xl transition-all flex items-center justify-center gap-2 border border-border"
+                className="w-full py-3 bg-muted hover:bg-muted/80 text-foreground font-bold rounded-control transition-all flex items-center justify-center gap-2 border border-border"
               >
                 <Upload className="w-4 h-4" /> Unggah Audio Manual (Mode Dikte)
               </button>
@@ -348,7 +347,7 @@ export default function ListeningTestPage() {
       )}
 
       {loading && (
-        <div className="flex flex-col items-center justify-center py-20 text-brand">
+        <div className="flex flex-col items-center justify-center py-20 text-brand-ink">
           <Loader2 className="w-12 h-12 animate-spin mb-4" />
           <p className="animate-pulse font-medium">Membangun skenario listening test...</p>
         </div>
@@ -358,13 +357,13 @@ export default function ListeningTestPage() {
       {testData && !loading && (
         <div className="space-y-6">
           {/* Audio Player Card */}
-          <div className="bg-card border border-border rounded-3xl p-6 shadow-lg flex flex-col md:flex-row items-center gap-6">
-            <div className="w-full md:w-auto shrink-0 flex flex-col items-center justify-center bg-brand/5 border border-brand/20 rounded-2xl p-6">
+          <div className="bg-card border border-border rounded-card p-6 flex flex-col md:flex-row items-center gap-6">
+            <div className="w-full md:w-auto shrink-0 flex flex-col items-center justify-center bg-brand-tint border border-brand/20 rounded-card p-6">
               <div className="relative">
-                <div className={`absolute inset-0 bg-brand/20 rounded-full blur-xl transition-all duration-1000 ${isPlaying ? 'scale-150 opacity-100' : 'scale-100 opacity-0'}`} />
+                <div className={`absolute inset-0 bg-brand-tint rounded-full blur-xl transition-all duration-1000 ${isPlaying ? 'scale-150 opacity-100' : 'scale-100 opacity-0'}`} />
                 <button
                   onClick={handleTogglePlay}
-                  className="relative w-20 h-20 bg-brand text-background rounded-full flex items-center justify-center hover:scale-105 transition-all shadow-lg"
+                  className="relative w-20 h-20 bg-brand-solid text-on-brand rounded-full flex items-center justify-center transition-all "
                 >
                   {isPlaying ? <Pause className="w-8 h-8 fill-current" /> : <Play className="w-8 h-8 fill-current ml-1" />}
                 </button>
@@ -384,7 +383,7 @@ export default function ListeningTestPage() {
                 <h2 className="text-xl font-bold text-foreground">{testData.title}</h2>
                 <div className="flex flex-wrap items-center gap-2 mt-2">
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-muted border border-border uppercase tracking-wider">{mode}</span>
-                  {!uploadedFileName && <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand/10 text-brand border border-brand/20 uppercase tracking-wider">Level {level}</span>}
+                  {!uploadedFileName && <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-tint text-brand-ink border border-brand/20 uppercase tracking-wider">Level {level}</span>}
                   {uploadedFileName && <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-muted text-brand-ink border border-border flex items-center gap-1"><FileAudio className="w-3 h-3" /> {uploadedFileName}</span>}
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-warning-tint text-warning-ink border border-warning-ink/30 uppercase tracking-wider">Diputar {replayCount}x</span>
                   {audioUrl === "browser-tts" && <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-muted text-foreground border border-border uppercase tracking-wider flex items-center gap-1"><Volume2 className="w-3 h-3"/> Browser TTS</span>}
@@ -408,9 +407,9 @@ export default function ListeningTestPage() {
           {mode === "quiz" && !showResults && (
             <div className="space-y-6">
               {testData.questions.map((q, qIdx) => (
-                <div key={qIdx} className="bg-card border border-border rounded-2xl p-6">
+                <div key={qIdx} className="bg-card border border-border rounded-card p-6">
                   <p className="font-bold text-foreground mb-4">
-                    <span className="text-brand mr-2">{qIdx + 1}.</span> {q.question}
+                    <span className="text-brand-ink mr-2">{qIdx + 1}.</span> {q.question}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {q.options.map((opt, oIdx) => {
@@ -419,8 +418,8 @@ export default function ListeningTestPage() {
                         <button
                           key={oIdx}
                           onClick={() => setAnswers(prev => ({ ...prev, [qIdx]: opt }))}
-                          className={`p-4 rounded-xl border text-left text-sm transition-all ${
-                            isSelected ? "bg-brand/10 border-brand ring-1 ring-brand/50" : "bg-background border-border hover:border-brand/50 hover:bg-muted"
+                          className={`p-4 rounded-control border text-left text-sm transition-all ${
+                            isSelected ? "bg-brand-tint border-brand ring-1 ring-brand/50" : "bg-background border-border hover:border-brand/50 hover:bg-muted"
                           }`}
                         >
                           {opt}
@@ -435,13 +434,13 @@ export default function ListeningTestPage() {
 
           {/* Dictation Mode */}
           {mode === "dictation" && !showResults && (
-            <div className="bg-card border border-border rounded-2xl p-6">
+            <div className="bg-card border border-border rounded-card p-6">
               <h3 className="font-bold text-foreground mb-4">Ketik Transkrip Audio:</h3>
               <textarea
                 value={dictationAnswer}
                 onChange={(e) => setDictationAnswer(e.target.value)}
                 placeholder="Tulis persis seperti apa yang Anda dengar..."
-                className="w-full h-40 bg-background border border-border rounded-xl p-4 text-foreground focus:ring-1 focus:ring-brand focus:outline-none resize-none"
+                className="w-full h-40 bg-background border border-border rounded-control p-4 text-foreground focus:ring-1 focus:ring-brand focus:outline-none resize-none"
               />
             </div>
           )}
@@ -452,7 +451,7 @@ export default function ListeningTestPage() {
               <button
                 onClick={submitQuiz}
                 disabled={(mode === "quiz" && Object.keys(answers).length < testData.questions.length) || (mode === "dictation" && !dictationAnswer.trim())}
-                className="px-4 md:px-8 py-4 bg-brand text-background font-bold rounded-xl disabled:opacity-50 transition-all hover:shadow-lg flex items-center gap-2"
+                className="px-4 md:px-8 py-4 bg-brand-solid text-on-brand font-bold rounded-control disabled:opacity-50 transition-all flex items-center gap-2"
               >
                 <CheckCircle className="w-5 h-5" /> Kumpulkan Jawaban
               </button>
@@ -461,19 +460,19 @@ export default function ListeningTestPage() {
 
           {/* Results Area */}
           {showResults && (
-            <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 animate-in fade-in slide-in-from-bottom-4">
+            <div className="bg-card border border-border rounded-card p-4 sm:p-8 animate-in fade-in slide-in-from-bottom-4">
               <div className="text-center mb-8">
                 <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full mb-4 ${score >= 80 ? "bg-brand-tint text-brand-ink" : score >= 60 ? "bg-warning-tint text-warning-ink" : "bg-danger-tint text-danger"}`}>
                   <Trophy className="w-12 h-12" />
                 </div>
-                <h2 className="text-3xl font-serif font-bold text-foreground">Skor: {score} / 100</h2>
+                <h2 className="text-3xl font-serif font-medium text-foreground">Skor: {score} / 100</h2>
                 <p className="text-muted-foreground mt-2">Anda memutar audio sebanyak {replayCount} kali.</p>
               </div>
 
               {/* Transcript */}
               {testData.passage !== "TRANSKRIP_TIDAK_TERSEDIA" && (
-                <div className="mb-8 p-6 bg-brand/5 border border-brand/20 rounded-2xl">
-                  <h3 className="text-sm font-bold text-brand uppercase tracking-wider mb-3">Transkrip Lengkap</h3>
+                <div className="mb-8 p-6 bg-brand-tint border border-brand/20 rounded-card">
+                  <h3 className="text-sm font-bold text-brand-ink uppercase tracking-wider mb-3">Transkrip Lengkap</h3>
                   <p className="text-foreground leading-relaxed text-lg">{testData.passage}</p>
                 </div>
               )}
@@ -486,7 +485,7 @@ export default function ListeningTestPage() {
                     const userAnswer = answers[qIdx];
                     const isCorrect = userAnswer?.startsWith(q.correct);
                     return (
-                      <div key={qIdx} className={`p-4 rounded-xl border ${isCorrect ? "bg-brand-tint border-brand/30" : "bg-danger-tint border-danger/30"}`}>
+                      <div key={qIdx} className={`p-4 rounded-control border ${isCorrect ? "bg-brand-tint border-brand/30" : "bg-danger-tint border-danger/30"}`}>
                         <p className="font-bold text-foreground mb-2">{qIdx + 1}. {q.question}</p>
                         <div className="flex items-center gap-2 text-sm">
                           {isCorrect ? (
@@ -507,7 +506,7 @@ export default function ListeningTestPage() {
               <div className="mt-8 flex justify-center">
                 <button
                   onClick={() => { setTestData(null); setShowResults(false); }}
-                  className="px-6 py-3 bg-muted hover:bg-muted/80 text-foreground font-bold rounded-xl transition-all flex items-center gap-2"
+                  className="px-6 py-3 bg-muted hover:bg-muted/80 text-foreground font-bold rounded-control transition-all flex items-center gap-2"
                 >
                   <RefreshCw className="w-5 h-5" /> Latihan Lagi
                 </button>

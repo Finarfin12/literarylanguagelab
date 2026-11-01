@@ -19,8 +19,8 @@ export default async function GrammarTopicsPage() {
   return (
     <AnimatedPage className="p-4 lg:p-8 max-w-3xl mx-auto pb-24">
       <div className="mb-6">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-          <GraduationCap className="w-7 h-7 text-brand" /> Grammar Dasar
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+          <GraduationCap className="w-7 h-7 text-brand-ink" /> Grammar Dasar
         </h1>
         <p className="text-muted-foreground mt-2">
           Topik grammar A1 sampai B1 yang disusun berurutan. Mulai dari atas, centang yang sudah kamu kuasai.

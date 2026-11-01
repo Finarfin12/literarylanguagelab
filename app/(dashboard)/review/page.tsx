@@ -24,7 +24,7 @@ export default async function ReviewPage() {
   return (
     <div className="h-full bg-background flex flex-col">
       <div className="pt-20 px-6 pb-4 md:p-8 md:pb-4 animate-in fade-in slide-in-from-top-4 duration-500">
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground pr-10">Review Kosakata (Spaced Repetition)</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground pr-10">Review Kosakata (Spaced Repetition)</h1>
         <p className="text-muted-foreground mt-2 text-base md:text-lg">Waktunya me-review kosakata sastra Anda.</p>
       </div>
 

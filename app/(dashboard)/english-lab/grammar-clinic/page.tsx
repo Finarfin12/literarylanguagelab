@@ -174,8 +174,8 @@ export default function GrammarClinicPage() {
   return (
     <div className="p-4 sm:p-8 max-w-6xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-          <CheckCircle className="w-8 h-8 text-brand" />
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+          <CheckCircle className="w-8 h-8 text-brand-ink" />
           Grammar Clinic
         </h1>
         <p className="text-muted-foreground mt-2 text-base sm:text-lg">Tempel teks bahasa Inggris Anda (email, pesan, esai) dan AI akan mengoreksi grammar beserta penjelasan dalam bahasa Indonesia.</p>
@@ -183,18 +183,17 @@ export default function GrammarClinicPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Panel */}
-        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
+        <div className="bg-card border border-border rounded-card p-6 relative overflow-hidden">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold text-foreground">Teks Asli (English)</h2>
             <button
               onClick={isRecording ? stopRecording : startRecording}
               disabled={isProcessing}
               title="Dikte Teks"
-              className={`p-2 rounded-xl transition-all ${
+              className={`w-11 h-11 flex items-center justify-center rounded-control transition-all ${
                 isRecording
                   ? "bg-danger text-on-brand animate-pulse"
-                  : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"
+                  : "bg-muted text-muted-foreground hover:bg-brand-tint hover:text-brand-ink"
               }`}
             >
               {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
@@ -204,12 +203,12 @@ export default function GrammarClinicPage() {
             value={text + (isRecording ? (text.trim() ? " " : "") + transcript : "")}
             onChange={(e) => setText(e.target.value)}
             placeholder="Contoh: I goed to the store yesterday and buyed some milks. Me and my friend was very happy..."
-            className="w-full h-56 bg-background border border-border rounded-2xl p-4 text-foreground focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none text-sm leading-relaxed"
+            className="w-full h-56 bg-background border border-border rounded-card p-4 text-foreground focus:ring-1 focus:ring-brand focus:border-brand focus:outline-none resize-none text-sm leading-relaxed"
           />
           <button
             onClick={handleAnalyze}
             disabled={loading || !text.trim()}
-            className="w-full mt-4 py-3.5 bg-brand text-background font-bold rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+            className="w-full mt-4 py-3.5 bg-brand-solid text-on-brand font-bold rounded-control flex items-center justify-center gap-2 transition-all disabled:opacity-50"
           >
             {loading ? (
               <><Loader2 className="w-5 h-5 animate-spin" /> Menganalisis Grammar...</>
@@ -220,7 +219,7 @@ export default function GrammarClinicPage() {
         </div>
 
         {/* Result Panel */}
-        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm relative overflow-hidden min-h-[400px] flex flex-col">
+        <div className="bg-card border border-border rounded-card p-6 relative overflow-hidden min-h-[400px] flex flex-col">
           <div className="absolute top-0 left-0 right-0 h-1 bg-muted opacity-50" />
 
           {!result && !loading ? (
@@ -230,7 +229,7 @@ export default function GrammarClinicPage() {
               <p className="text-sm mt-1">Masukkan teks di sebelah kiri dan tekan "Periksa Grammar".</p>
             </div>
           ) : loading ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-brand">
+            <div className="flex-1 flex flex-col items-center justify-center text-brand-ink">
               <Loader2 className="w-12 h-12 animate-spin mb-4" />
               <p className="animate-pulse">AI sedang memeriksa grammar Anda...</p>
             </div>
@@ -256,7 +255,7 @@ export default function GrammarClinicPage() {
                   </h3>
                   <div className="space-y-2">
                     {result.corrections.map((c, i) => (
-                      <div key={i} className="border border-border rounded-xl overflow-hidden">
+                      <div key={i} className="border border-border rounded-control overflow-hidden">
                         <button
                           onClick={() => setExpandedIdx(expandedIdx === i ? null : i)}
                           className="w-full flex items-center gap-3 p-3 text-left hover:bg-muted/50 transition-colors"
@@ -285,21 +284,21 @@ export default function GrammarClinicPage() {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-brand" /> Teks yang Diperbaiki
+                    <CheckCircle className="w-4 h-4 text-brand-ink" /> Teks yang Diperbaiki
                   </h3>
-                  <button onClick={handleCopyCorrected} className="text-xs text-muted-foreground hover:text-brand flex items-center gap-1 transition-colors">
+                  <button onClick={handleCopyCorrected} className="text-xs text-muted-foreground hover:text-brand-ink flex items-center gap-1 transition-colors">
                     {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                     {copied ? "Tersalin!" : "Salin"}
                   </button>
                 </div>
-                <div className="bg-brand/5 border border-brand/20 rounded-xl p-4 text-sm text-foreground leading-relaxed">
+                <div className="bg-brand-tint border border-brand/20 rounded-control p-4 text-sm text-foreground leading-relaxed">
                   {result.corrected_text}
                 </div>
               </div>
 
               {/* Tips */}
               {result.tips && result.tips.length > 0 && (
-                <div className="bg-warning-tint border border-warning-ink/30 rounded-xl p-4">
+                <div className="bg-warning-tint border border-warning-ink/30 rounded-control p-4">
                   <h3 className="text-sm font-bold text-warning-ink uppercase tracking-wider mb-2 flex items-center gap-2">
                     <Lightbulb className="w-4 h-4" /> Tips Peningkatan
                   </h3>
@@ -319,28 +318,28 @@ export default function GrammarClinicPage() {
 
       {/* Grammar Pattern Dashboard */}
       <div className="mt-8 border-t border-border pt-8">
-        <h2 className="text-2xl font-serif font-bold text-foreground mb-6 flex items-center gap-3">
-          <BarChart3 className="w-6 h-6 text-brand" /> Grammar Error Pattern
+        <h2 className="text-2xl font-serif font-medium text-foreground mb-6 flex items-center gap-3">
+          <BarChart3 className="w-6 h-6 text-brand-ink" /> Grammar Error Pattern
         </h2>
         
         {statsLoading ? (
-          <div className="flex items-center justify-center p-4 sm:p-8"><Loader2 className="w-8 h-8 animate-spin text-brand" /></div>
+          <div className="flex items-center justify-center p-4 sm:p-8"><Loader2 className="w-8 h-8 animate-spin text-brand-ink" /></div>
         ) : stats && stats.totalErrors > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-card border border-border rounded-3xl p-6 shadow-sm col-span-1 md:col-span-1 flex flex-col justify-center text-center">
+            <div className="bg-card border border-border rounded-card p-6 col-span-1 md:col-span-1 flex flex-col justify-center text-center">
               <p className="text-sm text-muted-foreground uppercase tracking-wider font-bold mb-2">Total Sesi</p>
-              <p className="text-3xl md:text-5xl font-serif font-bold text-foreground">{stats.totalSessions}</p>
+              <p className="text-3xl md:text-5xl font-serif font-medium text-foreground">{stats.totalSessions}</p>
               <p className="text-sm text-muted-foreground mt-4">Total Kesalahan: <strong>{stats.totalErrors}</strong></p>
               <p className="text-sm text-muted-foreground mt-1">Skor Rata-rata: <strong>{stats.averageScore}</strong></p>
             </div>
 
-            <div className="bg-card border border-border rounded-3xl p-6 shadow-sm col-span-1 md:col-span-2">
+            <div className="bg-card border border-border rounded-card p-6 col-span-1 md:col-span-2">
               <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-warning-ink" /> Top 3 Kelemahan Anda
               </h3>
               <div className="space-y-4">
                 {stats.topWeaknesses.map((weakness: any, i: number) => (
-                  <div key={i} className="bg-muted/50 border border-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div key={i} className="bg-muted/50 border border-border rounded-control p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${CATEGORY_COLORS[weakness.category] || "bg-muted text-muted-foreground border-border"}`}>
@@ -355,7 +354,7 @@ export default function GrammarClinicPage() {
                     </div>
                     <button 
                       onClick={() => handleOpenMiniLesson(weakness)}
-                      className="shrink-0 px-4 py-2 bg-brand/10 text-brand font-bold rounded-lg hover:bg-brand/20 transition-colors flex items-center justify-center gap-2"
+                      className="shrink-0 px-4 py-2 bg-brand-tint text-brand-ink font-bold rounded-lg hover:bg-brand-tint transition-colors flex items-center justify-center gap-2"
                     >
                       <Brain className="w-4 h-4" /> Pelajari
                     </button>
@@ -365,7 +364,7 @@ export default function GrammarClinicPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 text-center">
+          <div className="bg-card border border-border rounded-card p-4 sm:p-8 text-center">
             <p className="text-muted-foreground">Belum ada cukup data. Terus gunakan Grammar Clinic untuk memetakan pola kesalahan Anda!</p>
           </div>
         )}
@@ -373,18 +372,18 @@ export default function GrammarClinicPage() {
 
       {/* Mini Lesson Modal */}
       {showMiniLesson && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-card border border-border rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
-            <div className="sticky top-0 bg-card/90 backdrop-blur-md p-4 border-b border-border flex justify-between items-center z-10">
-              <h2 className="text-lg font-serif font-bold text-foreground flex items-center gap-2">
-                <Brain className="w-5 h-5 text-brand" /> {miniLessonData?.title || "Mini-Lesson"}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 animate-in fade-in">
+          <div className="bg-card border border-border rounded-card w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            <div className="sticky top-0 bg-card/90 p-4 border-b border-border flex justify-between items-center z-10">
+              <h2 className="text-lg font-serif font-medium text-foreground flex items-center gap-2">
+                <Brain className="w-5 h-5 text-brand-ink" /> {miniLessonData?.title || "Mini-Lesson"}
               </h2>
-              <button onClick={() => setShowMiniLesson(false)} className="p-2 hover:bg-muted rounded-full transition-colors"><XCircle className="w-5 h-5 text-muted-foreground" /></button>
+              <button onClick={() => setShowMiniLesson(false)} className="w-11 h-11 flex items-center justify-center hover:bg-muted rounded-full transition-colors"><XCircle className="w-5 h-5 text-muted-foreground" /></button>
             </div>
 
             <div className="p-6">
               {miniLessonLoading ? (
-                <div className="flex flex-col items-center justify-center py-12 text-brand">
+                <div className="flex flex-col items-center justify-center py-12 text-brand-ink">
                   <Loader2 className="w-10 h-10 animate-spin mb-4" />
                   <p className="animate-pulse">AI sedang menyusun materi pelajaran khusus untuk Anda...</p>
                 </div>
@@ -394,8 +393,8 @@ export default function GrammarClinicPage() {
                     <div className="text-foreground/90 leading-relaxed text-base"><Markdown>{miniLessonData.lesson_text}</Markdown></div>
                   </div>
                   
-                  <div className="bg-brand/5 border border-brand/20 rounded-2xl p-6">
-                    <h3 className="font-bold text-foreground mb-4 uppercase tracking-wider text-sm flex items-center gap-2"><Play className="w-4 h-4 text-brand" /> Latihan Isian Rumpang</h3>
+                  <div className="bg-brand-tint border border-brand/20 rounded-card p-6">
+                    <h3 className="font-bold text-foreground mb-4 uppercase tracking-wider text-sm flex items-center gap-2"><Play className="w-4 h-4 text-brand-ink" /> Latihan Isian Rumpang</h3>
                     <div className="space-y-6">
                       {miniLessonData.quiz.map((q: any, idx: number) => {
                         const parts = q.sentence.split("____");
@@ -406,7 +405,7 @@ export default function GrammarClinicPage() {
                           <div key={idx} className="space-y-2">
                             <p className="text-foreground font-serif text-lg">
                               {parts[0]}
-                              <span className={`inline-block border-b-2 font-sans text-sm mx-2 min-w-[80px] text-center font-bold ${quizChecked ? (isCorrect ? 'border-brand/30 text-brand-ink' : 'border-danger/30 text-danger') : 'border-brand text-brand'}`}>
+                              <span className={`inline-block border-b-2 font-sans text-sm mx-2 min-w-[80px] text-center font-bold ${quizChecked ? (isCorrect ? 'border-brand/30 text-brand-ink' : 'border-danger/30 text-danger') : 'border-brand text-brand-ink'}`}>
                                 {answered || "____"}
                               </span>
                               {parts[1] || ""}
@@ -420,7 +419,7 @@ export default function GrammarClinicPage() {
                                   disabled={quizChecked}
                                   className={`px-3 py-1.5 rounded-lg text-sm transition-colors border ${
                                     answered === opt 
-                                      ? "bg-brand text-background border-brand" 
+                                      ? "bg-brand-solid text-on-brand border-brand" 
                                       : "bg-background text-foreground border-border hover:border-brand/50"
                                   } ${quizChecked && opt === q.answer && answered !== opt ? "ring-2 ring-brand/30 ring-offset-1 ring-offset-background" : ""}`}
                                 >
@@ -438,7 +437,7 @@ export default function GrammarClinicPage() {
 
                     <div className="mt-6 text-center">
                       {!quizChecked ? (
-                        <button onClick={checkQuiz} disabled={Object.keys(quizAnswers).length < miniLessonData.quiz.length} className="px-6 py-2.5 bg-brand text-background font-bold rounded-xl disabled:opacity-50 transition-all">
+                        <button onClick={checkQuiz} disabled={Object.keys(quizAnswers).length < miniLessonData.quiz.length} className="px-6 py-2.5 bg-brand-solid text-on-brand font-bold rounded-control disabled:opacity-50 transition-all">
                           Cek Jawaban
                         </button>
                       ) : (

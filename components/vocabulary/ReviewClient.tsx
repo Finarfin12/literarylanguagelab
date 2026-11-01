@@ -31,10 +31,10 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center max-w-md mx-auto">
-        <div className="w-24 h-24 bg-brand/10 rounded-full flex items-center justify-center mb-6">
-          <CheckCircle2 className="w-12 h-12 text-brand" />
+        <div className="w-24 h-24 bg-brand-tint rounded-full flex items-center justify-center mb-6">
+          <CheckCircle2 className="w-12 h-12 text-brand-ink" />
         </div>
-        <h2 className="text-2xl font-serif font-bold text-foreground mb-2">Anda sudah hafal semua!</h2>
+        <h2 className="text-2xl font-serif font-medium text-foreground mb-2">Anda sudah hafal semua!</h2>
         <p className="text-muted-foreground mb-8">Tidak ada kata yang perlu di-review saat ini. Kembalilah besok atau tambahkan kata baru dari Library.</p>
       </div>
     );
@@ -86,21 +86,21 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
         </div>
       </div>
 
-      <div className="flex-1 bg-card shadow-sm border border-border rounded-3xl shadow-2xl flex flex-col items-center justify-start sm:justify-center p-6 md:p-12 text-center transition-all relative overflow-y-auto">
+      <div className="flex-1 bg-card border border-border rounded-card flex flex-col items-center justify-start sm:justify-center p-6 md:p-12 text-center transition-all relative overflow-y-auto">
         <div className="absolute inset-0 bg-muted opacity-50 pointer-events-none" />
         <div className="relative z-10 w-full flex flex-col items-center pt-4 sm:pt-0">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-brand mb-6 sm:mb-8 drop-shadow-md break-all">{currentItem.word}</h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-medium text-brand-ink mb-6 sm:mb-8 drop-shadow-md break-all">{currentItem.word}</h2>
         
         {!showAnswer ? (
           <button 
             onClick={() => setShowAnswer(true)}
-            className="px-4 md:px-8 py-3 rounded-full bg-muted hover:bg-muted hover:bg-muted/80 text-foreground border border-border transition-colors flex items-center gap-2"
+            className="px-4 md:px-8 py-3 rounded-full bg-muted hover:bg-muted text-foreground border border-border transition-colors flex items-center gap-2"
           >
             <RotateCcw className="w-4 h-4" /> Tampilkan Jawaban
           </button>
         ) : (
           <div className="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="p-6 bg-background rounded-xl border border-border text-left">
+            <div className="p-6 bg-background rounded-control border border-border text-left">
               <div className="prose prose-sm dark:prose-invert max-w-none text-foreground/90">
                 <div><Markdown>{currentItem.definition}</Markdown></div>
               </div>
@@ -112,7 +112,7 @@ export default function ReviewClient({ dueVocab, learningPrefs }: ReviewClientPr
                 <p className="text-foreground italic">"{currentItem.context_sentence}"</p>
                 {currentItem.context_source && <p className="text-xs text-muted-foreground mt-1">{currentItem.context_source}</p>}
                 {sourceHref(currentItem) && (
-                  <Link href={sourceHref(currentItem)!} className="inline-flex items-center gap-1.5 mt-2 min-h-[44px] text-sm font-bold text-brand">
+                  <Link href={sourceHref(currentItem)!} className="inline-flex items-center gap-1.5 mt-2 min-h-[44px] text-sm font-bold text-brand-ink">
                     <BookOpen className="w-4 h-4" /> Lihat di teks
                   </Link>
                 )}

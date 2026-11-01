@@ -194,7 +194,7 @@ export default function FlashcardSRSPage() {
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-brand" />
+        <Loader2 className="w-8 h-8 animate-spin text-brand-ink" />
       </div>
     );
   }
@@ -203,7 +203,7 @@ export default function FlashcardSRSPage() {
     return (
       <div className="p-4 sm:p-8 max-w-2xl mx-auto text-center mt-20 animate-in fade-in slide-in-from-bottom-4">
         <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
-        <h1 className="text-3xl font-serif font-bold text-foreground mb-4">Kamus Anda Masih Kosong</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground mb-4">Kamus Anda Masih Kosong</h1>
         <p className="text-muted-foreground text-lg mb-6">Simpan beberapa kata terlebih dahulu dari <strong>Lexicon Search</strong> atau <strong>Text Library</strong> untuk memulai latihan flashcard!</p>
       </div>
     );
@@ -212,14 +212,14 @@ export default function FlashcardSRSPage() {
   if (dueCards.length === 0) {
     return (
       <div className="p-4 sm:p-8 max-w-2xl mx-auto text-center mt-20 animate-in fade-in slide-in-from-bottom-4">
-        <div className="w-24 h-24 bg-brand/20 text-brand rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="w-24 h-24 bg-brand-tint text-brand-ink rounded-full flex items-center justify-center mx-auto mb-6">
           <Trophy className="w-12 h-12" />
         </div>
-        <h1 className="text-3xl font-serif font-bold text-foreground mb-4">Semua Kata Sudah Direview!</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground mb-4">Semua Kata Sudah Direview!</h1>
         <p className="text-muted-foreground text-lg mb-8">Tidak ada kata yang perlu direview saat ini. Kembali lagi nanti!</p>
 
         {/* Box Distribution */}
-        <div className="bg-card border border-border rounded-2xl p-6 text-left max-w-md mx-auto">
+        <div className="bg-card border border-border rounded-card p-6 text-left max-w-md mx-auto">
           <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2"><Brain className="w-4 h-4" /> Distribusi Kata</h3>
           {BOX_LABELS.map((label, i) => {
             const count = allCards.filter(c => Math.min(c.repetition_count, 4) === i).length;
@@ -245,22 +245,22 @@ export default function FlashcardSRSPage() {
     const scorePct = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
     return (
       <div className="p-4 sm:p-8 max-w-2xl mx-auto text-center mt-12 animate-in fade-in slide-in-from-bottom-4">
-        <div className="w-24 h-24 bg-brand/20 text-brand rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="w-24 h-24 bg-brand-tint text-brand-ink rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-12 h-12" />
         </div>
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground mb-2">Sesi Selesai!</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground mb-2">Sesi Selesai!</h1>
         <p className="text-xl text-muted-foreground mb-8">Anda telah mereview {total} kata hari ini.</p>
 
         <div className="grid grid-cols-3 gap-4 mb-8 max-w-sm mx-auto">
-          <div className="bg-brand/10 border border-brand/20 rounded-2xl p-4">
-            <p className="text-3xl font-bold text-brand">{stats.correct}</p>
+          <div className="bg-brand-tint border border-brand/20 rounded-card p-4">
+            <p className="text-3xl font-bold text-brand-ink">{stats.correct}</p>
             <p className="text-xs text-muted-foreground font-bold uppercase">Benar</p>
           </div>
-          <div className="bg-danger-tint border border-danger/30 rounded-2xl p-4">
+          <div className="bg-danger-tint border border-danger/30 rounded-card p-4">
             <p className="text-3xl font-bold text-danger">{stats.wrong}</p>
             <p className="text-xs text-muted-foreground font-bold uppercase">Salah</p>
           </div>
-          <div className="bg-warning-tint border border-warning-ink/30 rounded-2xl p-4">
+          <div className="bg-warning-tint border border-warning-ink/30 rounded-card p-4">
             <p className="text-3xl font-bold text-warning-ink">{scorePct}%</p>
             <p className="text-xs text-muted-foreground font-bold uppercase">Akurasi</p>
           </div>
@@ -269,13 +269,13 @@ export default function FlashcardSRSPage() {
         <div className="flex flex-col gap-3 max-w-xs mx-auto">
           <button
             onClick={() => { fetchCards(); setCurrentIndex(0); setStats({ correct: 0, wrong: 0 }); }}
-            className="w-full py-4 bg-brand text-white hover:bg-brand/90 font-bold rounded-xl transition-all flex items-center justify-center gap-2"
+            className="w-full py-4 bg-brand-solid text-on-brand hover:bg-brand/90 font-bold rounded-control transition-all flex items-center justify-center gap-2"
           >
             <RefreshCw className="w-5 h-5" /> Ulangi Sesi
           </button>
           <Link
             href="/dashboard"
-            className="w-full py-4 bg-muted hover:bg-muted/80 text-foreground font-bold rounded-xl transition-all flex items-center justify-center gap-2"
+            className="w-full py-4 bg-muted hover:bg-muted/80 text-foreground font-bold rounded-control transition-all flex items-center justify-center gap-2"
           >
             Keluar
           </Link>
@@ -290,7 +290,7 @@ export default function FlashcardSRSPage() {
     <div className="p-4 sm:p-8 max-w-3xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header */}
       <div className="mb-6 text-center">
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center justify-center gap-3">
           <Zap className="w-7 h-7 text-warning-ink" />
           Flashcard SRS
         </h1>
@@ -315,18 +315,18 @@ export default function FlashcardSRSPage() {
           <button
             key={m.id}
             onClick={() => { setMode(m.id); setShowResult(false); setSelectedOption(null); setUserAnswer(""); }}
-            className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${mode === m.id ? "bg-brand text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+            className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${mode === m.id ? "bg-brand-solid text-on-brand" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
           >
             {m.label}
           </button>
         ))}
         {currentCard?.is_collocation && (
-          <span className="px-4 py-2 rounded-full text-sm font-bold bg-brand text-white">Fill-in-the-blank (Collocation)</span>
+          <span className="px-4 py-2 rounded-full text-sm font-bold bg-brand-solid text-on-brand">Fill-in-the-blank (Collocation)</span>
         )}
       </div>
 
       {/* Card */}
-      <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 shadow-lg relative overflow-hidden mb-6">
+      <div className="bg-card border border-border rounded-card p-4 sm:p-8 relative overflow-hidden mb-6">
         <div className="absolute top-0 left-0 right-0 h-1 bg-muted opacity-50" />
 
         {/* Box indicator */}
@@ -336,11 +336,11 @@ export default function FlashcardSRSPage() {
           </span>
           <div className="flex items-center gap-2">
             {currentCard.context_sentence && (
-              <button onClick={() => setShowContext(!showContext)} className={`px-3 py-1 text-xs font-bold rounded-full transition-colors border ${showContext ? 'bg-brand text-white border-brand' : 'bg-transparent text-muted-foreground border-border hover:bg-muted'}`} title="Tampilkan Konteks Asli">
+              <button onClick={() => setShowContext(!showContext)} className={`px-3 py-1 text-xs font-bold rounded-full transition-colors border ${showContext ? 'bg-brand-solid text-on-brand border-brand' : 'bg-transparent text-muted-foreground border-border hover:bg-muted'}`} title="Tampilkan Konteks Asli">
                 Context Mode
               </button>
             )}
-            <button onClick={() => playAudio(currentCard.word)} className="p-2 hover:bg-muted rounded-full transition-colors text-brand" title="Dengarkan">
+            <button onClick={() => playAudio(currentCard.word)} className="p-2 hover:bg-muted rounded-full transition-colors text-brand-ink" title="Dengarkan">
               <Volume2 className="w-5 h-5" />
             </button>
           </div>
@@ -348,14 +348,14 @@ export default function FlashcardSRSPage() {
 
         {/* Context Mode Display */}
         {showContext && currentCard.context_sentence && (
-          <div className="mb-6 p-4 bg-muted/30 rounded-xl border border-border border-l-4 border-l-brand animate-in fade-in slide-in-from-top-2">
+          <div className="mb-6 p-4 bg-muted/30 rounded-control border border-border border-l-4 border-l-brand animate-in fade-in slide-in-from-top-2">
             <p className="text-sm font-serif leading-relaxed text-foreground">
               {currentCard.context_sentence.split(new RegExp(`(${currentCard.word})`, 'gi')).map((part, i) => 
-                part.toLowerCase() === currentCard.word.toLowerCase() ? <span key={i} className="bg-brand/20 text-brand font-bold px-1 rounded">{part}</span> : part
+                part.toLowerCase() === currentCard.word.toLowerCase() ? <span key={i} className="bg-brand-tint text-brand-ink font-bold px-1 rounded">{part}</span> : part
               )}
             </p>
             {currentCard.text_id && (
-              <a href={`/read/${currentCard.text_id}${currentCard.position_offset !== null ? `#block-${currentCard.position_offset}` : ''}`} target="_blank" className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-brand hover:underline">
+              <a href={`/read/${currentCard.text_id}${currentCard.position_offset !== null ? `#block-${currentCard.position_offset}` : ''}`} target="_blank" className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-brand-ink hover:underline">
                 <BookOpen className="w-3 h-3" /> Re-read Chapter
               </a>
             )}
@@ -366,7 +366,7 @@ export default function FlashcardSRSPage() {
         {mode === "guess-meaning" && (
           <div className="text-center mb-8">
             <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Apa arti dari kata ini?</p>
-            <p className="text-3xl md:text-5xl font-serif font-bold text-brand">{currentCard.word}</p>
+            <p className="text-3xl md:text-5xl font-serif font-medium text-brand-ink">{currentCard.word}</p>
           </div>
         )}
 
@@ -382,7 +382,7 @@ export default function FlashcardSRSPage() {
             <p className="text-sm text-muted-foreground uppercase tracking-wider mb-4">Dengarkan dan tuliskan kata yang Anda dengar</p>
             <button
               onClick={() => playAudio(currentCard.word)}
-              className="px-4 md:px-8 py-4 bg-brand/10 border border-brand/30 text-brand font-bold rounded-2xl hover:bg-brand/20 transition-all flex items-center gap-3 mx-auto text-lg"
+              className="px-4 md:px-8 py-4 bg-brand-tint border border-brand/30 text-brand-ink font-bold rounded-card hover:bg-brand-tint transition-all flex items-center gap-3 mx-auto text-lg"
             >
               <Volume2 className="w-6 h-6" /> Putar Audio
             </button>
@@ -397,7 +397,7 @@ export default function FlashcardSRSPage() {
               const targetWord = targetWordMatch ? targetWordMatch[1] : currentCard.word;
               // replace targetWord in currentCard.word with blanks, case insensitive
               const displayWord = currentCard.word.replace(new RegExp(targetWord, 'gi'), "____");
-              return <p className="text-2xl md:text-4xl font-serif font-bold text-foreground">{displayWord}</p>;
+              return <p className="text-2xl md:text-4xl font-serif font-medium text-foreground">{displayWord}</p>;
             })()}
           </div>
         )}
@@ -409,7 +409,7 @@ export default function FlashcardSRSPage() {
               const isSelected = selectedOption === opt;
               const isAnswer = mode === "guess-meaning" ? opt === currentCard.definition : opt === currentCard.word;
 
-              let borderClass = "border-border hover:border-brand/50 hover:bg-brand/5";
+              let borderClass = "border-border hover:border-brand/50 hover:bg-brand-tint";
               if (showResult) {
                 if (isAnswer) borderClass = "border-border bg-muted";
                 else if (isSelected && !isAnswer) borderClass = "border-border bg-muted";
@@ -421,7 +421,7 @@ export default function FlashcardSRSPage() {
                   key={i}
                   onClick={() => handleAnswer(opt)}
                   disabled={showResult}
-                  className={`p-4 rounded-xl border text-left transition-all text-sm ${borderClass} ${showResult ? "cursor-default" : "cursor-pointer"}`}
+                  className={`p-4 rounded-control border text-left transition-all text-sm ${borderClass} ${showResult ? "cursor-default" : "cursor-pointer"}`}
                 >
                   {mode === "guess-meaning" ? <Markdown inline>{opt}</Markdown> : opt}
                 </button>
@@ -438,13 +438,13 @@ export default function FlashcardSRSPage() {
               onChange={(e) => setUserAnswer(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && userAnswer.trim()) handleAnswer(userAnswer); }}
               placeholder={mode === "dictation" ? "Ketik kata yang Anda dengar..." : "Isi kata yang rumpang..."}
-              className="flex-1 bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:ring-1 focus:ring-brand outline-none"
+              className="flex-1 bg-background border border-border rounded-control px-4 py-3 text-foreground focus:ring-1 focus:ring-brand outline-none"
             />
             {mode === "dictation" && (
               <button
                 onClick={isRecording ? stopRecording : startRecording}
                 disabled={isProcessing}
-                className={`p-3 rounded-xl transition-all ${isRecording ? "bg-danger text-on-brand animate-pulse" : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"}`}
+                className={`p-3 rounded-control transition-all ${isRecording ? "bg-danger text-on-brand animate-pulse" : "bg-muted text-muted-foreground hover:bg-brand-tint hover:text-brand-ink"}`}
               >
                 {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
               </button>
@@ -452,7 +452,7 @@ export default function FlashcardSRSPage() {
             <button
               onClick={() => { if (userAnswer.trim()) handleAnswer(userAnswer); }}
               disabled={!userAnswer.trim()}
-              className="px-5 py-3 bg-brand text-background font-bold rounded-xl disabled:opacity-50 transition-all"
+              className="px-5 py-3 bg-brand-solid text-on-brand font-bold rounded-control disabled:opacity-50 transition-all"
             >
               Cek
             </button>
@@ -460,10 +460,10 @@ export default function FlashcardSRSPage() {
         )}
 
         {(mode === "dictation" || mode === "collocation") && showResult && (
-          <div className={`p-4 rounded-xl border text-center ${isCorrect ? "bg-brand-tint border-brand/30" : "bg-danger-tint border-danger/30"}`}>
+          <div className={`p-4 rounded-control border text-center ${isCorrect ? "bg-brand-tint border-brand/30" : "bg-danger-tint border-danger/30"}`}>
             <p className="text-sm text-muted-foreground mb-1">Jawaban Anda: <span className="font-bold text-foreground">{userAnswer}</span></p>
             <p className="text-sm text-muted-foreground">
-              Jawaban benar: <span className="font-bold text-brand">
+              Jawaban benar: <span className="font-bold text-brand-ink">
                 {mode === "collocation" 
                   ? (() => {
                       const targetWordMatch = currentCard.definition.match(/Collocation for: (.*)/);
@@ -485,7 +485,7 @@ export default function FlashcardSRSPage() {
             )}
             <button
               onClick={handleNext}
-              className="mt-4 px-4 md:px-8 py-3 bg-brand text-background font-bold rounded-xl flex items-center gap-2 mx-auto transition-all"
+              className="mt-4 px-4 md:px-8 py-3 bg-brand-solid text-on-brand font-bold rounded-control flex items-center gap-2 mx-auto transition-all"
             >
               Selanjutnya <ArrowRight className="w-5 h-5" />
             </button>
@@ -494,7 +494,7 @@ export default function FlashcardSRSPage() {
       </div>
 
       {/* Box Distribution */}
-      <div className="bg-card border border-border rounded-2xl p-4">
+      <div className="bg-card border border-border rounded-card p-4">
         <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2"><Brain className="w-3 h-3" /> Distribusi Kata Anda</h3>
         <div className="flex items-center gap-1">
           {BOX_LABELS.map((label, i) => {

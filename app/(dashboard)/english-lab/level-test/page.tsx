@@ -113,7 +113,7 @@ export default function LevelTestPage() {
   return (
     <AnimatedPage className="p-4 lg:p-8 max-w-3xl mx-auto pb-24">
       <div className="mb-6">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Tes Naik Level</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">Tes Naik Level</h1>
         <p className="text-muted-foreground mt-2">
           Tes singkat (10-15 menit) pada level berikutnya. Gagal tidak menurunkan levelmu dan kamu bisa mencoba lagi setelah 14 hari.
         </p>
@@ -124,7 +124,7 @@ export default function LevelTestPage() {
       {/* Hasil */}
       {result && (
         <div className="space-y-4">
-          <Card className={result.passed ? "border-brand/40 bg-brand/5" : ""}>
+          <Card className={result.passed ? "border-brand/40 bg-brand-tint" : ""}>
             <CardTitle>{result.passed ? `Selamat! Levelmu naik ke ${result.newLevel}` : "Belum lulus kali ini"}</CardTitle>
             <p className="text-foreground">Nilai total: <strong>{result.totalPct}%</strong> (syarat {result.passRules.totalPct}%, tiap bagian minimal {result.passRules.minSectionPct}%).</p>
             <ul className="mt-3 grid grid-cols-2 gap-2 text-sm">
@@ -154,7 +154,7 @@ export default function LevelTestPage() {
             <ol className="space-y-3 text-sm">
               {result.review.map((r) => (
                 <li key={r.index} className="flex items-start gap-2">
-                  {r.isCorrect ? <CheckCircle2 className="w-4 h-4 text-brand shrink-0 mt-0.5" aria-label="Benar" /> : <XCircle className="w-4 h-4 text-danger shrink-0 mt-0.5" aria-label="Salah" />}
+                  {r.isCorrect ? <CheckCircle2 className="w-4 h-4 text-brand-ink shrink-0 mt-0.5" aria-label="Benar" /> : <XCircle className="w-4 h-4 text-danger shrink-0 mt-0.5" aria-label="Salah" />}
                   <span>
                     <span className="text-muted-foreground">{SECTION_LABELS[r.section] ?? r.section}: </span>
                     jawabanmu {r.yourAnswer ?? "-"}, yang benar <strong>{r.correct}</strong>.
@@ -173,7 +173,7 @@ export default function LevelTestPage() {
           <p className="text-sm text-muted-foreground">Tes level {target}. Jawab semua {questions.length} soal, lalu serahkan.</p>
           {questions.map((q, i) => (
             <Card key={q.index}>
-              <p className="text-xs font-bold text-brand mb-2">{i + 1}. {SECTION_LABELS[q.section]}</p>
+              <p className="text-xs font-bold text-brand-ink mb-2">{i + 1}. {SECTION_LABELS[q.section]}</p>
               {q.passage && <p className="mb-3 font-serif text-foreground leading-relaxed">{q.passage}</p>}
               {q.audio_text && (
                 <Button type="button" variant="secondary" className="mb-3" onClick={() => speak(q.audio_text as string)}>
@@ -191,7 +191,7 @@ export default function LevelTestPage() {
                       type="button"
                       aria-pressed={selected}
                       onClick={() => setAnswers((a) => ({ ...a, [q.index]: letter }))}
-                      className={`w-full min-h-[48px] px-4 py-2 rounded-control border text-left text-sm ${selected ? "border-brand bg-brand/10 font-bold" : "border-border bg-card hover:bg-muted"}`}
+                      className={`w-full min-h-[48px] px-4 py-2 rounded-control border text-left text-sm ${selected ? "border-brand bg-brand-tint font-bold" : "border-border bg-card hover:bg-muted"}`}
                     >
                       {opt}
                     </button>
@@ -215,7 +215,7 @@ export default function LevelTestPage() {
             <p className="text-muted-foreground">Fitur ini belum aktif (migrasi 0008 belum dijalankan).</p>
           ) : !summary.level ? (
             <p className="text-muted-foreground">
-              Tentukan levelmu dulu lewat <Link href="/english-lab/placement-test" className="text-brand underline">Placement Test</Link>.
+              Tentukan levelmu dulu lewat <Link href="/english-lab/placement-test" className="text-brand-ink underline">Placement Test</Link>.
             </p>
           ) : summary.test?.canStart ? (
             <>

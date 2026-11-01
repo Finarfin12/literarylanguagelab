@@ -89,12 +89,12 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
     <>
       <div className="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Vocabulary Bank</h1>
+          <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">Vocabulary Bank</h1>
           <p className="text-muted-foreground mt-2">Kelola kata-kata yang telah Anda simpan dari teks sastra.</p>
           <button 
             onClick={() => setIsFlashcardMode(true)}
             disabled={vocab.length === 0}
-            className="mt-4 px-6 py-2.5 bg-brand text-background font-bold rounded-full flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+            className="mt-4 px-6 py-2.5 bg-brand-solid text-on-brand font-bold rounded-full flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
           >
             <BrainCircuit className="w-5 h-5" /> Mulai Belajar (Flashcard)
           </button>
@@ -106,13 +106,13 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Cari kata atau sumber..."
-              className="w-full bg-card border border-border rounded-xl pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-brand"
+              className="w-full bg-card border border-border rounded-control pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-brand"
             />
           </div>
           <select 
             value={levelFilter}
             onChange={(e) => setLevelFilter(e.target.value)}
-            className="bg-card border border-foreground/20 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand min-w-[120px] cursor-pointer"
+            className="bg-card border border-foreground/20 rounded-control px-4 py-2 text-sm focus:outline-none focus:border-brand min-w-[120px] cursor-pointer"
           >
             <option value="all">Semua Level</option>
             <option value="0">Level 0</option>
@@ -127,7 +127,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
 
       <div className="flex-1 overflow-auto">
         {filteredVocab.length === 0 ? (
-          <div className="text-center p-6 md:p-12 border border-dashed border-border rounded-xl">
+          <div className="text-center p-6 md:p-12 border border-dashed border-border rounded-control">
             <BookMarked className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-medium text-foreground">Tidak ada kata ditemukan</h3>
             <p className="text-muted-foreground mt-2">Coba ubah kata kunci pencarian atau filter Anda.</p>
@@ -135,14 +135,14 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-8">
             {filteredVocab.map((item) => (
-              <div key={item.id} className="bg-card border border-foreground/20 rounded-3xl p-4 md:p-8 hover:bg-card shadow-sm transition-all duration-500 group relative flex flex-col h-full shadow-md">
+              <div key={item.id} className="bg-card border border-foreground/20 rounded-card p-4 md:p-8 hover:bg-card transition-all duration-500 group relative flex flex-col h-full ">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h2 className="text-2xl font-serif font-bold text-brand">{item.word}</h2>
+                    <h2 className="text-2xl font-serif font-medium text-brand-ink">{item.word}</h2>
                     <p className="text-xs text-muted-foreground mt-1">Sumber: {item.context_source}</p>
                   </div>
                   <div className="flex gap-2 items-center">
-                    <div className="bg-brand/10 border border-brand/20 px-3 py-1 rounded-full text-xs font-medium text-brand">
+                    <div className="bg-brand-tint border border-brand/20 px-3 py-1 rounded-full text-xs font-medium text-brand-ink">
                       Level {item.mastery_level}
                     </div>
                     <button onClick={() => handleDelete(item.id)} className="p-1.5 rounded-md hover:bg-danger-tint text-muted-foreground hover:text-danger transition-colors">
@@ -166,7 +166,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
                     <div className="flex justify-between items-center mb-2">
                       <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Catatan Personal</p>
                       {editingId !== item.id && (
-                        <button onClick={() => startEdit(item)} className="text-xs text-brand hover:text-brand-hover flex items-center gap-1">
+                        <button onClick={() => startEdit(item)} className="text-xs text-brand-ink hover:text-brand-hover flex items-center gap-1">
                           <Edit3 className="w-3 h-3" /> Edit
                         </button>
                       )}
@@ -185,7 +185,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
                           <button onClick={() => setEditingId(null)} className="p-2 text-muted-foreground hover:bg-muted rounded-md">
                             <X className="w-4 h-4" />
                           </button>
-                          <button onClick={() => saveNotes(item.id)} className="p-2 text-brand bg-brand/10 hover:bg-brand/20 rounded-md">
+                          <button onClick={() => saveNotes(item.id)} className="p-2 text-brand-ink bg-brand-tint hover:bg-brand-tint rounded-md">
                             <Save className="w-4 h-4" />
                           </button>
                         </div>

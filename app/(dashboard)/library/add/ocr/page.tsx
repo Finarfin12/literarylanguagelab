@@ -218,7 +218,6 @@ export default function OCRLensPage() {
 
         {/* Result Section */}
         <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-6 relative flex flex-col">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
           <h2 className="text-sm font-bold text-brand mb-4 uppercase tracking-wider flex justify-between items-center gap-2">
             <span>Teks Terekstrak</span>
             <span className="flex items-center gap-2">

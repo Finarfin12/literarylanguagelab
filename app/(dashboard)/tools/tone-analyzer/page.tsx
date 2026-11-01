@@ -79,7 +79,6 @@ export default function ToneAnalyzerPage() {
 
       <div className="grid grid-cols-1 gap-8">
         <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
 
           <div className="flex mb-6 bg-muted rounded-xl p-1">
             <button

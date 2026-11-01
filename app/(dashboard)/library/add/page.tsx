@@ -67,7 +67,6 @@ export default function AddTextPage() {
       </div>
 
       <div className="bg-card border border-foreground/20 rounded-3xl shadow-md overflow-hidden mb-10 relative">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
         <div className="flex border-b border-foreground/20">
           <button 
             onClick={() => setMode("ai")}
@@ -201,7 +200,7 @@ export default function AddTextPage() {
             </div>
 
             <div className="pt-6 border-t border-foreground/20 flex justify-end">
-              <SubmitButton className="px-4 md:px-8 py-4 rounded-xl bg-gradient-to-r from-brand to-brand-hover text-background font-bold transition-all duration-300">
+              <SubmitButton className="px-4 md:px-8 py-4 rounded-xl bg-brand-solid hover:bg-brand-hover text-on-brand font-bold transition-all duration-300">
                 Simpan ke Library
               </SubmitButton>
             </div>

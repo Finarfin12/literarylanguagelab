@@ -145,8 +145,8 @@ export default function LexiconSearchPage() {
       </Suspense>
       
       <div className="mb-10 text-center">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
-          <BookMarked className="w-8 h-8 text-brand" />
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center justify-center gap-3">
+          <BookMarked className="w-8 h-8 text-brand-ink" />
           Lexicon Search Engine
         </h1>
         <p className="text-muted-foreground mt-2 text-lg">Cari definisi, pelafalan, sinonim, rima, dan terjemahan secara instan.</p>
@@ -154,24 +154,24 @@ export default function LexiconSearchPage() {
 
       <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto mb-12 group">
         <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-          <Search className="h-6 w-6 text-muted-foreground group-focus-within:text-brand transition-colors" />
+          <Search className="h-6 w-6 text-muted-foreground group-focus-within:text-brand-ink transition-colors" />
         </div>
         <input
           type="text"
           value={isRecording && transcript ? transcript : word}
           onChange={(e) => setWord(e.target.value)}
           placeholder="Ketik atau sebutkan kata bahasa Inggris di sini..."
-          className="w-full pl-14 pr-40 py-5 bg-card border border-foreground/20 rounded-2xl text-foreground text-xl shadow-md focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all placeholder:text-muted-foreground"
+          className="w-full pl-14 pr-40 py-5 bg-card border border-foreground/20 rounded-card text-foreground text-xl focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all placeholder:text-muted-foreground"
         />
         <div className="absolute inset-y-2 right-2 flex items-center gap-2">
           <button
             type="button"
             onClick={isRecording ? stopRecording : startRecording}
             title="Dikte Kata"
-            className={`p-3 rounded-xl transition-all ${
+            className={`p-3 rounded-control transition-all ${
               isRecording 
                 ? "bg-danger text-on-brand animate-pulse" 
-                : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"
+                : "bg-muted text-muted-foreground hover:bg-brand-tint hover:text-brand-ink"
             }`}
           >
             {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
@@ -179,7 +179,7 @@ export default function LexiconSearchPage() {
           <button
             type="submit"
             disabled={loading || !word.trim() || isRecording || isProcessing}
-            className="px-6 py-3 bg-brand hover:bg-brand/90 text-background font-bold rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 h-full"
+            className="px-6 py-3 bg-brand-solid hover:bg-brand/90 text-on-brand font-bold rounded-control transition-all disabled:opacity-50 flex items-center gap-2 h-full"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Cari"}
           </button>
@@ -187,19 +187,19 @@ export default function LexiconSearchPage() {
       </form>
 
       {result && result.dictionary && result.dictionary.length > 0 && (
-        <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="bg-card border border-border rounded-card p-4 md:p-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
           
           {/* Header Section */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-border pb-8">
             <div>
-              <h2 className="text-3xl md:text-5xl font-serif font-bold text-brand mb-2">{result.dictionary[0].word}</h2>
+              <h2 className="text-3xl md:text-5xl font-serif font-medium text-brand-ink mb-2">{result.dictionary[0].word}</h2>
               <div className="flex items-center gap-4 text-muted-foreground">
                 <span className="font-mono text-lg">{result.dictionary[0].phonetic}</span>
                 
                 {result.dictionary[0].phonetics?.find((p:any) => p.audio)?.audio ? (
                   <button 
                     onClick={() => playAudio(result.dictionary[0].phonetics.find((p:any) => p.audio).audio, result.dictionary[0].word)}
-                    className="p-2 hover:bg-muted hover:bg-muted/80 rounded-full transition-colors text-brand"
+                    className="p-2 hover:bg-muted rounded-full transition-colors text-brand-ink"
                     title="Dengarkan Pelafalan"
                   >
                     <Volume2 className="w-5 h-5" />
@@ -207,7 +207,7 @@ export default function LexiconSearchPage() {
                 ) : (
                   <button 
                     onClick={() => playAudio("", result.dictionary[0].word)}
-                    className="p-2 hover:bg-muted hover:bg-muted/80 rounded-full transition-colors text-brand"
+                    className="p-2 hover:bg-muted rounded-full transition-colors text-brand-ink"
                     title="Dengarkan Pelafalan"
                   >
                     <Volume2 className="w-5 h-5" />
@@ -219,9 +219,9 @@ export default function LexiconSearchPage() {
             <button
               onClick={handleSaveToLexicon}
               disabled={saving}
-              className="px-6 py-3 bg-muted hover:bg-muted hover:bg-muted/80 border border-border rounded-xl transition-all flex items-center gap-2 font-medium"
+              className="px-6 py-3 bg-muted hover:bg-muted border border-border rounded-control transition-all flex items-center gap-2 font-medium"
             >
-              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <BookMarked className="w-5 h-5 text-brand" />}
+              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <BookMarked className="w-5 h-5 text-brand-ink" />}
               Simpan ke Lexicon
             </button>
           </div>
@@ -255,7 +255,7 @@ export default function LexiconSearchPage() {
             <div className="space-y-6">
               
               {/* LibreTranslate */}
-              <div className="bg-muted border border-border rounded-2xl p-6">
+              <div className="bg-muted border border-border rounded-card p-6">
                 <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-warning-ink" />
                   Terjemahan
@@ -268,7 +268,7 @@ export default function LexiconSearchPage() {
               </div>
 
               {/* Datamuse: Synonyms */}
-              <div className="bg-muted border border-border rounded-2xl p-6">
+              <div className="bg-muted border border-border rounded-card p-6">
                 <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-brand-ink" />
                   Sinonim
@@ -287,7 +287,7 @@ export default function LexiconSearchPage() {
               </div>
 
               {/* Datamuse: Rhymes */}
-              <div className="bg-muted border border-border rounded-2xl p-6">
+              <div className="bg-muted border border-border rounded-card p-6">
                 <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-foreground" />
                   Rima (Rhymes)
@@ -312,7 +312,7 @@ export default function LexiconSearchPage() {
       )}
 
       {result && (!result.dictionary || result.dictionary.length === 0) && (
-        <div className="text-center py-20 bg-card shadow-sm border border-border rounded-3xl mt-8">
+        <div className="text-center py-20 bg-card border border-border rounded-card mt-8">
           <AlertCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           {result.dictionaryStatus === "unavailable" ? (
             <>
@@ -321,7 +321,7 @@ export default function LexiconSearchPage() {
               <button
                 type="button"
                 onClick={() => performSearch(word)}
-                className="mt-6 min-h-[44px] px-6 bg-brand text-background font-bold rounded-xl"
+                className="mt-6 min-h-[44px] px-6 bg-brand-solid text-on-brand font-bold rounded-control"
               >
                 Coba lagi
               </button>

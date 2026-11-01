@@ -94,6 +94,8 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 | Lexicon Search | `app/(dashboard)/tools/lexicon-search/` |
 | A-Z Dictionary (Word Lookup A-Z) | `app/(dashboard)/tools/a-z-dictionary/` |
 
+> **(14c, ✅)** Seluruh bagian D dan E bergaya v4 lewat perapian kelas (kartu `rounded-card`, tombol/teks hijau memakai `brand-solid`/`brand-ink`, judul serif, tanpa bayangan/blur/hover melompat) — tanpa mengubah handler, state, atau teks fitur. Diuji di 375px (terang/gelap): 16 halaman English Lab & alat, tanpa luapan, target sentuh ≥44 px, kontras ≥4.5:1 (kecuali tombol nonaktif). Halaman yang butuh data (Vocabulary Bank, Kosakata Inti, Review, Flashcard 4 mode, hasil tes) hanya lewat tsc/build.
+
 ## E. Latih Bahasa Inggris (English Lab)
 
 | Fitur | Lokasi |

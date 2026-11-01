@@ -45,7 +45,7 @@ export default function AZDictionaryPage() {
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto min-h-full flex flex-col">
       <div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center justify-center gap-3">
           <Library className="w-8 h-8 text-brand-ink" />
           A-Z Dictionary Browser
         </h1>
@@ -55,16 +55,16 @@ export default function AZDictionaryPage() {
       </div>
 
       {/* A-Z Sticky Nav */}
-      <div className="sticky top-0 z-20 bg-background backdrop-blur-xl border-y border-border py-4 mb-8">
+      <div className="sticky top-0 z-20 bg-background border-y border-border py-4 mb-8">
         <div className="flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto">
           {ALPHABETS.map((letter) => (
             <button
               key={letter}
               onClick={() => setActiveLetter(letter)}
-              className={`w-10 h-10 rounded-xl font-bold flex items-center justify-center transition-all ${
+              className={`w-11 h-11 rounded-control font-bold flex items-center justify-center transition-all ${
                 activeLetter === letter
-                  ? "bg-brand text-background scale-110"
-                  : "bg-muted text-muted-foreground hover:bg-muted hover:bg-muted/80 hover:text-foreground"
+                  ? "bg-brand-solid text-on-brand scale-110"
+                  : "bg-muted text-muted-foreground hover:bg-muted  hover:text-foreground"
               }`}
             >
               {letter}
@@ -82,7 +82,7 @@ export default function AZDictionaryPage() {
             placeholder={`Cari kata berawalan ${activeLetter}...`}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-background border border-border focus:border-brand/50 rounded-2xl py-3 pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand/50 transition-all"
+            className="w-full bg-background border border-border focus:border-brand/50 rounded-card py-3 pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand/50 transition-all"
           />
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function AZDictionaryPage() {
       <div className="flex-1">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-            <Loader2 className="w-10 h-10 animate-spin text-brand mb-4" />
+            <Loader2 className="w-10 h-10 animate-spin text-brand-ink mb-4" />
             <p className="animate-pulse">Mengambil daftar kata berawalan {activeLetter}...</p>
           </div>
         ) : loadError ? (
@@ -101,7 +101,7 @@ export default function AZDictionaryPage() {
             <button
               type="button"
               onClick={() => setReloadKey((k) => k + 1)}
-              className="mt-6 min-h-[44px] px-6 bg-brand text-background font-bold rounded-xl"
+              className="mt-6 min-h-[44px] px-6 bg-brand-solid text-on-brand font-bold rounded-control"
             >
               Coba lagi
             </button>
@@ -120,12 +120,12 @@ export default function AZDictionaryPage() {
                 <div 
                   key={item.word + idx} 
                   onClick={() => router.push(`/tools/lexicon-search?word=${item.word}`)}
-                  className="bg-card shadow-sm border border-border hover:border-brand/30 p-5 rounded-2xl cursor-pointer group hover:bg-card shadow-sm transition-all hover:shadow-xl relative overflow-hidden"
+                  className="bg-card border border-border hover:border-brand/30 p-5 rounded-card cursor-pointer group hover:bg-card transition-all relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ArrowRight className="w-4 h-4 text-brand" />
+                    <ArrowRight className="w-4 h-4 text-brand-ink" />
                   </div>
-                  <h3 className="text-xl font-serif font-bold text-brand group-hover:text-brand-hover mb-2 capitalize">{item.word}</h3>
+                  <h3 className="text-xl font-serif font-medium text-brand-ink group-hover:text-brand-hover mb-2 capitalize">{item.word}</h3>
                   {defSnippet ? (
                     <p className="text-xs text-muted-foreground line-clamp-2 italic">{defSnippet}</p>
                   ) : (

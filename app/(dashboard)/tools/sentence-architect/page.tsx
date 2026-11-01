@@ -66,26 +66,26 @@ export default function SentenceArchitectPage() {
     if (t.includes("object")) return "bg-green-500/10 text-green-500 border-green-500/20";
     if (t.includes("modifier")) return "bg-purple-500/10 text-purple-500 border-purple-500/20";
     if (t.includes("conjunction")) return "bg-orange-500/10 text-orange-500 border-orange-500/20";
-    return "bg-brand/10 text-brand border-brand/20";
+    return "bg-brand-tint text-brand-ink border-brand/20";
   };
 
   return (
     <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-8 flex items-center gap-4">
-        <div className="w-16 h-16 bg-brand/10 text-brand rounded-2xl flex items-center justify-center shrink-0">
+        <div className="w-16 h-16 bg-brand-tint text-brand-ink rounded-card flex items-center justify-center shrink-0">
           <Building2 className="w-8 h-8" />
         </div>
         <div>
-          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Sentence Architect</h1>
+          <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">Sentence Architect</h1>
           <p className="text-muted-foreground mt-2 text-lg">Bedah struktur anatomi kalimat kompleks dan temukan strategi penerjemahan terbaik.</p>
         </div>
       </div>
 
-      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 shadow-xl mb-8">
+      <div className="bg-card border border-border rounded-card p-6 mb-8">
         <label className="block text-sm font-bold text-foreground mb-3">Masukkan Kalimat Bahasa Inggris:</label>
         <TryExampleButton example={TOOL_EXAMPLES["sentence-architect"]} onFill={setText} className="mb-2" />
         <textarea 
-          className="w-full bg-background border border-border rounded-xl p-4 text-foreground focus:ring-2 focus:ring-brand focus:border-transparent transition-all outline-none resize-none custom-scrollbar"
+          className="w-full bg-background border border-border rounded-control p-4 text-foreground focus:ring-2 focus:ring-brand focus:border-transparent transition-all outline-none resize-none custom-scrollbar"
           rows={5}
           placeholder="Contoh: The woman, who had been waiting for hours in the rain without an umbrella, finally decided to leave."
           value={text}
@@ -96,7 +96,7 @@ export default function SentenceArchitectPage() {
           <button 
             onClick={handleAnalyze}
             disabled={loading || !text.trim()}
-            className="bg-brand hover:bg-brand/90 text-brand-foreground px-4 md:px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50"
+            className="bg-brand hover:bg-brand/90 text-brand-foreground px-4 md:px-8 py-3 rounded-control font-bold flex items-center gap-2 transition-all disabled:opacity-50"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Layers className="w-5 h-5" />}
             Bedah Struktur
@@ -110,12 +110,12 @@ export default function SentenceArchitectPage() {
           
           {/* Nested Cards Visualizer */}
           <div>
-            <h2 className="text-2xl font-serif font-bold text-foreground mb-4 flex items-center gap-2">
-              <GitMerge className="w-6 h-6 text-brand" /> Dependency Tree
+            <h2 className="text-2xl font-serif font-medium text-foreground mb-4 flex items-center gap-2">
+              <GitMerge className="w-6 h-6 text-brand-ink" /> Dependency Tree
             </h2>
             <div className="space-y-4">
               {result.tree.map((clause, idx) => (
-                <div key={idx} className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
+                <div key={idx} className="bg-card border border-border rounded-card overflow-hidden ">
                   {/* Clause Header */}
                   <div className="bg-muted p-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <span className="font-bold text-foreground inline-flex items-center gap-2">
@@ -143,7 +143,7 @@ export default function SentenceArchitectPage() {
                           {/* Horizontal branch line */}
                           <div className="absolute top-1/2 left-[-1.5rem] sm:left-[-2rem] w-4 sm:w-6 h-px bg-border"></div>
                           
-                          <div className="bg-background border border-border rounded-xl p-3 flex-1 flex flex-col sm:flex-row sm:items-center gap-3 hover:bg-muted/50 transition-colors z-10">
+                          <div className="bg-background border border-border rounded-control p-3 flex-1 flex flex-col sm:flex-row sm:items-center gap-3 hover:bg-muted/50 transition-colors z-10">
                             <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-lg border shrink-0 ${getBadgeColor(child.type)}`}>
                               {child.type}
                             </span>
@@ -160,12 +160,12 @@ export default function SentenceArchitectPage() {
 
           {/* Translation Strategies */}
           <div>
-            <h2 className="text-2xl font-serif font-bold text-foreground mb-4 flex items-center gap-2">
+            <h2 className="text-2xl font-serif font-medium text-foreground mb-4 flex items-center gap-2">
               <Type className="w-6 h-6 text-blue-500" /> Translation Strategies
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {result.translation_strategies.map((strategy, idx) => (
-                <div key={idx} className="bg-card shadow-sm border border-border rounded-2xl p-6 relative overflow-hidden group hover:border-blue-500/30 transition-colors">
+                <div key={idx} className="bg-card border border-border rounded-card p-6 relative overflow-hidden group hover:border-blue-500/30 transition-colors">
                   <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                     <BookOpen className="w-24 h-24 text-blue-500" />
                   </div>
@@ -175,7 +175,7 @@ export default function SentenceArchitectPage() {
                     </span>
                     {strategy.name}
                   </h3>
-                  <div className="bg-muted rounded-xl p-4 mb-4 relative z-10 border border-border/50">
+                  <div className="bg-muted rounded-control p-4 mb-4 relative z-10 border border-border/50">
                     <p className="text-foreground font-serif text-lg leading-relaxed">{strategy.indonesian}</p>
                   </div>
                   <div className="flex items-start gap-2 text-sm text-muted-foreground relative z-10">

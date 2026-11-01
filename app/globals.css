@@ -140,6 +140,37 @@ body {
   text-indent: 0;
 }
 
+/*
+ * SweetAlert2 mengikuti token v4 (terang/gelap). Banyak pemanggilan memberi confirmButtonColor/background inline
+ * (#2fa16b, #3ecf8e, #ef4444, #1a1a1a), jadi di sini ditimpa dengan !important agar kontras teks ≥ 4.5:1 di kedua tema.
+ */
+.swal2-popup {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card) !important;
+  font-family: inherit;
+}
+.swal2-title,
+.swal2-html-container {
+  color: var(--foreground) !important;
+}
+.swal2-confirm {
+  min-height: 44px;
+  border-radius: var(--radius-control) !important;
+  font-weight: 600 !important;
+  background-color: var(--brand-solid) !important;
+  color: var(--on-brand) !important;
+}
+.swal2-confirm[style*="239, 68, 68"] {
+  background-color: var(--danger) !important;
+}
+.swal2-cancel,
+.swal2-deny {
+  min-height: 44px;
+  border-radius: var(--radius-control) !important;
+}
+
 /* Angka rapi (lining + tabular) untuk statistik, progres, dan nomor halaman */
 @utility nums {
   font-variant-numeric: lining-nums tabular-nums;

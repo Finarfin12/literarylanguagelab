@@ -188,18 +188,18 @@ export default function PlacementTestPage() {
     return (
       <div className="min-h-full p-4 md:p-8 flex items-center justify-center">
         <div className="max-w-lg w-full">
-          <div className="bg-card border border-border rounded-3xl p-6 md:p-10 shadow-xl text-center">
+          <div className="bg-card border border-border rounded-card p-6 md:p-10 text-center">
             <div className="inline-flex p-5 bg-muted rounded-full mb-6">
-              <Sparkles className="w-10 h-10 text-brand" />
+              <Sparkles className="w-10 h-10 text-brand-ink" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-3">Placement Test</h1>
+            <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground mb-3">Placement Test</h1>
             <p className="text-muted-foreground mb-8 text-sm md:text-base leading-relaxed">
               Temukan level bahasa Inggris Anda dalam <strong>5-8 menit</strong>. Tes ini bersifat adaptif — soal akan menyesuaikan dengan kemampuan Anda secara otomatis.
             </p>
 
             <div className="grid grid-cols-2 gap-3 mb-8">
               {SECTIONS.map(s => (
-                <div key={s.id} className="bg-muted rounded-2xl p-3 flex items-center gap-3">
+                <div key={s.id} className="bg-muted rounded-card p-3 flex items-center gap-3">
                   <s.icon className={`w-5 h-5 ${s.color} shrink-0`} />
                   <div className="text-left">
                     <p className="text-xs font-bold text-foreground">{s.label}</p>
@@ -211,7 +211,7 @@ export default function PlacementTestPage() {
 
             <button
               onClick={() => setPhase('testing')}
-              className="w-full py-3.5 bg-brand text-white font-bold rounded-2xl transition-all mb-3 flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-brand-solid text-on-brand font-bold rounded-card transition-all mb-3 flex items-center justify-center gap-2"
             >
               Mulai Test <ArrowRight className="w-4 h-4" />
             </button>
@@ -222,7 +222,7 @@ export default function PlacementTestPage() {
                 <select
                   value={manualLevel}
                   onChange={e => setManualLevel(e.target.value)}
-                  className="bg-background border border-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-brand"
+                  className="bg-background border border-border rounded-control px-3 py-2 min-h-[44px] text-sm focus:outline-none focus:border-brand-solid"
                 >
                   {['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].map(l => (
                     <option key={l} value={l}>{l} — {CEFR_DESCRIPTIONS[l].title}</option>
@@ -231,7 +231,7 @@ export default function PlacementTestPage() {
                 <button
                   onClick={handleSetManual}
                   disabled={loading}
-                  className="px-4 py-2 bg-muted border border-border rounded-xl text-sm font-bold text-foreground hover:bg-muted/80 transition-colors"
+                  className="px-4 py-2 min-h-[44px] bg-muted border border-border rounded-control text-sm font-bold text-foreground hover:bg-muted/80 transition-colors"
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Pilih'}
                 </button>
@@ -280,17 +280,17 @@ export default function PlacementTestPage() {
           </div>
 
           {/* Question Card */}
-          <div className="bg-card border border-border rounded-3xl p-6 md:p-8 shadow-lg">
+          <div className="bg-card border border-border rounded-card p-6 md:p-8 ">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-16">
-                <Loader2 className="w-8 h-8 animate-spin text-brand mb-4" />
+                <Loader2 className="w-8 h-8 animate-spin text-brand-ink mb-4" />
                 <p className="text-sm text-muted-foreground">Menyiapkan soal...</p>
               </div>
             ) : question ? (
               <div className="space-y-6">
                 {/* Passage (for reading) */}
                 {question.passage && (
-                  <div className="bg-muted/50 border border-border rounded-2xl p-4 md:p-5">
+                  <div className="bg-muted/50 border border-border rounded-card p-4 md:p-5">
                     <p className="text-sm text-muted-foreground font-bold uppercase tracking-wider mb-2">Bacaan:</p>
                     <p className="text-sm md:text-base text-foreground leading-relaxed italic font-serif">{question.passage}</p>
                   </div>
@@ -298,14 +298,14 @@ export default function PlacementTestPage() {
 
                 {/* Audio (for listening) */}
                 {question.audio_text && (
-                  <div className="bg-muted/50 border border-border rounded-2xl p-4 md:p-5 text-center">
+                  <div className="bg-muted/50 border border-border rounded-card p-4 md:p-5 text-center">
                     <p className="text-sm text-muted-foreground font-bold uppercase tracking-wider mb-3">Dengarkan Audio:</p>
                     <button
                       onClick={() => speakText(question.audio_text!)}
-                      className={`inline-flex items-center gap-2 px-5 py-3 rounded-2xl font-bold transition-all ${
+                      className={`inline-flex items-center gap-2 px-5 py-3 rounded-card font-bold transition-all ${
                         speaking
-                          ? 'bg-brand text-white animate-pulse'
-                          : 'bg-brand/10 text-brand hover:bg-brand/20'
+                          ? 'bg-brand-solid text-on-brand animate-pulse'
+                          : 'bg-brand-tint text-brand-ink hover:bg-brand-tint'
                       }`}
                     >
                       <Volume2 className="w-5 h-5" />
@@ -333,7 +333,7 @@ export default function PlacementTestPage() {
                       else if (isSelected && !isCorrect) optClass = 'bg-muted border-border ring-2 ring-border';
                       else optClass = 'bg-muted border-border opacity-50';
                     } else if (isSelected) {
-                      optClass = 'bg-brand/10 border-brand/50 ring-2 ring-brand/30';
+                      optClass = 'bg-brand-tint border-brand/50 ring-2 ring-brand/30';
                     }
 
                     return (
@@ -341,9 +341,9 @@ export default function PlacementTestPage() {
                         key={i}
                         onClick={() => handleAnswer(letter)}
                         disabled={showFeedback}
-                        className={`w-full text-left p-4 rounded-2xl border transition-all flex items-center gap-3 ${optClass}`}
+                        className={`w-full text-left p-4 rounded-card border transition-all flex items-center gap-3 ${optClass}`}
                       >
-                        <span className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 ${
+                        <span className={`w-8 h-8 rounded-control flex items-center justify-center text-sm font-bold shrink-0 ${
                           showFeedback && isCorrect ? 'bg-brand-solid text-on-brand'
                           : showFeedback && isSelected && !isCorrect ? 'bg-danger text-on-brand'
                           : 'bg-background border border-border text-muted-foreground'
@@ -360,7 +360,7 @@ export default function PlacementTestPage() {
 
                 {/* Feedback */}
                 {showFeedback && serverData && (
-                  <div className={`rounded-2xl p-4 border ${
+                  <div className={`rounded-card p-4 border ${
                     selectedAnswer === serverData.correct
                       ? 'bg-brand-tint border-brand/30'
                       : 'bg-danger-tint border-danger/30'
@@ -379,7 +379,7 @@ export default function PlacementTestPage() {
                   <button
                     onClick={handleNext}
                     disabled={loading}
-                    className="w-full py-3.5 bg-brand text-white font-bold rounded-2xl transition-all flex items-center justify-center gap-2"
+                    className="w-full py-3.5 bg-brand-solid text-on-brand font-bold rounded-card transition-all flex items-center justify-center gap-2"
                   >
                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> :
                       currentSectionIdx === SECTIONS.length - 1 && currentQuestionIdx + 1 === currentSection.questions
@@ -392,7 +392,7 @@ export default function PlacementTestPage() {
             ) : (
               <div className="text-center py-16">
                 <p className="text-muted-foreground">Gagal memuat soal.</p>
-                <button onClick={fetchQuestion} className="mt-4 px-4 py-2 bg-brand text-white rounded-xl text-sm">
+                <button onClick={fetchQuestion} className="mt-4 px-4 py-2 bg-brand-solid text-on-brand rounded-control text-sm">
                   <RotateCcw className="w-4 h-4 inline mr-1" /> Coba Lagi
                 </button>
               </div>
@@ -413,12 +413,12 @@ export default function PlacementTestPage() {
     return (
       <div className="min-h-full p-4 md:p-8 flex items-center justify-center">
         <div className="max-w-lg w-full">
-          <div className="bg-card border border-border rounded-3xl p-6 md:p-10 shadow-xl text-center">
+          <div className="bg-card border border-border rounded-card p-6 md:p-10 text-center">
             <div className="mb-6">
-              <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br ${gradient} shadow-lg mb-4`}>
-                <span className="text-3xl font-serif font-bold text-white">{level}</span>
+              <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br ${gradient}  mb-4`}>
+                <span className="text-3xl font-serif font-medium text-white">{level}</span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground">{desc.title}</h1>
+              <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">{desc.title}</h1>
               <p className="text-muted-foreground mt-2 text-sm leading-relaxed">{desc.desc}</p>
             </div>
 
@@ -443,14 +443,14 @@ export default function PlacementTestPage() {
 
             <Link
               href="/dashboard"
-              className="block w-full py-3.5 bg-brand text-white font-bold rounded-2xl transition-all mb-3"
+              className="block w-full py-3.5 bg-brand-solid text-on-brand font-bold rounded-card transition-all mb-3"
             >
               Kembali ke Dashboard
             </Link>
 
             <button
               onClick={() => { setPhase('intro'); setScores({ reading: { correct: 0, total: 0, lastLevel: 'B1' }, grammar: { correct: 0, total: 0, lastLevel: 'B1' }, vocabulary: { correct: 0, total: 0, lastLevel: 'B1' }, listening: { correct: 0, total: 0, lastLevel: 'B1' } }); setCurrentSectionIdx(0); setCurrentQuestionIdx(0); setCurrentEstimate('B1'); }}
-              className="w-full py-3 bg-muted border border-border text-foreground font-bold rounded-2xl hover:bg-muted/80 transition-colors text-sm"
+              className="w-full py-3 bg-muted border border-border text-foreground font-bold rounded-card hover:bg-muted/80 transition-colors text-sm"
             >
               <RotateCcw className="w-4 h-4 inline mr-2" />
               Ulang Tes

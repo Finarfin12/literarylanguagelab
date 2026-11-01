@@ -44,8 +44,8 @@ export default async function GrammarTopicPage({ params }: { params: Promise<{ s
       </Link>
 
       <div className="mt-2 mb-6">
-        <span className="text-xs font-bold px-2 py-1 rounded bg-brand/10 text-brand">Level {topic.cefr_level}</span>
-        <h1 className="mt-2 text-2xl md:text-4xl font-serif font-bold text-foreground">{topic.title}</h1>
+        <span className="text-xs font-bold px-2 py-1 rounded bg-brand-tint text-brand-ink">Level {topic.cefr_level}</span>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] mt-2 font-serif font-medium text-foreground">{topic.title}</h1>
       </div>
 
       <Card className="mb-4">
@@ -71,7 +71,7 @@ export default async function GrammarTopicPage({ params }: { params: Promise<{ s
 
       {related && related.length > 0 && (
         <Card className="mt-4">
-          <CardTitle icon={<BookOpen className="w-5 h-5 text-brand" />}>Bacaan terkait</CardTitle>
+          <CardTitle icon={<BookOpen className="w-5 h-5 text-brand-ink" />}>Bacaan terkait</CardTitle>
           <ul className="divide-y divide-border -mx-2">
             {related.map((t) => (
               <li key={t.id}>

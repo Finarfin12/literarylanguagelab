@@ -64,7 +64,6 @@ export default function LingoWiseClient() {
       {/* Left Column: Input & Tools */}
       <div className="lg:col-span-5 space-y-6">
         <div className="bg-card shadow-sm border border-border rounded-3xl p-6 shadow-xl relative overflow-hidden group">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-serif font-bold text-foreground">Input Teks Sastra</h2>
             <button

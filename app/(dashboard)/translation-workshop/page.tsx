@@ -144,7 +144,6 @@ export default function TranslationWorkshopPage() {
 
         {/* Translation Text */}
         <div className="bg-card shadow-sm border border-border rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
           <h2 className="text-sm font-bold text-brand mb-4 uppercase tracking-wider">Your Translation (Indonesian)</h2>
           <textarea
             value={translatedText}
@@ -159,7 +158,7 @@ export default function TranslationWorkshopPage() {
         <button
           onClick={handleEvaluate}
           disabled={loading}
-          className="px-5 md:px-10 py-4 bg-gradient-to-r from-brand to-brand-hover text-background font-bold text-lg rounded-2xl transition-all duration-300 disabled:opacity-50 flex items-center gap-3"
+          className="px-5 md:px-10 py-4 bg-brand-solid hover:bg-brand-hover text-on-brand font-bold text-lg rounded-2xl transition-all duration-300 disabled:opacity-50 flex items-center gap-3"
         >
           {loading ? (
             <>

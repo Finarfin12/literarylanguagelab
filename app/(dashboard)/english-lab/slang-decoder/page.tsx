@@ -110,8 +110,8 @@ export default function SlangDecoderPage() {
   return (
     <div className="p-4 sm:p-8 max-w-6xl mx-auto min-h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-          <Hash className="w-8 h-8 text-brand" /> Modern Slang Decoder
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+          <Hash className="w-8 h-8 text-brand-ink" /> Modern Slang Decoder
         </h1>
         <p className="text-muted-foreground mt-2 text-base sm:text-lg">Kamus gaul bertenaga AI. Pahami bahasa gaul internet, singkatan, dan referensi budaya pop dalam bahasa Indonesia santai.</p>
       </div>
@@ -121,7 +121,7 @@ export default function SlangDecoderPage() {
         {/* Main Content Area (Col Span 2) */}
         <div className="lg:col-span-2 space-y-6">
           {/* Input Panel */}
-          <div className="bg-card border border-border rounded-3xl p-6 shadow-sm relative overflow-hidden">
+          <div className="bg-card border border-border rounded-card p-6 relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-1 bg-muted opacity-50" />
             
             <div className="flex gap-3 items-start">
@@ -131,13 +131,13 @@ export default function SlangDecoderPage() {
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleDecode(); } }}
                   placeholder="Ketik kalimat atau frasa gaul (misal: 'That movie was lowkey mid, no cap')..."
-                  className="w-full h-32 bg-background border border-border rounded-2xl p-4 pr-12 text-foreground focus:ring-1 focus:ring-border focus:border-border focus:outline-none resize-none text-lg leading-relaxed shadow-inner"
+                  className="w-full h-32 bg-background border border-border rounded-card p-4 pr-12 text-foreground focus:ring-1 focus:ring-border focus:border-border focus:outline-none resize-none text-lg leading-relaxed "
                   disabled={loading}
                 />
                 <button
                   onClick={isRecording ? stopRecording : startRecording}
                   disabled={isProcessing || loading}
-                  className={`absolute right-3 top-3 p-2 rounded-xl transition-all ${isRecording ? "bg-danger text-on-brand animate-pulse" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+                  className={`absolute right-3 top-3 w-11 h-11 flex items-center justify-center rounded-control transition-all ${isRecording ? "bg-danger text-on-brand animate-pulse" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
                 >
                   {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                 </button>
@@ -147,7 +147,7 @@ export default function SlangDecoderPage() {
             <button
               onClick={() => handleDecode()}
               disabled={loading || !text.trim()}
-              className="w-full mt-4 py-4 bg-brand-solid text-on-brand font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-brand-hover transition-all disabled:opacity-50"
+              className="w-full mt-4 py-4 bg-brand-solid text-on-brand font-bold rounded-control flex items-center justify-center gap-2 hover:bg-brand-hover transition-all disabled:opacity-50"
             >
               {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Mendecode...</> : <><Sparkles className="w-5 h-5" /> Decode Slang</>}
             </button>
@@ -157,14 +157,14 @@ export default function SlangDecoderPage() {
           {result && (
             <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
               {result.overall_meaning_id && result.phrases.length > 0 && (
-                <div className="bg-brand/10 border border-brand/20 rounded-2xl p-5">
-                  <h3 className="text-xs font-bold text-brand uppercase tracking-wider mb-2 flex items-center gap-2"><Quote className="w-4 h-4" /> Terjemahan Kalimat</h3>
+                <div className="bg-brand-tint border border-brand/20 rounded-card p-5">
+                  <h3 className="text-xs font-bold text-brand-ink uppercase tracking-wider mb-2 flex items-center gap-2"><Quote className="w-4 h-4" /> Terjemahan Kalimat</h3>
                   <p className="text-foreground text-lg italic">"{result.overall_meaning_id}"</p>
                 </div>
               )}
 
               {result.phrases.map((phrase, i) => (
-                <div key={i} className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+                <div key={i} className="bg-card border border-border rounded-card p-6 ">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                     <div>
                       <div className="flex items-center gap-3 mb-2">
@@ -178,24 +178,24 @@ export default function SlangDecoderPage() {
                     <button
                       onClick={() => saveToDictionary(phrase)}
                       disabled={saving === phrase.phrase}
-                      className="shrink-0 flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted/80 border border-border rounded-xl text-sm font-bold text-foreground transition-colors"
+                      className="shrink-0 flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted/80 border border-border rounded-control text-sm font-bold text-foreground transition-colors"
                     >
                       {saving === phrase.phrase ? <Loader2 className="w-4 h-4 animate-spin" /> : <BookmarkPlus className="w-4 h-4" />} Simpan
                     </button>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                    <div className="bg-background rounded-xl p-4 border border-border/50">
+                    <div className="bg-background rounded-control p-4 border border-border/50">
                       <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">Makna Asli (Inggris)</p>
                       <p className="text-sm text-foreground/90">{phrase.meaning_en}</p>
                     </div>
-                    <div className="bg-background rounded-xl p-4 border border-border/50">
+                    <div className="bg-background rounded-control p-4 border border-border/50">
                       <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">Asal Usul / Konteks</p>
                       <p className="text-sm text-foreground/90">{phrase.origin}</p>
                     </div>
                   </div>
 
-                  <div className="mt-4 bg-muted border border-border rounded-xl p-4">
+                  <div className="mt-4 bg-muted border border-border rounded-control p-4">
                     <p className="text-xs text-foreground uppercase tracking-wider font-bold mb-2 flex items-center gap-2"><Quote className="w-3 h-3" /> Contoh Penggunaan</p>
                     <p className="text-foreground italic">{phrase.example}</p>
                   </div>
@@ -221,7 +221,7 @@ export default function SlangDecoderPage() {
           )}
 
           {!result && !loading && (
-             <div className="bg-card border border-border rounded-3xl p-6 md:p-12 text-center text-muted-foreground flex flex-col items-center justify-center">
+             <div className="bg-card border border-border rounded-card p-6 md:p-12 text-center text-muted-foreground flex flex-col items-center justify-center">
                 <Search className="w-16 h-16 mb-4 opacity-20" />
                 <p className="text-lg font-medium">Ketik frasa gaul atau singkatan internet di atas.</p>
                 <p className="text-sm mt-2">AI akan menganalisis maknanya dalam konteks budaya pop.</p>
@@ -231,16 +231,16 @@ export default function SlangDecoderPage() {
 
         {/* Sidebar: Trending Slang */}
         <div className="lg:col-span-1">
-          <div className="bg-card border border-border rounded-3xl p-6 sticky top-6 shadow-sm">
+          <div className="bg-card border border-border rounded-card p-6 sticky top-6 shadow-sm">
             <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-brand" /> Trending Slang
+              <TrendingUp className="w-5 h-5 text-brand-ink" /> Trending Slang
             </h3>
             <div className="flex flex-wrap gap-2">
               {TRENDING_SLANG.map((item, i) => (
                 <button
                   key={i}
                   onClick={() => handleDecode(item.phrase)}
-                  className="text-left px-3 py-2 bg-muted hover:bg-muted hover:text-foreground hover:border-border border border-transparent rounded-xl text-sm transition-all flex flex-col group"
+                  className="text-left px-3 py-2 bg-muted hover:bg-muted hover:text-foreground hover:border-border border border-transparent rounded-control text-sm transition-all flex flex-col group"
                 >
                   <span className="font-bold text-foreground group-hover:text-foreground transition-colors">{item.phrase}</span>
                   <span className="text-[10px] text-muted-foreground mt-0.5">{item.category}</span>

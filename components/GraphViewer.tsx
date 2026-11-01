@@ -98,7 +98,6 @@ export default function GraphViewer({ data }: { data: string }) {
 
   return (
     <div className="w-full h-[500px] border border-brand/20 rounded-2xl overflow-hidden bg-card/50 backdrop-blur-md relative shadow-xl shadow-brand/5">
-      <div className="absolute inset-0 bg-gradient-to-br from-brand/5 via-transparent to-purple-500/5 pointer-events-none" />
       <div className="absolute top-4 left-4 z-10 text-xs text-brand font-mono font-bold tracking-wider uppercase">Semantic Graph</div>
       <ForceGraph2D
         graphData={graphData}

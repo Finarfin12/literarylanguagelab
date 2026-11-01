@@ -105,7 +105,6 @@ export default function SemanticMapViewer({ data }: SemanticMapViewerProps) {
 
   return (
     <div ref={containerRef} className="w-full bg-card/50 backdrop-blur-md rounded-2xl overflow-hidden border border-brand/20 shadow-xl shadow-brand/5 relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-brand/5 via-transparent to-purple-500/5 pointer-events-none" />
       <ForceGraph2D
         ref={fgRef}
         width={dimensions.width}

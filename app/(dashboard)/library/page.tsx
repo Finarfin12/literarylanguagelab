@@ -132,7 +132,6 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
               {isAdmin && <DeleteTextButton textId={text.id} title={text.title} />}
               <Link href={enablePreview ? `/preview/${text.id}` : `/read/${text.id}`} className="block h-full">
                 <div className="bg-card shadow-sm border border-border rounded-3xl p-6 hover:bg-card shadow-sm hover:shadow-2xl hover:shadow-brand/10 transition-all duration-500 relative overflow-hidden flex flex-col h-full">
-                  <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="relative z-10 flex-1 flex flex-col">
                     <h2 className="text-2xl font-serif font-bold text-foreground group-hover:text-brand transition-colors line-clamp-2 pr-10">{text.title}</h2>
                   <p className="text-muted-foreground mt-2 italic flex-1">{text.author}</p>

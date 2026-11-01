@@ -80,7 +80,7 @@ export default function TopicPractice({ slug, title, summary }: { slug: string; 
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
 
       <Card>
-        <CardTitle icon={<Lightbulb className="w-5 h-5 text-brand" />}>Penjelasan lebih detail</CardTitle>
+        <CardTitle icon={<Lightbulb className="w-5 h-5 text-brand-ink" />}>Penjelasan lebih detail</CardTitle>
         {!lesson ? (
           <Button variant="secondary" onClick={loadLesson} loading={lessonLoading}>Jelaskan lebih detail</Button>
         ) : (
@@ -108,7 +108,7 @@ export default function TopicPractice({ slug, title, summary }: { slug: string; 
                                 type="button"
                                 disabled={choice !== undefined}
                                 onClick={() => setPicked((p) => ({ ...p, [i]: opt }))}
-                                className={`min-h-[44px] px-4 rounded-control border text-sm font-bold ${right ? "border-brand bg-brand/10 text-brand" : wrong ? "border-danger bg-danger/10 text-danger" : "border-border bg-card hover:bg-muted"}`}
+                                className={`min-h-[44px] px-4 rounded-control border text-sm font-bold ${right ? "border-brand bg-brand-tint text-brand-ink" : wrong ? "border-danger bg-danger/10 text-danger" : "border-border bg-card hover:bg-muted"}`}
                               >
                                 {opt}
                               </button>
@@ -127,7 +127,7 @@ export default function TopicPractice({ slug, title, summary }: { slug: string; 
       </Card>
 
       <Card>
-        <CardTitle icon={<PenLine className="w-5 h-5 text-brand" />}>Coba tulis sendiri</CardTitle>
+        <CardTitle icon={<PenLine className="w-5 h-5 text-brand-ink" />}>Coba tulis sendiri</CardTitle>
         <p className="text-sm text-muted-foreground mb-3">Tulis 2-3 kalimat yang memakai topik ini. Grammar Clinic akan memeriksanya.</p>
         <textarea
           value={text}
@@ -143,7 +143,7 @@ export default function TopicPractice({ slug, title, summary }: { slug: string; 
         {clinic && (
           <div className="mt-4 space-y-3 text-sm">
             <p className="font-bold">Skor: {clinic.score ?? 0}/100</p>
-            {(clinic.corrections || []).length === 0 && <p className="text-brand font-bold">Tidak ada kesalahan. Bagus!</p>}
+            {(clinic.corrections || []).length === 0 && <p className="text-brand-ink font-bold">Tidak ada kesalahan. Bagus!</p>}
             {(clinic.corrections || []).map((c, i) => (
               <div key={i} className="border-l-4 border-warning-ink/30 pl-3">
                 <p><span className="line-through text-muted-foreground">{c.original}</span> → <strong>{c.corrected}</strong></p>

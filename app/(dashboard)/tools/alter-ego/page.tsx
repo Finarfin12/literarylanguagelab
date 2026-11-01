@@ -209,7 +209,7 @@ export default function AlterEgoChatPage() {
       
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
-          <Link href="/tools" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors w-max text-sm">
+          <Link href="/tools" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors w-max min-h-[44px] text-sm">
             <ArrowLeft className="w-4 h-4" /> Kembali ke Toolkits
           </Link>
           <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">

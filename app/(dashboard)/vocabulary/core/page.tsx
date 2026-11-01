@@ -28,7 +28,7 @@ const ENRICHED_COLUMNS = `${BASE_COLUMNS}, definition_en, forms`;
 const STATUS_LABEL: Record<WordStatus, { text: string; cls: string }> = {
   belum: { text: "Belum", cls: "bg-muted text-muted-foreground" },
   sedang: { text: "Sedang dipelajari", cls: "bg-muted text-foreground " },
-  dikuasai: { text: "Dikuasai", cls: "bg-brand/10 text-brand" },
+  dikuasai: { text: "Dikuasai", cls: "bg-brand-tint text-brand-ink" },
 };
 
 export default async function CoreWordsPage({ searchParams }: { searchParams: Promise<{ level?: string; page?: string }> }) {
@@ -81,13 +81,13 @@ export default async function CoreWordsPage({ searchParams }: { searchParams: Pr
 
   const href = (l: string, p = 1) => `/vocabulary/core?level=${l}${p > 1 ? `&page=${p}` : ""}`;
   const chip = (active: boolean) =>
-    `inline-flex items-center min-h-[44px] px-4 rounded-full text-sm font-bold border ${active ? "bg-brand text-background border-brand" : "bg-card text-muted-foreground border-border hover:bg-muted"}`;
+    `inline-flex items-center min-h-[44px] px-4 rounded-full text-sm font-bold border ${active ? "bg-brand-solid text-on-brand border-brand" : "bg-card text-muted-foreground border-border hover:bg-muted"}`;
 
   return (
     <AnimatedPage className="p-4 lg:p-8 max-w-4xl mx-auto pb-24">
       <div className="mb-6">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-          <BookMarked className="w-7 h-7 text-brand" /> Kosakata Inti
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+          <BookMarked className="w-7 h-7 text-brand-ink" /> Kosakata Inti
         </h1>
         <p className="text-muted-foreground mt-2">
           Kata-kata paling sering dipakai dalam bahasa Inggris sehari-hari. Kuasai dari level terendah, lalu tambahkan ke Review.
@@ -116,7 +116,7 @@ export default async function CoreWordsPage({ searchParams }: { searchParams: Pr
             <AddWordsButton level={level} />
           </Card>
 
-          <ul className="divide-y divide-border bg-card border border-border rounded-2xl">
+          <ul className="divide-y divide-border bg-card border border-border rounded-card">
             {(words || []).map((w) => {
               const st = status.get(String(w.word).toLowerCase()) ?? "belum";
               const label = STATUS_LABEL[st];
