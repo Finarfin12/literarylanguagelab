@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState, useTransition } from "react";
 import { Lightbulb, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/primitives";
+import ToneAnalysis from "@/components/tone/ToneAnalysis";
 import { containsTerm, type QaWarning } from "@/lib/translation/qa";
 import { matchTm } from "@/lib/translation/tm-match";
 import {
@@ -180,6 +181,10 @@ export default function SegmentPanel({
               ))}
             </ul>
           )}
+        </section>
+
+        <section aria-label="Analisis tone segmen">
+          <ToneAnalysis text={segment.source} onUse={onUseTm} label="Analisis tone segmen" />
         </section>
 
         <section aria-label="Komentar penerjemah">

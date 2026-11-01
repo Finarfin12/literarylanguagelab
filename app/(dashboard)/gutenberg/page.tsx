@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { BookOpen, Search, Loader2, ArrowRight, Sparkles, Database } from "lucide-react";
+import { BookOpen, Search, Loader2, ArrowRight, Sparkles, Database, Server } from "lucide-react";
 import Link from "next/link";
 
-type SearchProvider = "openlibrary" | "gutendex";
+// "server" = Gutenberg lewat /api/gutenberg/search (opsi ketiga, Fase 14f); OpenLibrary & Gutendex tetap memanggil sumbernya langsung
+type SearchProvider = "openlibrary" | "gutendex" | "server";
 
 type BookResult = {
   id: string;
@@ -83,7 +84,7 @@ export default function GutenbergSearchPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("gutenberg-provider") as SearchProvider | null;
-    if (saved === "openlibrary" || saved === "gutendex") setProvider(saved);
+    if (saved === "openlibrary" || saved === "gutendex" || saved === "server") setProvider(saved);
     setMounted(true);
   }, []);
 
@@ -118,12 +119,25 @@ export default function GutenbergSearchPage() {
           .map(mapOpenLibrary);
         setBooks(results);
         setHasMore(data.numFound > 20);
-      } else {
+      } else if (provider === "gutendex") {
         const res = await fetch(
           `https://gutendex.com/books/?search=${encodeURIComponent(query)}&page=1`,
           { signal: controller.signal }
         );
         if (!res.ok) throw new Error("Gutendex gagal merespons. Coba ganti ke OpenLibrary.");
+        const data = (await res.json()) as GutendexSearchResponse;
+        const results = (data.results || [])
+          .filter((book) => Object.keys(book.formats).some((k) => k.startsWith("text/plain")))
+          .map(mapGutendex);
+        setBooks(results);
+        setHasMore(!!data.results?.length && data.results.length >= 32);
+      } else {
+        // Gutenberg (server): respons berbentuk sama dengan Gutendex, jadi pemetaan yang ada dipakai ulang
+        const res = await fetch(`/api/gutenberg/search?q=${encodeURIComponent(query)}&page=1`, { signal: controller.signal });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(typeof body.error === "string" ? body.error : "Server pencarian gagal merespons. Coba lewat OpenLibrary atau Gutendex.");
+        }
         const data = (await res.json()) as GutendexSearchResponse;
         const results = (data.results || [])
           .filter((book) => Object.keys(book.formats).some((k) => k.startsWith("text/plain")))
@@ -159,11 +173,20 @@ export default function GutenbergSearchPage() {
           .map(mapOpenLibrary);
         setBooks((prev) => [...prev, ...results]);
         setHasMore(data.numFound > nextPage * 20);
-      } else {
+      } else if (provider === "gutendex") {
         const res = await fetch(
           `https://gutendex.com/books/?search=${encodeURIComponent(query)}&page=${nextPage}`,
           { signal: controller.signal }
         );
+        if (!res.ok) throw new Error("Gagal memuat lebih banyak.");
+        const data = (await res.json()) as GutendexSearchResponse;
+        const results = (data.results || [])
+          .filter((book) => Object.keys(book.formats).some((k) => k.startsWith("text/plain")))
+          .map(mapGutendex);
+        setBooks((prev) => [...prev, ...results]);
+        setHasMore(!!data.results?.length && data.results.length >= 32);
+      } else {
+        const res = await fetch(`/api/gutenberg/search?q=${encodeURIComponent(query)}&page=${nextPage}`, { signal: controller.signal });
         if (!res.ok) throw new Error("Gagal memuat lebih banyak.");
         const data = (await res.json()) as GutendexSearchResponse;
         const results = (data.results || [])
@@ -195,7 +218,7 @@ export default function GutenbergSearchPage() {
         <div className="inline-flex items-center justify-center p-4 bg-muted rounded-full mb-6">
           <BookOpen className="w-12 h-12 text-foreground" />
         </div>
-        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">Public Domain Books</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">Baca Buku</h1>
         <p className="text-muted-foreground mt-4 text-lg max-w-2xl mx-auto">
           Cari dan baca lebih dari 70.000+ buku sastra klasik secara gratis langsung dari arsip Project Gutenberg. Baca secara utuh, tanpa gangguan.
         </p>
@@ -203,10 +226,10 @@ export default function GutenbergSearchPage() {
 
       {/* Provider Selector */}
       <div className="flex justify-center mb-6">
-        <div className="bg-muted rounded-full p-1 flex gap-1">
+        <div className="bg-muted rounded-card sm:rounded-full p-1 flex flex-wrap justify-center gap-1">
           <button
             onClick={() => setProvider("openlibrary")}
-            className={`px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-5 py-2 min-h-[44px] rounded-full text-sm font-bold transition-all flex items-center gap-1.5 ${
               provider === "openlibrary"
                 ? "bg-brand-solid text-on-brand "
                 : "text-muted-foreground hover:text-foreground"
@@ -217,7 +240,7 @@ export default function GutenbergSearchPage() {
           </button>
           <button
             onClick={() => setProvider("gutendex")}
-            className={`px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-5 py-2 min-h-[44px] rounded-full text-sm font-bold transition-all flex items-center gap-1.5 ${
               provider === "gutendex"
                 ? "bg-brand-solid text-on-brand "
                 : "text-muted-foreground hover:text-foreground"
@@ -226,12 +249,25 @@ export default function GutenbergSearchPage() {
             <Database className="w-3.5 h-3.5" />
             Gutendex
           </button>
+          <button
+            onClick={() => setProvider("server")}
+            className={`px-5 py-2 min-h-[44px] rounded-full text-sm font-bold transition-all flex items-center gap-1.5 ${
+              provider === "server"
+                ? "bg-brand-solid text-on-brand "
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Server className="w-3.5 h-3.5" />
+            Gutenberg (server)
+          </button>
         </div>
       </div>
       <p className="text-center text-xs text-muted-foreground -mt-4 mb-6">
         {provider === "openlibrary"
           ? "OpenLibrary: lebih cepat · jutaan buku · cover HD"
-          : "Gutendex: ringan · 70.000+ buku klasik"}
+          : provider === "gutendex"
+            ? "Gutendex: ringan · 70.000+ buku klasik"
+            : "Gutenberg (server): lewat server aplikasi · lebih stabil · ada cache"}
       </p>
 
       <form onSubmit={searchBooks} className="mb-12 max-w-3xl mx-auto w-full relative">
@@ -241,7 +277,9 @@ export default function GutenbergSearchPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder={provider === "openlibrary"
             ? "Cari judul buku atau nama penulis via OpenLibrary..."
-            : "Cari judul buku atau nama penulis via Gutendex..."}
+            : provider === "gutendex"
+              ? "Cari judul buku atau nama penulis via Gutendex..."
+              : "Cari judul buku atau nama penulis via Gutenberg (server)..."}
           className="w-full bg-card border-2 border-border rounded-full py-4 pl-14 pr-32 text-lg focus:outline-none focus:border-border transition-colors "
         />
         <Search className="w-6 h-6 text-muted-foreground absolute left-5 top-1/2 -translate-y-1/2" />
@@ -263,12 +301,19 @@ export default function GutenbergSearchPage() {
       {!loading && error && (
         <div className="text-center py-20 text-muted-foreground">
           <p className="text-xl font-serif text-foreground">{error}</p>
-          <button
-            onClick={() => { setProvider(provider === "gutendex" ? "openlibrary" : "gutendex"); setError(""); }}
-            className="mt-4 px-6 py-2 bg-brand-solid text-on-brand font-bold rounded-full hover:bg-brand-hover transition-colors"
-          >
-            Coba lewat {provider === "gutendex" ? "OpenLibrary" : "Gutendex"} →
-          </button>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {(["openlibrary", "gutendex", "server"] as SearchProvider[])
+              .filter((p) => p !== provider)
+              .map((p) => (
+                <button
+                  key={p}
+                  onClick={() => { setProvider(p); setError(""); }}
+                  className="px-6 py-2 min-h-[44px] bg-brand-solid text-on-brand font-bold rounded-full hover:bg-brand-hover transition-colors"
+                >
+                  Coba lewat {p === "openlibrary" ? "OpenLibrary" : p === "gutendex" ? "Gutendex" : "Gutenberg (server)"} →
+                </button>
+              ))}
+          </div>
         </div>
       )}
 

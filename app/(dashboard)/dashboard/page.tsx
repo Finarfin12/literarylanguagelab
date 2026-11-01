@@ -6,6 +6,7 @@ import VocabChart from "@/components/dashboard/VocabChart";
 import AnimatedPage from "@/components/AnimatedPage";
 import { Badge, BookSpine, ButtonLink, Card, CardTitle, EmptyState, Eyebrow, ProgressBar, SectionHeading } from "@/components/ui/primitives";
 import { LEARNING_ROOMS } from "@/lib/rooms";
+import WotdCard from "@/components/wotd/WotdCard";
 import { getNextStep } from "@/lib/next-step";
 import { neighborLevels } from "@/lib/cefr";
 import { loadLevelContext } from "@/lib/skill-evidence";
@@ -311,6 +312,11 @@ export default async function DashboardPage() {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* Word of the Day: kata lokal + tombol Pelajari (AI hanya dipanggil saat ditekan) */}
+      <section className="mb-10 max-w-md" aria-label="Word of the Day">
+        <WotdCard />
       </section>
 
       {/* Progres Pribadi */}

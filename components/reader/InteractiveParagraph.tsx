@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, memo } from "react";
-import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer";
+import CulturalTextRenderer, { CulturalReference, type IdiomMark } from "./CulturalTextRenderer";
 import { Loader2 } from "lucide-react";
 import { chunkText } from "@/lib/reader/sentence-chunks";
 import { alignTokens } from "@/lib/reader/syntax-align";
@@ -33,6 +33,8 @@ const SYNTAX_PARALLEL = 3;
 interface InteractiveParagraphProps {
   text: string;
   culturalRefs: CulturalReference[];
+  /** Penanda idiom untuk blok ini (dari reader); opsional. */
+  idioms?: IdiomMark[];
   isBeginnerMode: boolean;
   beginnerLevel: string;
   beginnerLayout: "inline" | "below" | "split";
@@ -44,6 +46,7 @@ interface InteractiveParagraphProps {
 function InteractiveParagraph({
   text,
   culturalRefs,
+  idioms,
   isBeginnerMode,
   beginnerLevel,
   beginnerLayout,
@@ -172,7 +175,7 @@ function InteractiveParagraph({
           </div>
         ) : errorSyntax ? (
           <div className="text-red-500 italic">
-            {errorSyntax} <CulturalTextRenderer text={text} references={culturalRefs} />
+            {errorSyntax} <CulturalTextRenderer text={text} references={culturalRefs} idioms={idioms} />
           </div>
         ) : syntaxTokens ? (
           <div className="leading-loose whitespace-pre-line">
@@ -190,7 +193,7 @@ function InteractiveParagraph({
             })}
           </div>
         ) : (
-          <CulturalTextRenderer text={text} references={culturalRefs} />
+          <CulturalTextRenderer text={text} references={culturalRefs} idioms={idioms} />
         )}
       </div>
     );
@@ -201,7 +204,7 @@ function InteractiveParagraph({
     if (loadingSimplified) {
       return (
         <div ref={containerRef} className="relative">
-          {beginnerLayout !== "inline" && <CulturalTextRenderer text={text} references={culturalRefs} />}
+          {beginnerLayout !== "inline" && <CulturalTextRenderer text={text} references={culturalRefs} idioms={idioms} />}
           <div className="flex items-center gap-2 text-brand italic mt-2 text-sm bg-brand/5 p-2 rounded-lg">
             <Loader2 className="w-4 h-4 animate-spin" /> Menyederhanakan teks ({beginnerLevel})...
           </div>
@@ -212,7 +215,7 @@ function InteractiveParagraph({
     if (errorSimplified) {
       return (
         <div ref={containerRef} className="relative">
-          {beginnerLayout !== "inline" && <CulturalTextRenderer text={text} references={culturalRefs} />}
+          {beginnerLayout !== "inline" && <CulturalTextRenderer text={text} references={culturalRefs} idioms={idioms} />}
           <div className="text-red-500 italic mt-2 text-sm bg-red-500/5 p-2 rounded-lg">
             {errorSimplified}
           </div>
@@ -232,7 +235,7 @@ function InteractiveParagraph({
       if (beginnerLayout === "below") {
         return (
           <div ref={containerRef}>
-            <CulturalTextRenderer text={text} references={culturalRefs} />
+            <CulturalTextRenderer text={text} references={culturalRefs} idioms={idioms} />
             <div className="mt-3 p-4 bg-brand/10 border-l-4 border-brand rounded-r-xl text-brand dark:text-brand-hover">
               <span className="text-xs font-bold uppercase tracking-wider block mb-1 opacity-70">Sederhana ({beginnerLevel})</span>
               <CulturalTextRenderer text={simplifiedText} references={[]} />
@@ -245,7 +248,7 @@ function InteractiveParagraph({
         return (
           <div ref={containerRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="pr-4 border-r border-border/50">
-              <CulturalTextRenderer text={text} references={culturalRefs} />
+              <CulturalTextRenderer text={text} references={culturalRefs} idioms={idioms} />
             </div>
             <div className="text-brand dark:text-brand-hover">
               <CulturalTextRenderer text={simplifiedText} references={[]} />
@@ -285,7 +288,7 @@ function InteractiveParagraph({
   // Normal Render
   return (
     <div ref={containerRef}>
-      <CulturalTextRenderer text={text} references={culturalRefs} />
+      <CulturalTextRenderer text={text} references={culturalRefs} idioms={idioms} />
     </div>
   );
 }

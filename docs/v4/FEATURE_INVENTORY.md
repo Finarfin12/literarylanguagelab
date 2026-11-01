@@ -78,6 +78,15 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 - **Simpan Kata** (dengan konteks, sumber, posisi) / simpan kolokasi.
 - Preferensi kamus: `auto_lookup`, `show_register`, `show_etymology`, `def_language`.
 
+> **(14f, ✅ sebagian)** Lima route API kini dipanggil dari UI (baris baru):
+> - **Buku Klasik**: opsi ketiga "Gutenberg (server)" di pemilih provider (cari + "Muat lagi"); OpenLibrary & Gutendex **tidak berubah**; tautan "Coba lewat …" menawarkan dua provider lain; `/api/gutenberg/search` memakai cache 5 menit dan pesan error ramah (bug: kata kunci berspasi menggantung karena `+`; kini `%20`). Judul halaman = "Baca Buku".
+> - **Word of the Day**: tombol "Pelajari" di kartu (Sidebar & Beranda) → panel mini-lesson, kolokasi, kuis 1 soal, "Simpan kata"; `/api/wotd` hanya dipanggil saat ditekan, kata deterministik per pengguna per hari, hasil di-cache `localStorage` `wotd:<tanggal>`. Logika: `lib/wotd.ts`.
+> - **Analisis tone**: tombol di modal Tongkat Ajaib (di bawah Bedah Sintaksis) dan "Analisis tone segmen" di Ruang Kerja Segmen; "Pakai usulan" hanya mengisi terjemahan saat ditekan. `/api/analyze-tone` tahan pagar kode, teks ≤ 1.000 & konteks ≤ 2.000 karakter. Logika: `lib/tone.ts`, `lib/ai/json.ts`.
+> - **Penanda idiom di reader**: ±180 idiom tanpa AI (`lib/idioms`, 13 uji, termasuk posesif — pola lama tidak cocok untuk "pull my/his/John's leg"); satu panggilan per halaman, garis bawah putus-putus hijau, tooltip arti + padanan Indonesia + "Simpan ke Idiom Library"; preferensi `reading.highlight_idioms` (Pengaturan → Reading Experience, default aktif). Tidak menulis `ai_usage_logs`.
+> - **Hapus akun**: Pengaturan memanggil `POST /api/auth/delete-account` (menggantikan `rpc('delete_user')` yang tidak ada). Butuh `SUPABASE_SERVICE_ROLE_KEY` dan migrasi `0011_profile_cascade.sql` (**belum dijalankan**). Tombol "hapus data Vocabulary & Riwayat" tidak berubah.
+> - **Ekspor CSV terjemahan** membaca tabel `translations` (cadangan `translation_submissions` bila tabel tidak ada).
+> Belum teruji dengan login/AI sungguhan: panggilan AI (WOTD, tone), hapus akun, simpan idiom, dan pencarian server dari dalam aplikasi; yang teruji: logika murni (uji unit), tampilan dengan API ditiru, dan `/api/gutenberg/search` langsung.
+
 ## D. Kosakata
 
 | Fitur | Lokasi |

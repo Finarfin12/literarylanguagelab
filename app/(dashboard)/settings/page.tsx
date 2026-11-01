@@ -17,6 +17,7 @@ interface UserPreferences {
     auto_save: boolean;
     highlight_color: string;
     line_numbers: boolean;
+    highlight_idioms: boolean;
     tts_enabled: boolean;
     tts_provider: string;
     enable_quizzes: boolean;
@@ -58,7 +59,7 @@ interface UserPreferences {
 }
 
 const defaultPreferences: UserPreferences = {
-  reading: { font_family: "serif", font_size: 16, line_height: 1.75, text_width: "medium", theme: "light", auto_save: true, highlight_color: "#FFD700", line_numbers: false, tts_enabled: false, tts_provider: "browser", enable_quizzes: true, enable_writing_prompts: true, enable_vocab_preview: true, enable_listening_challenge: true },
+  reading: { font_family: "serif", font_size: 16, line_height: 1.75, text_width: "medium", theme: "light", auto_save: true, highlight_color: "#FFD700", line_numbers: false, highlight_idioms: true, tts_enabled: false, tts_provider: "browser", enable_quizzes: true, enable_writing_prompts: true, enable_vocab_preview: true, enable_listening_challenge: true },
   dictionary: { auto_lookup: true, show_register: true, show_etymology: false, def_language: "id" },
   learning: { default_mastery: 0, auto_add_vocab: false, cards_per_session: 20, show_context: true },
   display: { show_reading_time: true, high_contrast: false, screen_reader: false, keyboard_shortcuts: true, enable_animations: true },
@@ -235,8 +236,13 @@ export default function SettingsPage() {
 
     setDeleting(true);
     try {
-      const { error } = await supabase.rpc('delete_user');
-      if (error) throw error;
+      const res = await fetch('/api/auth/delete-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: deleteEmail }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(typeof body.error === 'string' ? body.error : 'Server menolak permintaan.');
       await supabase.auth.signOut();
       window.location.href = '/login';
     } catch (err: any) {
@@ -255,9 +261,13 @@ export default function SettingsPage() {
       let table = "";
       if (type === 'vocab') table = "vocabulary";
       else if (type === 'history') table = "reading_sessions";
-      else if (type === 'translations') table = "translation_submissions";
+      else if (type === 'translations') table = "translations";
 
-      const { data, error } = await supabase.from(table).select('*').eq('user_id', user.id);
+      let { data, error } = await supabase.from(table).select('*').eq('user_id', user.id);
+      if (error && type === 'translations' && (error.code === '42P01' || error.code === 'PGRST205')) {
+        // tabel utama tidak ada: coba tabel lama sebelum menyerah
+        ({ data, error } = await supabase.from('translation_submissions').select('*').eq('user_id', user.id));
+      }
       if (error) throw error;
 
       if (!data || data.length === 0) {
@@ -487,6 +497,13 @@ export default function SettingsPage() {
                   <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <span className="text-sm font-bold">Tampilkan Nomor Baris</span>
                     <input type="checkbox" checked={preferences.reading.line_numbers} onChange={e => updatePref('reading', 'line_numbers', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer min-h-[44px]">
+                    <div>
+                      <span className="text-sm font-bold">Tandai Idiom Otomatis</span>
+                      <p className="text-xs text-muted-foreground mt-0.5 font-normal">Garis bawah putus-putus pada idiom di bacaan, dengan arti dan padanan Indonesia.</p>
+                    </div>
+                    <input type="checkbox" checked={preferences.reading.highlight_idioms !== false} onChange={e => updatePref('reading', 'highlight_idioms', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 gap-3">
                     <div className="flex flex-col">

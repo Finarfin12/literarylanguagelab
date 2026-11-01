@@ -6,7 +6,7 @@
 import { memo } from "react";
 import { Volume2, VolumeX, Search } from "lucide-react";
 import InteractiveParagraph from "./InteractiveParagraph";
-import type { CulturalReference } from "./CulturalTextRenderer";
+import type { CulturalReference, IdiomMark } from "./CulturalTextRenderer";
 
 export interface ReaderUnit {
   type: "heading" | "paragraph" | "verse";
@@ -17,6 +17,7 @@ interface ReaderBlockProps {
   index: number;
   block: ReaderUnit;
   culturalRefs: CulturalReference[];
+  idioms?: IdiomMark[];
   isBeginnerMode: boolean;
   beginnerLevel: string;
   beginnerLayout: "inline" | "below" | "split";
@@ -35,6 +36,7 @@ function ReaderBlock({
   index,
   block,
   culturalRefs,
+  idioms,
   isBeginnerMode,
   beginnerLevel,
   beginnerLayout,
@@ -73,6 +75,7 @@ function ReaderBlock({
         <InteractiveParagraph
           text={block.text}
           culturalRefs={culturalRefs}
+          idioms={idioms}
           isBeginnerMode={isBeginnerMode}
           beginnerLevel={beginnerLevel}
           beginnerLayout={beginnerLayout}

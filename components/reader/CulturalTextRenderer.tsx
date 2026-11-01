@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { BookOpen } from "lucide-react";
+import React, { useRef, useState } from "react";
+import { BookOpen, BookmarkPlus, Check } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 export interface CulturalReference {
   id: string;
@@ -11,9 +12,20 @@ export interface CulturalReference {
   indonesian_equivalent?: string;
 }
 
+/** Idiom yang sudah dideteksi (lib/idioms) untuk satu blok; index relatif terhadap `text` blok itu. */
+export interface IdiomMark {
+  phrase: string;
+  meaning: string;
+  indonesian: string;
+  index: number;
+  length: number;
+}
+
 interface CulturalTextRendererProps {
   text: string;
   references: CulturalReference[];
+  /** Penanda idiom hasil /api/detect-idioms (opsional; tanpa ini perilaku lama). */
+  idioms?: IdiomMark[];
 }
 
 // Satu regex gabungan per daftar referensi, dikompilasi sekali lalu dipakai ulang oleh
@@ -37,27 +49,128 @@ function compileReferences(references: CulturalReference[]): CompiledRefs | null
   return compiled;
 }
 
-export default function CulturalTextRenderer({ text, references }: CulturalTextRendererProps) {
-  if (!references || references.length === 0) {
-    return <>{text}</>;
-  }
+export default function CulturalTextRenderer({ text, references, idioms }: CulturalTextRendererProps) {
+  const compiled = references && references.length > 0 ? compileReferences(references) : null;
+  const hasIdioms = !!idioms && idioms.length > 0;
+  if (!compiled && !hasIdioms) return <>{text}</>;
 
-  const compiled = compileReferences(references);
-  if (!compiled) return <>{text}</>;
+  // Kumpulkan semua penanda (referensi budaya + idiom), urut menurut posisi; referensi budaya menang bila tumpang tindih
+  type Mark = { start: number; end: number; node: (key: string) => React.ReactNode };
+  const marks: Mark[] = [];
+  if (compiled) {
+    for (const match of text.matchAll(compiled.regex)) {
+      const ref = compiled.byPhrase.get(match[0].toLowerCase());
+      if (!ref || match.index === undefined) continue;
+      marks.push({ start: match.index, end: match.index + match[0].length, node: (key) => <CulturalTooltip key={key} reference={ref} text={match[0]} /> });
+    }
+  }
+  if (hasIdioms) {
+    for (const idiom of idioms!) {
+      const start = idiom.index;
+      const end = idiom.index + idiom.length;
+      if (start < 0 || end > text.length) continue;
+      if (marks.some((m) => start < m.end && end > m.start)) continue;
+      marks.push({ start, end, node: (key) => <IdiomTooltip key={key} idiom={idiom} text={text.substring(start, end)} /> });
+    }
+  }
+  if (marks.length === 0) return <>{text}</>;
+  marks.sort((a, b) => a.start - b.start);
 
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
-  for (const match of text.matchAll(compiled.regex)) {
-    const ref = compiled.byPhrase.get(match[0].toLowerCase());
-    if (!ref || match.index === undefined) continue;
-    if (match.index > lastIndex) parts.push(text.substring(lastIndex, match.index));
-    parts.push(<CulturalTooltip key={`${ref.id}-${match.index}`} reference={ref} text={match[0]} />);
-    lastIndex = match.index + match[0].length;
+  for (const m of marks) {
+    if (m.start < lastIndex) continue;
+    if (m.start > lastIndex) parts.push(text.substring(lastIndex, m.start));
+    parts.push(m.node(`mark-${m.start}`));
+    lastIndex = m.end;
   }
-
-  if (parts.length === 0) return <>{text}</>;
   if (lastIndex < text.length) parts.push(text.substring(lastIndex));
   return <>{parts}</>;
+}
+
+// Penanda idiom: garis bawah putus-putus hijau (beda dari referensi budaya yang amber), tooltip arti + padanan Indonesia,
+// dan tombol simpan ke Idiom Library (tabel `idioms`, sama seperti halaman /idioms).
+function IdiomTooltip({ idiom, text }: { idiom: IdiomMark; text: string }) {
+  const [show, setShow] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  // Hover membuka tooltip; klik yang menyusul hover tidak boleh langsung menutupnya (mouse), tetapi ketukan kedua menutup (sentuh)
+  const openedByHover = useRef(false);
+
+  const save = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (saving || saved) return;
+    setSaving(true);
+    const supabase = createClient();
+    const { error } = await supabase.from("idioms").insert({
+      idiom: idiom.phrase,
+      meaning: `${idiom.meaning}${idiom.indonesian ? ` (${idiom.indonesian})` : ""}`,
+      origin: "",
+      example_sentence: text,
+    });
+    setSaving(false);
+    if (!error) setSaved(true);
+  };
+
+  return (
+    <span
+      className="relative"
+      onMouseEnter={() => {
+        openedByHover.current = true;
+        setShow(true);
+      }}
+      onMouseLeave={() => {
+        openedByHover.current = false;
+        setShow(false);
+      }}
+    >
+      <span
+        role="button"
+        tabIndex={0}
+        aria-expanded={show}
+        onClick={() => {
+          if (openedByHover.current) {
+            openedByHover.current = false;
+            return;
+          }
+          setShow((s) => !s);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setShow((s) => !s);
+          }
+        }}
+        className="cursor-help border-b-2 border-dashed border-brand-solid hover:bg-brand-tint transition-colors"
+      >
+        {text}
+      </span>
+      {show && (
+        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-72 max-w-[85vw] z-[100] font-sans text-left">
+          <span className="block bg-card text-foreground text-sm border border-border shadow-[0_4px_16px_rgba(31,36,32,0.18)] rounded-card p-4 leading-relaxed [text-indent:0]">
+            <span className="block text-[11px] font-bold uppercase tracking-[0.14em] text-brand-ink mb-1">Idiom</span>
+            <span className="block font-serif text-base font-medium mb-1">{idiom.phrase}</span>
+            <span className="block mb-2">{idiom.meaning}</span>
+            {idiom.indonesian && (
+              <span className="block pt-2 border-t border-border">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">Padanan Indonesia</span>
+                <span className="font-medium text-brand-ink">&ldquo;{idiom.indonesian}&rdquo;</span>
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={save}
+              disabled={saving || saved}
+              className="mt-3 w-full min-h-[44px] rounded-control bg-brand-tint text-brand-ink font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-70"
+            >
+              {saved ? <Check className="w-4 h-4" /> : <BookmarkPlus className="w-4 h-4" />}
+              {saved ? "Tersimpan di Idiom Library" : saving ? "Menyimpan..." : "Simpan ke Idiom Library"}
+            </button>
+          </span>
+        </span>
+      )}
+    </span>
+  );
 }
 
 function CulturalTooltip({ reference, text }: { reference: CulturalReference, text: string }) {

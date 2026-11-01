@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { MENU_GROUPS } from "@/lib/menu-config";
 import { ROOMS, resolveItem } from "@/lib/rooms";
+import WotdCard from "@/components/wotd/WotdCard";
 
 // Pintasan utama (PINNED_PATHS di lib/menu-config.ts): Text Library, Baca Buku, Kamus A-Z
 const PINNED_LINKS = [
@@ -79,18 +80,6 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const words = [
-    { word: "Mellifluous", def: "Sweet or musical; pleasant to hear." },
-    { word: "Serendipity", def: "The occurrence of events by chance in a happy or beneficial way." },
-    { word: "Epiphany", def: "A moment of sudden revelation or insight." },
-    { word: "Petrichor", def: "A pleasant smell that frequently accompanies the first rain after a long period of warm, dry weather." },
-    { word: "Luminous", def: "Full of or shedding light; bright or shining, especially in the dark." },
-    { word: "Eloquence", def: "Fluent or persuasive speaking or writing." },
-    { word: "Ineffable", def: "Too great or extreme to be expressed or described in words." }
-  ];
-  const today = new Date().getDate();
-  const WOTD = words[today % words.length];
-
   return (
     <>
       {!isSidebarOpen && (
@@ -128,15 +117,9 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
           </div>
         </div>
 
-      {mounted && (
-        <div className="px-6 mb-4">
-          <div className="bg-card border border-border p-4 rounded-card">
-            <p className="text-[11px] font-bold text-brand-ink uppercase tracking-[0.14em] mb-1">Word of the Day</p>
-            <p className="text-lg font-serif font-medium text-foreground">{WOTD.word}</p>
-            <p className="text-sm text-muted-foreground italic mt-1">&ldquo;{WOTD.def}&rdquo;</p>
-          </div>
-        </div>
-      )}
+      <div className="px-6 mb-4">
+        <WotdCard />
+      </div>
 
       <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
         <div className="space-y-2 pb-8">

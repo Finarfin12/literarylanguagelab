@@ -7,10 +7,11 @@ import WordLookupSidebar from "./WordLookupSidebar";
 import ResponsivePanel from "@/components/ui/ResponsivePanel";
 import ReadingCompanionSidebar from "./ReadingCompanionSidebar";
 import { createClient } from "@/utils/supabase/client";
-import CulturalTextRenderer, { CulturalReference } from "./CulturalTextRenderer";
+import CulturalTextRenderer, { CulturalReference, type IdiomMark } from "./CulturalTextRenderer";
 import ReaderBlock, { type ReaderUnit } from "./ReaderBlock";
 import InteractiveParagraph from "./InteractiveParagraph";
 import MagicWandButton from "./MagicWandButton";
+import ToneAnalysis from "@/components/tone/ToneAnalysis";
 import { paginate, pageOfBlock, chapterMarks } from "@/lib/reader-pages";
 import { beginnerModeLevel } from "@/lib/cefr";
 import { Search } from "lucide-react";
@@ -107,6 +108,58 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
   const pendingScrollBlock = useRef<number | null>(null);
   const restoredRef = useRef(false);
   const page = pages[Math.min(pageIndex, pages.length - 1)];
+
+  // Penanda idiom (Fase 14f): satu panggilan /api/detect-idioms per halaman (bukan per paragraf), hasil di-cache per halaman.
+  // Daftar idiom per blok dikirim sebagai prop ke ReaderBlock (memo) sehingga blok lain tidak ikut di-render ulang.
+  const [idiomsByBlock, setIdiomsByBlock] = useState<Record<number, IdiomMark[]>>({});
+  const idiomCache = useRef<Map<number, Record<number, IdiomMark[]>>>(new Map());
+  const highlightIdioms = prefs?.reading?.highlight_idioms !== false;
+  useEffect(() => {
+    if (!highlightIdioms || !page) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- mematikan penanda saat preferensi dimatikan
+      setIdiomsByBlock({});
+      return;
+    }
+    const cached = idiomCache.current.get(pageIndex);
+    if (cached) {
+      setIdiomsByBlock(cached);
+      return;
+    }
+    // Gabungkan blok halaman dengan pemisah tetap; offset tiap blok dipakai untuk memetakan hasil kembali ke blok
+    const SEP = "\n\n";
+    const offsets: { block: number; start: number; end: number }[] = [];
+    let text = "";
+    for (let i = page.start; i < page.end; i++) {
+      const t = units[i]?.text ?? "";
+      offsets.push({ block: i, start: text.length, end: text.length + t.length });
+      text += t + SEP;
+    }
+    if (!text.trim() || text.length > 20000) return;
+    let cancelled = false;
+    fetch("/api/detect-idioms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data || !Array.isArray(data.idioms)) return;
+        const byBlock: Record<number, IdiomMark[]> = {};
+        for (const m of data.idioms as (IdiomMark & { length: number })[]) {
+          const o = offsets.find((x) => m.index >= x.start && m.index + m.length <= x.end);
+          if (!o) continue; // idiom yang melintasi batas blok diabaikan
+          (byBlock[o.block] ||= []).push({ ...m, index: m.index - o.start });
+        }
+        idiomCache.current.set(pageIndex, byBlock);
+        setIdiomsByBlock(byBlock);
+      })
+      .catch(() => {
+        // fitur tambahan: abaikan jika gagal (teks tetap terbaca tanpa penanda)
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [pageIndex, page, units, highlightIdioms]);
 
   const scrollToPendingBlock = useCallback((smooth: boolean) => {
     const target = pendingScrollBlock.current;
@@ -831,6 +884,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                   index={index}
                   block={block}
                   culturalRefs={culturalRefs}
+                  idioms={idiomsByBlock[index]}
                   isBeginnerMode={isBeginnerMode}
                   beginnerLevel={beginnerLevel}
                   beginnerLayout={beginnerLayout}
@@ -1234,6 +1288,11 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                 showSyntax={true}
               />
             </div>
+
+            <ToneAnalysis
+              text={inspectedSentence}
+              context={units.slice(page.start, page.end).find((u) => u.text.includes(inspectedSentence))?.text ?? ""}
+            />
           </div>
         </div>
       )}
