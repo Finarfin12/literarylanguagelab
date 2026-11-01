@@ -108,7 +108,7 @@ function ModelForm({ providerId, model, pricingReady, onDone }: { providerId: st
         <button type="button" onClick={onDone} className={`${buttonClass} bg-muted text-foreground hover:bg-muted/80`}>
           Batal
         </button>
-        <button type="submit" disabled={pending} className={`${buttonClass} bg-brand text-background`}>
+        <button type="submit" disabled={pending} className={`${buttonClass} bg-brand-solid text-on-brand`}>
           {pending && <Loader2 className="w-4 h-4 animate-spin" />} Simpan
         </button>
       </div>
@@ -154,7 +154,7 @@ function ModelRow({ model, pricingReady }: { model: ModelView; pricingReady: boo
         {model.label && <p className="text-xs text-muted-foreground break-all">{model.modelId}</p>}
         <div className="flex flex-wrap gap-1.5 mt-2">
           {model.capabilities.map((c) => (
-            <span key={c} className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-brand/10 text-brand">
+            <span key={c} className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-brand-tint text-brand-ink">
               {c}
             </span>
           ))}
@@ -236,7 +236,7 @@ function ImportPanel({ provider, existing, onDone }: { provider: ProviderOption;
       ) : (
         <>
           <input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Cari model..." className={inputClass} />
-          <div className="max-h-64 overflow-y-auto border border-border rounded-xl divide-y divide-border">
+          <div className="max-h-64 overflow-y-auto border border-border rounded-control divide-y divide-border">
             {shown.map((m) => (
               <label key={m} className="flex items-center gap-3 px-3 min-h-[44px] text-sm cursor-pointer hover:bg-muted/40">
                 <input type="checkbox" checked={selected.has(m)} onChange={() => toggle(m)} className="w-4 h-4 accent-brand" />
@@ -251,7 +251,7 @@ function ImportPanel({ provider, existing, onDone }: { provider: ProviderOption;
           Tutup
         </button>
         {available.length > 0 && (
-          <button onClick={save} disabled={saving || selected.size === 0} className={`${buttonClass} bg-brand text-background`}>
+          <button onClick={save} disabled={saving || selected.size === 0} className={`${buttonClass} bg-brand-solid text-on-brand`}>
             {saving && <Loader2 className="w-4 h-4 animate-spin" />} Tambahkan {selected.size || ""}
           </button>
         )}
@@ -264,7 +264,7 @@ function ProviderSection({ provider, models, pricingReady }: { provider: Provide
   const [mode, setMode] = useState<"idle" | "add" | "import">("idle");
 
   return (
-    <section className="bg-card border border-border rounded-2xl overflow-hidden">
+    <section className="bg-card border border-border rounded-card overflow-hidden">
       <div className="p-4 flex flex-col sm:flex-row sm:items-center gap-3 bg-muted/30">
         <h2 className="font-bold text-foreground flex-1">
           {provider.name} <span className="text-sm font-normal text-muted-foreground">({models.length} model)</span>
@@ -273,7 +273,7 @@ function ProviderSection({ provider, models, pricingReady }: { provider: Provide
           <button onClick={() => setMode("import")} className={`${buttonClass} bg-muted hover:bg-muted/80 text-foreground`}>
             <DownloadCloud className="w-4 h-4" /> Ambil dari provider
           </button>
-          <button onClick={() => setMode("add")} className={`${buttonClass} bg-brand text-background`}>
+          <button onClick={() => setMode("add")} className={`${buttonClass} bg-brand-solid text-on-brand`}>
             <Plus className="w-4 h-4" /> Model
           </button>
         </div>

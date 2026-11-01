@@ -85,15 +85,15 @@ export default function CommunityPage() {
   );
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-brand animate-pulse"><Loader2 className="w-8 h-8 animate-spin" /></div>;
+    return <div className="min-h-screen flex items-center justify-center text-brand-ink animate-pulse"><Loader2 className="w-8 h-8 animate-spin" /></div>;
   }
 
   return (
     <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-screen">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div>
-          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-            <Users className="w-8 h-8 text-brand" />
+          <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+            <Users className="w-8 h-8 text-brand-ink" />
             Jejaring Pembaca
           </h1>
           <p className="text-muted-foreground mt-2 text-lg">Temukan, ikuti, dan belajar bersama polyglot lainnya.</p>
@@ -106,34 +106,34 @@ export default function CommunityPage() {
             placeholder="Cari pembaca..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full bg-background border border-foreground/10 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-brand"
+            className="w-full bg-background border border-foreground/10 rounded-control pl-10 pr-4 py-3 focus:outline-none focus:border-brand"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProfiles.map(profile => (
-          <div key={profile.id} className="bg-card border border-foreground/10 rounded-3xl p-6 hover:shadow-xl transition-all hover:border-brand/30 flex flex-col items-center text-center">
-            <div className="w-20 h-20 rounded-full bg-brand/10 border-2 border-brand/20 overflow-hidden mb-4 flex items-center justify-center">
+          <div key={profile.id} className="bg-card border border-foreground/10 rounded-card p-6 transition-all hover:border-brand/30 flex flex-col items-center text-center">
+            <div className="w-20 h-20 rounded-full bg-brand-tint border-2 border-brand/20 overflow-hidden mb-4 flex items-center justify-center">
               {profile.avatar_url ? (
                 <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-brand font-bold text-2xl uppercase">{profile.full_name?.charAt(0) || '?'}</span>
+                <span className="text-brand-ink font-bold text-2xl uppercase">{profile.full_name?.charAt(0) || '?'}</span>
               )}
             </div>
             
             <h3 className="text-lg font-bold text-foreground mb-1">{profile.full_name || 'Anonim'}</h3>
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6 bg-foreground/5 px-3 py-1 rounded-full">
-              <GraduationCap className="w-3.5 h-3.5 text-brand" /> {profile.cefr_level || 'Level belum diketahui'}
+              <GraduationCap className="w-3.5 h-3.5 text-brand-ink" /> {profile.cefr_level || 'Level belum diketahui'}
             </div>
 
             <div className="w-full flex gap-2">
               <button 
                 onClick={() => handleFollowToggle(profile.id, !!profile.is_following)}
-                className={`flex-1 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+                className={`flex-1 py-2.5 rounded-control font-bold flex items-center justify-center gap-2 transition-all ${
                   profile.is_following 
                     ? 'bg-foreground/5 text-foreground hover:bg-danger-tint hover:text-danger' 
-                    : 'bg-brand text-background hover:bg-brand-hover hover:scale-105'
+                    : 'bg-brand-solid text-on-brand hover:bg-brand-hover '
                 }`}
               >
                 {profile.is_following ? (
@@ -145,7 +145,7 @@ export default function CommunityPage() {
               
               <Link
                 href={`/messages?user_id=${profile.id}`}
-                className="w-12 h-11 flex items-center justify-center bg-brand/10 text-brand hover:bg-brand hover:text-white rounded-xl transition-all shrink-0"
+                className="w-12 h-11 flex items-center justify-center bg-brand-tint text-brand-ink hover:bg-brand hover:text-white rounded-control transition-all shrink-0"
                 title="Kirim Pesan"
               >
                 <MessageSquare className="w-5 h-5" />
@@ -154,7 +154,7 @@ export default function CommunityPage() {
           </div>
         ))}
         {filteredProfiles.length === 0 && (
-          <div className="col-span-full text-center py-20 text-muted-foreground bg-foreground/5 rounded-3xl border border-dashed border-foreground/10">
+          <div className="col-span-full text-center py-20 text-muted-foreground bg-foreground/5 rounded-card border border-dashed border-foreground/10">
             Tidak ada pembaca yang ditemukan dengan kriteria tersebut.
           </div>
         )}

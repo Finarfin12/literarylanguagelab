@@ -111,8 +111,8 @@ export default function PreviewPage() {
   if (loading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 bg-background min-h-[600px]">
-        <Loader2 className="w-12 h-12 animate-spin text-brand mb-6" />
-        <h2 className="text-2xl font-serif font-bold animate-pulse text-foreground">Extracting Key Vocabulary...</h2>
+        <Loader2 className="w-12 h-12 animate-spin text-brand-ink mb-6" />
+        <h2 className="text-2xl font-serif font-medium animate-pulse text-foreground">Extracting Key Vocabulary...</h2>
         <p className="text-muted-foreground mt-2 text-center max-w-md">
           AI sedang menganalisis buku untuk menemukan kata-kata penting (skema kosakata) agar Anda lebih mudah memahami bacaan.
         </p>
@@ -124,7 +124,7 @@ export default function PreviewPage() {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 bg-background">
         <p>Gagal mengekstraksi kosa kata.</p>
-        <button onClick={handleStartReading} className="mt-4 px-6 py-2 bg-brand text-white rounded-lg font-bold">Langsung Membaca Saja</button>
+        <button onClick={handleStartReading} className="mt-4 px-6 py-2 bg-brand-solid text-on-brand rounded-lg font-bold">Langsung Membaca Saja</button>
       </div>
     );
   }
@@ -134,18 +134,18 @@ export default function PreviewPage() {
       <div className="flex-1 overflow-y-auto bg-background p-4 md:p-8 lg:p-12 animate-in fade-in zoom-in-95 duration-500">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <div className="w-20 h-20 bg-brand/10 text-brand rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-brand-tint text-brand-ink rounded-full flex items-center justify-center mx-auto mb-6">
               <BrainCircuit className="w-10 h-10" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-4">Vocabulary Preview</h1>
+            <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground mb-4">Vocabulary Preview</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Kami menemukan <span className="font-bold text-brand">{vocabList.length} kata kunci</span> penting dalam teks ini. Mempelajarinya sebelum membaca akan mengurangi beban kognitif dan melatih <em>schema activation</em> Anda.
+              Kami menemukan <span className="font-bold text-brand-ink">{vocabList.length} kata kunci</span> penting dalam teks ini. Mempelajarinya sebelum membaca akan mengurangi beban kognitif dan melatih <em>schema activation</em> Anda.
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
             {vocabList.map((v, i) => (
-              <div key={i} className="bg-card border border-border rounded-xl p-4 shadow-sm text-center">
+              <div key={i} className="bg-card border border-border rounded-control p-4 text-center">
                 <p className="font-bold text-lg text-foreground">{v.word}</p>
               </div>
             ))}
@@ -154,13 +154,13 @@ export default function PreviewPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button 
               onClick={() => setMode("flashcard")}
-              className="w-full sm:w-auto px-4 md:px-8 py-4 bg-brand text-background font-bold rounded-2xl hover:scale-105 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-2 text-lg"
+              className="w-full sm:w-auto px-4 md:px-8 py-4 bg-brand-solid text-on-brand font-bold rounded-card transition-all shadow-brand/20 flex items-center justify-center gap-2 text-lg"
             >
               <BrainCircuit className="w-5 h-5" /> Pelajari Dulu (Pre-learn)
             </button>
             <button 
               onClick={handleStartReading}
-              className="w-full sm:w-auto px-4 md:px-8 py-4 bg-transparent border-2 border-border text-foreground font-bold rounded-2xl hover:bg-muted transition-all flex items-center justify-center gap-2 text-lg"
+              className="w-full sm:w-auto px-4 md:px-8 py-4 bg-transparent border-2 border-border text-foreground font-bold rounded-card hover:bg-muted transition-all flex items-center justify-center gap-2 text-lg"
             >
               <BookOpen className="w-5 h-5" /> Skip & Mulai Membaca
             </button>
@@ -200,16 +200,16 @@ export default function PreviewPage() {
         <div className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${showAnswer ? "[transform:rotateY(180deg)]" : ""}`}>
           
           {/* Front */}
-          <div className="absolute inset-0 [backface-visibility:hidden] bg-card border border-border shadow-xl rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center">
-            <h2 className="text-4xl sm:text-5xl font-serif font-bold text-foreground mb-4 sm:mb-6 break-all">{currentWord.word}</h2>
+          <div className="absolute inset-0 [backface-visibility:hidden] bg-card border border-border shadow-xl rounded-card p-6 sm:p-10 flex flex-col items-center justify-center text-center">
+            <h2 className="text-4xl sm:text-5xl font-serif font-medium text-foreground mb-4 sm:mb-6 break-all">{currentWord.word}</h2>
             <p className="text-muted-foreground flex items-center gap-2 text-xs sm:text-sm"><BrainCircuit className="w-4 h-4" /> Klik untuk melihat arti</p>
           </div>
 
           {/* Back */}
-          <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center overflow-y-auto">
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground mb-2 sm:mb-4 pt-8 sm:pt-0">{currentWord.word}</h2>
-            <div className="text-lg sm:text-xl text-brand font-medium mb-4 sm:mb-6"><Markdown>{currentWord.definition}</Markdown></div>
-            <div className="bg-muted/50 p-3 sm:p-4 rounded-xl text-xs sm:text-sm italic text-muted-foreground border-l-4 border-l-brand w-full overflow-hidden">
+          <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 rounded-card p-6 sm:p-10 flex flex-col items-center justify-center text-center overflow-y-auto">
+            <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground mb-2 sm:mb-4 pt-8 sm:pt-0">{currentWord.word}</h2>
+            <div className="text-lg sm:text-xl text-brand-ink font-medium mb-4 sm:mb-6"><Markdown>{currentWord.definition}</Markdown></div>
+            <div className="bg-muted/50 p-3 sm:p-4 rounded-control text-xs sm:text-sm italic text-muted-foreground border-l-4 border-l-brand w-full overflow-hidden">
               "{currentWord.example}"
             </div>
 
@@ -233,13 +233,13 @@ export default function PreviewPage() {
         <button 
           onClick={handlePrevCard}
           disabled={cardIndex === 0}
-          className="p-4 rounded-2xl bg-card border border-border text-foreground hover:bg-muted disabled:opacity-50 transition-all flex-1 flex justify-center"
+          className="p-4 rounded-card bg-card border border-border text-foreground hover:bg-muted disabled:opacity-50 transition-all flex-1 flex justify-center"
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
         <button 
           onClick={handleNextCard}
-          className="p-4 rounded-2xl bg-brand text-background shadow-lg shadow-brand/20 hover:scale-[1.02] active:scale-95 transition-all flex-[2] flex items-center justify-center gap-2 font-bold text-lg"
+          className="p-4 rounded-card bg-brand-solid text-on-brand shadow-brand/20 active:scale-95 transition-all flex-[2] flex items-center justify-center gap-2 font-bold text-lg"
         >
           {cardIndex === vocabList.length - 1 ? "Selesai" : "Selanjutnya"} <ChevronRight className="w-6 h-6" />
         </button>

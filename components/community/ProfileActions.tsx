@@ -57,10 +57,10 @@ export default function ProfileActions({ targetUserId, initialIsFollowing, isOwn
       <button 
         onClick={handleFollowToggle}
         disabled={loading}
-        className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+        className={`flex-1 md:flex-none px-6 py-2.5 rounded-control font-bold flex items-center justify-center gap-2 transition-all ${
           isFollowing 
             ? 'bg-foreground/5 text-foreground hover:bg-danger-tint hover:text-danger' 
-            : 'bg-brand text-background hover:bg-brand-hover'
+            : 'bg-brand-solid text-on-brand hover:bg-brand-hover'
         }`}
       >
         {isFollowing ? (
@@ -72,7 +72,7 @@ export default function ProfileActions({ targetUserId, initialIsFollowing, isOwn
       
       <Link
         href={isLoggedIn ? `/messages?user_id=${targetUserId}` : "/login"}
-        className="px-6 py-2.5 flex items-center justify-center bg-brand/10 text-brand hover:bg-brand hover:text-white rounded-xl font-bold transition-all gap-2"
+        className="px-6 py-2.5 flex items-center justify-center bg-brand-tint text-brand-ink hover:bg-brand hover:text-white rounded-control font-bold transition-all gap-2"
         onClick={(e) => {
           if (!isLoggedIn) {
             e.preventDefault();

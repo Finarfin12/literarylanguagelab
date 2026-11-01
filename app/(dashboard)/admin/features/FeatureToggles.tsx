@@ -57,7 +57,7 @@ export default function FeatureToggles({ flags, disabled }: { flags: FlagView[];
   return (
     <div className="space-y-6">
       {groups.map((group) => (
-        <section key={group} className="bg-card border border-border rounded-2xl overflow-hidden">
+        <section key={group} className="bg-card border border-border rounded-card overflow-hidden">
           <h2 className="px-4 py-3 bg-muted/30 font-bold text-foreground">{group}</h2>
           <div className="divide-y divide-border">
             {flags

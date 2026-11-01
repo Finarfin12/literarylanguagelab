@@ -20,7 +20,7 @@ export default function AdminTabs() {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 z-20 bg-background/90 backdrop-blur border-b border-border">
+    <nav className="sticky top-0 z-20 bg-background/90 border-b border-border">
       <div className="max-w-6xl mx-auto px-4 lg:px-8 flex gap-1 overflow-x-auto scrollbar-none">
         {TABS.map(({ href, label, icon: Icon, exact }) => {
           const active = pathname === href || (!exact && pathname.startsWith(`${href}/`));
@@ -29,7 +29,7 @@ export default function AdminTabs() {
               key={href}
               href={href}
               className={`flex items-center gap-2 px-4 min-h-[44px] text-sm font-bold whitespace-nowrap border-b-2 transition-colors ${
-                active ? "border-brand text-brand" : "border-transparent text-muted-foreground hover:text-foreground"
+                active ? "border-brand text-brand-ink" : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               <Icon className="w-4 h-4" /> {label}

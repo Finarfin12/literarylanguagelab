@@ -14,7 +14,7 @@ import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 const CORE_GROUP: MenuGroup = {
   title: "Utama",
   icon: Home,
-  color: "text-brand",
+  color: "text-brand-ink",
   items: [
     { name: "Beranda", path: "/dashboard", description: "Langkah berikutnya dan ringkasan belajarmu." },
     { name: "Baca Buku", path: "/gutenberg", description: "Ribuan karya sastra domain publik dari Project Gutenberg." },
@@ -113,13 +113,13 @@ export default function MobileMenuPage() {
   return (
     <AnimatedPage className="pb-24 pt-4 px-4 bg-background min-h-screen">
       {/* Profile Header section */}
-      <div className="bg-card border border-border rounded-3xl p-5 mb-8 shadow-sm flex items-center justify-between">
+      <div className="bg-card border border-border rounded-card p-5 mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-brand/10 border-2 border-brand/20 overflow-hidden flex items-center justify-center shrink-0">
+          <div className="w-14 h-14 rounded-full bg-brand-tint border-2 border-brand/20 overflow-hidden flex items-center justify-center shrink-0">
             {userProfile?.avatar ? (
               <img src={userProfile.avatar} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
-              <User className="w-6 h-6 text-brand" />
+              <User className="w-6 h-6 text-brand-ink" />
             )}
           </div>
           <div>
@@ -129,7 +129,7 @@ export default function MobileMenuPage() {
               </h2>
               <Link
                 href="/messages"
-                className="relative flex items-center justify-center w-8 h-8 bg-muted rounded-full text-muted-foreground hover:text-brand hover:bg-brand/10 transition-colors"
+                className="relative flex items-center justify-center w-11 h-11 bg-muted rounded-full text-muted-foreground hover:text-brand-ink hover:bg-brand-tint transition-colors"
                 title="Inbox Pesan"
               >
                 <MessageSquare className="w-4 h-4" />
@@ -146,7 +146,7 @@ export default function MobileMenuPage() {
           </div>
         </div>
         
-        <Link href="/profile" className="p-3 bg-muted rounded-full text-foreground hover:bg-brand/10 hover:text-brand transition-colors">
+        <Link href="/profile" className="p-3 bg-muted rounded-full text-foreground hover:bg-brand-tint hover:text-brand-ink transition-colors">
           <ChevronRight className="w-5 h-5" />
         </Link>
       </div>
@@ -160,7 +160,7 @@ export default function MobileMenuPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Cari fitur, mis. OCR, kosakata, forum..."
           aria-label="Cari fitur"
-          className="w-full min-h-[48px] pl-11 pr-4 bg-card border border-border rounded-2xl text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand"
+          className="w-full min-h-[48px] pl-11 pr-4 bg-card border border-border rounded-card text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand"
         />
       </div>
 
@@ -175,7 +175,7 @@ export default function MobileMenuPage() {
           const isCollapsed = collapsed[group.title] ?? !!group.collapsedByDefault;
           const isOpen = searching || !isCollapsed;
           return (
-            <div key={group.title} className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
+            <div key={group.title} className="bg-card border border-border rounded-card overflow-hidden ">
               <button
                 type="button"
                 onClick={() => setCollapsed((c) => ({ ...c, [group.title]: !(c[group.title] ?? !!group.collapsedByDefault) }))}
@@ -183,7 +183,7 @@ export default function MobileMenuPage() {
                 className="w-full px-5 min-h-[56px] bg-muted/20 flex items-center gap-3 text-left"
               >
                 <Icon className={`w-5 h-5 ${group.color}`} />
-                <h3 className="font-bold font-serif text-foreground flex-1">{group.title}</h3>
+                <h3 className="font-medium font-serif text-foreground flex-1">{group.title}</h3>
                 <span className="text-xs text-muted-foreground">{group.items.length}</span>
                 <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
               </button>
@@ -211,24 +211,24 @@ export default function MobileMenuPage() {
 
       {/* Footer Actions */}
       <div className="mt-8 grid grid-cols-3 gap-3 pb-8">
-        <Link href="/settings" className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
+        <Link href="/settings" className="flex flex-col items-center justify-center gap-2 p-4 rounded-card border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
           <Settings className="w-5 h-5" />
           <span className="text-xs">Pengaturan</span>
         </Link>
-        <Link href="/help" className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
+        <Link href="/help" className="flex flex-col items-center justify-center gap-2 p-4 rounded-card border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors">
           <HelpCircle className="w-5 h-5" />
           <span className="text-xs">Bantuan</span>
         </Link>
         <button 
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors"
+          className="flex flex-col items-center justify-center gap-2 p-4 rounded-card border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors"
         >
           {mounted ? (theme === "dark" ? <Sun className="w-5 h-5 text-warning-ink" /> : <Moon className="w-5 h-5 text-brand-ink" />) : <Moon className="w-5 h-5" />}
           <span className="text-xs">Tema</span>
         </button>
         <button 
           onClick={handleSignOut}
-          className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-muted text-foreground font-medium hover:bg-brand-hover hover:text-white transition-colors col-span-3"
+          className="flex items-center justify-center gap-2 p-4 rounded-card border border-border bg-muted text-foreground font-medium hover:bg-brand-hover hover:text-white transition-colors col-span-3"
         >
           <LogOut className="w-4 h-4" />
           Keluar

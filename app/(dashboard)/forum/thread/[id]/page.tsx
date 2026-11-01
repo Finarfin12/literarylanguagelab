@@ -292,7 +292,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-brand animate-pulse">Memuat diskusi...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-brand-ink animate-pulse">Memuat diskusi...</div>;
   }
 
   return (
@@ -302,19 +302,19 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       </Link>
 
       {/* Original Thread Post */}
-      <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-xl mb-8 relative">
+      <div className="bg-card border border-border rounded-card p-4 md:p-8 mb-8 relative">
         {canEditOrDelete(thread?.user_id || '') && !isEditing && (
            <div className="absolute top-6 right-6 flex items-center gap-2">
              <button 
                onClick={() => setIsEditing(true)}
-               className="p-2 text-muted-foreground hover:text-brand bg-muted hover:bg-muted hover:bg-muted/80 rounded-xl transition-all"
+               className="p-2 text-muted-foreground hover:text-brand-ink bg-muted hover:bg-muted rounded-control transition-all"
                title="Edit Diskusi"
              >
                <Edit className="w-5 h-5" />
              </button>
              <button 
                onClick={handleDeleteThread}
-               className="p-2 text-muted-foreground hover:text-danger bg-muted hover:bg-muted hover:bg-muted/80 rounded-xl transition-all"
+               className="p-2 text-muted-foreground hover:text-danger bg-muted hover:bg-muted rounded-control transition-all"
                title="Hapus Diskusi"
              >
                <Trash2 className="w-5 h-5" />
@@ -328,27 +328,27 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
               type="text"
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
-              className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all font-serif text-2xl font-bold"
+              className="w-full bg-background border border-border rounded-control px-4 py-3 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all font-serif text-2xl font-medium"
               placeholder="Judul Diskusi"
             />
             <select
               value={editCategoryId}
               onChange={(e) => setEditCategoryId(e.target.value)}
-              className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all appearance-none cursor-pointer"
+              className="w-full bg-background border border-border rounded-control px-4 py-3 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all appearance-none cursor-pointer"
             >
               {categories.map(cat => (
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>
             
-            <div className="border border-border rounded-xl overflow-hidden bg-background flex flex-col focus-within:ring-2 focus-within:ring-brand transition-all">
+            <div className="border border-border rounded-control overflow-hidden bg-background flex flex-col focus-within:ring-2 focus-within:ring-brand transition-all">
               <div className="flex items-center gap-1 p-2 bg-muted border-b border-border overflow-x-auto">
-                <button onClick={() => insertFormatting('**')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bold"><Bold className="w-4 h-4" /></button>
-                <button onClick={() => insertFormatting('*')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Italic"><Italic className="w-4 h-4" /></button>
-                <button onClick={() => insertFormatting('[text](url)', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
+                <button onClick={() => insertFormatting('**')} className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bold"><Bold className="w-4 h-4" /></button>
+                <button onClick={() => insertFormatting('*')} className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Italic"><Italic className="w-4 h-4" /></button>
+                <button onClick={() => insertFormatting('[text](url)', false)} className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
                 <div className="w-px h-5 bg-muted hover:bg-muted/80 mx-1"></div>
                 
-                <label className={`p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-2 ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} title="Upload Gambar">
+                <label className={`p-2 hover:bg-muted  rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-2 ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} title="Upload Gambar">
                   {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                 </label>
@@ -369,14 +369,14 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
                   setEditContent(thread?.content || '');
                   setEditCategoryId(thread?.category_id || '');
                 }}
-                className="px-5 py-2.5 rounded-xl font-bold text-muted-foreground hover:bg-muted transition-all"
+                className="px-5 py-2.5 rounded-control font-bold text-muted-foreground hover:bg-muted transition-all"
               >
                 Batal
               </button>
               <button 
                 onClick={handleSaveEdit}
                 disabled={savingEdit}
-                className="bg-brand text-background px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-brand-hover transition-all disabled:opacity-50"
+                className="bg-brand-solid text-on-brand px-6 py-2.5 rounded-control font-bold flex items-center gap-2 hover:bg-brand-hover transition-all disabled:opacity-50"
               >
                 {savingEdit ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 Simpan Perubahan
@@ -385,10 +385,10 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
           </div>
         ) : (
           <>
-            <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-6 pr-24">{thread?.title}</h1>
+            <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground mb-6 pr-24">{thread?.title}</h1>
             
             <div className="flex items-center gap-3 mb-8 pb-6 border-b border-border">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border ${threadAuthor.role === 'admin' ? 'bg-danger-tint border-danger/30 text-danger' : 'bg-brand/20 border-brand/30 text-brand'} overflow-hidden`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border ${threadAuthor.role === 'admin' ? 'bg-danger-tint border-danger/30 text-danger' : 'bg-brand-tint border-brand/30 text-brand-ink'} overflow-hidden`}>
                 {threadAuthor.avatar_url ? (
                   <img src={threadAuthor.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
@@ -408,7 +408,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
               </div>
             </div>
 
-            <div className="prose dark:prose-invert max-w-none prose-p:leading-relaxed prose-lg text-foreground/90 prose-img:rounded-2xl prose-img:border prose-img:border-border prose-img:shadow-lg">
+            <div className="prose dark:prose-invert max-w-none prose-p:leading-relaxed prose-lg text-foreground/90 prose-img:rounded-card prose-img:border prose-img:border-border ">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{thread?.content || ''}</ReactMarkdown>
             </div>
           </>
@@ -416,14 +416,14 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       </div>
 
       <div className="flex items-center gap-3 mb-6">
-        <MessageSquare className="w-6 h-6 text-brand" />
+        <MessageSquare className="w-6 h-6 text-brand-ink" />
         <h2 className="text-2xl font-bold text-foreground">{comments.length} Komentar</h2>
       </div>
 
       {/* Comments List */}
       <div className="space-y-6 mb-8">
         {comments.map(comment => (
-          <div key={comment.id} className="bg-card shadow-sm border border-border rounded-2xl p-6 shadow-sm relative group">
+          <div key={comment.id} className="bg-card border border-border rounded-card p-6 relative group">
             {canEditOrDelete(comment.user_id) && (
               <button 
                 onClick={async () => {
@@ -433,7 +433,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
                      setComments(comments.filter(c => c.id !== comment.id));
                    }
                 }}
-                className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-danger bg-muted hover:bg-muted hover:bg-muted/80 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-danger bg-muted hover:bg-muted rounded-control transition-all opacity-0 group-hover:opacity-100"
                 title="Hapus Komentar"
               >
                 <Trash2 className="w-4 h-4" />
@@ -454,7 +454,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
                   {renderRoleBadge(comment.author.role)}
                   {renderCefrBadge(comment.author.cefr_level)}
                   {comment.user_id === thread?.user_id && (
-                    <span className="bg-brand/20 text-brand px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Pembuat</span>
+                    <span className="bg-brand-tint text-brand-ink px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Pembuat</span>
                   )}
                 </p>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -462,7 +462,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
                 </p>
               </div>
             </div>
-            <div className="prose dark:prose-invert max-w-none text-foreground/90 text-sm leading-relaxed prose-img:rounded-xl prose-img:max-h-96">
+            <div className="prose dark:prose-invert max-w-none text-foreground/90 text-sm leading-relaxed prose-img:rounded-control prose-img:max-h-96">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{comment.content}</ReactMarkdown>
             </div>
           </div>
@@ -470,8 +470,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       </div>
 
       {/* Add Comment Box */}
-      <div className="bg-background border border-border rounded-3xl p-6 relative">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 blur-[50px] rounded-full pointer-events-none"></div>
+      <div className="bg-background border border-border rounded-card p-6 relative">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold text-foreground">Tambahkan Komentar</h3>
           <button 
@@ -481,7 +480,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
             className={`p-2 rounded-lg transition-colors flex items-center gap-2 ${
               isRecording 
                 ? "bg-danger-tint text-danger hover:bg-danger-tint" 
-                : "text-muted-foreground hover:bg-muted hover:bg-brand/10 hover:text-brand"
+                : "text-muted-foreground hover:bg-muted hover:bg-brand-tint hover:text-brand-ink"
             }`}
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : isRecording ? <MicOff className="w-4 h-4 animate-pulse" /> : <Mic className="w-4 h-4" />}
@@ -492,13 +491,13 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
           value={newComment + (isRecording ? (newComment.trim() ? " " : "") + transcript : "")}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Bagikan pemikiran atau balasan Anda secara tertulis, atau gunakan fitur dikte suara..."
-          className="w-full bg-black/20 border border-border rounded-xl px-5 py-4 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all placeholder:text-muted-foreground/50 resize-y min-h-[120px] mb-4 text-sm"
+          className="w-full bg-black/20 border border-border rounded-control px-5 py-4 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all placeholder:text-muted-foreground/50 resize-y min-h-[120px] mb-4 text-sm"
         />
         <div className="flex justify-end">
           <button
             onClick={handlePostComment}
             disabled={submitting || !newComment.trim()}
-            className="bg-brand text-background px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-brand-hover transition-all disabled:opacity-50"
+            className="bg-brand-solid text-on-brand px-6 py-2.5 rounded-control font-bold flex items-center gap-2 hover:bg-brand-hover transition-all disabled:opacity-50"
           >
             {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Kirim Balasan

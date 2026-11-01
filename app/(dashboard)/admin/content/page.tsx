@@ -87,7 +87,7 @@ export default async function AdminContentPage({
     return `/admin/content${qs ? `?${qs}` : ""}`;
   };
   const chip = (active: boolean) =>
-    `inline-flex items-center min-h-[44px] px-4 rounded-full text-sm font-bold border ${active ? "bg-brand text-background border-brand" : "bg-card text-muted-foreground border-border hover:bg-muted"}`;
+    `inline-flex items-center min-h-[44px] px-4 rounded-full text-sm font-bold border ${active ? "bg-brand-solid text-on-brand border-brand" : "bg-card text-muted-foreground border-border hover:bg-muted"}`;
 
   return (
     <div className="p-4 lg:p-8 max-w-6xl mx-auto pb-24">

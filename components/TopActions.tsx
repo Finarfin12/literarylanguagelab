@@ -22,7 +22,7 @@ export default function TopActions({ className }: { className?: string }) {
       {/* Messages Inbox Button */}
       <Link
         href="/messages"
-        className="relative flex items-center justify-center w-10 h-10 bg-card border border-border rounded-full text-muted-foreground hover:text-foreground hover:border-brand/50 hover:bg-muted transition-all shadow-sm"
+        className="relative flex items-center justify-center w-10 h-10 bg-card border border-border rounded-full text-muted-foreground hover:text-foreground hover:border-brand/50 hover:bg-muted transition-all "
         title="Inbox Pesan"
       >
         <MessageSquare className="w-5 h-5" />
@@ -36,7 +36,7 @@ export default function TopActions({ className }: { className?: string }) {
       {/* Help Button */}
       <Link
         href="/help"
-        className="flex items-center justify-center w-10 h-10 sm:w-auto sm:px-4 sm:gap-2 bg-card border border-border rounded-full sm:rounded-xl text-muted-foreground hover:text-foreground hover:border-brand/50 hover:bg-muted transition-all shadow-sm"
+        className="flex items-center justify-center w-10 h-10 sm:w-auto sm:px-4 sm:gap-2 bg-card border border-border rounded-full sm:rounded-control text-muted-foreground hover:text-foreground hover:border-brand/50 hover:bg-muted transition-all "
         title="Pusat Bantuan"
       >
         <HelpCircle className="w-5 h-5 sm:w-4 sm:h-4" />

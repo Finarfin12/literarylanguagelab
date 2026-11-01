@@ -36,7 +36,7 @@ export default function LearningGoalSection({ initialGoal, initialMinutes }: { i
             id="learning-goal"
             value={goal}
             onChange={(e) => setGoal(e.target.value as LearningGoal)}
-            className="w-full min-h-[44px] bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm"
+            className="w-full min-h-[44px] bg-foreground/5 border border-foreground/10 rounded-control px-3 py-2 text-sm"
           >
             {LEARNING_GOALS.map((g) => (
               <option key={g} value={g}>{GOAL_LABELS[g].title}</option>
@@ -49,7 +49,7 @@ export default function LearningGoalSection({ initialGoal, initialMinutes }: { i
             id="daily-minutes"
             value={minutes}
             onChange={(e) => setMinutes(Number(e.target.value) as DailyMinutes)}
-            className="w-full min-h-[44px] bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm"
+            className="w-full min-h-[44px] bg-foreground/5 border border-foreground/10 rounded-control px-3 py-2 text-sm"
           >
             {DAILY_MINUTES.map((m) => (
               <option key={m} value={m}>{m === 30 ? "30 menit atau lebih" : `${m} menit`}</option>

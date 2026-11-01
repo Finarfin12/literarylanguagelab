@@ -24,7 +24,7 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 | Halaman Menu HP: profil + inbox pesan (badge belum dibaca), pencarian fitur, grup Utama, semua grup menu, grup Admin (khusus admin), Settings, Bantuan, toggle tema, Logout | `app/(dashboard)/menu/page.tsx` | |
 | TopActions: Inbox Pesan, Pusat Bantuan | `components/TopActions.tsx`, `components/HelpButton.tsx` | |
 | Tema terang/gelap | `components/ThemeProvider.tsx` (next-themes) | Mockup v4 baru menggambar tema terang; **tema gelap wajib dirancang juga** |
-| PWA: install, service worker, cache buku offline (IndexedDB) — **service worker belum ada** (K9), dibuat di 14e; baris ini baru bisa dicentang sesudahnya | `components/PwaRegister.tsx`, `utils/indexeddb.ts`, `app/manifest*`, `public/sw.js` (14e) | |
+| PWA: install, service worker, cache buku offline (IndexedDB) — **service worker `public/sw.js` dibuat di 14e (K9)**: pra-cache `/offline`, ikon, manifest, aset `/_next/static/*`; navigasi selalu jaringan, offline → `/offline`; tidak pernah menyimpan halaman login, `/api/*`, atau respons Supabase. Diuji unit di sandbox (`tests/sw.test.mts`, 8); **belum diuji di browser nyata** (panel browser di sesi ini memblokir service worker). Buku offline tetap lewat IndexedDB | `components/PwaRegister.tsx`, `utils/indexeddb.ts`, `app/manifest*`, `public/sw.js` (14e) | |
 | Animasi halaman (hormati `prefers-reduced-motion` dan preferensi `enable_animations`) | `components/AnimatedPage.tsx` | |
 | Proxy auth & rate limit, feature flag | `proxy.ts`, `lib/rate-limit.ts`, `lib/ai/flags.ts` | Bukan UI, jangan disentuh redesign |
 
@@ -153,6 +153,8 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 | Reading Clubs: buat klub (publik/privat, pilih buku), halaman klub & diskusi | `app/(dashboard)/clubs/*`, `components/clubs/CreateClubModal.tsx` |
 | Shared Annotations (upvote/downvote) | `app/(dashboard)/community-annotations` |
 | Profil publik / portofolio | `app/p/[username]` |
+
+> **(14e, ✅ sebagian)** Seluruh bagian B, H, I, J bergaya v4 lewat perapian kelas; landing (judul "Karya Abadi" yang sebelumnya tak terlihat diperbaiki), login/register tanpa gradasi, Pengaturan (zona bahaya memakai token), kartu Word of the Day di Sidebar. Halaman admin (9 tab) hanya lewat tsc/build karena butuh login admin.
 
 ## I. Profil, Pengaturan, Bantuan
 

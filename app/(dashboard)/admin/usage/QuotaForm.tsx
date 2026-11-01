@@ -30,14 +30,14 @@ export default function QuotaForm({
   };
 
   return (
-    <form action={submit} className="bg-card border border-border rounded-2xl p-4 md:p-6">
+    <form action={submit} className="bg-card border border-border rounded-card p-4 md:p-6">
       <h2 className="font-bold text-foreground flex items-center gap-2 mb-1">
-        <Gauge className="w-5 h-5 text-brand" /> Kuota per pengguna
+        <Gauge className="w-5 h-5 text-brand-ink" /> Kuota per pengguna
       </h2>
       <p className="text-xs text-muted-foreground mb-4">Berlaku untuk setiap pengguna. Request di atas batas dibalas 429.</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {limits.map((l) => (
-          <fieldset key={l.key} className="border border-border rounded-xl p-3">
+          <fieldset key={l.key} className="border border-border rounded-control p-3">
             <legend className="text-sm font-bold px-1">{l.label}</legend>
             <div className="grid grid-cols-2 gap-3">
               <label className="space-y-1 block">
@@ -53,7 +53,7 @@ export default function QuotaForm({
         ))}
       </div>
       <div className="flex justify-end mt-4">
-        <button type="submit" disabled={pending || !canSave} className={`${buttonClass} bg-brand text-background`}>
+        <button type="submit" disabled={pending || !canSave} className={`${buttonClass} bg-brand-solid text-on-brand`}>
           {pending && <Loader2 className="w-4 h-4 animate-spin" />} Simpan kuota
         </button>
       </div>

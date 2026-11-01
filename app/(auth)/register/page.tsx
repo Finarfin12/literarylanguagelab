@@ -12,11 +12,11 @@ export default async function RegisterPage({
   const { error } = await searchParams;
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-blue-500/20 via-background to-background">
+    <div className="flex min-h-screen items-center justify-center p-4 bg-background">
       <AuthAlert error={error} />
-      <div className="w-full max-w-md rounded-3xl bg-card shadow-sm p-4 md:p-8 shadow-2xl border border-border transition-all duration-500">
+      <div className="w-full max-w-md rounded-card bg-card p-4 md:p-8 border border-border transition-all duration-500">
         <div className="text-center mb-8">
-          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground mb-3">
+          <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground mb-3">
             Begin Journey
           </h1>
           <p className="text-muted-foreground">Create an account to build your vocabulary bank.</p>
@@ -32,7 +32,7 @@ export default async function RegisterPage({
               name="fullName"
               type="text"
               required
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-border transition-colors"
+              className="w-full rounded-control border border-border bg-background px-4 py-3 text-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-border transition-colors"
               placeholder="John Doe"
             />
           </div>
@@ -46,7 +46,7 @@ export default async function RegisterPage({
               name="email"
               type="email"
               required
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-border transition-colors"
+              className="w-full rounded-control border border-border bg-background px-4 py-3 text-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-border transition-colors"
               placeholder="you@example.com"
             />
           </div>
@@ -60,13 +60,13 @@ export default async function RegisterPage({
               name="password"
               type="password"
               required
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-border transition-colors"
+              className="w-full rounded-control border border-border bg-background px-4 py-3 text-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-border transition-colors"
               placeholder="••••••••"
             />
           </div>
 
           <SubmitButton
-            className="w-full rounded-xl bg-brand-solid px-4 py-3.5 text-sm font-bold text-background transition-all hover:bg-brand-hover hover:scale-[1.02] active:scale-95 shadow-lg"
+            className="w-full rounded-control bg-brand-solid px-4 py-3.5 text-sm font-bold text-on-brand transition-all hover:bg-brand-hover active:scale-95 "
           >
             Create Account
           </SubmitButton>

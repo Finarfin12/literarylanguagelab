@@ -7,7 +7,7 @@ export default function HelpButton() {
   return (
     <Link
       href="/help"
-      className="fixed bottom-24 right-4 md:bottom-6 md:right-6 z-50 p-4 bg-brand text-white rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center gap-2 group"
+      className="fixed bottom-24 right-4 md:bottom-6 md:right-6 z-50 p-4 bg-brand-solid text-on-brand rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 group"
       title="Pusat Bantuan"
     >
       <HelpCircle className="w-6 h-6" />

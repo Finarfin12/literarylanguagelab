@@ -72,7 +72,7 @@ export default function ProfilePage() {
   }, [supabase]);
 
 
-  if (loading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand" /></div>;
+  if (loading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand-ink" /></div>;
   if (!profile) return <div className="flex-1 flex items-center justify-center"><p>Anda belum login.</p></div>;
 
   const joinDate = new Date(profile.created_at).toLocaleDateString("id-ID", { year: "numeric", month: "long", day: "numeric" });
@@ -81,7 +81,7 @@ export default function ProfilePage() {
   const aboutMe = profile.user_metadata?.about_me || "Belum ada biografi. Tambahkan di pengaturan.";
 
   const statCards = [
-    { icon: BookOpen, value: stats.vocabCount, label: "Kosakata", color: "text-brand", bg: "bg-brand/10", border: "border-brand/20" },
+    { icon: BookOpen, value: stats.vocabCount, label: "Kosakata", color: "text-brand-ink", bg: "bg-brand-tint", border: "border-brand/20" },
     { icon: Activity, value: stats.idiomCount, label: "Idiom", color: "text-foreground", bg: "bg-muted", border: "border-border" },
     { icon: BookMarked, value: stats.textsCompleted, label: "Teks Dibaca", color: "text-foreground", bg: "bg-muted", border: "border-border" },
     { icon: TrendingUp, value: stats.reviewsThisWeek, label: "Review Minggu Ini", color: "text-foreground", bg: "bg-muted", border: "border-border" },
@@ -96,11 +96,11 @@ export default function ProfilePage() {
       <div className="max-w-5xl mx-auto px-4 md:px-8 relative -mt-20 pb-12">
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row items-start md:items-end gap-6 mb-12">
-          <div className="w-40 h-40 rounded-full border-4 border-background bg-muted overflow-hidden shrink-0 shadow-2xl">
+          <div className="w-40 h-40 rounded-full border-4 border-background bg-muted overflow-hidden shrink-0 ">
             {avatarUrl ? <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><User className="w-16 h-16 text-muted-foreground" /></div>}
           </div>
           <div className="flex-1 mb-2">
-            <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">{fullName}</h1>
+            <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">{fullName}</h1>
             <p className="text-muted-foreground flex items-center gap-2 mt-1"><CalendarDays className="w-4 h-4" /> Bergabung sejak {joinDate}</p>
             <div className="flex items-center gap-6 mt-4">
               <div className="flex items-center gap-2">
@@ -113,20 +113,20 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
-          <Link href="/settings" className="mb-2 px-6 py-2.5 bg-muted hover:bg-muted/80 border border-border rounded-xl transition-colors font-medium">Edit Profil</Link>
+          <Link href="/settings" className="mb-2 px-6 py-2.5 bg-muted hover:bg-muted/80 border border-border rounded-control transition-colors font-medium">Edit Profil</Link>
         </div>
 
         {/* Level CEFR */}
-        <div className="bg-card border border-border rounded-3xl p-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-card border border-border rounded-card p-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-brand/10 flex items-center justify-center"><GraduationCap className="w-6 h-6 text-brand" /></div>
+            <div className="w-12 h-12 rounded-full bg-brand-tint flex items-center justify-center"><GraduationCap className="w-6 h-6 text-brand-ink" /></div>
             <div>
               <p className="text-sm text-muted-foreground">Level CEFR</p>
               <p className="text-xl font-bold text-foreground">{stats.cefrLevel || "Belum diketahui"}</p>
             </div>
           </div>
           {!stats.cefrLevel && (
-            <Link href="/english-lab/placement-test" className="px-5 py-2.5 bg-brand text-background font-bold rounded-xl text-sm text-center">Ikuti Placement Test</Link>
+            <Link href="/english-lab/placement-test" className="px-5 py-2.5 bg-brand-solid text-on-brand font-bold rounded-control text-sm text-center">Ikuti Placement Test</Link>
           )}
         </div>
 
@@ -136,14 +136,14 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column */}
           <div className="space-y-8">
-            <div className="bg-card border border-border p-6 rounded-3xl">
-              <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><User className="w-5 h-5 text-brand" /> Tentang Saya</h2>
+            <div className="bg-card border border-border p-6 rounded-card">
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><User className="w-5 h-5 text-brand-ink" /> Tentang Saya</h2>
               <p className="text-muted-foreground leading-relaxed">{aboutMe}</p>
             </div>
-            <div className="bg-card border border-border p-6 rounded-3xl">
+            <div className="bg-card border border-border p-6 rounded-card">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Sparkles className="w-5 h-5 text-warning-ink" /> Pencapaian</h2>
               <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-brand/10 text-brand rounded-full text-xs font-bold border border-brand/20">Early Adopter</span>
+                <span className="px-3 py-1 bg-brand-tint text-brand-ink rounded-full text-xs font-bold border border-brand/20">Early Adopter</span>
                 {stats.vocabCount >= 10 && <span className="px-3 py-1 bg-muted text-foreground rounded-full text-xs font-bold border border-border">Vocab Explorer</span>}
                 {stats.vocabCount >= 50 && <span className="px-3 py-1 bg-brand-tint text-brand-ink rounded-full text-xs font-bold border border-brand/30">Kolektor Kata</span>}
                 {stats.textsCompleted >= 5 && <span className="px-3 py-1 bg-muted text-brand-ink rounded-full text-xs font-bold border border-border">Kutu Buku</span>}
@@ -156,12 +156,12 @@ export default function ProfilePage() {
 
           {/* Right Column */}
           <div className="lg:col-span-2 space-y-8">
-            <h2 className="text-2xl font-serif font-bold text-foreground">Statistik Pembelajaran</h2>
+            <h2 className="text-2xl font-serif font-medium text-foreground">Statistik Pembelajaran</h2>
 
             {/* Stat Cards - fixed equal height grid */}
             <div className="grid grid-cols-2 gap-4">
               {statCards.map((card) => (
-                <div key={card.label} className={`bg-gradient-to-br ${card.bg} to-transparent border ${card.border} p-6 rounded-3xl flex items-center gap-5`}>
+                <div key={card.label} className={`bg-gradient-to-br ${card.bg} to-transparent border ${card.border} p-6 rounded-card flex items-center gap-5`}>
                   <div className={`w-12 h-12 rounded-full ${card.bg} flex items-center justify-center shrink-0`}>
                     <card.icon className={`w-6 h-6 ${card.color}`} />
                   </div>
@@ -174,13 +174,13 @@ export default function ProfilePage() {
             </div>
 
             {/* Activity Timeline */}
-            <div className="bg-card border border-border p-4 md:p-8 rounded-3xl">
+            <div className="bg-card border border-border p-4 md:p-8 rounded-card">
               <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Clock className="w-5 h-5 text-muted-foreground" /> Aktivitas Terakhir</h3>
               <div className="relative before:absolute before:inset-y-0 before:left-[11px] before:w-px before:bg-border space-y-6">
                 
                 {recentLogs.map((log) => (
                   <div key={log.id} className="flex gap-4 relative">
-                    <div className="w-6 h-6 rounded-full bg-brand/20 border-2 border-background flex items-center justify-center shrink-0 relative z-10">
+                    <div className="w-6 h-6 rounded-full bg-brand-tint border-2 border-background flex items-center justify-center shrink-0 relative z-10">
                       <div className="w-2 h-2 rounded-full bg-brand" />
                     </div>
                     <div>
@@ -194,7 +194,7 @@ export default function ProfilePage() {
 
                 {recentLogs.length === 0 && (
                   <div className="flex gap-4 relative">
-                    <div className="w-6 h-6 rounded-full bg-brand/20 border-2 border-background flex items-center justify-center shrink-0 relative z-10">
+                    <div className="w-6 h-6 rounded-full bg-brand-tint border-2 border-background flex items-center justify-center shrink-0 relative z-10">
                       <div className="w-2 h-2 rounded-full bg-brand" />
                     </div>
                     <div>

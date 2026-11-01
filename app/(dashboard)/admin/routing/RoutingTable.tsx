@@ -58,7 +58,7 @@ function FeatureRow({ feature, models, route }: { feature: AIFeature; models: Mo
         <p className="font-bold text-foreground text-sm">{feature.label}</p>
         <p className="text-xs text-muted-foreground">
           {feature.key}
-          {feature.requires !== "text" && <span className="ml-1 text-brand font-bold uppercase">· butuh {feature.requires}</span>}
+          {feature.requires !== "text" && <span className="ml-1 text-brand-ink font-bold uppercase">· butuh {feature.requires}</span>}
         </p>
       </div>
       <label className="space-y-1 block">
@@ -85,7 +85,7 @@ function FeatureRow({ feature, models, route }: { feature: AIFeature; models: Mo
           <input name="max_tokens" type="number" min="1" defaultValue={route?.maxTokens ?? ""} placeholder="auto" className={inputClass} aria-label="Max tokens" />
         </label>
       </div>
-      <button type="submit" disabled={pending} className={`${buttonClass} bg-brand text-background`}>
+      <button type="submit" disabled={pending} className={`${buttonClass} bg-brand-solid text-on-brand`}>
         {pending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
         <span className="lg:sr-only">Simpan</span>
       </button>
@@ -118,7 +118,7 @@ export default function RoutingTable({
       </p>
 
       {groups.map((group) => (
-        <section key={group} className="bg-card border border-border rounded-2xl overflow-hidden">
+        <section key={group} className="bg-card border border-border rounded-card overflow-hidden">
           <div className="px-4 py-3 bg-muted/30">
             <h2 className="font-bold text-foreground">{group}</h2>
             <div className="hidden lg:grid grid-cols-[1.2fr_1.5fr_1.5fr_0.6fr_0.7fr_auto] gap-3 mt-2 text-[10px] uppercase tracking-wider text-muted-foreground font-bold">

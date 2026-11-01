@@ -66,7 +66,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
     <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
         <div>
-          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Library Teks</h1>
+          <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">Library Teks</h1>
           <p className="text-muted-foreground mt-2">Pilih teks sastra untuk mulai membaca dan belajar. ({count ?? "?"} teks)</p>
         </div>
         <div className="flex flex-col gap-4">
@@ -80,13 +80,13 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
               name="q"
               defaultValue={searchTerm}
               placeholder="Cari judul atau penulis..." 
-              className="w-full bg-card border border-foreground/20 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all text-foreground shadow-sm"
+              className="w-full bg-card border border-foreground/20 rounded-control pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all text-foreground "
             />
             </form>
           </div>
           <Link
             href="/library/add"
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-brand text-background font-bold rounded-xl hover:bg-brand-hover hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-brand/20 whitespace-nowrap"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-brand-solid text-on-brand font-bold rounded-control hover:bg-brand-hover active:scale-95 transition-all shadow-brand/20 whitespace-nowrap"
           >
             <Sparkles className="w-5 h-5" />
             <span>Buat &amp; Tambah Teks</span>
@@ -97,15 +97,15 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
       {levelsReady && (
         <nav aria-label="Filter level" className="flex flex-wrap items-center gap-2 mb-8">
           {useDefault || activeChip === "default" ? (
-            <span className="min-h-[44px] inline-flex items-center px-4 rounded-full text-sm font-bold bg-brand text-background">
+            <span className="min-h-[44px] inline-flex items-center px-4 rounded-full text-sm font-bold bg-brand-solid text-on-brand">
               Level kamu ({defaultLevels.join(", ")})
             </span>
           ) : null}
-          <Link href={chipHref("all")} className={`min-h-[44px] inline-flex items-center px-4 rounded-full text-sm font-bold border ${activeChip === "all" ? "bg-brand text-background border-brand" : "bg-card text-muted-foreground border-border hover:bg-muted"}`}>
+          <Link href={chipHref("all")} className={`min-h-[44px] inline-flex items-center px-4 rounded-full text-sm font-bold border ${activeChip === "all" ? "bg-brand-solid text-on-brand border-brand" : "bg-card text-muted-foreground border-border hover:bg-muted"}`}>
             Semua
           </Link>
           {CEFR_LEVELS.map((l) => (
-            <Link key={l} href={chipHref(l)} className={`min-h-[44px] inline-flex items-center px-4 rounded-full text-sm font-bold border ${activeChip === l ? "bg-brand text-background border-brand" : "bg-card text-muted-foreground border-border hover:bg-muted"}`}>
+            <Link key={l} href={chipHref(l)} className={`min-h-[44px] inline-flex items-center px-4 rounded-full text-sm font-bold border ${activeChip === l ? "bg-brand-solid text-on-brand border-brand" : "bg-card text-muted-foreground border-border hover:bg-muted"}`}>
               {l}
             </Link>
           ))}
@@ -120,9 +120,9 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
       )}
 
       {texts?.length === 0 ? (
-        <div className="text-center p-6 md:p-12 border border-dashed border-border rounded-xl">
+        <div className="text-center p-6 md:p-12 border border-dashed border-border rounded-control">
           <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-xl font-serif font-bold text-foreground mb-2">Belum ada teks tersedia</h3>
+          <h3 className="text-xl font-serif font-medium text-foreground mb-2">Belum ada teks tersedia</h3>
           <p className="text-muted-foreground">Coba pilih &quot;Semua&quot; pada filter level, atau klik &quot;Buat &amp; Tambah Teks&quot; di atas untuk membuat teks dengan AI.</p>
         </div>
       ) : (
@@ -131,9 +131,9 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
             <div key={text.id} className="relative group">
               {isAdmin && <DeleteTextButton textId={text.id} title={text.title} />}
               <Link href={enablePreview ? `/preview/${text.id}` : `/read/${text.id}`} className="block h-full">
-                <div className="bg-card shadow-sm border border-border rounded-3xl p-6 hover:bg-card shadow-sm hover:shadow-2xl hover:shadow-brand/10 transition-all duration-500 relative overflow-hidden flex flex-col h-full">
+                <div className="bg-card border border-border rounded-card p-6 hover:bg-card hover:shadow-brand/10 transition-all duration-500 relative overflow-hidden flex flex-col h-full">
                   <div className="relative z-10 flex-1 flex flex-col">
-                    <h2 className="text-2xl font-serif font-bold text-foreground group-hover:text-brand transition-colors line-clamp-2 pr-10">{text.title}</h2>
+                    <h2 className="text-2xl font-serif font-medium text-foreground group-hover:text-brand-ink transition-colors line-clamp-2 pr-10">{text.title}</h2>
                   <p className="text-muted-foreground mt-2 italic flex-1">{text.author}</p>
                   
                   <div className="flex flex-wrap gap-2 mt-4">
@@ -142,7 +142,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
                   </div>
 
                   <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
-                    <span className="text-xs font-medium px-3 py-1 bg-brand/10 text-brand rounded-full border border-brand/20">
+                    <span className="text-xs font-medium px-3 py-1 bg-brand-tint text-brand-ink rounded-full border border-brand/20">
                       {text.cefr_level ? `Level ${text.cefr_level}` : `Level ${text.difficulty}`}
                     </span>
                     <span className="text-xs text-muted-foreground flex items-center gap-1 group-hover:text-foreground transition-colors">

@@ -105,23 +105,23 @@ export default async function AdminUsagePage({
         <input name="model" defaultValue={params.model || ""} placeholder="Model, mis. qwen" className={inputClass} aria-label="Filter model" />
         {params.user && <input type="hidden" name="user" value={params.user} />}
         <div className="flex gap-2">
-          <button type="submit" className={`${buttonClass} bg-brand text-background flex-1`}>Filter</button>
+          <button type="submit" className={`${buttonClass} bg-brand-solid text-on-brand flex-1`}>Filter</button>
           <Link href="/admin/usage" className={`${buttonClass} bg-muted text-foreground`}>Reset</Link>
         </div>
       </form>
       {params.user && (
         <p className="text-sm text-muted-foreground mb-3">
           Hanya pengguna <b>{names.get(params.user) || params.user}</b>.{" "}
-          <Link className="text-brand font-bold" href="/admin/usage">Tampilkan semua</Link>
+          <Link className="text-brand-ink font-bold" href="/admin/usage">Tampilkan semua</Link>
         </p>
       )}
 
       {error ? (
         <MissingMigrationNotice message={error.message} />
       ) : logs.length === 0 ? (
-        <p className="text-sm text-muted-foreground bg-card border border-border rounded-2xl p-6 text-center">Tidak ada log yang cocok.</p>
+        <p className="text-sm text-muted-foreground bg-card border border-border rounded-card p-6 text-center">Tidak ada log yang cocok.</p>
       ) : (
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
+        <div className="bg-card border border-border rounded-card overflow-hidden">
           <ul className="divide-y divide-border">
             {logs.map((l) => (
               <li key={l.id} className="p-3 md:p-4 grid grid-cols-1 md:grid-cols-[1.4fr_1.2fr_1fr_0.8fr] gap-1 md:gap-3 md:items-center text-sm">
@@ -131,7 +131,7 @@ export default async function AdminUsagePage({
                 </div>
                 <div className="min-w-0 text-xs md:text-sm">
                   {l.user_id ? (
-                    <Link href={`/admin/usage?user=${l.user_id}`} className="text-foreground hover:text-brand truncate block">
+                    <Link href={`/admin/usage?user=${l.user_id}`} className="text-foreground hover:text-brand-ink truncate block">
                       {names.get(l.user_id) || l.user_id.slice(0, 8)}
                     </Link>
                   ) : (
@@ -146,7 +146,7 @@ export default async function AdminUsagePage({
                 <div className="text-xs">
                   <span
                     className={`inline-block font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
-                      l.status === "error" ? "bg-danger-tint text-danger" : l.status === "success" ? "bg-brand/10 text-brand" : "bg-muted text-muted-foreground"
+                      l.status === "error" ? "bg-danger-tint text-danger" : l.status === "success" ? "bg-brand-tint text-brand-ink" : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {l.status}

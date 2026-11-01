@@ -3,16 +3,16 @@
 import { AlertTriangle } from "lucide-react";
 
 export const inputClass =
-  "w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-brand";
+  "w-full bg-foreground/5 border border-foreground/10 rounded-control px-3 py-2.5 text-sm focus:outline-none focus:border-brand";
 export const buttonClass =
-  "inline-flex items-center justify-center gap-2 min-h-[44px] px-4 rounded-xl text-sm font-bold transition-colors disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 min-h-[44px] px-4 rounded-control text-sm font-bold transition-colors disabled:opacity-50";
 
 export function AdminPageHeader({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
     <div className="flex items-start gap-4 mb-6">
-      <div className="p-3 bg-brand/10 rounded-xl text-brand shrink-0">{icon}</div>
+      <div className="p-3 bg-brand-tint rounded-control text-brand-ink shrink-0">{icon}</div>
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground">{title}</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">{title}</h1>
         <p className="text-muted-foreground mt-1 text-sm md:text-base">{description}</p>
       </div>
     </div>
@@ -22,7 +22,7 @@ export function AdminPageHeader({ icon, title, description }: { icon: React.Reac
 export function Notice({ children, tone = "warning" }: { children: React.ReactNode; tone?: "warning" | "error" }) {
   const color = tone === "error" ? "border-danger/30 bg-danger-tint text-danger" : "border-warning-ink/30 bg-warning-tint text-warning-ink ";
   return (
-    <div className={`flex gap-3 items-start border rounded-xl p-4 text-sm mb-6 ${color}`}>
+    <div className={`flex gap-3 items-start border rounded-control p-4 text-sm mb-6 ${color}`}>
       <AlertTriangle className="w-5 h-5 shrink-0" />
       <div>{children}</div>
     </div>

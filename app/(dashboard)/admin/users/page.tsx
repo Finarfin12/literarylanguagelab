@@ -67,12 +67,12 @@ export default async function AdminUsersPage({
             <option key={r} value={r}>{r}</option>
           ))}
         </select>
-        <button type="submit" className={`${buttonClass} bg-brand text-background`}>Cari</button>
+        <button type="submit" className={`${buttonClass} bg-brand-solid text-on-brand`}>Cari</button>
       </form>
 
-      <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-card border border-border rounded-card overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/50 flex items-center gap-2 text-foreground font-bold">
-          <Users className="w-5 h-5 text-brand" />
+          <Users className="w-5 h-5 text-brand-ink" />
           {count || 0} pengguna{q || role ? " cocok" : ""}
         </div>
 
@@ -90,12 +90,12 @@ export default async function AdminUsersPage({
             return (
               <li key={profile.id} className="p-4 lg:px-6 grid grid-cols-1 lg:grid-cols-[2fr_0.7fr_0.8fr_0.9fr_auto] gap-3 lg:gap-4 lg:items-center hover:bg-muted/30 transition-colors">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-brand/20 border border-brand/30 flex items-center justify-center overflow-hidden shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-brand-tint border border-brand/30 flex items-center justify-center overflow-hidden shrink-0">
                     {profile.avatar_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
                     ) : (
-                      <span className="font-bold text-brand">{profile.full_name?.[0]?.toUpperCase() || profile.username?.[0]?.toUpperCase() || '?'}</span>
+                      <span className="font-bold text-brand-ink">{profile.full_name?.[0]?.toUpperCase() || profile.username?.[0]?.toUpperCase() || '?'}</span>
                     )}
                   </div>
                   <div className="min-w-0">
@@ -104,7 +104,7 @@ export default async function AdminUsersPage({
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground lg:contents">
-                  <span className="bg-brand/10 border border-brand/20 rounded-md px-2 py-0.5 w-fit text-[10px] font-bold text-brand uppercase tracking-wider">
+                  <span className="bg-brand-tint border border-brand/20 rounded-md px-2 py-0.5 w-fit text-[10px] font-bold text-brand-ink uppercase tracking-wider">
                     {profile.cefr_level || '—'}
                   </span>
                   <span className="flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5" /> {profile.vocab_count || 0} kata</span>
@@ -115,7 +115,7 @@ export default async function AdminUsersPage({
                 <div className="flex items-center gap-2 lg:justify-end">
                   <Link
                     href={`/admin/usage?user=${profile.id}`}
-                    className="p-2.5 rounded-xl bg-muted text-muted-foreground hover:text-brand"
+                    className="p-2.5 rounded-control bg-muted text-muted-foreground hover:text-brand-ink"
                     title="Lihat pemakaian AI"
                     aria-label={`Pemakaian AI ${profile.full_name || ''}`}
                   >

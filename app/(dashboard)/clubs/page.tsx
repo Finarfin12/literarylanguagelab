@@ -54,11 +54,11 @@ export default async function ClubsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-brand/10 text-brand rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
+          <div className="w-16 h-16 bg-brand-tint text-brand-ink rounded-card flex items-center justify-center shrink-0 ">
             <Users className="w-8 h-8" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Reading Clubs</h1>
+            <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">Reading Clubs</h1>
             <p className="text-muted-foreground mt-2 text-lg">Bergabunglah dalam grup diskusi dan bedah literatur bersama.</p>
           </div>
         </div>
@@ -69,8 +69,8 @@ export default async function ClubsPage() {
       {/* My Clubs Section */}
       {myClubs.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-2xl font-serif font-bold text-foreground mb-6 flex items-center gap-2">
-            <Shield className="w-6 h-6 text-brand" /> Klub Saya
+          <h2 className="text-2xl font-serif font-medium text-foreground mb-6 flex items-center gap-2">
+            <Shield className="w-6 h-6 text-brand-ink" /> Klub Saya
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {myClubs.map(club => (
@@ -82,7 +82,7 @@ export default async function ClubsPage() {
 
       {/* Discover Clubs Section */}
       <div>
-        <h2 className="text-2xl font-serif font-bold text-foreground mb-6 flex items-center gap-2">
+        <h2 className="text-2xl font-serif font-medium text-foreground mb-6 flex items-center gap-2">
           <Globe className="w-6 h-6 text-brand-ink" /> Jelajahi Klub Publik
         </h2>
         
@@ -93,7 +93,7 @@ export default async function ClubsPage() {
             ))}
           </div>
         ) : (
-          <div className="bg-muted/50 rounded-3xl p-6 md:p-12 border border-border border-dashed text-center">
+          <div className="bg-muted/50 rounded-card p-6 md:p-12 border border-border border-dashed text-center">
             <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
             <p className="text-lg text-muted-foreground font-medium">Belum ada klub publik baru yang tersedia.</p>
             <p className="text-muted-foreground mt-1">Jadilah yang pertama untuk membuat ruang diskusimu sendiri!</p>
@@ -110,10 +110,10 @@ function ClubCard({ club, isMember }: { club: any, isMember: boolean }) {
   const memberCount = club.members?.[0]?.count || 0;
   
   const CardContent = () => (
-    <div className="bg-card shadow-sm border border-border rounded-3xl p-6 h-full flex flex-col hover:shadow-xl hover:border-brand/30 transition-all duration-300 relative overflow-hidden group">
+    <div className="bg-card border border-border rounded-card p-6 h-full flex flex-col hover:border-brand/30 transition-all duration-300 relative overflow-hidden group">
       {/* Background Decoration */}
       <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
-        <Users className="w-24 h-24 text-brand transform translate-x-4 -translate-y-4" />
+        <Users className="w-24 h-24 text-brand-ink transform translate-x-4 -translate-y-4" />
       </div>
 
       <div className="flex justify-between items-start mb-4 relative z-10">
@@ -127,7 +127,7 @@ function ClubCard({ club, isMember }: { club: any, isMember: boolean }) {
         </div>
       </div>
 
-      <h3 className="text-xl font-bold font-serif text-foreground mb-2 line-clamp-1 relative z-10 group-hover:text-brand transition-colors">
+      <h3 className="text-xl font-medium font-serif text-foreground mb-2 line-clamp-1 relative z-10 group-hover:text-brand-ink transition-colors">
         {club.name}
       </h3>
       
@@ -146,7 +146,7 @@ function ClubCard({ club, isMember }: { club: any, isMember: boolean }) {
         </div>
         
         {isMember ? (
-          <span className="text-sm font-bold flex items-center gap-1 text-brand">
+          <span className="text-sm font-bold flex items-center gap-1 text-brand-ink">
             Masuk Ruangan <Search className="w-4 h-4" />
           </span>
         ) : (

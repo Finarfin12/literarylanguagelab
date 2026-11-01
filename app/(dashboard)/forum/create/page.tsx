@@ -169,23 +169,23 @@ export default function CreateThreadPage() {
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto min-h-[calc(100vh-2rem)] flex flex-col">
-      <Link href="/forum" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors w-max">
+      <Link href="/forum" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors w-max min-h-[44px]">
         <ArrowLeft className="w-4 h-4" /> Kembali ke Forum
       </Link>
 
       <div className="mb-8">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Mulai Diskusi Baru</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">Mulai Diskusi Baru</h1>
         <p className="text-muted-foreground mt-2">Pilih kategori yang tepat agar diskusi Anda mudah ditemukan oleh penulis lain.</p>
       </div>
 
-      <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-xl flex-1">
+      <div className="bg-card border border-border rounded-card p-4 md:p-8 flex-1">
         <form onSubmit={handleSubmit} className="space-y-6 flex flex-col h-full">
           <div>
             <label className="block text-sm font-bold text-foreground mb-2">Kategori Diskusi</label>
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full bg-background border border-border rounded-xl px-4 py-3.5 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all appearance-none cursor-pointer"
+              className="w-full bg-background border border-border rounded-control px-4 py-3.5 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all appearance-none cursor-pointer"
             >
               <option value="" disabled>-- Pilih Kategori --</option>
               {categories.map(cat => (
@@ -203,14 +203,14 @@ export default function CreateThreadPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Contoh: Bagaimana cara mengatasi writer's block?"
-              className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all placeholder:text-muted-foreground/50 font-serif text-lg"
+              className="w-full bg-background border border-border rounded-control px-5 py-4 text-foreground focus:ring-2 focus:ring-brand outline-none transition-all placeholder:text-muted-foreground/50 font-serif text-lg"
               maxLength={150}
             />
           </div>
 
           {currentUserProfile?.role === 'admin' && (
             <div>
-              <label className="flex items-center gap-2 cursor-pointer bg-danger-tint p-4 rounded-xl border border-danger/30 w-max">
+              <label className="flex items-center gap-2 cursor-pointer bg-danger-tint p-4 rounded-control border border-danger/30 w-max">
                 <input 
                   type="checkbox" 
                   checked={isAnnouncement}
@@ -224,26 +224,26 @@ export default function CreateThreadPage() {
 
           <div className="flex-1 flex flex-col min-h-[300px]">
             <label className="block text-sm font-bold text-foreground mb-2">Isi Pesan</label>
-            <div className="border border-border rounded-xl overflow-hidden bg-background flex-1 flex flex-col focus-within:ring-2 focus-within:ring-brand transition-all">
+            <div className="border border-border rounded-control overflow-hidden bg-background flex-1 flex flex-col focus-within:ring-2 focus-within:ring-brand transition-all">
               {/* Toolbar */}
               <div className="flex items-center gap-1 p-2 bg-muted border-b border-border overflow-x-auto">
-                <button type="button" onClick={() => insertFormatting('**')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bold"><Bold className="w-4 h-4" /></button>
-                <button type="button" onClick={() => insertFormatting('*')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Italic"><Italic className="w-4 h-4" /></button>
-                <button type="button" onClick={() => insertFormatting('~~')} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Strikethrough"><Strikethrough className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('**')} className="w-11 h-11 shrink-0 flex items-center justify-center hover:bg-muted rounded-control text-muted-foreground hover:text-foreground transition-colors" title="Bold"><Bold className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('*')} className="w-11 h-11 shrink-0 flex items-center justify-center hover:bg-muted rounded-control text-muted-foreground hover:text-foreground transition-colors" title="Italic"><Italic className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('~~')} className="w-11 h-11 shrink-0 flex items-center justify-center hover:bg-muted rounded-control text-muted-foreground hover:text-foreground transition-colors" title="Strikethrough"><Strikethrough className="w-4 h-4" /></button>
                 <div className="w-px h-5 bg-muted-foreground/20 mx-1"></div>
                 
-                <button type="button" onClick={() => insertFormatting('### ', '', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Heading"><Heading className="w-4 h-4" /></button>
-                <button type="button" onClick={() => insertFormatting('> ', '', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Quote"><Quote className="w-4 h-4" /></button>
-                <button type="button" onClick={() => insertFormatting('```\n', '\n```', true)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Code Block"><Code className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('### ', '', false)} className="w-11 h-11 shrink-0 flex items-center justify-center hover:bg-muted rounded-control text-muted-foreground hover:text-foreground transition-colors" title="Heading"><Heading className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('> ', '', false)} className="w-11 h-11 shrink-0 flex items-center justify-center hover:bg-muted rounded-control text-muted-foreground hover:text-foreground transition-colors" title="Quote"><Quote className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('```\n', '\n```', true)} className="w-11 h-11 shrink-0 flex items-center justify-center hover:bg-muted rounded-control text-muted-foreground hover:text-foreground transition-colors" title="Code Block"><Code className="w-4 h-4" /></button>
                 <div className="w-px h-5 bg-muted-foreground/20 mx-1"></div>
 
-                <button type="button" onClick={() => insertFormatting('- ', '', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Bulleted List"><List className="w-4 h-4" /></button>
-                <button type="button" onClick={() => insertFormatting('1. ', '', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Numbered List"><ListOrdered className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('- ', '', false)} className="w-11 h-11 shrink-0 flex items-center justify-center hover:bg-muted rounded-control text-muted-foreground hover:text-foreground transition-colors" title="Bulleted List"><List className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('1. ', '', false)} className="w-11 h-11 shrink-0 flex items-center justify-center hover:bg-muted rounded-control text-muted-foreground hover:text-foreground transition-colors" title="Numbered List"><ListOrdered className="w-4 h-4" /></button>
                 <div className="w-px h-5 bg-muted-foreground/20 mx-1"></div>
 
-                <button type="button" onClick={() => insertFormatting('[text](url)', '', false)} className="p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
+                <button type="button" onClick={() => insertFormatting('[text](url)', '', false)} className="w-11 h-11 shrink-0 flex items-center justify-center hover:bg-muted rounded-control text-muted-foreground hover:text-foreground transition-colors" title="Link"><LinkIcon className="w-4 h-4" /></button>
                 
-                <label className={`p-2 hover:bg-muted hover:bg-muted/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-2 ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} title="Upload Gambar">
+                <label className={`p-2 hover:bg-muted  rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-2 ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} title="Upload Gambar">
                   {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                 </label>
@@ -255,10 +255,10 @@ export default function CreateThreadPage() {
                   onClick={isRecording ? stopRecording : startRecording}
                   disabled={isProcessing}
                   title="Dikte Suara (Voice to Text)"
-                  className={`p-2 rounded-lg transition-colors flex items-center gap-2 ${
+                  className={`w-11 h-11 justify-center rounded-control transition-colors flex items-center gap-2 ${
                     isRecording 
                       ? "bg-danger-tint text-danger hover:bg-danger-tint" 
-                      : "text-muted-foreground hover:bg-muted hover:bg-brand/10 hover:text-brand"
+                      : "text-muted-foreground hover:bg-muted hover:bg-brand-tint hover:text-brand-ink"
                   }`}
                 >
                   {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : isRecording ? <MicOff className="w-4 h-4 animate-pulse" /> : <Mic className="w-4 h-4" />}
@@ -280,7 +280,7 @@ export default function CreateThreadPage() {
             <button
               type="submit"
               disabled={loading || !title.trim() || !content.trim() || !categoryId}
-              className="bg-brand text-background px-4 md:px-8 py-3.5 rounded-xl font-bold flex items-center gap-2 hover:bg-brand-hover hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="bg-brand-solid text-on-brand px-4 md:px-8 py-3.5 rounded-control font-bold flex items-center gap-2 hover:bg-brand-hover active:scale-95 transition-all shadow-brand/20 disabled:opacity-50 disabled:cursor-not-allowed "
             >
               {loading ? (
                 <><Loader2 className="w-5 h-5 animate-spin" /> Menerbitkan...</>

@@ -37,7 +37,7 @@ function FaqAnswer({ text }: { text: string }) {
       {parts.map((part, i) => {
         const match = menuMap[part];
         if (match) {
-          return <Link key={i} href={match.href} className="text-brand underline hover:no-underline font-medium">{match.label}</Link>;
+          return <Link key={i} href={match.href} className="text-brand-ink underline hover:no-underline font-medium">{match.label}</Link>;
         }
         return <span key={i}>{part}</span>;
       })}
@@ -139,19 +139,19 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
       <div className="fixed inset-0 bg-black/40 z-40 md:hidden" onClick={onClose} />
 
       {/* Chat panel */}
-      <div className="fixed inset-0 z-50 md:bottom-24 md:right-8 md:w-[450px] md:h-[600px] md:top-auto md:left-auto flex flex-col bg-card md:rounded-2xl md:shadow-2xl md:border md:border-border overflow-hidden">
+      <div className="fixed inset-0 z-50 md:bottom-24 md:right-8 md:w-[450px] md:h-[600px] md:top-auto md:left-auto flex flex-col bg-card md:rounded-card md:shadow-2xl md:border md:border-border overflow-hidden">
         {/* Header */}
-        <div className="p-4 border-b border-border shrink-0 flex items-center justify-between bg-card/90 backdrop-blur-md">
+        <div className="p-4 border-b border-border shrink-0 flex items-center justify-between bg-card/90 ">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-brand/10 rounded-xl">
-              <Bot className="w-5 h-5 text-brand" />
+            <div className="p-2 bg-brand-tint rounded-control">
+              <Bot className="w-5 h-5 text-brand-ink" />
             </div>
             <div>
               <h3 className="font-bold text-foreground text-sm">Liter AI</h3>
               <p className="text-xs text-muted-foreground">Asisten Literary Language Lab</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-muted rounded-xl transition-colors">
+          <button onClick={onClose} className="p-2 hover:bg-muted rounded-control transition-colors">
             <X className="w-5 h-5 text-muted-foreground" />
           </button>
         </div>
@@ -160,8 +160,8 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
         <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 && (
             <div className="text-center py-6">
-              <div className="inline-flex p-4 bg-brand/10 rounded-full mb-4">
-                <Bot className="w-8 h-8 text-brand" />
+              <div className="inline-flex p-4 bg-brand-tint rounded-full mb-4">
+                <Bot className="w-8 h-8 text-brand-ink" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Halo! Saya Liter AI 👋</h3>
               <p className="text-xs text-muted-foreground mb-4">Tanyakan apa saja tentang Literary Language Lab.</p>
@@ -177,10 +177,10 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
 
           {messages.map((msg, i) => (
             <div key={i} className={`flex gap-2 items-start ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
-              <div className={`p-1.5 rounded-lg shrink-0 ${msg.role === "assistant" ? "bg-brand/10" : "bg-muted"}`}>
-                {msg.role === "assistant" ? <Bot className="w-3.5 h-3.5 text-brand" /> : <User className="w-3.5 h-3.5 text-muted-foreground" />}
+              <div className={`p-1.5 rounded-lg shrink-0 ${msg.role === "assistant" ? "bg-brand-tint" : "bg-muted"}`}>
+                {msg.role === "assistant" ? <Bot className="w-3.5 h-3.5 text-brand-ink" /> : <User className="w-3.5 h-3.5 text-muted-foreground" />}
               </div>
-              <div className={`rounded-2xl px-4 py-3 max-w-[85%] text-sm leading-relaxed overflow-x-auto ${msg.role === "assistant" ? "bg-muted text-foreground prose-p:my-1 prose-strong:text-brand prose-strong:font-bold prose-ul:pl-4 prose-ul:list-disc prose-ol:pl-4 prose-ol:list-decimal" : "bg-brand text-white"}`}>
+              <div className={`rounded-card px-4 py-3 max-w-[85%] text-sm leading-relaxed overflow-x-auto ${msg.role === "assistant" ? "bg-muted text-foreground prose-p:my-1 prose-strong:text-brand-ink prose-strong:font-bold prose-ul:pl-4 prose-ul:list-disc prose-ol:pl-4 prose-ol:list-decimal" : "bg-brand-solid text-on-brand"}`}>
                 {msg.role === "assistant" ? (
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                 ) : (
@@ -192,8 +192,8 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
 
           {loading && (
             <div className="flex gap-2 items-start">
-              <div className="p-1.5 rounded-lg bg-brand/10 shrink-0"><Bot className="w-3.5 h-3.5 text-brand" /></div>
-              <div className="bg-muted rounded-2xl px-4 py-3"><Loader2 className="w-4 h-4 animate-spin text-brand" /></div>
+              <div className="p-1.5 rounded-lg bg-brand-tint shrink-0"><Bot className="w-3.5 h-3.5 text-brand-ink" /></div>
+              <div className="bg-muted rounded-card px-4 py-3"><Loader2 className="w-4 h-4 animate-spin text-brand-ink" /></div>
             </div>
           )}
         </div>
@@ -201,8 +201,8 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
         {/* Input */}
         <div className="p-3 border-t border-border shrink-0">
           <div className="flex gap-2">
-            <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="Tanyakan sesuatu..." className="flex-1 bg-background border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-brand transition-colors" disabled={loading} />
-            <button onClick={() => sendMessage(input)} disabled={loading || !input.trim()} className="px-3 py-2.5 bg-brand text-white rounded-xl hover:bg-brand-hover transition-colors disabled:opacity-50">
+            <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="Tanyakan sesuatu..." className="flex-1 bg-background border border-border rounded-control px-3 py-2.5 text-sm focus:outline-none focus:border-brand transition-colors" disabled={loading} />
+            <button onClick={() => sendMessage(input)} disabled={loading || !input.trim()} className="px-3 py-2.5 bg-brand-solid text-on-brand rounded-control hover:bg-brand-hover transition-colors disabled:opacity-50">
               <Send className="w-4 h-4" />
             </button>
           </div>
@@ -220,11 +220,11 @@ export default function HelpPage() {
     <div className="min-h-full p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-3 mb-6 md:mb-8">
-          <div className="p-2.5 md:p-3 bg-brand/10 rounded-2xl">
-            <BookOpen className="w-6 h-6 md:w-8 md:h-8 text-brand" />
+          <div className="p-2.5 md:p-3 bg-brand-tint rounded-card">
+            <BookOpen className="w-6 h-6 md:w-8 md:h-8 text-brand-ink" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground">Pusat Bantuan</h1>
+            <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">Pusat Bantuan</h1>
             <p className="text-muted-foreground text-xs md:text-sm">Panduan lengkap Literary Language Lab</p>
           </div>
         </div>
@@ -232,13 +232,13 @@ export default function HelpPage() {
         {/* FAQ Section */}
         <section className="mb-8 md:mb-10">
           <h2 className="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4 flex items-center gap-2">
-            <HelpCircle className="w-4 h-4 md:w-5 md:h-5 text-brand" />
+            <HelpCircle className="w-4 h-4 md:w-5 md:h-5 text-brand-ink" />
             Pertanyaan Umum
           </h2>
           <div className="space-y-2 md:space-y-3">
             {FAQ_ITEMS.map((item, i) => (
-              <div key={i} className="bg-card border border-border rounded-xl md:rounded-2xl overflow-hidden">
-                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full text-left p-3 md:p-4 font-bold text-foreground flex items-center justify-between hover:bg-muted transition-colors">
+              <div key={i} className="bg-card border border-border rounded-control md:rounded-card overflow-hidden">
+                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full text-left p-3 md:p-4 min-h-[44px] font-bold text-foreground flex items-center justify-between hover:bg-muted transition-colors">
                   <span className="text-xs md:text-sm pr-4">{item.q}</span>
                   <span className={`transition-transform text-muted-foreground shrink-0 text-xs ${openFaq === i ? "rotate-180" : ""}`}>▼</span>
                 </button>
@@ -253,19 +253,19 @@ export default function HelpPage() {
         {/* Feature Categories */}
         <section className="mb-8 md:mb-10">
           <h2 className="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-brand" />
+            <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-brand-ink" />
             Jelajahi Fitur
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
             {[
               { icon: BookOpen, label: "Public Domain Books", desc: "70.000+ buku klasik gratis dari Project Gutenberg", href: "/gutenberg", color: "text-foreground" },
-              { icon: BrainCircuit, label: "LingoWise AI", desc: "8 mode analisis teks sastra dengan kecerdasan buatan", href: "/lingowise", color: "text-brand" },
+              { icon: BrainCircuit, label: "LingoWise AI", desc: "8 mode analisis teks sastra dengan kecerdasan buatan", href: "/lingowise", color: "text-brand-ink" },
               { icon: MessageCircle, label: "Forum & Community", desc: "Diskusi forum, klub baca, dan anotasi bersama", href: "/forum", color: "text-foreground" },
               { icon: GraduationCap, label: "Translation Workshop", desc: "Latihan terjemahan English→Indonesia dengan evaluasi AI", href: "/translation-workshop", color: "text-foreground" },
               { icon: Globe, label: "Vocabulary & Review", desc: "Bank kosa kata + spaced repetition SM-2", href: "/vocabulary", color: "text-foreground" },
               { icon: Gamepad2, label: "Tools & Games", desc: "25+ tools: Story Quiz, Paraphrase Challenge, Alter Ego Chat", href: "/tools", color: "text-foreground" },
             ].map((item) => (
-              <Link key={item.href} href={item.href} className="bg-card border border-border rounded-xl md:rounded-2xl p-3 md:p-4 hover:bg-muted transition-all group flex items-center gap-3 md:gap-4">
+              <Link key={item.href} href={item.href} className="bg-card border border-border rounded-control md:rounded-card p-3 md:p-4 hover:bg-muted transition-all group flex items-center gap-3 md:gap-4">
                 <item.icon className={`w-5 h-5 md:w-6 md:h-6 ${item.color} shrink-0`} />
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-foreground text-xs md:text-sm">{item.label}</h3>
@@ -281,11 +281,11 @@ export default function HelpPage() {
         <section>
           <h2 className="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4">Tips Cepat</h2>
           <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm text-muted-foreground">
-            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">1.</span> Klik kata di mana saja pada teks bacaan untuk mengakses 13 mode analisis AI dan menyimpannya ke Vocabulary Bank.</li>
-            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">2.</span> Sorot (select) teks pada halaman pembaca Gutenberg untuk menggunakan fitur Bookmark dan Highlight, atau gunakan tombol "Ask AI Companion" di bagian atas untuk mendiskusikan isi buku secara langsung.</li>
-            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">3.</span> Semua buku yang telah Anda buka dapat diakses kembali secara luring (offline)—baca kapan saja, di mana saja.</li>
-            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">4.</span> Luangkan waktu di menu /review secara rutin untuk mengoptimalkan retensi memori jangka panjang Anda.</li>
-            <li className="flex gap-2"><span className="text-brand font-bold shrink-0">5.</span> Sesuaikan pencahayaan antarmuka (gelap/terang) melalui ikon tema di bagian navigasi.</li>
+            <li className="flex gap-2"><span className="text-brand-ink font-bold shrink-0">1.</span> Klik kata di mana saja pada teks bacaan untuk mengakses 13 mode analisis AI dan menyimpannya ke Vocabulary Bank.</li>
+            <li className="flex gap-2"><span className="text-brand-ink font-bold shrink-0">2.</span> Sorot (select) teks pada halaman pembaca Gutenberg untuk menggunakan fitur Bookmark dan Highlight, atau gunakan tombol "Ask AI Companion" di bagian atas untuk mendiskusikan isi buku secara langsung.</li>
+            <li className="flex gap-2"><span className="text-brand-ink font-bold shrink-0">3.</span> Semua buku yang telah Anda buka dapat diakses kembali secara luring (offline)—baca kapan saja, di mana saja.</li>
+            <li className="flex gap-2"><span className="text-brand-ink font-bold shrink-0">4.</span> Luangkan waktu di menu /review secara rutin untuk mengoptimalkan retensi memori jangka panjang Anda.</li>
+            <li className="flex gap-2"><span className="text-brand-ink font-bold shrink-0">5.</span> Sesuaikan pencahayaan antarmuka (gelap/terang) melalui ikon tema di bagian navigasi.</li>
           </ul>
         </section>
 
@@ -296,9 +296,9 @@ export default function HelpPage() {
             <p>
               Daftar Kosakata Inti berasal dari <strong>New General Service List (NGSL) versi 1.2</strong> oleh Browne, C., Culligan, B., dan Phillips, J.,
               tersedia di{" "}
-              <a href="https://www.newgeneralservicelist.com" target="_blank" rel="noopener noreferrer" className="text-brand underline">newgeneralservicelist.com</a>{" "}
+              <a href="https://www.newgeneralservicelist.com" target="_blank" rel="noopener noreferrer" className="text-brand-ink underline">newgeneralservicelist.com</a>{" "}
               di bawah lisensi{" "}
-              <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" className="text-brand underline">Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)</a>. Definisi bahasa Inggris sederhana dan bentuk kata pada Kosakata Inti juga berasal dari NGSL 1.2.
+              <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" className="text-brand-ink underline">Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)</a>. Definisi bahasa Inggris sederhana dan bentuk kata pada Kosakata Inti juga berasal dari NGSL 1.2.
             </p>
             <p>
               Pemetaan peringkat frekuensi ke perkiraan level CEFR (A1-B2) dibuat oleh Literary Language Lab dan hanya berupa estimasi untuk belajar,
@@ -313,7 +313,7 @@ export default function HelpPage() {
 
       {/* Floating Liter AI button (only on help page) */}
       {!showChat && (
-        <button onClick={() => setShowChat(true)} className="fixed bottom-24 right-4 md:bottom-6 md:right-6 z-40 p-3.5 md:p-4 bg-brand text-white rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center gap-2 group">
+        <button onClick={() => setShowChat(true)} className="fixed bottom-24 right-4 md:bottom-6 md:right-6 z-40 p-3.5 md:p-4 bg-brand-solid text-on-brand rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 group">
           <MessageSquare className="w-5 h-5 md:w-6 md:h-6" />
           <span className="max-w-0 overflow-hidden group-hover:max-w-[80px] transition-all duration-300 whitespace-nowrap text-xs md:text-sm font-bold">Liter AI</span>
         </button>

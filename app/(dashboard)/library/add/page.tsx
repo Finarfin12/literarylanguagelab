@@ -62,15 +62,15 @@ export default function AddTextPage() {
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Tambah Teks Baru</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">Tambah Teks Baru</h1>
         <p className="text-muted-foreground mt-2">Tambahkan teks sastra ke Library, baik dengan menulis sendiri atau meminta bantuan AI.</p>
       </div>
 
-      <div className="bg-card border border-foreground/20 rounded-3xl shadow-md overflow-hidden mb-10 relative">
+      <div className="bg-card border border-foreground/20 rounded-card overflow-hidden mb-10 relative">
         <div className="flex border-b border-foreground/20">
           <button 
             onClick={() => setMode("ai")}
-            className={`flex-1 py-4 px-6 text-sm font-bold flex items-center justify-center gap-2 transition-colors ${mode === "ai" ? "bg-brand/10 text-brand border-b-2 border-brand" : "text-muted-foreground hover:bg-foreground/5"}`}
+            className={`flex-1 py-4 px-6 text-sm font-bold flex items-center justify-center gap-2 transition-colors ${mode === "ai" ? "bg-brand-tint text-brand-ink border-b-2 border-brand" : "text-muted-foreground hover:bg-foreground/5"}`}
           >
             <Sparkles className="w-4 h-4" /> AI Generator
           </button>
@@ -84,20 +84,20 @@ export default function AddTextPage() {
 
         <div className="p-4 md:p-8">
           {mode === "ai" && (
-            <div className="mb-10 bg-brand/5 border border-brand/20 rounded-xl p-6">
-              <label className="block text-sm font-medium text-brand mb-2">Prompt (Ide Cerita)</label>
+            <div className="mb-10 bg-brand-tint border border-brand/20 rounded-control p-6">
+              <label className="block text-sm font-medium text-brand-ink mb-2">Prompt (Ide Cerita)</label>
               <div className="flex flex-col md:flex-row gap-4">
                 <input 
                   type="text" 
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   placeholder="Contoh: Sebuah puisi gelap tentang kastil tua di Skotlandia bergaya Edgar Allan Poe..."
-                  className="flex-1 rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                  className="flex-1 rounded-control border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                 />
                 <button 
                   onClick={handleGenerate}
                   disabled={generating || !prompt}
-                  className="px-6 py-3 rounded-xl bg-brand text-background font-bold hover:bg-brand-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all"
+                  className="px-6 py-3 rounded-control bg-brand-solid text-on-brand font-bold hover:bg-brand-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all"
                 >
                   {generating ? <><Loader2 className="w-4 h-4 animate-spin"/> Membuat...</> : <><Sparkles className="w-4 h-4"/> Buat dengan AI</>}
                 </button>
@@ -115,7 +115,7 @@ export default function AddTextPage() {
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
+                  className="w-full rounded-control border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
                 />
               </div>
               <div>
@@ -126,7 +126,7 @@ export default function AddTextPage() {
                   required
                   value={author}
                   onChange={(e) => setAuthor(e.target.value)}
-                  className="w-full rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
+                  className="w-full rounded-control border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
                 />
               </div>
             </div>
@@ -138,7 +138,7 @@ export default function AddTextPage() {
                   name="era"
                   value={era}
                   onChange={(e) => setEra(e.target.value)}
-                  className="w-full rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
+                  className="w-full rounded-control border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
                 >
                   <option value="">Pilih Era...</option>
                   <option value="Classical">Classical</option>
@@ -156,7 +156,7 @@ export default function AddTextPage() {
                   name="genre"
                   value={genre}
                   onChange={(e) => setGenre(e.target.value)}
-                  className="w-full rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
+                  className="w-full rounded-control border border-foreground/20 bg-background px-4 py-3 text-foreground focus:border-brand focus:outline-none"
                 >
                   <option value="">Pilih Genre...</option>
                   <option value="Novel">Novel</option>
@@ -171,7 +171,7 @@ export default function AddTextPage() {
             <div>
               <label className="block text-sm font-medium text-muted-foreground mb-2 flex justify-between">
                 <span>Tingkat Kesulitan Kosakata</span>
-                <span className="text-brand">Level {difficulty}</span>
+                <span className="text-brand-ink">Level {difficulty}</span>
               </label>
               <input 
                 name="difficulty"
@@ -195,12 +195,12 @@ export default function AddTextPage() {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={12}
-                className="w-full rounded-xl border border-foreground/20 bg-background px-4 py-3 text-foreground font-serif leading-relaxed focus:border-brand focus:outline-none resize-y"
+                className="w-full rounded-control border border-foreground/20 bg-background px-4 py-3 text-foreground font-serif leading-relaxed focus:border-brand focus:outline-none resize-y"
               ></textarea>
             </div>
 
             <div className="pt-6 border-t border-foreground/20 flex justify-end">
-              <SubmitButton className="px-4 md:px-8 py-4 rounded-xl bg-brand-solid hover:bg-brand-hover text-on-brand font-bold transition-all duration-300">
+              <SubmitButton className="px-4 md:px-8 py-4 rounded-control bg-brand-solid hover:bg-brand-hover text-on-brand font-bold transition-all duration-300">
                 Simpan ke Library
               </SubmitButton>
             </div>

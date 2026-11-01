@@ -85,14 +85,14 @@ export default function ContentManager({
   return (
     <div className="space-y-10">
       {message && (
-        <p role="status" className={`text-sm font-bold rounded-xl border p-3 ${message.tone === "ok" ? "border-brand/30 bg-brand/10 text-brand" : "border-danger/30 bg-danger-tint text-danger"}`}>
+        <p role="status" className={`text-sm font-bold rounded-control border p-3 ${message.tone === "ok" ? "border-brand/30 bg-brand-tint text-brand-ink" : "border-danger/30 bg-danger-tint text-danger"}`}>
           {message.text}
         </p>
       )}
 
       {/* Generator */}
-      <section className="bg-card border border-border rounded-2xl p-4 md:p-6">
-        <h2 className="text-lg font-bold font-serif mb-1 flex items-center gap-2"><Sparkles className="w-5 h-5 text-brand" /> Buat teks berjenjang dengan AI</h2>
+      <section className="bg-card border border-border rounded-card p-4 md:p-6">
+        <h2 className="text-lg font-medium font-serif mb-1 flex items-center gap-2"><Sparkles className="w-5 h-5 text-brand-ink" /> Buat teks berjenjang dengan AI</h2>
         <p className="text-sm text-muted-foreground mb-4">Hasilnya disimpan sebagai draft. Tinjau dan edit dulu sebelum diterbitkan.</p>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <label className="text-sm font-medium">Level
@@ -110,7 +110,7 @@ export default function ContentManager({
           </label>
         </div>
         <button
-          className={`${buttonClass} mt-4 bg-brand text-background hover:bg-brand-hover`}
+          className={`${buttonClass} mt-4 bg-brand-solid text-on-brand hover:bg-brand-hover`}
           disabled={pending || !schemaReady}
           onClick={() => run(() => generateGradedText({ level: genLevel, topic: genTopic, length: genLength }), "Draft dibuat. Tinjau di daftar di bawah.", () => setGenTopic(""))}
         >
@@ -120,19 +120,19 @@ export default function ContentManager({
 
       {/* Daftar teks */}
       <section>
-        <h2 className="text-lg font-bold font-serif mb-3">Teks ({texts.length})</h2>
+        <h2 className="text-lg font-medium font-serif mb-3">Teks ({texts.length})</h2>
         {texts.length === 0 ? (
-          <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6 text-center">Tidak ada teks untuk filter ini.</p>
+          <p className="text-sm text-muted-foreground border border-dashed border-border rounded-control p-6 text-center">Tidak ada teks untuk filter ini.</p>
         ) : (
           <ul className="space-y-3">
             {texts.map((t) => (
-              <li key={t.id} className="bg-card border border-border rounded-2xl p-4">
+              <li key={t.id} className="bg-card border border-border rounded-card p-4">
                 <div className="flex flex-col md:flex-row md:items-center gap-3">
                   <div className="min-w-0 flex-1">
                     <p className="font-bold text-foreground truncate">{t.title}</p>
                     <p className="text-xs text-muted-foreground">
                       {t.author} · {t.word_count ?? "?"} kata · {t.source ? SOURCE_LABELS[t.source] || t.source : "sumber tidak dicatat"} ·{" "}
-                      <span className={t.status === "draft" ? "text-warning-ink font-bold" : "text-brand font-bold"}>{t.status === "draft" ? "Draft" : "Terbit"}</span>
+                      <span className={t.status === "draft" ? "text-warning-ink font-bold" : "text-brand-ink font-bold"}>{t.status === "draft" ? "Draft" : "Terbit"}</span>
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -173,13 +173,13 @@ export default function ContentManager({
                 </div>
 
                 {suggestions[t.id] && (
-                  <div className="mt-3 text-sm bg-brand/5 border border-brand/20 rounded-xl p-3">
+                  <div className="mt-3 text-sm bg-brand-tint border border-brand/20 rounded-control p-3">
                     <p>
                       Saran AI: <strong>{suggestions[t.id].cefr}</strong>. {suggestions[t.id].explanation}
                     </p>
                     <div className="mt-2 flex gap-2">
                       <button
-                        className={`${buttonClass} bg-brand text-background`}
+                        className={`${buttonClass} bg-brand-solid text-on-brand`}
                         disabled={pending || !schemaReady}
                         onClick={() => run(() => setTextLevel(t.id, suggestions[t.id].cefr), "Level disimpan.", () => setSuggestions((s) => { const n = { ...s }; delete n[t.id]; return n; }))}
                       >
@@ -194,7 +194,7 @@ export default function ContentManager({
                   <div className="mt-3 space-y-3">
                     <input className={inputClass} value={editTitle} maxLength={200} onChange={(e) => setEditTitle(e.target.value)} aria-label="Judul" />
                     <textarea className={`${inputClass} min-h-[240px] font-serif`} value={editContent} onChange={(e) => setEditContent(e.target.value)} aria-label="Isi teks" />
-                    <button className={`${buttonClass} bg-brand text-background`} disabled={pending} onClick={() => run(() => updateDraftText(t.id, editTitle, editContent), "Draft disimpan.", () => setEditingId(null))}>
+                    <button className={`${buttonClass} bg-brand-solid text-on-brand`} disabled={pending} onClick={() => run(() => updateDraftText(t.id, editTitle, editContent), "Draft disimpan.", () => setEditingId(null))}>
                       Simpan perubahan
                     </button>
                   </div>
@@ -207,8 +207,8 @@ export default function ContentManager({
 
       {/* Grammar */}
       <section>
-        <h2 className="text-lg font-bold font-serif mb-3">Topik grammar dasar ({topics.length})</h2>
-        <ul className="divide-y divide-border bg-card border border-border rounded-2xl mb-4">
+        <h2 className="text-lg font-medium font-serif mb-3">Topik grammar dasar ({topics.length})</h2>
+        <ul className="divide-y divide-border bg-card border border-border rounded-card mb-4">
           {topics.map((tp) => (
             <li key={tp.slug} className="flex items-center gap-3 px-4 min-h-[56px]">
               <span className="text-xs font-bold px-2 py-1 rounded bg-muted">{tp.cefr_level}</span>
@@ -227,7 +227,7 @@ export default function ContentManager({
           {topics.length === 0 && <li className="p-4 text-sm text-muted-foreground">Belum ada topik (jalankan migrasi 0007).</li>}
         </ul>
 
-        <div className="bg-card border border-border rounded-2xl p-4 md:p-6 space-y-3">
+        <div className="bg-card border border-border rounded-card p-4 md:p-6 space-y-3">
           <h3 className="font-bold">Tambah / ubah topik</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <label className="text-sm font-medium">Slug
@@ -251,7 +251,7 @@ export default function ContentManager({
             <textarea className={`${inputClass} mt-1 min-h-[100px]`} value={topicForm.summary_id} onChange={(e) => setTopicForm({ ...topicForm, summary_id: e.target.value })} />
           </label>
           <button
-            className={`${buttonClass} bg-brand text-background`}
+            className={`${buttonClass} bg-brand-solid text-on-brand`}
             disabled={pending || !schemaReady}
             onClick={() => run(() => saveGrammarTopic(topicForm), "Topik disimpan.", () => setTopicForm({ ...emptyTopic, sort_order: topics.length + 2 }))}
           >

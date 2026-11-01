@@ -101,7 +101,7 @@ export default async function AdminOverviewPage() {
   }
 
   const cards = [
-    { icon: Activity, color: "text-brand", label: "Request AI 24 jam", value: requests24h.toLocaleString("id-ID") },
+    { icon: Activity, color: "text-brand-ink", label: "Request AI 24 jam", value: requests24h.toLocaleString("id-ID") },
     { icon: Activity, color: "text-foreground", label: "Request AI 7 hari", value: requests.length.toLocaleString("id-ID") },
     { icon: AlertTriangle, color: errorRate > 5 ? "text-danger" : "text-warning-ink", label: "Error rate 7 hari", value: `${errorRate}%` },
     { icon: Users, color: "text-foreground", label: "Pengguna aktif AI 7 hari", value: `${activeUsers7d} / ${usersRes.count ?? "?"}` },
@@ -122,22 +122,22 @@ export default async function AdminOverviewPage() {
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
         {cards.map(({ icon: Icon, color, label, value }) => (
-          <div key={label} className="bg-card border border-border rounded-2xl p-4">
+          <div key={label} className="bg-card border border-border rounded-card p-4">
             <Icon className={`w-4 h-4 ${color} mb-2`} />
-            <p className="text-2xl font-serif font-bold text-foreground">{value}</p>
+            <p className="text-2xl font-serif font-medium text-foreground">{value}</p>
             <p className="text-xs text-muted-foreground mt-1">{label}</p>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-4 md:p-6">
+        <div className="lg:col-span-2 bg-card border border-border rounded-card p-4 md:p-6">
           <h2 className="font-bold text-foreground mb-4">Request AI per hari</h2>
           <div className="h-[240px]">
             <VocabChart data={chartData} />
           </div>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-4 md:p-6">
+        <div className="bg-card border border-border rounded-card p-4 md:p-6">
           <h2 className="font-bold text-foreground mb-4">Fitur teratas</h2>
           {topFeatures.length === 0 ? (
             <p className="text-sm text-muted-foreground">Belum ada pemakaian AI tercatat.</p>

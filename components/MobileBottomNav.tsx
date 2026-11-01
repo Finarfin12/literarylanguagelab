@@ -23,7 +23,7 @@ export default function MobileBottomNav() {
   return (
     <nav
       aria-label="Navigasi utama"
-      className="lg:hidden fixed bottom-0 left-0 right-0 bg-background/90 backdrop-blur-xl border-t border-border z-50 px-1 pt-1 flex justify-around items-center safe-area-pb"
+      className="lg:hidden fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50 px-1 pt-1 flex justify-around items-center safe-area-pb"
     >
       {NAV_ITEMS.map((item) => {
         const isActive = item.path === "/menu" ? !matchedOther : item.match.some((p) => pathname.startsWith(p));

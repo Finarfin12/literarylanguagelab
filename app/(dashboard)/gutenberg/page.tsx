@@ -195,7 +195,7 @@ export default function GutenbergSearchPage() {
         <div className="inline-flex items-center justify-center p-4 bg-muted rounded-full mb-6">
           <BookOpen className="w-12 h-12 text-foreground" />
         </div>
-        <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Public Domain Books</h1>
+        <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground">Public Domain Books</h1>
         <p className="text-muted-foreground mt-4 text-lg max-w-2xl mx-auto">
           Cari dan baca lebih dari 70.000+ buku sastra klasik secara gratis langsung dari arsip Project Gutenberg. Baca secara utuh, tanpa gangguan.
         </p>
@@ -208,7 +208,7 @@ export default function GutenbergSearchPage() {
             onClick={() => setProvider("openlibrary")}
             className={`px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-1.5 ${
               provider === "openlibrary"
-                ? "bg-brand-solid text-on-brand shadow-lg"
+                ? "bg-brand-solid text-on-brand "
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -219,7 +219,7 @@ export default function GutenbergSearchPage() {
             onClick={() => setProvider("gutendex")}
             className={`px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-1.5 ${
               provider === "gutendex"
-                ? "bg-brand-solid text-on-brand shadow-lg"
+                ? "bg-brand-solid text-on-brand "
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -242,7 +242,7 @@ export default function GutenbergSearchPage() {
           placeholder={provider === "openlibrary"
             ? "Cari judul buku atau nama penulis via OpenLibrary..."
             : "Cari judul buku atau nama penulis via Gutendex..."}
-          className="w-full bg-card border-2 border-border rounded-full py-4 pl-14 pr-32 text-lg focus:outline-none focus:border-border transition-colors shadow-sm"
+          className="w-full bg-card border-2 border-border rounded-full py-4 pl-14 pr-32 text-lg focus:outline-none focus:border-border transition-colors "
         />
         <Search className="w-6 h-6 text-muted-foreground absolute left-5 top-1/2 -translate-y-1/2" />
         <button
@@ -265,7 +265,7 @@ export default function GutenbergSearchPage() {
           <p className="text-xl font-serif text-foreground">{error}</p>
           <button
             onClick={() => { setProvider(provider === "gutendex" ? "openlibrary" : "gutendex"); setError(""); }}
-            className="mt-4 px-6 py-2 bg-brand text-white font-bold rounded-full hover:bg-brand-hover transition-colors"
+            className="mt-4 px-6 py-2 bg-brand-solid text-on-brand font-bold rounded-full hover:bg-brand-hover transition-colors"
           >
             Coba lewat {provider === "gutendex" ? "OpenLibrary" : "Gutendex"} →
           </button>
@@ -284,19 +284,19 @@ export default function GutenbergSearchPage() {
             {books.map((book) => (
               <div
                 key={book.id}
-                className="bg-card border border-border rounded-3xl p-6 flex flex-col justify-between hover:shadow-lg transition-all"
+                className="bg-card border border-border rounded-card p-6 flex flex-col justify-between transition-all"
               >
                 <div>
                   <div className="flex items-start justify-between gap-4 mb-4">
                     {book.coverUrl ? (
-                      <img src={book.coverUrl} alt="Cover" className="w-20 h-28 object-cover rounded-md shadow-md shrink-0" />
+                      <img src={book.coverUrl} alt="Cover" className="w-20 h-28 object-cover rounded-md shrink-0" />
                     ) : (
                       <div className="w-20 h-28 bg-muted rounded-md border border-border flex items-center justify-center shrink-0">
                         <BookOpen className="w-8 h-8 text-muted-foreground/30" />
                       </div>
                     )}
                     <div className="flex-1">
-                      <h3 className="font-serif font-bold text-lg leading-tight mb-2 line-clamp-3">{book.title}</h3>
+                      <h3 className="font-serif font-medium text-lg leading-tight mb-2 line-clamp-3">{book.title}</h3>
                       <p className="text-sm text-muted-foreground line-clamp-2">{book.author}</p>
                     </div>
                   </div>
@@ -317,7 +317,7 @@ export default function GutenbergSearchPage() {
 
                 <Link
                   href={getBookUrl(book)}
-                  className="w-full py-3 bg-muted border border-border text-foreground font-bold rounded-xl flex justify-center items-center gap-2 hover:bg-brand-hover hover:border-border hover:text-white transition-colors"
+                  className="w-full py-3 bg-muted border border-border text-foreground font-bold rounded-control flex justify-center items-center gap-2 hover:bg-brand-hover hover:border-border hover:text-white transition-colors"
                 >
                   Baca Buku Full <ArrowRight className="w-4 h-4" />
                 </Link>

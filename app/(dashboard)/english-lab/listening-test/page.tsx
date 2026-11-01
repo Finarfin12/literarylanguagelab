@@ -360,7 +360,7 @@ export default function ListeningTestPage() {
           <div className="bg-card border border-border rounded-card p-6 flex flex-col md:flex-row items-center gap-6">
             <div className="w-full md:w-auto shrink-0 flex flex-col items-center justify-center bg-brand-tint border border-brand/20 rounded-card p-6">
               <div className="relative">
-                <div className={`absolute inset-0 bg-brand-tint rounded-full blur-xl transition-all duration-1000 ${isPlaying ? 'scale-150 opacity-100' : 'scale-100 opacity-0'}`} />
+                <div className={`absolute inset-0 bg-brand-tint rounded-full transition-all duration-1000 ${isPlaying ? 'scale-150 opacity-100' : 'scale-100 opacity-0'}`} />
                 <button
                   onClick={handleTogglePlay}
                   className="relative w-20 h-20 bg-brand-solid text-on-brand rounded-full flex items-center justify-center transition-all "

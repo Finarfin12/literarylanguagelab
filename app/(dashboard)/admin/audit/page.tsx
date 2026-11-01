@@ -79,7 +79,7 @@ export default async function AdminAuditPage({ searchParams }: { searchParams: P
           <Link
             key={c.value}
             href={c.value ? `/admin/audit?category=${c.value}` : "/admin/audit"}
-            className={`${buttonClass} whitespace-nowrap ${category === c.value ? "bg-brand text-background" : "bg-muted text-foreground"}`}
+            className={`${buttonClass} whitespace-nowrap ${category === c.value ? "bg-brand-solid text-on-brand" : "bg-muted text-foreground"}`}
           >
             {c.label}
           </Link>
@@ -89,9 +89,9 @@ export default async function AdminAuditPage({ searchParams }: { searchParams: P
       {error ? (
         <MissingMigrationNotice message={`${error.message} (tabel admin_audit_log ada di migrasi 0004)`} />
       ) : rows.length === 0 ? (
-        <p className="text-sm text-muted-foreground bg-card border border-border rounded-2xl p-6 text-center">Belum ada aksi admin yang tercatat.</p>
+        <p className="text-sm text-muted-foreground bg-card border border-border rounded-card p-6 text-center">Belum ada aksi admin yang tercatat.</p>
       ) : (
-        <ul className="bg-card border border-border rounded-2xl divide-y divide-border overflow-hidden">
+        <ul className="bg-card border border-border rounded-card divide-y divide-border overflow-hidden">
           {rows.map((r) => (
             <li key={r.id}>
               <details className="group">

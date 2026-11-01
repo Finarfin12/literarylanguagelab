@@ -340,42 +340,42 @@ export default function SettingsPage() {
     }
   };
 
-  if (loading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand" /></div>;
+  if (loading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand-ink" /></div>;
 
   return (
     <div className="flex-1 overflow-y-auto bg-background p-4 md:p-8 lg:p-12">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-            <Settings className="w-8 h-8 text-brand" />
+          <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+            <Settings className="w-8 h-8 text-brand-ink" />
             Pengaturan Akun
           </h1>
           <p className="text-muted-foreground mt-2 text-lg">Kelola informasi pribadi dan preferensi sistem Anda.</p>
         </div>
 
         {message && (
-          <div className={`p-4 rounded-xl mb-6 ${message.includes('Gagal') ? 'bg-danger-tint text-danger border border-danger/30' : 'bg-brand/10 text-brand border border-brand/20'}`}>
+          <div className={`p-4 rounded-control mb-6 ${message.includes('Gagal') ? 'bg-danger-tint text-danger border border-danger/30' : 'bg-brand-tint text-brand-ink border border-brand/20'}`}>
             {message}
           </div>
         )}
 
         {/* Tabs */}
-        <div className="flex flex-nowrap items-center gap-2 mb-8 bg-card border border-foreground/10 p-2 rounded-2xl md:rounded-full overflow-x-auto scrollbar-hide">
-          <button onClick={() => setActiveTab("profil")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "profil" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
+        <div className="flex flex-nowrap items-center gap-2 mb-8 bg-card border border-foreground/10 p-2 rounded-card md:rounded-full overflow-x-auto scrollbar-hide">
+          <button onClick={() => setActiveTab("profil")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "profil" ? 'bg-brand-solid text-on-brand ' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
             <User className="w-4 h-4" /> Profil
           </button>
-          <button onClick={() => setActiveTab("reading")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "reading" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
+          <button onClick={() => setActiveTab("reading")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "reading" ? 'bg-brand-solid text-on-brand ' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
             <BookOpen className="w-4 h-4" /> Membaca & Kamus
           </button>
-          <button onClick={() => setActiveTab("learning")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "learning" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
+          <button onClick={() => setActiveTab("learning")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "learning" ? 'bg-brand-solid text-on-brand ' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
             <BrainCircuit className="w-4 h-4" /> Kosakata & Belajar
           </button>
-          <button onClick={() => setActiveTab("privacy")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "privacy" ? 'bg-brand text-white shadow-md' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
+          <button onClick={() => setActiveTab("privacy")} className={`shrink-0 px-5 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all ${activeTab === "privacy" ? 'bg-brand-solid text-on-brand ' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
             <ShieldAlert className="w-4 h-4" /> Privasi & Sistem
           </button>
         </div>
 
-        <form onSubmit={handleSave} className="space-y-6 bg-card border border-foreground/10 shadow-sm p-4 md:p-8 rounded-3xl">
+        <form onSubmit={handleSave} className="space-y-6 bg-card border border-foreground/10 p-4 md:p-8 rounded-card">
           
           {/* TAB 1: PROFIL */}
           {activeTab === "profil" && (
@@ -388,7 +388,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-foreground mb-2">Foto Profil</label>
-                  <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-xl transition-colors text-sm font-medium">
+                  <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-control transition-colors text-sm font-medium">
                     <Upload className="w-4 h-4" /> Pilih Gambar
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files && e.target.files[0]) setFile(e.target.files[0]); }} />
                   </label>
@@ -399,21 +399,21 @@ export default function SettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">Nama Lengkap / Username</label>
-                  <input type="text" value={fullName} onChange={e => setFullName(e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand" />
+                  <input type="text" value={fullName} onChange={e => setFullName(e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-control px-4 py-3 text-foreground focus:outline-none focus:border-brand" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground flex items-center gap-2"><Mail className="w-4 h-4" /> Email</label>
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand" />
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-control px-4 py-3 text-foreground focus:outline-none focus:border-brand" />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">Tentang Saya (Biografi Singkat)</label>
-                <textarea value={aboutMe} onChange={e => setAboutMe(e.target.value)} rows={4} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand resize-none" placeholder="Ceritakan sedikit tentang ketertarikan sastra Anda..." />
+                <textarea value={aboutMe} onChange={e => setAboutMe(e.target.value)} rows={4} className="w-full bg-foreground/5 border border-foreground/10 rounded-control px-4 py-3 text-foreground focus:outline-none focus:border-brand resize-none" placeholder="Ceritakan sedikit tentang ketertarikan sastra Anda..." />
               </div>
 
               <div className="pt-6 border-t border-foreground/10 space-y-4">
-                <label className="flex items-center justify-between p-4 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                <label className="flex items-center justify-between p-4 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                   <div>
                     <p className="font-bold text-foreground text-sm">Profil Publik</p>
                     <p className="text-xs text-muted-foreground mt-1">Izinkan pengguna lain mencari dan melihat profil Anda.</p>
@@ -421,7 +421,7 @@ export default function SettingsPage() {
                   <input type="checkbox" checked={isPublic} onChange={e => setIsPublic(e.target.checked)} className="w-5 h-5 accent-brand" />
                 </label>
 
-                <label className="flex items-center justify-between p-4 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                <label className="flex items-center justify-between p-4 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                   <div>
                     <p className="font-bold text-foreground text-sm flex items-center gap-2"><Bell className="w-4 h-4" /> Notifikasi Email</p>
                     <p className="text-xs text-muted-foreground mt-1">Terima pengingat sistem via email.</p>
@@ -429,9 +429,9 @@ export default function SettingsPage() {
                   <input type="checkbox" checked={notificationPref} onChange={e => setNotificationPref(e.target.checked)} className="w-5 h-5 accent-brand" />
                 </label>
 
-                <div className="p-4 bg-foreground/5 rounded-xl border border-foreground/10">
+                <div className="p-4 bg-foreground/5 rounded-control border border-foreground/10">
                   <p className="font-bold text-foreground text-sm mb-2">Bahasa Utama</p>
-                  <select value={languagePref} onChange={e => setLanguagePref(e.target.value)} className="w-full bg-background border border-foreground/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand">
+                  <select value={languagePref} onChange={e => setLanguagePref(e.target.value)} className="w-full bg-background border border-foreground/10 rounded-lg min-h-[44px] px-3 py-2 text-sm focus:outline-none focus:border-brand">
                     <option value="id">Bahasa Indonesia</option>
                     <option value="en">Inggris</option>
                   </select>
@@ -448,7 +448,7 @@ export default function SettingsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-sm font-medium">Jenis Huruf</label>
-                    <select value={preferences.reading.font_family} onChange={e => updatePref('reading', 'font_family', e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm">
+                    <select value={preferences.reading.font_family} onChange={e => updatePref('reading', 'font_family', e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-control min-h-[44px] px-3 py-2 text-sm">
                       <option value="serif">Serif (Sastra)</option>
                       <option value="sans-serif">Sans-Serif (Modern)</option>
                       <option value="dyslexic">OpenDyslexic (Ramah disleksia)</option>
@@ -456,7 +456,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-medium">Lebar Teks</label>
-                    <select value={preferences.reading.text_width} onChange={e => updatePref('reading', 'text_width', e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm">
+                    <select value={preferences.reading.text_width} onChange={e => updatePref('reading', 'text_width', e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-control min-h-[44px] px-3 py-2 text-sm">
                       <option value="narrow">Sempit (Fokus)</option>
                       <option value="medium">Sedang (Standar)</option>
                       <option value="wide">Lebar (Layar Penuh)</option>
@@ -468,7 +468,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-medium">Jarak Antar Baris</label>
-                    <select value={preferences.reading.line_height} onChange={e => updatePref('reading', 'line_height', parseFloat(e.target.value))} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm">
+                    <select value={preferences.reading.line_height} onChange={e => updatePref('reading', 'line_height', parseFloat(e.target.value))} className="w-full bg-foreground/5 border border-foreground/10 rounded-control min-h-[44px] px-3 py-2 text-sm">
                       <option value="1.5">Compact (1.5)</option>
                       <option value="1.75">Standard (1.75)</option>
                       <option value="2.0">Relaxed (2.0)</option>
@@ -480,15 +480,15 @@ export default function SettingsPage() {
               <div>
                 <h3 className="text-lg font-bold text-foreground mb-4">Reading Experience</h3>
                 <div className="space-y-3">
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <span className="text-sm font-bold">Auto-save Progress</span>
                     <input type="checkbox" checked={preferences.reading.auto_save} onChange={e => updatePref('reading', 'auto_save', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <span className="text-sm font-bold">Tampilkan Nomor Baris</span>
                     <input type="checkbox" checked={preferences.reading.line_numbers} onChange={e => updatePref('reading', 'line_numbers', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 gap-3">
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-bold">Text-to-Speech (Beta)</span>
@@ -506,35 +506,35 @@ export default function SettingsPage() {
                       </select>
                     )}
                   </div>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer border-l-4 border-l-orange-500">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
-                      <span className="text-sm font-bold flex items-center gap-2"><BrainCircuit className="w-4 h-4 text-orange-500" /> Kuis Pemahaman Otomatis</span>
+                      <span className="text-sm font-bold flex items-center gap-2"><BrainCircuit className="w-4 h-4 text-brand-ink" /> Kuis Pemahaman Otomatis</span>
                       <p className="text-xs text-muted-foreground mt-0.5 font-normal">Tampilkan kuis di akhir setiap bab untuk menguji pemahaman.</p>
                     </div>
                     <input type="checkbox" checked={preferences.reading.enable_quizzes} onChange={e => updatePref('reading', 'enable_quizzes', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer border-l-4 border-l-blue-500">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
-                      <span className="text-sm font-bold flex items-center gap-2"><BookOpen className="w-4 h-4 text-blue-500" /> Tantangan Menulis Teks</span>
+                      <span className="text-sm font-bold flex items-center gap-2"><BookOpen className="w-4 h-4 text-brand-ink" /> Tantangan Menulis Teks</span>
                       <p className="text-xs text-muted-foreground mt-0.5 font-normal">Tampilkan fitur Writing Prompts (Merangkum Cerita) setelah kuis pemahaman selesai.</p>
                     </div>
                     <input type="checkbox" checked={preferences.reading.enable_writing_prompts} onChange={e => updatePref('reading', 'enable_writing_prompts', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer border-l-4 border-l-purple-500">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
-                      <span className="text-sm font-bold flex items-center gap-2"><BookOpen className="w-4 h-4 text-purple-500" /> Pre-Reading Vocab Preview</span>
+                      <span className="text-sm font-bold flex items-center gap-2"><BookOpen className="w-4 h-4 text-brand-ink" /> Pre-Reading Vocab Preview</span>
                       <p className="text-xs text-muted-foreground mt-0.5 font-normal">Tampilkan 8-12 kata kunci untuk dipelajari sebelum mulai membaca teks.</p>
                     </div>
                     <input type="checkbox" checked={preferences.reading.enable_vocab_preview} onChange={e => updatePref('reading', 'enable_vocab_preview', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer border-l-4 border-l-rose-500">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
-                      <span className="text-sm font-bold flex items-center gap-2"><BookOpen className="w-4 h-4 text-rose-500" /> Listening Challenge (Lisan)</span>
+                      <span className="text-sm font-bold flex items-center gap-2"><BookOpen className="w-4 h-4 text-brand-ink" /> Listening Challenge (Lisan)</span>
                       <p className="text-xs text-muted-foreground mt-0.5 font-normal">Tampilkan kuis lisan di akhir bab. AI akan bertanya dan Anda menjawab menggunakan suara.</p>
                     </div>
                     <input type="checkbox" checked={preferences.reading.enable_listening_challenge} onChange={e => updatePref('reading', 'enable_listening_challenge', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <div className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10">
+                  <div className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10">
                     <span className="text-sm font-bold">Warna Highlight Teks</span>
                     <input type="color" value={preferences.reading.highlight_color} onChange={e => updatePref('reading', 'highlight_color', e.target.value)} className="w-8 h-8 rounded border-none cursor-pointer" />
                   </div>
@@ -544,21 +544,21 @@ export default function SettingsPage() {
               <div>
                 <h3 className="text-lg font-bold text-foreground mb-4">Dictionary Lookup</h3>
                 <div className="space-y-3">
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <span className="text-sm font-bold">Auto-lookup on Click</span>
                     <input type="checkbox" checked={preferences.dictionary.auto_lookup} onChange={e => updatePref('dictionary', 'auto_lookup', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <span className="text-sm font-bold">Tampilkan Register Bahasa (Formal/Slang)</span>
                     <input type="checkbox" checked={preferences.dictionary.show_register} onChange={e => updatePref('dictionary', 'show_register', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <span className="text-sm font-bold">Tampilkan Etimologi (Asal Kata)</span>
                     <input type="checkbox" checked={preferences.dictionary.show_etymology} onChange={e => updatePref('dictionary', 'show_etymology', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
                   <div className="space-y-1">
                     <label className="text-sm font-medium">Bahasa Definisi Kamus</label>
-                    <select value={preferences.dictionary.def_language} onChange={e => updatePref('dictionary', 'def_language', e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm">
+                    <select value={preferences.dictionary.def_language} onChange={e => updatePref('dictionary', 'def_language', e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-control min-h-[44px] px-3 py-2 text-sm">
                       <option value="id">Indonesia</option>
                       <option value="en">English (Monolingual)</option>
                     </select>
@@ -569,35 +569,35 @@ export default function SettingsPage() {
               <div>
                 <h3 className="text-lg font-bold text-foreground mb-4">Tampilan & Aksesibilitas</h3>
                 <div className="space-y-3">
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
                       <span className="text-sm font-bold block">Tampilkan Estimasi Waktu Baca</span>
                       <span className="text-xs text-muted-foreground">Muncul di header saat membaca teks</span>
                     </div>
                     <input type="checkbox" checked={preferences.display?.show_reading_time ?? true} onChange={e => updatePref('display', 'show_reading_time', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
                       <span className="text-sm font-bold block">Mode Kontras Tinggi</span>
                       <span className="text-xs text-muted-foreground">Meningkatkan keterbacaan untuk low-vision</span>
                     </div>
                     <input type="checkbox" checked={preferences.display?.high_contrast ?? false} onChange={e => updatePref('display', 'high_contrast', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
                       <span className="text-sm font-bold block">Kompatibilitas Screen Reader</span>
                       <span className="text-xs text-muted-foreground">Sembunyikan elemen dekoratif dari pembaca layar</span>
                     </div>
                     <input type="checkbox" checked={preferences.display?.screen_reader ?? false} onChange={e => updatePref('display', 'screen_reader', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
                       <span className="text-sm font-bold block">Pintasan Keyboard (Shortcuts)</span>
                       <span className="text-xs text-muted-foreground">Gunakan tombol angka (1-9) untuk navigasi cepat</span>
                     </div>
                     <input type="checkbox" checked={preferences.display?.keyboard_shortcuts ?? true} onChange={e => updatePref('display', 'keyboard_shortcuts', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer border-l-4 border-l-emerald-500">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
                       <span className="text-sm font-bold block">Micro-Animations</span>
                       <span className="text-xs text-muted-foreground">Aktifkan efek transisi halaman dan hover animasi yang mulus</span>
@@ -615,13 +615,13 @@ export default function SettingsPage() {
               <div>
                 <h3 className="text-lg font-bold text-foreground mb-4">Vocabulary Bank</h3>
                 <div className="space-y-3">
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <span className="text-sm font-bold">Otomatis tambah ke Vocab Bank usai Lookup</span>
                     <input type="checkbox" checked={preferences.learning.auto_add_vocab} onChange={e => updatePref('learning', 'auto_add_vocab', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
                   <div className="space-y-1">
                     <label className="text-sm font-medium">Level Penguasaan Awal (Default Mastery)</label>
-                    <select value={preferences.learning.default_mastery} onChange={e => updatePref('learning', 'default_mastery', parseInt(e.target.value))} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm">
+                    <select value={preferences.learning.default_mastery} onChange={e => updatePref('learning', 'default_mastery', parseInt(e.target.value))} className="w-full bg-foreground/5 border border-foreground/10 rounded-control min-h-[44px] px-3 py-2 text-sm">
                       <option value="0">0 - Sama sekali tidak tahu</option>
                       <option value="1">1 - Pernah dengar (Familiar)</option>
                     </select>
@@ -634,18 +634,18 @@ export default function SettingsPage() {
                 <div className="space-y-3">
                   <div className="space-y-1">
                     <label className="text-sm font-medium">Jumlah Kartu per Sesi Reviu</label>
-                    <select value={preferences.learning.cards_per_session} onChange={e => updatePref('learning', 'cards_per_session', parseInt(e.target.value))} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm">
+                    <select value={preferences.learning.cards_per_session} onChange={e => updatePref('learning', 'cards_per_session', parseInt(e.target.value))} className="w-full bg-foreground/5 border border-foreground/10 rounded-control min-h-[44px] px-3 py-2 text-sm">
                       <option value="10">10 Kartu (Santai)</option>
                       <option value="20">20 Kartu (Standar)</option>
                       <option value="30">30 Kartu (Intensif)</option>
                     </select>
                   </div>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <span className="text-sm font-bold">Tampilkan Kalimat Konteks di Flashcard</span>
                     <input type="checkbox" checked={preferences.learning.show_context} onChange={e => updatePref('learning', 'show_context', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <div className="p-3 bg-brand/5 border border-brand/20 rounded-xl text-xs text-muted-foreground mt-2">
-                    <p className="font-bold text-brand mb-1">Algoritma Penjadwalan: SM-2 (SuperMemo-2)</p>
+                  <div className="p-3 bg-brand-tint border border-brand/20 rounded-control text-xs text-muted-foreground mt-2">
+                    <p className="font-bold text-brand-ink mb-1">Algoritma Penjadwalan: SM-2 (SuperMemo-2)</p>
                     Algoritma default terbaik yang menghitung kapan Anda akan lupa sebuah kosakata berdasarkan skor memori masa lalu Anda.
                   </div>
                 </div>
@@ -658,7 +658,7 @@ export default function SettingsPage() {
                 <div className="space-y-3">
                   <div className="space-y-1">
                     <label className="text-sm font-medium">Level Kemampuan Bahasa Inggris (CEFR)</label>
-                    <select value={cefrLevel} onChange={e => setCefrLevel(e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-sm">
+                    <select value={cefrLevel} onChange={e => setCefrLevel(e.target.value)} className="w-full bg-foreground/5 border border-foreground/10 rounded-control min-h-[44px] px-3 py-2 text-sm">
                       <option value="A1">A1 - Beginner (Pemula)</option>
                       <option value="A2">A2 - Elementary (Dasar)</option>
                       <option value="B1">B1 - Intermediate (Menengah)</option>
@@ -667,12 +667,12 @@ export default function SettingsPage() {
                       <option value="C2">C2 - Mastery (Sangat Mahir)</option>
                     </select>
                   </div>
-                  <div className="p-3 bg-muted/50 rounded-xl flex items-center justify-between">
+                  <div className="p-3 bg-muted/50 rounded-control flex items-center justify-between">
                     <div>
                       <p className="text-sm font-bold text-foreground">Placement Test</p>
                       <p className="text-xs text-muted-foreground mt-0.5">Ikuti tes singkat untuk mengetahui level CEFR Anda secara otomatis.</p>
                     </div>
-                    <a href="/english-lab/placement-test" className="px-4 py-2 bg-brand text-white text-sm font-bold rounded-lg hover:shadow-md transition-all whitespace-nowrap">
+                    <a href="/english-lab/placement-test" className="px-4 py-2 bg-brand-solid text-on-brand text-sm font-bold rounded-lg transition-all whitespace-nowrap">
                       Ulang Tes
                     </a>
                   </div>
@@ -687,10 +687,10 @@ export default function SettingsPage() {
               
               <div>
                 <h3 className="text-lg font-bold text-foreground mb-4">Suara &amp; Audio</h3>
-                <div className="space-y-1 p-4 bg-foreground/5 rounded-xl border border-foreground/10">
+                <div className="space-y-1 p-4 bg-foreground/5 rounded-control border border-foreground/10">
                   <label className="text-sm font-bold text-foreground">Speech-to-Text Engine</label>
                   <p className="text-xs text-muted-foreground mb-3">Pilih mesin pendeteksi suara untuk dikte dan tes pelafalan.</p>
-                  <select value={sttEngine} onChange={e => setSttEngine(e.target.value)} className="w-full bg-background border border-foreground/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand">
+                  <select value={sttEngine} onChange={e => setSttEngine(e.target.value)} className="w-full bg-background border border-foreground/10 rounded-lg min-h-[44px] px-3 py-2 text-sm focus:outline-none focus:border-brand">
                     <option value="browser">Browser Native (Offline, Sangat Cepat)</option>
                     <option value="whisper">Groq Whisper AI (Sangat Akurat)</option>
                   </select>
@@ -700,20 +700,20 @@ export default function SettingsPage() {
               <div>
                 <h3 className="text-lg font-bold text-foreground mb-4">Manajemen Data</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-                  <button type="button" onClick={() => handleExportData('vocab')} disabled={exporting === 'vocab'} className="p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-xl text-sm font-bold flex flex-col items-center justify-center gap-2 transition-colors">
+                  <button type="button" onClick={() => handleExportData('vocab')} disabled={exporting === 'vocab'} className="p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-control text-sm font-bold flex flex-col items-center justify-center gap-2 transition-colors">
                     {exporting === 'vocab' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                     Ekspor Kosakata (CSV)
                   </button>
-                  <button type="button" onClick={() => handleExportData('history')} disabled={exporting === 'history'} className="p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-xl text-sm font-bold flex flex-col items-center justify-center gap-2 transition-colors">
+                  <button type="button" onClick={() => handleExportData('history')} disabled={exporting === 'history'} className="p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-control text-sm font-bold flex flex-col items-center justify-center gap-2 transition-colors">
                     {exporting === 'history' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                     Ekspor Riwayat (CSV)
                   </button>
-                  <button type="button" onClick={() => handleExportData('translations')} disabled={exporting === 'translations'} className="p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-xl text-sm font-bold flex flex-col items-center justify-center gap-2 transition-colors">
+                  <button type="button" onClick={() => handleExportData('translations')} disabled={exporting === 'translations'} className="p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-control text-sm font-bold flex flex-col items-center justify-center gap-2 transition-colors">
                     {exporting === 'translations' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                     Ekspor Terjemahan (CSV)
                   </button>
                 </div>
-                <button type="button" onClick={deleteAccount} disabled={deleting} className="w-full p-4 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-xl text-red-500 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
+                <button type="button" onClick={deleteAccount} disabled={deleting} className="w-full p-4 bg-danger-tint hover:bg-danger/20 border border-danger/30 rounded-control text-danger text-sm font-bold flex items-center justify-center gap-2 transition-colors">
                   <AlertTriangle className="w-5 h-5" /> {deleting ? "Menghapus..." : "Hapus Semua Data Belajar & Riwayat"}
                 </button>
               </div>
@@ -721,14 +721,14 @@ export default function SettingsPage() {
               <div>
                 <h3 className="text-lg font-bold text-foreground mb-4">Privasi</h3>
                 <div className="space-y-3">
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
                       <span className="text-sm font-bold block">Izinkan Analitik</span>
                       <span className="text-xs text-muted-foreground">Bantu kami mengetahui fitur apa yang paling sering digunakan</span>
                     </div>
                     <input type="checkbox" checked={preferences.privacy?.allow_analytics ?? true} onChange={e => updatePref('privacy', 'allow_analytics', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
                       <span className="text-sm font-bold block">Bagikan Data Anonim</span>
                       <span className="text-xs text-muted-foreground">Bantu tingkatkan kualitas AI (Text-to-Speech & Saran Kosakata)</span>
@@ -741,21 +741,21 @@ export default function SettingsPage() {
               <div>
                 <h3 className="text-lg font-bold text-foreground mb-4">Performa</h3>
                 <div className="space-y-3">
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
                       <span className="text-sm font-bold block">Mode Offline Aktif</span>
                       <span className="text-xs text-muted-foreground">Simpan teks yang dibuka secara lokal untuk dibaca tanpa internet</span>
                     </div>
                     <input type="checkbox" checked={preferences.performance?.offline_mode ?? false} onChange={e => updatePref('performance', 'offline_mode', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-xl border border-foreground/10 cursor-pointer">
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>
                       <span className="text-sm font-bold block">Preload Teks Selanjutnya</span>
                       <span className="text-xs text-muted-foreground">Meningkatkan kecepatan navigasi antar bab buku</span>
                     </div>
                     <input type="checkbox" checked={preferences.performance?.preload_next_text ?? true} onChange={e => updatePref('performance', 'preload_next_text', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
-                  <button type="button" onClick={handleClearCache} disabled={clearingCache} className="w-full p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors">
+                  <button type="button" onClick={handleClearCache} disabled={clearingCache} className="w-full p-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-control text-sm font-bold flex items-center justify-center gap-2 transition-colors">
                     {clearingCache ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe2 className="w-4 h-4" />} Bersihkan Cache Aplikasi
                   </button>
                 </div>
@@ -763,10 +763,10 @@ export default function SettingsPage() {
 
               {userRole === "admin" && (
                 <div>
-                  <h3 className="text-lg font-bold text-brand mb-4 flex items-center gap-2">Developer Tools (Admin Only)</h3>
+                  <h3 className="text-lg font-bold text-brand-ink mb-4 flex items-center gap-2">Developer Tools (Admin Only)</h3>
                   <div className="space-y-3">
-                    <label className="flex items-center justify-between p-3 bg-brand/5 border border-brand/20 rounded-xl cursor-pointer">
-                      <span className="text-sm font-bold text-brand">Enable Debug Mode</span>
+                    <label className="flex items-center justify-between p-3 bg-brand-tint border border-brand/20 rounded-control cursor-pointer">
+                      <span className="text-sm font-bold text-brand-ink">Enable Debug Mode</span>
                       <input type="checkbox" checked={preferences.developer?.debug_mode ?? false} onChange={e => updatePref('developer', 'debug_mode', e.target.checked)} className="w-4 h-4 accent-brand" />
                     </label>
                   </div>
@@ -778,7 +778,7 @@ export default function SettingsPage() {
 
           {/* Action Footer */}
           <div className="pt-4 border-t border-foreground/10 flex justify-end">
-            <button type="button" onClick={handleSave} disabled={saving} className="px-6 py-3 bg-brand hover:bg-brand/90 text-brand-foreground rounded-xl font-medium transition-colors flex items-center gap-2 disabled:opacity-50 shadow-md">
+            <button type="button" onClick={handleSave} disabled={saving} className="px-6 py-3 bg-brand hover:bg-brand/90 text-brand-foreground rounded-control font-medium transition-colors flex items-center gap-2 disabled:opacity-50 ">
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
               {saving ? "Menyimpan..." : "Simpan Pengaturan"}
             </button>
@@ -787,17 +787,17 @@ export default function SettingsPage() {
 
         {/* Danger Zone only in Profil Tab */}
         {activeTab === "profil" && (
-          <div className="mt-8 bg-red-500/5 border border-red-500/20 rounded-3xl p-4 md:p-8 animate-in fade-in">
-            <h3 className="text-xl font-bold text-red-500 flex items-center gap-2 mb-2">
+          <div className="mt-8 bg-danger-tint border border-danger/30 rounded-card p-4 md:p-8 animate-in fade-in">
+            <h3 className="text-xl font-bold text-danger flex items-center gap-2 mb-2">
               <AlertTriangle className="w-6 h-6" /> Danger Zone
             </h3>
-            <p className="text-sm text-red-500/80 mb-6">Penghapusan akun bersifat permanen. Semua data kosa kata, riwayat, dan profil Anda akan musnah tanpa bisa dikembalikan.</p>
+            <p className="text-sm text-danger mb-6">Penghapusan akun bersifat permanen. Semua data kosa kata, riwayat, dan profil Anda akan musnah tanpa bisa dikembalikan.</p>
             <form onSubmit={handleDeleteAccount} className="flex flex-col md:flex-row gap-4 items-end">
               <div className="flex-1 w-full space-y-2">
-                <label className="text-xs font-medium text-red-500/80">Ketik ulang email Anda untuk konfirmasi</label>
-                <input type="email" value={deleteEmail} onChange={e => setDeleteEmail(e.target.value)} placeholder="email@anda.com" className="w-full bg-background border border-red-500/30 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-red-500" required />
+                <label className="text-xs font-medium text-danger">Ketik ulang email Anda untuk konfirmasi</label>
+                <input type="email" value={deleteEmail} onChange={e => setDeleteEmail(e.target.value)} placeholder="email@anda.com" className="w-full bg-background border border-danger/30 rounded-control px-4 py-3 text-foreground focus:outline-none focus:border-danger" required />
               </div>
-              <button type="submit" disabled={deleting || deleteEmail !== email} className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors disabled:opacity-50 shrink-0 shadow-md">
+              <button type="submit" disabled={deleting || deleteEmail !== email} className="px-6 py-3 bg-danger hover:bg-danger/90 text-on-brand rounded-control font-medium transition-colors disabled:opacity-50 shrink-0 ">
                 {deleting ? "Menghapus..." : "Hapus Akun Permanen"}
               </button>
             </form>

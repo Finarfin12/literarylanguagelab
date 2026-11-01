@@ -176,12 +176,12 @@ export default function ForumPage() {
     return (
       <Link 
         href={`/forum/thread/${thread.id}`} 
-        className="relative block bg-card border border-foreground/10 dark:border-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all group"
+        className="relative block bg-card border border-foreground/10 dark:border-border rounded-card p-6 transition-all group"
       >
         {canDelete && (
           <button 
             onClick={(e) => handleDeleteThread(e, thread.id)}
-            className="absolute top-4 right-4 z-10 p-2 text-muted-foreground hover:text-danger bg-foreground/5 hover:bg-foreground/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+            className="absolute top-4 right-4 z-10 p-2 text-muted-foreground hover:text-danger bg-foreground/5 hover:bg-foreground/10 rounded-control transition-all opacity-0 group-hover:opacity-100"
             title="Hapus Diskusi"
           >
             <Trash2 className="w-4 h-4" />
@@ -191,11 +191,11 @@ export default function ForumPage() {
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-3 pr-10">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-6 h-6 rounded-full overflow-hidden bg-brand/10 border border-brand/20 shrink-0 flex items-center justify-center">
+              <div className="w-6 h-6 rounded-full overflow-hidden bg-brand-tint border border-brand/20 shrink-0 flex items-center justify-center">
                 {thread.author?.avatar_url ? (
                   <img src={thread.author.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-brand font-bold text-[10px] uppercase">{thread.author?.full_name?.charAt(0) || '?'}</span>
+                  <span className="text-brand-ink font-bold text-[10px] uppercase">{thread.author?.full_name?.charAt(0) || '?'}</span>
                 )}
               </div>
               <span className="text-xs font-bold text-muted-foreground">{thread.author?.full_name}</span>
@@ -205,12 +205,12 @@ export default function ForumPage() {
                 </span>
               )}
             </div>
-            <h3 className="text-xl font-bold text-foreground group-hover:text-brand transition-colors">
+            <h3 className="text-xl font-bold text-foreground group-hover:text-brand-ink transition-colors">
               {thread.title}
             </h3>
           </div>
           {showCategory && cat && (
-            <span className="bg-brand/10 text-brand text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap mt-1">
+            <span className="bg-brand-tint text-brand-ink text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap mt-1">
               {cat.name}
             </span>
           )}
@@ -239,7 +239,7 @@ export default function ForumPage() {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-brand animate-pulse">Memuat forum...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-brand-ink animate-pulse">Memuat forum...</div>;
   }
 
   return (
@@ -247,8 +247,8 @@ export default function ForumPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div>
-          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-            <MessageSquare className="w-8 h-8 text-brand" />
+          <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground flex items-center gap-3">
+            <MessageSquare className="w-8 h-8 text-brand-ink" />
             Forum Diskusi
           </h1>
           <p className="text-muted-foreground mt-2 text-lg">Tempat bertukar pikiran, berbagi karya, dan berkolaborasi dengan penulis lain.</p>
@@ -256,7 +256,7 @@ export default function ForumPage() {
         
         <Link 
           href="/forum/create" 
-          className="flex items-center gap-2 bg-brand text-background px-6 py-3 rounded-xl font-bold hover:bg-brand-hover hover:scale-105 transition-all shadow-lg shadow-brand/20 shrink-0"
+          className="flex items-center gap-2 bg-brand-solid text-on-brand px-6 py-3 rounded-control font-bold hover:bg-brand-hover transition-all shadow-brand/20 shrink-0"
         >
           <Plus className="w-5 h-5" /> Buat Diskusi Baru
         </Link>
@@ -271,7 +271,7 @@ export default function ForumPage() {
             <section>
               <div className="flex items-center gap-2 mb-6 border-b border-foreground/10 pb-4">
                 <Pin className="w-6 h-6 text-danger" />
-                <h2 className="text-2xl font-bold text-foreground font-serif">Pengumuman Admin</h2>
+                <h2 className="text-2xl font-medium text-foreground font-serif">Pengumuman Admin</h2>
               </div>
               <div className="space-y-4">
                 {announcements.map(thread => (
@@ -285,7 +285,7 @@ export default function ForumPage() {
           <section>
             <div className="flex items-center gap-2 mb-6 border-b border-foreground/10 pb-4">
               <Sparkles className="w-6 h-6 text-warning-ink" />
-              <h2 className="text-2xl font-bold text-foreground font-serif">Diskusi Terbaru</h2>
+              <h2 className="text-2xl font-medium text-foreground font-serif">Diskusi Terbaru</h2>
             </div>
             
             {recentThreads.length > 0 ? (
@@ -295,7 +295,7 @@ export default function ForumPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 bg-card border border-foreground/5 rounded-3xl">
+              <div className="text-center py-12 bg-card border border-foreground/5 rounded-card">
                 <p className="text-muted-foreground">Belum ada diskusi sama sekali.</p>
               </div>
             )}
@@ -305,13 +305,13 @@ export default function ForumPage() {
           <section>
             <div className="flex items-center justify-between mb-6 border-b border-foreground/10 pb-4">
               <div className="flex items-center gap-2">
-                <Book className="w-6 h-6 text-brand" />
-                <h2 className="text-2xl font-bold text-foreground font-serif">Kategori Ruang</h2>
+                <Book className="w-6 h-6 text-brand-ink" />
+                <h2 className="text-2xl font-medium text-foreground font-serif">Kategori Ruang</h2>
               </div>
               {isAdmin && (
                 <button 
                   onClick={() => setShowCategoryModal(true)}
-                  className="flex items-center gap-2 bg-brand/10 text-brand px-4 py-2 rounded-xl text-sm font-bold hover:bg-brand/20 transition-colors"
+                  className="flex items-center gap-2 bg-brand-tint text-brand-ink px-4 py-2 rounded-control text-sm font-bold hover:bg-brand-tint transition-colors"
                 >
                   <Plus className="w-4 h-4" /> Tambah Kategori
                 </button>
@@ -327,13 +327,13 @@ export default function ForumPage() {
                   <button
                     key={cat.id}
                     onClick={() => setActiveCategory(cat)}
-                    className="flex items-start gap-5 p-6 bg-card border border-foreground/10 dark:border-border rounded-3xl hover:border-brand hover:shadow-lg transition-all text-left group"
+                    className="flex items-start gap-5 p-6 bg-card border border-foreground/10 dark:border-border rounded-card hover:border-brand transition-all text-left group"
                   >
-                    <div className="p-4 bg-brand/10 rounded-2xl shrink-0 group-hover:scale-110 transition-transform">
-                      <Icon className="w-8 h-8 text-brand" />
+                    <div className="p-4 bg-brand-tint rounded-card shrink-0 transition-transform">
+                      <Icon className="w-8 h-8 text-brand-ink" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-foreground group-hover:text-brand transition-colors mb-2">{cat.name}</h3>
+                      <h3 className="text-xl font-bold text-foreground group-hover:text-brand-ink transition-colors mb-2">{cat.name}</h3>
                       <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">{cat.description}</p>
                       <div className="mt-4 flex items-center gap-3 text-xs font-bold text-muted-foreground">
                         <span className="bg-foreground/5 px-2 py-1 rounded-md">{catThreads.length} Diskusi</span>
@@ -357,27 +357,27 @@ export default function ForumPage() {
           </button>
 
           <div className="flex items-center gap-4 mb-8">
-            <div className="p-4 bg-brand/10 rounded-2xl shrink-0">
+            <div className="p-4 bg-brand-tint rounded-card shrink-0">
               {(() => {
                 const Icon = iconMap[activeCategory.icon] || MessageSquare;
-                return <Icon className="w-8 h-8 text-brand" />;
+                return <Icon className="w-8 h-8 text-brand-ink" />;
               })()}
             </div>
             <div>
-              <h2 className="text-3xl font-bold text-foreground font-serif mb-2">{activeCategory.name}</h2>
+              <h2 className="text-3xl font-medium text-foreground font-serif mb-2">{activeCategory.name}</h2>
               <p className="text-muted-foreground">{activeCategory.description}</p>
             </div>
           </div>
 
           <div className="space-y-4">
             {filteredThreads.length === 0 ? (
-              <div className="text-center py-20 bg-card border border-foreground/5 rounded-3xl">
+              <div className="text-center py-20 bg-card border border-foreground/5 rounded-card">
                 <MessageSquare className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
                 <p className="text-lg font-bold text-foreground">Belum ada diskusi di kategori ini.</p>
                 <p className="text-muted-foreground mt-1 mb-6">Jadilah yang pertama untuk memulai percakapan!</p>
                 <Link 
                   href={`/forum/create?category=${activeCategory.id}`}
-                  className="bg-brand/10 text-brand px-6 py-2.5 rounded-xl font-bold hover:bg-brand/20 transition-colors inline-flex items-center gap-2"
+                  className="bg-brand-tint text-brand-ink px-6 py-2.5 rounded-control font-bold hover:bg-brand-tint transition-colors inline-flex items-center gap-2"
                 >
                   <Plus className="w-5 h-5" /> Mulai Diskusi
                 </Link>
@@ -393,10 +393,10 @@ export default function ForumPage() {
 
       {/* Admin Category Modal */}
       {showCategoryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-card border border-foreground/10 shadow-2xl rounded-3xl p-4 md:p-8 max-w-md w-full animate-in zoom-in-95">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 animate-in fade-in">
+          <div className="bg-card border border-foreground/10 rounded-card p-4 md:p-8 max-w-md w-full animate-in zoom-in-95">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-foreground font-serif">Tambah Kategori</h3>
+              <h3 className="text-2xl font-medium text-foreground font-serif">Tambah Kategori</h3>
               <button onClick={() => setShowCategoryModal(false)} className="text-muted-foreground hover:text-foreground">
                 <X className="w-6 h-6" />
               </button>
@@ -409,7 +409,7 @@ export default function ForumPage() {
                   type="text" 
                   value={newCatName}
                   onChange={e => setNewCatName(e.target.value)}
-                  className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand"
+                  className="w-full bg-foreground/5 border border-foreground/10 rounded-control px-4 py-3 text-foreground focus:outline-none focus:border-brand"
                   required
                 />
               </div>
@@ -418,7 +418,7 @@ export default function ForumPage() {
                 <textarea 
                   value={newCatDesc}
                   onChange={e => setNewCatDesc(e.target.value)}
-                  className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand resize-none"
+                  className="w-full bg-foreground/5 border border-foreground/10 rounded-control px-4 py-3 text-foreground focus:outline-none focus:border-brand resize-none"
                   rows={3}
                   required
                 />
@@ -428,7 +428,7 @@ export default function ForumPage() {
                 <select 
                   value={newCatIcon}
                   onChange={e => setNewCatIcon(e.target.value)}
-                  className="w-full bg-background border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-brand"
+                  className="w-full bg-background border border-foreground/10 rounded-control px-4 py-3 text-foreground focus:outline-none focus:border-brand"
                 >
                   <option value="book">Book</option>
                   <option value="pen-tool">Pen Tool</option>
@@ -440,10 +440,10 @@ export default function ForumPage() {
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
-                <button type="button" onClick={() => setShowCategoryModal(false)} className="px-6 py-2.5 rounded-xl font-bold text-muted-foreground hover:bg-foreground/5 transition-colors">
+                <button type="button" onClick={() => setShowCategoryModal(false)} className="px-6 py-2.5 rounded-control font-bold text-muted-foreground hover:bg-foreground/5 transition-colors">
                   Batal
                 </button>
-                <button type="submit" disabled={addingCat} className="px-6 py-2.5 bg-brand text-background rounded-xl font-bold hover:bg-brand/90 transition-colors disabled:opacity-50 flex items-center gap-2">
+                <button type="submit" disabled={addingCat} className="px-6 py-2.5 bg-brand-solid text-on-brand rounded-control font-bold hover:bg-brand/90 transition-colors disabled:opacity-50 flex items-center gap-2">
                   {addingCat ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Simpan Kategori
                 </button>
               </div>

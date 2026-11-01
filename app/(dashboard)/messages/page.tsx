@@ -216,9 +216,9 @@ function MessagesContent() {
     <div className="max-w-7xl mx-auto h-[calc(100vh-6rem)] md:h-[calc(100vh-2rem)] py-4 px-4 flex gap-6">
       
       {/* LEFT PANEL: CONVERSATIONS */}
-      <div className={`w-full md:w-1/3 bg-card border border-border rounded-3xl flex-col overflow-hidden shadow-sm ${activeUserId ? 'hidden md:flex' : 'flex'}`}>
+      <div className={`w-full md:w-1/3 bg-card border border-border rounded-card flex-col overflow-hidden  ${activeUserId ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-6 border-b border-border">
-          <h2 className="text-2xl font-serif font-bold mb-4 flex items-center gap-2">
+          <h2 className="text-2xl font-serif font-medium mb-4 flex items-center gap-2">
             <MessageSquare className="w-6 h-6 text-brand-ink" /> Pesan
           </h2>
           
@@ -229,7 +229,7 @@ function MessagesContent() {
               placeholder="Cari pengguna baru..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-muted border-transparent rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-border focus:bg-background transition-all"
+              className="w-full bg-muted border-transparent rounded-control py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-border focus:bg-background transition-all"
             />
           </form>
         </div>
@@ -242,7 +242,7 @@ function MessagesContent() {
                 <button 
                   key={user.id}
                   onClick={() => startChat(user)}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-muted/50 rounded-xl transition-colors text-left"
+                  className="w-full flex items-center gap-3 p-3 hover:bg-muted/50 rounded-control transition-colors text-left"
                 >
                   <img src={user.avatar_url || "https://ui-avatars.com/api/?name=U"} alt="" className="w-10 h-10 rounded-full bg-muted" />
                   <span className="font-medium text-sm">{user.full_name}</span>
@@ -263,7 +263,7 @@ function MessagesContent() {
               <button
                 key={c.other_user.id}
                 onClick={() => startChat(c.other_user)}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left mb-1 ${activeUserId === c.other_user.id ? 'bg-muted' : 'hover:bg-muted/50'}`}
+                className={`w-full flex items-center gap-3 p-3 rounded-control transition-colors text-left mb-1 ${activeUserId === c.other_user.id ? 'bg-muted' : 'hover:bg-muted/50'}`}
               >
                 <div className="relative">
                   <img src={c.other_user.avatar_url || "https://ui-avatars.com/api/?name=U"} alt="" className="w-12 h-12 rounded-full bg-muted object-cover border border-border" />
@@ -293,7 +293,7 @@ function MessagesContent() {
       </div>
 
       {/* RIGHT PANEL: CHAT ROOM */}
-      <div className={`w-full md:w-2/3 bg-card border border-border rounded-3xl flex-col overflow-hidden shadow-sm ${!activeUserId ? 'hidden md:flex' : 'flex'}`}>
+      <div className={`w-full md:w-2/3 bg-card border border-border rounded-card flex-col overflow-hidden  ${!activeUserId ? 'hidden md:flex' : 'flex'}`}>
         {!activeUserId ? (
           <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground">
             <MessageSquare className="w-16 h-16 mb-4 opacity-20" />
@@ -307,7 +307,7 @@ function MessagesContent() {
             <div className="p-4 border-b border-border flex items-center gap-3 bg-muted/20">
               <button 
                 onClick={() => setActiveUserId(null)}
-                className="md:hidden p-2 -ml-2 rounded-xl hover:bg-muted text-foreground transition-colors"
+                className="md:hidden p-2 -ml-2 rounded-control hover:bg-muted text-foreground transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
@@ -339,7 +339,7 @@ function MessagesContent() {
                         </div>
                       )}
                       <div className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[70%] rounded-2xl p-4 shadow-sm ${
+                        <div className={`max-w-[70%] rounded-card p-4  ${
                           isMe 
                             ? 'bg-brand-solid text-on-brand rounded-br-none' 
                             : 'bg-card border border-border text-foreground rounded-bl-none'
@@ -367,7 +367,7 @@ function MessagesContent() {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Ketik pesan..."
-                  className="flex-1 bg-muted border border-border rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-border resize-none max-h-32 min-h-[56px] custom-scrollbar"
+                  className="flex-1 bg-muted border border-border rounded-card p-4 text-sm focus:outline-none focus:ring-2 focus:ring-border resize-none max-h-32 min-h-[56px] custom-scrollbar"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
@@ -378,7 +378,7 @@ function MessagesContent() {
                 <button 
                   type="submit" 
                   disabled={!newMessage.trim()}
-                  className="bg-brand-solid hover:bg-brand-hover disabled:opacity-50 text-on-brand p-4 rounded-2xl transition-all shrink-0 flex items-center justify-center shadow-md h-[56px] w-[56px]"
+                  className="bg-brand-solid hover:bg-brand-hover disabled:opacity-50 text-on-brand p-4 rounded-card transition-all shrink-0 flex items-center justify-center h-[56px] w-[56px]"
                 >
                   <Send className="w-5 h-5" />
                 </button>

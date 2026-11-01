@@ -70,7 +70,7 @@ function ProviderForm({ provider, onDone }: { provider?: ProviderView; onDone: (
         <button type="button" onClick={onDone} className={`${buttonClass} bg-muted text-foreground hover:bg-muted/80`}>
           Batal
         </button>
-        <button type="submit" disabled={pending} className={`${buttonClass} bg-brand text-background`}>
+        <button type="submit" disabled={pending} className={`${buttonClass} bg-brand-solid text-on-brand`}>
           {pending && <Loader2 className="w-4 h-4 animate-spin" />} Simpan
         </button>
       </div>
@@ -117,7 +117,7 @@ function ProviderCard({ provider }: { provider: ProviderView }) {
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-4 md:p-5">
+    <div className="bg-card border border-border rounded-card p-4 md:p-5">
       {editing ? (
         <ProviderForm provider={provider} onDone={() => setEditing(false)} />
       ) : (
@@ -125,7 +125,7 @@ function ProviderCard({ provider }: { provider: ProviderView }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="font-bold text-foreground">{provider.name}</h3>
-              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${provider.isActive ? "bg-brand/10 text-brand" : "bg-muted text-muted-foreground"}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${provider.isActive ? "bg-brand-tint text-brand-ink" : "bg-muted text-muted-foreground"}`}>
                 {provider.isActive ? "Aktif" : "Nonaktif"}
               </span>
               {provider.envKeyName && (
@@ -170,12 +170,12 @@ export default function ProviderManager({ providers }: { providers: ProviderView
       {providers.length === 0 && <p className="text-muted-foreground text-sm">Belum ada provider.</p>}
 
       {adding ? (
-        <div className="bg-card border border-brand/30 rounded-2xl p-4 md:p-5">
+        <div className="bg-card border border-brand/30 rounded-card p-4 md:p-5">
           <h3 className="font-bold mb-3">Provider baru</h3>
           <ProviderForm onDone={() => setAdding(false)} />
         </div>
       ) : (
-        <button onClick={() => setAdding(true)} className={`${buttonClass} w-full sm:w-auto bg-brand text-background`}>
+        <button onClick={() => setAdding(true)} className={`${buttonClass} w-full sm:w-auto bg-brand-solid text-on-brand`}>
           <Plus className="w-4 h-4" /> Tambah provider
         </button>
       )}

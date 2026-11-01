@@ -96,10 +96,10 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
       {!isSidebarOpen && (
         <button 
           onClick={() => setIsSidebarOpen(true)}
-          className="hidden lg:flex fixed top-6 left-6 z-50 p-2.5 bg-card shadow-sm border border-border rounded-xl shadow-lg hover:bg-muted hover:bg-muted/80 transition-colors group"
+          className="hidden lg:flex fixed top-6 left-6 z-50 p-2.5 bg-card shadow-sm border border-border rounded-control shadow-lg hover:bg-muted transition-colors group"
           title="Buka Menu"
         >
-          <Menu className="w-5 h-5 text-foreground group-hover:text-brand transition-colors" />
+          <Menu className="w-5 h-5 text-foreground group-hover:text-brand-ink transition-colors" />
         </button>
       )}
 
@@ -107,21 +107,21 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
         isSidebarOpen ? "w-72 translate-x-0" : "w-0 -translate-x-full opacity-0 overflow-hidden border-none"
       }`}>
         <div className="p-6 shrink-0 flex items-center justify-between">
-          <h2 className="text-2xl font-serif font-bold text-brand flex items-center gap-2 whitespace-nowrap">
+          <h2 className="text-2xl font-serif font-medium text-brand-ink flex items-center gap-2 whitespace-nowrap">
             <BrainCircuit className="w-6 h-6" />
             Literary Lab
           </h2>
           <div className="flex items-center gap-1">
             <button 
               onClick={() => setIsSidebarOpen(false)}
-              className="p-2 bg-muted rounded-xl hover:bg-muted hover:bg-muted/80 transition-colors text-muted-foreground hover:text-danger"
+              className="p-2 bg-muted rounded-control hover:bg-muted transition-colors text-muted-foreground hover:text-danger"
               title="Tutup Menu"
             >
               <PanelLeftClose className="w-4 h-4" />
             </button>
             <button 
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 bg-muted rounded-xl hover:bg-muted hover:bg-muted/80 transition-colors text-muted-foreground hover:text-brand"
+              className="p-2 bg-muted rounded-control hover:bg-muted transition-colors text-muted-foreground hover:text-brand-ink"
             >
               {mounted ? (theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />) : <Moon className="w-4 h-4" />}
             </button>
@@ -130,11 +130,10 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
 
       {mounted && (
         <div className="px-6 mb-4">
-          <div className="bg-brand/10 border border-brand/20 p-4 rounded-2xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-2 opacity-20"><Sparkles className="w-12 h-12 text-brand" /></div>
-            <p className="text-xs font-bold text-brand uppercase tracking-wider mb-1">Word of the Day</p>
-            <p className="text-lg font-serif font-bold text-foreground">{WOTD.word}</p>
-            <p className="text-sm text-muted-foreground italic mt-1 relative z-10">"{WOTD.def}"</p>
+          <div className="bg-card border border-border p-4 rounded-card">
+            <p className="text-[11px] font-bold text-brand-ink uppercase tracking-[0.14em] mb-1">Word of the Day</p>
+            <p className="text-lg font-serif font-medium text-foreground">{WOTD.word}</p>
+            <p className="text-sm text-muted-foreground italic mt-1">&ldquo;{WOTD.def}&rdquo;</p>
           </div>
         </div>
       )}
@@ -273,11 +272,11 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
       </div>
 
       <div className="p-4 border-t border-border shrink-0 bg-background flex items-center justify-between gap-2">
-        <Link href="/profile" className="flex items-center gap-3 hover:bg-muted p-2 rounded-xl transition-colors flex-1 overflow-hidden group">
+        <Link href="/profile" className="flex items-center gap-3 hover:bg-muted p-2 rounded-control transition-colors flex-1 overflow-hidden group">
           {localAvatar ? (
             <img src={localAvatar} alt="User Avatar" className="w-10 h-10 rounded-full object-cover border border-foreground/10" />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center text-brand font-bold text-lg">
+            <div className="w-10 h-10 rounded-full bg-brand-tint border border-brand/20 flex items-center justify-center text-brand-ink font-bold text-lg">
               {localName?.charAt(0) || "U"}
             </div>
           )}
@@ -288,11 +287,11 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
           </div>
         </Link>
         <div className="shrink-0 flex items-center">
-          <Link href="/settings" className="p-2 rounded-xl text-muted-foreground hover:text-brand hover:bg-brand/10 transition-colors" title="Settings">
+          <Link href="/settings" className="p-2 rounded-control text-muted-foreground hover:text-brand-ink hover:bg-brand-tint transition-colors" title="Settings">
             <Settings className="w-4 h-4" />
           </Link>
           <form action="/auth/signout" method="post" className="m-0 p-0 flex">
-            <button type="submit" className="p-2 rounded-xl text-muted-foreground hover:text-danger hover:bg-danger-tint transition-colors" title="Sign Out">
+            <button type="submit" className="p-2 rounded-control text-muted-foreground hover:text-danger hover:bg-danger-tint transition-colors" title="Sign Out">
               <LogOut className="w-4 h-4" />
             </button>
           </form>

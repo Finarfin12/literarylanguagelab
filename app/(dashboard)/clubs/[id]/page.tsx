@@ -46,13 +46,13 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
     <div className="max-w-6xl mx-auto py-8 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
       {/* Navigation & Header */}
-      <Link href="/clubs" className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-brand transition-colors mb-6">
+      <Link href="/clubs" className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-brand-ink transition-colors mb-6">
         <ChevronLeft className="w-4 h-4" /> Kembali ke Direktori Klub
       </Link>
       
-      <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 mb-8 relative overflow-hidden">
+      <div className="bg-card border border-border rounded-card p-4 md:p-8 mb-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5 pointer-events-none">
-          <BookOpen className="w-48 h-48 text-brand transform translate-x-8 -translate-y-8" />
+          <BookOpen className="w-48 h-48 text-brand-ink transform translate-x-8 -translate-y-8" />
         </div>
         
         <div className="relative z-10 flex flex-col md:flex-row gap-8 justify-between items-start md:items-center">
@@ -66,7 +66,7 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
               </span>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-4">{group.name}</h1>
+            <h1 className="text-[28px] md:text-4xl leading-[1.15] font-serif font-medium text-foreground mb-4">{group.name}</h1>
             <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">{group.description}</p>
           </div>
           
@@ -83,13 +83,13 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
       </div>
 
       {!isMember && (
-        <div className="bg-brand/10 border border-brand/20 rounded-3xl p-4 md:p-8 text-center mb-8">
-          <Shield className="w-12 h-12 text-brand mx-auto mb-4" />
-          <h2 className="text-2xl font-serif font-bold text-foreground mb-2">Anda Belum Bergabung</h2>
+        <div className="bg-brand-tint border border-brand/20 rounded-card p-4 md:p-8 text-center mb-8">
+          <Shield className="w-12 h-12 text-brand-ink mx-auto mb-4" />
+          <h2 className="text-2xl font-serif font-medium text-foreground mb-2">Anda Belum Bergabung</h2>
           <p className="text-muted-foreground mb-6">Bergabung dengan grup ini untuk melihat bacaan, berpartisipasi dalam diskusi, dan belajar bersama.</p>
           
           <form action={async () => { "use server"; const { joinClub } = await import("../actions"); await joinClub(group.id); }}>
-            <SubmitButton className="px-4 md:px-8 py-3 bg-brand text-brand-foreground font-bold rounded-xl hover:bg-brand/90 transition-colors shadow-lg">
+            <SubmitButton className="px-4 md:px-8 py-3 bg-brand text-brand-foreground font-bold rounded-control hover:bg-brand/90 transition-colors ">
               Gabung Sekarang
             </SubmitButton>
           </form>
@@ -103,13 +103,13 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
           <div className="lg:col-span-2 space-y-8">
             
             {/* Discussion Board */}
-            <div className="bg-card shadow-sm border border-border rounded-3xl p-6 md:p-8">
-              <h2 className="text-2xl font-serif font-bold text-foreground mb-6 flex items-center gap-2">
-                <MessageSquare className="w-6 h-6 text-brand" /> Papan Diskusi
+            <div className="bg-card border border-border rounded-card p-6 md:p-8">
+              <h2 className="text-2xl font-serif font-medium text-foreground mb-6 flex items-center gap-2">
+                <MessageSquare className="w-6 h-6 text-brand-ink" /> Papan Diskusi
               </h2>
               
               <form action={postDiscussion.bind(null, group.id)} className="mb-8">
-                <div className="bg-muted rounded-2xl p-4 border border-border">
+                <div className="bg-muted rounded-card p-4 border border-border">
                   <div className="flex items-center gap-3 mb-3">
                     <input 
                       type="text" 
@@ -122,7 +122,7 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
                     name="message" 
                     required 
                     placeholder="Tulis pendapat atau pertanyaanmu mengenai teks..." 
-                    className="w-full bg-background border border-border rounded-xl p-4 text-foreground focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent min-h-[100px] resize-none transition-all mb-3"
+                    className="w-full bg-background border border-border rounded-control p-4 text-foreground focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent min-h-[100px] resize-none transition-all mb-3"
                   ></textarea>
                   <div className="flex justify-end">
                     <SubmitButton className="px-6 py-2 bg-brand text-brand-foreground font-bold rounded-lg hover:bg-brand/90 transition-colors">
@@ -144,7 +144,7 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
                       <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0 border border-border">
                         <img src={msg.user?.avatar_url || "/default-avatar.png"} alt={msg.user?.name} className="w-full h-full object-cover" />
                       </div>
-                      <div className="flex-1 bg-muted rounded-2xl rounded-tl-none p-4 border border-border">
+                      <div className="flex-1 bg-muted rounded-card rounded-tl-none p-4 border border-border">
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-bold text-foreground text-sm">{msg.user?.name}</span>
                           <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -153,7 +153,7 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
                           </span>
                         </div>
                         {msg.chapter_or_paragraph && (
-                          <div className="inline-block px-2 py-0.5 bg-brand/10 text-brand text-xs font-bold rounded mb-2 border border-brand/20">
+                          <div className="inline-block px-2 py-0.5 bg-brand-tint text-brand-ink text-xs font-bold rounded mb-2 border border-brand/20">
                             Ref: {msg.chapter_or_paragraph}
                           </div>
                         )}
@@ -171,8 +171,8 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
           <div className="space-y-8">
             
             {/* Current Reading */}
-            <div className="bg-card shadow-sm border border-border rounded-3xl p-6">
-              <h2 className="text-lg font-serif font-bold text-foreground mb-4 flex items-center gap-2">
+            <div className="bg-card border border-border rounded-card p-6">
+              <h2 className="text-lg font-serif font-medium text-foreground mb-4 flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-brand-ink" /> Current Reading
               </h2>
               
@@ -199,16 +199,16 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
                   ))}
                 </div>
               ) : (
-                <div className="bg-muted rounded-xl p-4 text-center border border-dashed border-border text-muted-foreground text-sm">
+                <div className="bg-muted rounded-control p-4 text-center border border-dashed border-border text-muted-foreground text-sm">
                   Belum ada buku yang dibaca saat ini.
-                  {isAdmin && <button className="mt-2 text-brand font-bold block w-full hover:underline">Pilih Buku</button>}
+                  {isAdmin && <button className="mt-2 text-brand-ink font-bold block w-full hover:underline">Pilih Buku</button>}
                 </div>
               )}
             </div>
 
             {/* Members List */}
-            <div className="bg-card shadow-sm border border-border rounded-3xl p-6">
-              <h2 className="text-lg font-serif font-bold text-foreground mb-4 flex items-center gap-2">
+            <div className="bg-card border border-border rounded-card p-6">
+              <h2 className="text-lg font-serif font-medium text-foreground mb-4 flex items-center gap-2">
                 <Users className="w-5 h-5 text-brand-ink" /> Anggota Klub ({group.members.length})
               </h2>
               
@@ -223,7 +223,7 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
                       <p className="text-xs text-muted-foreground truncate">@{member.user.username}</p>
                     </div>
                     {member.role === 'admin' && (
-                      <Shield className="w-4 h-4 text-brand shrink-0" />
+                      <Shield className="w-4 h-4 text-brand-ink shrink-0" />
                     )}
                   </div>
                 ))}
