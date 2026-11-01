@@ -25,6 +25,7 @@
 | 14d (v4) Sastra & Terjemah | Selesai di kode (18 file dirapikan, target sentuh, tombol Comparator). Tanpa migrasi. `tools/[id]` dan editor segmen belum teruji tanpa login | lihat `git log` |
 | 14e (v4) Komunitas, profil, pengaturan, bantuan, admin, auth, landing + PWA | Selesai di kode (41+ file dirapikan, `public/sw.js` + `/offline`, `PwaRegister` diperbaiki: pendaftaran terlewat bila `load` sudah lewat). Tanpa migrasi. SW belum diuji di browser nyata | lihat `git log` |
 | 14f (v4) Lima route API: perbaiki & pakai | Selesai di kode. Migrasi `0011_profile_cascade.sql` **belum dijalankan** (wajib sebelum hapus akun). Belum teruji dengan login/AI sungguhan | lihat `git log` |
+| Pesan: hapus pesan + status Online sungguhan (2 Nov 2026) | Selesai di kode. Migrasi `0017_direct_messages_delete.sql` **belum dijalankan** (tanpa itu hapus pesan ditolak RLS dengan pesan ramah) | lihat `git log` |
 
 **Handoff sesi terbaru (1 Nov 2026): [`HANDOFF_NEXT_SESSION.md`](HANDOFF_NEXT_SESSION.md)** — keadaan repo, status migrasi, tindakan menunggu pemilik, jebakan, resep verifikasi, dan prompt pembuka.
 

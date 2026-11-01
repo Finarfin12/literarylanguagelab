@@ -45,6 +45,7 @@ interface UserPreferences {
     enable_animations: boolean;
   };
   privacy: {
+    show_online_status?: boolean;
     allow_analytics: boolean;
     share_anonymous_data: boolean;
     public_profile: boolean;
@@ -63,7 +64,7 @@ const defaultPreferences: UserPreferences = {
   dictionary: { auto_lookup: true, show_register: true, show_etymology: false, def_language: "id" },
   learning: { default_mastery: 0, auto_add_vocab: false, cards_per_session: 20, show_context: true },
   display: { show_reading_time: true, high_contrast: false, screen_reader: false, keyboard_shortcuts: true, enable_animations: true },
-  privacy: { allow_analytics: true, share_anonymous_data: true, public_profile: false },
+  privacy: { allow_analytics: true, share_anonymous_data: true, public_profile: false, show_online_status: true },
   performance: { offline_mode: false, preload_next_text: true },
   developer: { debug_mode: false }
 };
@@ -744,6 +745,13 @@ export default function SettingsPage() {
                       <span className="text-xs text-muted-foreground">Bantu kami mengetahui fitur apa yang paling sering digunakan</span>
                     </div>
                     <input type="checkbox" checked={preferences.privacy?.allow_analytics ?? true} onChange={e => updatePref('privacy', 'allow_analytics', e.target.checked)} className="w-4 h-4 accent-brand" />
+                  </label>
+                  <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer min-h-[44px]">
+                    <div>
+                      <span className="text-sm font-bold">Tampilkan Status Online</span>
+                      <p className="text-xs text-muted-foreground mt-0.5 font-normal">Orang lain melihat kamu &quot;Online&quot; di halaman Pesan saat aplikasi terbuka.</p>
+                    </div>
+                    <input type="checkbox" checked={preferences.privacy?.show_online_status ?? true} onChange={e => updatePref('privacy', 'show_online_status', e.target.checked)} className="w-4 h-4 accent-brand" />
                   </label>
                   <label className="flex items-center justify-between p-3 bg-foreground/5 rounded-control border border-foreground/10 cursor-pointer">
                     <div>

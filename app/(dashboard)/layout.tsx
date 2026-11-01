@@ -5,6 +5,7 @@ import { getRequestUser } from "@/utils/supabase/get-user";
 import Sidebar from "@/components/Sidebar";
 import TopActions from "@/components/TopActions";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import PresenceTracker from "@/components/PresenceTracker";
 
 export default async function DashboardLayout({
   children,
@@ -45,6 +46,7 @@ export default async function DashboardLayout({
       </main>
       
       <MobileBottomNav />
+      <PresenceTracker />
     </div>
   );
 }

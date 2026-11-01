@@ -2,7 +2,9 @@
 
 import { useEffect, useState, useRef, Suspense } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { Search, Send, Loader2, MessageSquare, Check, CheckCheck, ArrowLeft } from "lucide-react";
+import { Search, Send, Loader2, MessageSquare, Check, CheckCheck, ArrowLeft, Trash2 } from "lucide-react";
+import Swal from "sweetalert2";
+import { subscribeOnline } from "@/lib/presence";
 import { format } from "date-fns";
 import { useSearchParams } from "next/navigation";
 
@@ -37,6 +39,9 @@ function MessagesContent() {
   const [chatLoading, setChatLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Pengguna yang benar-benar online (Realtime Presence, lib/presence.ts); sebelumnya label "Online" selalu tampil
+  const [onlineIds, setOnlineIds] = useState<Set<string>>(new Set());
+  useEffect(() => subscribeOnline(setOnlineIds), []);
   
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
@@ -205,6 +210,40 @@ function MessagesContent() {
     });
   }
 
+  // Hapus pesan sendiri. Pesan yang sudah terkirim ke penerima ikut hilang untuk keduanya.
+  async function deleteMessage(msg: Message) {
+    if (!currentUser || msg.sender_id !== currentUser.id || msg.id.startsWith("temp-")) return;
+    const confirm = await Swal.fire({
+      title: "Hapus pesan ini?",
+      text: "Pesan akan hilang dari percakapan untuk kamu dan penerima.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Hapus",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "#ef4444",
+    });
+    if (!confirm.isConfirmed) return;
+
+    const { data, error } = await supabase
+      .from("direct_messages")
+      .delete()
+      .eq("id", msg.id)
+      .eq("sender_id", currentUser.id)
+      .select("id");
+    if (error || !data || data.length === 0) {
+      // 0 baris terhapus = kebijakan RLS belum mengizinkan (migrasi 0017 belum dijalankan)
+      Swal.fire({
+        title: "Pesan belum bisa dihapus",
+        text: "Server menolak penghapusan. Hubungi admin untuk mengaktifkan fitur hapus pesan.",
+        icon: "warning",
+        confirmButtonColor: "#2fa16b",
+      });
+      return;
+    }
+    setMessages((prev) => prev.filter((m) => m.id !== msg.id));
+    fetchConversations(currentUser.id);
+  }
+
   const activeContact = conversations.find(c => c.other_user.id === activeUserId)?.other_user 
     || searchResults.find(r => r.id === activeUserId);
 
@@ -314,7 +353,13 @@ function MessagesContent() {
               <img src={activeContact?.avatar_url || "https://ui-avatars.com/api/?name=U"} alt="" className="w-10 h-10 rounded-full bg-muted object-cover" />
               <div>
                 <h3 className="font-bold text-foreground">{activeContact?.full_name}</h3>
-                <p className="text-xs text-brand-ink font-medium">Online</p>
+                {activeUserId && onlineIds.has(activeUserId) ? (
+                  <p className="text-xs text-brand-ink font-medium flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-brand-solid" aria-hidden="true" /> Online
+                  </p>
+                ) : (
+                  <p className="text-xs text-muted-foreground font-medium">Offline</p>
+                )}
               </div>
             </div>
 
@@ -338,17 +383,28 @@ function MessagesContent() {
                           </span>
                         </div>
                       )}
-                      <div className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`group flex items-center gap-1 ${isMe ? 'justify-end' : 'justify-start'}`}>
+                        {isMe && !msg.id.startsWith('temp-') && (
+                          <button
+                            type="button"
+                            onClick={() => deleteMessage(msg)}
+                            aria-label="Hapus pesan"
+                            title="Hapus pesan"
+                            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full text-muted-foreground hover:text-danger hover:bg-danger-tint opacity-60 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 transition-opacity"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
                         <div className={`max-w-[70%] rounded-card p-4  ${
                           isMe 
                             ? 'bg-brand-solid text-on-brand rounded-br-none' 
                             : 'bg-card border border-border text-foreground rounded-bl-none'
                         }`}>
                           <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-                          <div className={`flex items-center justify-end gap-1 mt-2 text-[10px] ${isMe ? 'text-brand-ink' : 'text-muted-foreground'}`}>
+                          <div className={`flex items-center justify-end gap-1 mt-2 text-[10px] ${isMe ? 'text-on-brand/80' : 'text-muted-foreground'}`}>
                             {format(new Date(msg.created_at), 'HH:mm')}
                             {isMe && (
-                              msg.is_read ? <CheckCheck className="w-3 h-3 text-brand-ink" /> : <Check className="w-3 h-3" />
+                              msg.is_read ? <CheckCheck className="w-3 h-3" /> : <Check className="w-3 h-3" />
                             )}
                           </div>
                         </div>

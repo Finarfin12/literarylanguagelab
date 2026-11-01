@@ -165,6 +165,8 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 
 > **(14e, ✅ sebagian)** Seluruh bagian B, H, I, J bergaya v4 lewat perapian kelas; landing (judul "Karya Abadi" yang sebelumnya tak terlihat diperbaiki), login/register tanpa gradasi, Pengaturan (zona bahaya memakai token), kartu Word of the Day di Sidebar. Halaman admin (9 tab) hanya lewat tsc/build karena butuh login admin.
 
+> **(Pesan, perbaikan 2 Nov 2026)** Halaman Pesan: tombol **Hapus pesan** pada pesan sendiri (konfirmasi dulu; butuh migrasi `0017_direct_messages_delete.sql`, **belum dijalankan**); status **Online/Offline sungguhan** lewat Realtime Presence (`lib/presence.ts`, `components/PresenceTracker.tsx`), bisa disembunyikan di Pengaturan → Privasi → "Tampilkan Status Online"; jam & centang di gelembung sendiri kembali terbaca.
+
 ## I. Profil, Pengaturan, Bantuan
 
 | Fitur | Lokasi |
