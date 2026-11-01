@@ -183,10 +183,10 @@ export default async function DashboardPage() {
   }
 
   const stats = [
-    { icon: Clock, color: "text-orange-500", label: "Waktu baca minggu ini", value: weeklyMinutes, unit: "menit" },
-    { icon: CheckCircle2, color: "text-emerald-500", label: "Teks dibaca", value: completedTexts },
+    { icon: Clock, color: "text-foreground", label: "Waktu baca minggu ini", value: weeklyMinutes, unit: "menit" },
+    { icon: CheckCircle2, color: "text-foreground", label: "Teks dibaca", value: completedTexts },
     { icon: TrendingUp, color: "text-brand", label: "Review minggu ini", value: reviewedThisWeek },
-    { icon: BookMarked, color: "text-purple-500", label: "Total kosa kata", value: vocabCount },
+    { icon: BookMarked, color: "text-foreground", label: "Total kosa kata", value: vocabCount },
   ];
 
   return (
@@ -212,7 +212,7 @@ export default async function DashboardPage() {
         {/* Lanjutkan Membaca */}
         <Card className="lg:col-span-2">
           <CardTitle
-            icon={<BookOpen className="w-5 h-5 text-blue-400" />}
+            icon={<BookOpen className="w-5 h-5 text-brand-ink" />}
             action={
               <Link href="/library" className="text-sm font-bold text-brand flex items-center gap-1 min-h-[44px]">
                 Library <ChevronRight className="w-4 h-4" />
@@ -226,8 +226,8 @@ export default async function DashboardPage() {
               {continueReading.map((t) => (
                 <li key={t.id}>
                   <Link href={t.href} className="flex items-center gap-3 px-2 py-3 min-h-[56px] rounded-control hover:bg-muted transition-colors">
-                    <div className="w-10 h-10 rounded-control bg-blue-500/10 flex items-center justify-center shrink-0">
-                      <BookOpen className="w-5 h-5 text-blue-400" />
+                    <div className="w-10 h-10 rounded-control bg-muted flex items-center justify-center shrink-0">
+                      <BookOpen className="w-5 h-5 text-brand-ink" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-bold text-foreground truncate">{t.title}</p>
@@ -238,7 +238,7 @@ export default async function DashboardPage() {
                       </p>
                       {t.progress !== null && (
                         <div className="h-1 mt-1.5 rounded-full bg-muted overflow-hidden" aria-hidden="true">
-                          <div className="h-full bg-blue-400" style={{ width: `${Math.min(100, t.progress)}%` }} />
+                          <div className="h-full bg-brand-solid" style={{ width: `${Math.min(100, t.progress)}%` }} />
                         </div>
                       )}
                     </div>

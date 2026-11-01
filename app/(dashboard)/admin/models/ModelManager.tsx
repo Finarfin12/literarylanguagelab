@@ -168,7 +168,7 @@ function ModelRow({ model, pricingReady }: { model: ModelView; pricingReady: boo
         <button onClick={() => setEditing(true)} className={`${buttonClass} bg-muted hover:bg-muted/80 text-foreground`} aria-label="Edit">
           <Pencil className="w-4 h-4" />
         </button>
-        <button onClick={remove} className={`${buttonClass} bg-red-500/10 text-red-500 hover:bg-red-500/20`} aria-label="Hapus">
+        <button onClick={remove} className={`${buttonClass} bg-danger-tint text-danger hover:bg-danger-tint`} aria-label="Hapus">
           <Trash2 className="w-4 h-4" />
         </button>
       </div>

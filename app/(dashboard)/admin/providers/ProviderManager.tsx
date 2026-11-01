@@ -129,7 +129,7 @@ function ProviderCard({ provider }: { provider: ProviderView }) {
                 {provider.isActive ? "Aktif" : "Nonaktif"}
               </span>
               {provider.envKeyName && (
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/10 text-blue-400">Bawaan</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-muted text-brand-ink">Bawaan</span>
               )}
             </div>
             <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-1 break-all">
@@ -148,7 +148,7 @@ function ProviderCard({ provider }: { provider: ProviderView }) {
               <Pencil className="w-4 h-4" />
             </button>
             {!provider.envKeyName && (
-              <button onClick={remove} className={`${buttonClass} bg-red-500/10 text-red-500 hover:bg-red-500/20`} aria-label="Hapus">
+              <button onClick={remove} className={`${buttonClass} bg-danger-tint text-danger hover:bg-danger-tint`} aria-label="Hapus">
                 <Trash2 className="w-4 h-4" />
               </button>
             )}

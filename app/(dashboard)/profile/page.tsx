@@ -82,14 +82,14 @@ export default function ProfilePage() {
 
   const statCards = [
     { icon: BookOpen, value: stats.vocabCount, label: "Kosakata", color: "text-brand", bg: "bg-brand/10", border: "border-brand/20" },
-    { icon: Activity, value: stats.idiomCount, label: "Idiom", color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
-    { icon: BookMarked, value: stats.textsCompleted, label: "Teks Dibaca", color: "text-orange-500", bg: "bg-orange-500/10", border: "border-orange-500/20" },
-    { icon: TrendingUp, value: stats.reviewsThisWeek, label: "Review Minggu Ini", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
+    { icon: Activity, value: stats.idiomCount, label: "Idiom", color: "text-foreground", bg: "bg-muted", border: "border-border" },
+    { icon: BookMarked, value: stats.textsCompleted, label: "Teks Dibaca", color: "text-foreground", bg: "bg-muted", border: "border-border" },
+    { icon: TrendingUp, value: stats.reviewsThisWeek, label: "Review Minggu Ini", color: "text-foreground", bg: "bg-muted", border: "border-border" },
   ];
 
   return (
     <div className="flex-1 overflow-y-auto bg-background">
-      <div className="h-48 w-full bg-gradient-to-r from-brand/20 via-purple-500/20 to-brand/20 relative overflow-hidden">
+      <div className="h-48 w-full bg-muted relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-white/5 bg-[size:20px_20px]" />
       </div>
 
@@ -141,14 +141,14 @@ export default function ProfilePage() {
               <p className="text-muted-foreground leading-relaxed">{aboutMe}</p>
             </div>
             <div className="bg-card border border-border p-6 rounded-3xl">
-              <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Sparkles className="w-5 h-5 text-yellow-400" /> Pencapaian</h2>
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Sparkles className="w-5 h-5 text-warning-ink" /> Pencapaian</h2>
               <div className="flex flex-wrap gap-2">
                 <span className="px-3 py-1 bg-brand/10 text-brand rounded-full text-xs font-bold border border-brand/20">Early Adopter</span>
-                {stats.vocabCount >= 10 && <span className="px-3 py-1 bg-purple-500/10 text-purple-400 rounded-full text-xs font-bold border border-purple-500/20">Vocab Explorer</span>}
-                {stats.vocabCount >= 50 && <span className="px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-xs font-bold border border-green-500/20">Kolektor Kata</span>}
-                {stats.textsCompleted >= 5 && <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs font-bold border border-blue-500/20">Kutu Buku</span>}
+                {stats.vocabCount >= 10 && <span className="px-3 py-1 bg-muted text-foreground rounded-full text-xs font-bold border border-border">Vocab Explorer</span>}
+                {stats.vocabCount >= 50 && <span className="px-3 py-1 bg-brand-tint text-brand-ink rounded-full text-xs font-bold border border-brand/30">Kolektor Kata</span>}
+                {stats.textsCompleted >= 5 && <span className="px-3 py-1 bg-muted text-brand-ink rounded-full text-xs font-bold border border-border">Kutu Buku</span>}
                 {badges.map(b => (
-                  <span key={b} className="px-3 py-1 bg-pink-500/10 text-pink-500 rounded-full text-xs font-bold border border-pink-500/20 capitalize">{b.replace(/_/g, ' ')}</span>
+                  <span key={b} className="px-3 py-1 bg-muted text-foreground rounded-full text-xs font-bold border border-border capitalize">{b.replace(/_/g, ' ')}</span>
                 ))}
               </div>
             </div>

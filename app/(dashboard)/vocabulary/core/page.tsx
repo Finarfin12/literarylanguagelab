@@ -27,7 +27,7 @@ const BASE_COLUMNS = "word, band, cefr_estimate, pos, example";
 const ENRICHED_COLUMNS = `${BASE_COLUMNS}, definition_en, forms`;
 const STATUS_LABEL: Record<WordStatus, { text: string; cls: string }> = {
   belum: { text: "Belum", cls: "bg-muted text-muted-foreground" },
-  sedang: { text: "Sedang dipelajari", cls: "bg-amber-500/10 text-amber-600 dark:text-amber-400" },
+  sedang: { text: "Sedang dipelajari", cls: "bg-muted text-foreground " },
   dikuasai: { text: "Dikuasai", cls: "bg-brand/10 text-brand" },
 };
 

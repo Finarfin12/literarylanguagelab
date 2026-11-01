@@ -130,7 +130,7 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
               <button 
                 disabled={updating}
                 onClick={() => handleResponse(false)}
-                className="py-4 flex flex-col items-center justify-center gap-2 bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/30 rounded-2xl hover:bg-red-500/20 transition-all active:scale-95"
+                className="py-4 flex flex-col items-center justify-center gap-2 bg-danger-tint text-danger border border-danger/30 rounded-2xl hover:bg-danger-tint transition-all active:scale-95"
               >
                 <XCircle className="w-8 h-8" />
                 <span className="font-bold text-lg">Lupa</span>
@@ -138,7 +138,7 @@ export default function FlashcardMode({ vocab, onExit }: FlashcardModeProps) {
               <button 
                 disabled={updating}
                 onClick={() => handleResponse(true)}
-                className="py-4 flex flex-col items-center justify-center gap-2 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/30 rounded-2xl hover:bg-green-500/20 transition-all active:scale-95"
+                className="py-4 flex flex-col items-center justify-center gap-2 bg-brand-tint text-brand-ink border border-brand/30 rounded-2xl hover:bg-brand-tint transition-all active:scale-95"
               >
                 <CheckCircle2 className="w-8 h-8" />
                 <span className="font-bold text-lg">Ingat</span>

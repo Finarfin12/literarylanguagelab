@@ -14,7 +14,7 @@ export default async function RegisterPage({
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-blue-500/20 via-background to-background">
       <AuthAlert error={error} />
-      <div className="w-full max-w-md rounded-3xl bg-card shadow-sm backdrop-blur-xl p-4 md:p-8 shadow-2xl border border-border transition-all duration-500 hover:shadow-blue-500/20">
+      <div className="w-full max-w-md rounded-3xl bg-card shadow-sm p-4 md:p-8 shadow-2xl border border-border transition-all duration-500">
         <div className="text-center mb-8">
           <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground mb-3">
             Begin Journey
@@ -32,7 +32,7 @@ export default async function RegisterPage({
               name="fullName"
               type="text"
               required
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-colors backdrop-blur-sm"
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-border transition-colors"
               placeholder="John Doe"
             />
           </div>
@@ -46,7 +46,7 @@ export default async function RegisterPage({
               name="email"
               type="email"
               required
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-colors backdrop-blur-sm"
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-border transition-colors"
               placeholder="you@example.com"
             />
           </div>
@@ -60,13 +60,13 @@ export default async function RegisterPage({
               name="password"
               type="password"
               required
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-colors backdrop-blur-sm"
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-border transition-colors"
               placeholder="••••••••"
             />
           </div>
 
           <SubmitButton
-            className="w-full rounded-xl bg-blue-500 px-4 py-3.5 text-sm font-bold text-background transition-all hover:bg-blue-600 hover:scale-[1.02] active:scale-95 shadow-lg shadow-blue-500/20"
+            className="w-full rounded-xl bg-brand-solid px-4 py-3.5 text-sm font-bold text-background transition-all hover:bg-brand-hover hover:scale-[1.02] active:scale-95 shadow-lg"
           >
             Create Account
           </SubmitButton>
@@ -78,7 +78,7 @@ export default async function RegisterPage({
 
         <p className="mt-8 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-blue-400 hover:underline transition-colors">
+          <Link href="/login" className="font-semibold text-brand-ink hover:underline transition-colors">
             Log in
           </Link>
         </p>

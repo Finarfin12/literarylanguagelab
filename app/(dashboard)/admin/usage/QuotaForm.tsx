@@ -57,7 +57,7 @@ export default function QuotaForm({
           {pending && <Loader2 className="w-4 h-4 animate-spin" />} Simpan kuota
         </button>
       </div>
-      {!canSave && <p className="text-xs text-amber-500 mt-2">SUPABASE_SERVICE_ROLE_KEY belum diisi, kuota tidak bisa disimpan.</p>}
+      {!canSave && <p className="text-xs text-warning-ink mt-2">SUPABASE_SERVICE_ROLE_KEY belum diisi, kuota tidak bisa disimpan.</p>}
     </form>
   );
 }

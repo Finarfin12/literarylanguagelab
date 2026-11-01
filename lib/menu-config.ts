@@ -32,7 +32,7 @@ export const MENU_GROUPS: MenuGroup[] = [
   {
     title: "Baca & Pahami",
     icon: BookOpen,
-    color: "text-blue-400",
+    color: "text-foreground",
     items: [
       { name: "Text Library", path: "/library", description: "Koleksi teks bacaan dengan filter level.", goals: ["umum", "sastra", "penerjemahan"] },
       { name: "Buku Klasik", path: "/gutenberg", description: "Ribuan karya sastra domain publik dari Project Gutenberg.", goals: ["sastra"] },
@@ -47,7 +47,7 @@ export const MENU_GROUPS: MenuGroup[] = [
   {
     title: "Kuasai Kosakata",
     icon: BookMarked,
-    color: "text-amber-400",
+    color: "text-foreground",
     items: [
       { name: "Vocabulary Bank", path: "/vocabulary", description: "Semua kata yang kamu simpan dari bacaan.", goals: ["umum", "sastra", "penerjemahan"] },
       { name: "Kosakata Inti", path: "/vocabulary/core", description: "Kata paling sering dipakai, dari level A1, siap ditambah ke Review.", goals: ["umum"] },
@@ -65,7 +65,7 @@ export const MENU_GROUPS: MenuGroup[] = [
   {
     title: "Latih Bahasa Inggris",
     icon: Headphones,
-    color: "text-emerald-400",
+    color: "text-foreground",
     items: [
       { name: "Placement Test", path: "/english-lab/placement-test", description: "Tes singkat untuk mengetahui level CEFR kamu.", goals: ["umum"] },
       { name: "Tes Naik Level", path: "/english-lab/level-test", description: "Tes singkat untuk naik ke level CEFR berikutnya.", goals: ["umum"] },
@@ -83,7 +83,7 @@ export const MENU_GROUPS: MenuGroup[] = [
   {
     title: "Analisis Sastra",
     icon: BrainCircuit,
-    color: "text-purple-400",
+    color: "text-foreground",
     items: [
       { name: "Tone & Gaya", path: "/tools/tone-analyzer", description: "Deteksi nada sebuah teks, atau ubah ke nada lain.", goals: ["sastra"] },
       { name: "Rhetorical Spotter", path: "/tools/rhetorical-spotter", description: "Temukan majas dan efeknya pada pembaca.", goals: ["sastra"] },
@@ -111,7 +111,7 @@ export const MENU_GROUPS: MenuGroup[] = [
   {
     title: "Latih Menerjemahkan",
     icon: Languages,
-    color: "text-cyan-400",
+    color: "text-foreground",
     items: [
       { name: "Translation Workshop", path: "/translation-workshop", description: "Terjemahkan teks dan dapatkan penilaian dari AI.", goals: ["penerjemahan"] },
       { name: "Ruang Kerja Segmen", path: "/translation-workspace", description: "Terjemahkan teks panjang per kalimat dengan TM, glosarium, dan rubrik.", goals: ["penerjemahan"] },
@@ -125,7 +125,7 @@ export const MENU_GROUPS: MenuGroup[] = [
   {
     title: "Komunitas",
     icon: Users,
-    color: "text-rose-400",
+    color: "text-foreground",
     items: [
       { name: "Discussion Board", path: "/forum", description: "Forum diskusi tentang bacaan dan bahasa." },
       { name: "Jejaring Pembaca", path: "/community", description: "Temukan pembaca lain dengan minat serupa." },

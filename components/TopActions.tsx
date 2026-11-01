@@ -27,7 +27,7 @@ export default function TopActions({ className }: { className?: string }) {
       >
         <MessageSquare className="w-5 h-5" />
         {unreadMessages > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-card animate-in zoom-in">
+          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-danger text-[10px] font-bold text-on-brand shadow-sm ring-2 ring-card animate-in zoom-in">
             {unreadMessages > 99 ? '99+' : unreadMessages}
           </span>
         )}

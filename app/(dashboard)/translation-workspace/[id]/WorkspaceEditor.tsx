@@ -196,7 +196,7 @@ export default function WorkspaceEditor({
             <li key={seg.id} className={`bg-card border rounded-2xl p-4 ${selectedId === seg.id ? "border-brand" : "border-border"}`}>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-bold text-brand">#{seg.idx + 1}</span>
-                {segWarnings.length > 0 && <span className="text-xs font-bold text-amber-600 dark:text-amber-400">{segWarnings.length} peringatan</span>}
+                {segWarnings.length > 0 && <span className="text-xs font-bold text-warning-ink ">{segWarnings.length} peringatan</span>}
                 <span className="flex-1" />
                 <span className="text-xs text-muted-foreground" aria-live="polite">{stateLabel(seg.id)}</span>
               </div>

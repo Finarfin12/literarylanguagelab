@@ -354,8 +354,8 @@ export default function WordLookupSidebar({ word, contextSentence, textId, posit
           disabled={saving || saved || loading}
           className={`w-full py-3 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all ${
             saved 
-              ? "bg-green-500/20 text-green-400 border border-green-500/30" 
-              : "bg-brand text-background hover:shadow-[0_0_20px_rgba(62,207,142,0.4)]"
+              ? "bg-brand-tint text-brand-ink border border-brand/30" 
+              : "bg-brand text-background"
           } disabled:opacity-50`}
         >
           {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <BookmarkPlus className="w-5 h-5" />}

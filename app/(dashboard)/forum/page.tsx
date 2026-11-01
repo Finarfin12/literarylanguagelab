@@ -176,12 +176,12 @@ export default function ForumPage() {
     return (
       <Link 
         href={`/forum/thread/${thread.id}`} 
-        className="relative block bg-card border border-foreground/10 dark:border-border rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group"
+        className="relative block bg-card border border-foreground/10 dark:border-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all group"
       >
         {canDelete && (
           <button 
             onClick={(e) => handleDeleteThread(e, thread.id)}
-            className="absolute top-4 right-4 z-10 p-2 text-muted-foreground hover:text-red-400 bg-foreground/5 hover:bg-foreground/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+            className="absolute top-4 right-4 z-10 p-2 text-muted-foreground hover:text-danger bg-foreground/5 hover:bg-foreground/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
             title="Hapus Diskusi"
           >
             <Trash2 className="w-4 h-4" />
@@ -200,7 +200,7 @@ export default function ForumPage() {
               </div>
               <span className="text-xs font-bold text-muted-foreground">{thread.author?.full_name}</span>
               {(thread as any).is_announcement && (
-                <span className="flex items-center gap-1 bg-red-500/10 text-red-500 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ml-2">
+                <span className="flex items-center gap-1 bg-danger-tint text-danger text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ml-2">
                   <Pin className="w-3 h-3" /> PENGUMUMAN
                 </span>
               )}
@@ -270,7 +270,7 @@ export default function ForumPage() {
           {announcements.length > 0 && (
             <section>
               <div className="flex items-center gap-2 mb-6 border-b border-foreground/10 pb-4">
-                <Pin className="w-6 h-6 text-red-500" />
+                <Pin className="w-6 h-6 text-danger" />
                 <h2 className="text-2xl font-bold text-foreground font-serif">Pengumuman Admin</h2>
               </div>
               <div className="space-y-4">
@@ -284,7 +284,7 @@ export default function ForumPage() {
           {/* Recent Posts Section */}
           <section>
             <div className="flex items-center gap-2 mb-6 border-b border-foreground/10 pb-4">
-              <Sparkles className="w-6 h-6 text-yellow-500" />
+              <Sparkles className="w-6 h-6 text-warning-ink" />
               <h2 className="text-2xl font-bold text-foreground font-serif">Diskusi Terbaru</h2>
             </div>
             

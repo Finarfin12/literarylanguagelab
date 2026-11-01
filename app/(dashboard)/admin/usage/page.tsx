@@ -146,13 +146,13 @@ export default async function AdminUsagePage({
                 <div className="text-xs">
                   <span
                     className={`inline-block font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
-                      l.status === "error" ? "bg-red-500/10 text-red-500" : l.status === "success" ? "bg-brand/10 text-brand" : "bg-muted text-muted-foreground"
+                      l.status === "error" ? "bg-danger-tint text-danger" : l.status === "success" ? "bg-brand/10 text-brand" : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {l.status}
                   </span>
-                  {l.used_fallback && <span className="ml-1 text-amber-500">cadangan</span>}
-                  {l.error && <p className="text-red-500 mt-1 break-words">{l.error}</p>}
+                  {l.used_fallback && <span className="ml-1 text-warning-ink">cadangan</span>}
+                  {l.error && <p className="text-danger mt-1 break-words">{l.error}</p>}
                 </div>
               </li>
             ))}

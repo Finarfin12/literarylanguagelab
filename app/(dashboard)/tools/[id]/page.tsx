@@ -35,7 +35,7 @@ export default function ToolExecutionPage() {
   }, [tool]);
 
   if (!tool) {
-    return <div className="p-4 md:p-8 text-center text-red-500">Tool not found</div>;
+    return <div className="p-4 md:p-8 text-center text-danger">Tool not found</div>;
   }
 
   const handleExecute = async () => {

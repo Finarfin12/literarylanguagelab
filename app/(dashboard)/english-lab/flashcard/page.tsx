@@ -256,12 +256,12 @@ export default function FlashcardSRSPage() {
             <p className="text-3xl font-bold text-brand">{stats.correct}</p>
             <p className="text-xs text-muted-foreground font-bold uppercase">Benar</p>
           </div>
-          <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4">
-            <p className="text-3xl font-bold text-red-400">{stats.wrong}</p>
+          <div className="bg-danger-tint border border-danger/30 rounded-2xl p-4">
+            <p className="text-3xl font-bold text-danger">{stats.wrong}</p>
             <p className="text-xs text-muted-foreground font-bold uppercase">Salah</p>
           </div>
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4">
-            <p className="text-3xl font-bold text-amber-400">{scorePct}%</p>
+          <div className="bg-warning-tint border border-warning-ink/30 rounded-2xl p-4">
+            <p className="text-3xl font-bold text-warning-ink">{scorePct}%</p>
             <p className="text-xs text-muted-foreground font-bold uppercase">Akurasi</p>
           </div>
         </div>
@@ -291,7 +291,7 @@ export default function FlashcardSRSPage() {
       {/* Header */}
       <div className="mb-6 text-center">
         <h1 className="text-2xl sm:text-3xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
-          <Zap className="w-7 h-7 text-amber-400" />
+          <Zap className="w-7 h-7 text-warning-ink" />
           Flashcard SRS
         </h1>
         <p className="text-muted-foreground mt-1 text-sm">Spaced Repetition System — Latihan kosakata harian Anda</p>
@@ -327,7 +327,7 @@ export default function FlashcardSRSPage() {
 
       {/* Card */}
       <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 shadow-lg relative overflow-hidden mb-6">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0 opacity-50" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-muted opacity-50" />
 
         {/* Box indicator */}
         <div className="flex items-center justify-between mb-6">
@@ -411,8 +411,8 @@ export default function FlashcardSRSPage() {
 
               let borderClass = "border-border hover:border-brand/50 hover:bg-brand/5";
               if (showResult) {
-                if (isAnswer) borderClass = "border-emerald-500 bg-emerald-500/10";
-                else if (isSelected && !isAnswer) borderClass = "border-red-500 bg-red-500/10";
+                if (isAnswer) borderClass = "border-border bg-muted";
+                else if (isSelected && !isAnswer) borderClass = "border-border bg-muted";
                 else borderClass = "border-border opacity-50";
               }
 
@@ -444,7 +444,7 @@ export default function FlashcardSRSPage() {
               <button
                 onClick={isRecording ? stopRecording : startRecording}
                 disabled={isProcessing}
-                className={`p-3 rounded-xl transition-all ${isRecording ? "bg-red-500 text-white animate-pulse" : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"}`}
+                className={`p-3 rounded-xl transition-all ${isRecording ? "bg-danger text-on-brand animate-pulse" : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"}`}
               >
                 {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
               </button>
@@ -460,7 +460,7 @@ export default function FlashcardSRSPage() {
         )}
 
         {(mode === "dictation" || mode === "collocation") && showResult && (
-          <div className={`p-4 rounded-xl border text-center ${isCorrect ? "bg-emerald-500/10 border-emerald-500/30" : "bg-red-500/10 border-red-500/30"}`}>
+          <div className={`p-4 rounded-xl border text-center ${isCorrect ? "bg-brand-tint border-brand/30" : "bg-danger-tint border-danger/30"}`}>
             <p className="text-sm text-muted-foreground mb-1">Jawaban Anda: <span className="font-bold text-foreground">{userAnswer}</span></p>
             <p className="text-sm text-muted-foreground">
               Jawaban benar: <span className="font-bold text-brand">
@@ -479,13 +479,13 @@ export default function FlashcardSRSPage() {
         {showResult && (
           <div className={`mt-4 text-center animate-in fade-in slide-in-from-bottom-2 duration-300`}>
             {isCorrect ? (
-              <p className="text-emerald-400 font-bold flex items-center justify-center gap-2"><CheckCircle className="w-5 h-5" /> Benar!</p>
+              <p className="text-brand-ink font-bold flex items-center justify-center gap-2"><CheckCircle className="w-5 h-5" /> Benar!</p>
             ) : (
-              <p className="text-red-400 font-bold flex items-center justify-center gap-2"><XCircle className="w-5 h-5" /> Salah — kata ini akan diulang lebih sering.</p>
+              <p className="text-danger font-bold flex items-center justify-center gap-2"><XCircle className="w-5 h-5" /> Salah — kata ini akan diulang lebih sering.</p>
             )}
             <button
               onClick={handleNext}
-              className="mt-4 px-4 md:px-8 py-3 bg-brand text-background font-bold rounded-xl flex items-center gap-2 mx-auto hover:shadow-[0_0_20px_rgba(62,207,142,0.3)] transition-all"
+              className="mt-4 px-4 md:px-8 py-3 bg-brand text-background font-bold rounded-xl flex items-center gap-2 mx-auto transition-all"
             >
               Selanjutnya <ArrowRight className="w-5 h-5" />
             </button>

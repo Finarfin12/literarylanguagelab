@@ -90,7 +90,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
       {!isSidebarOpen && (
         <button 
           onClick={() => setIsSidebarOpen(true)}
-          className="hidden lg:flex fixed top-6 left-6 z-50 p-2.5 bg-card shadow-sm backdrop-blur-xl border border-border rounded-xl shadow-lg hover:bg-muted hover:bg-muted/80 transition-colors group"
+          className="hidden lg:flex fixed top-6 left-6 z-50 p-2.5 bg-card shadow-sm border border-border rounded-xl shadow-lg hover:bg-muted hover:bg-muted/80 transition-colors group"
           title="Buka Menu"
         >
           <Menu className="w-5 h-5 text-foreground group-hover:text-brand transition-colors" />
@@ -108,7 +108,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
           <div className="flex items-center gap-1">
             <button 
               onClick={() => setIsSidebarOpen(false)}
-              className="p-2 bg-muted rounded-xl hover:bg-muted hover:bg-muted/80 transition-colors text-muted-foreground hover:text-red-400"
+              className="p-2 bg-muted rounded-xl hover:bg-muted hover:bg-muted/80 transition-colors text-muted-foreground hover:text-danger"
               title="Tutup Menu"
             >
               <PanelLeftClose className="w-4 h-4" />
@@ -141,7 +141,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             href="/dashboard"
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
               pathname === '/dashboard' 
-                ? 'bg-brand/10 border-brand/20 shadow-[0_0_15px_rgba(62,207,142,0.15)]' 
+                ? 'bg-brand/10 border-brand/20' 
                 : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
             }`}
           >
@@ -158,12 +158,12 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             href="/library"
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
               pathname.startsWith('/library') 
-                ? 'bg-blue-500/10 border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.15)]' 
+                ? 'bg-muted border-border' 
                 : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
             }`}
           >
             <div className="flex items-center gap-3">
-              <Library className={`w-5 h-5 ${pathname.startsWith('/library') ? 'text-blue-400' : 'text-blue-500'}`} />
+              <Library className={`w-5 h-5 ${pathname.startsWith('/library') ? 'text-brand-ink' : 'text-brand-ink'}`} />
               <span className={`font-bold ${pathname.startsWith('/library') ? 'text-foreground' : 'text-muted-foreground'}`}>
                 Text Library
               </span>
@@ -174,12 +174,12 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             href="/gutenberg"
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
               pathname.startsWith('/gutenberg') 
-                ? 'bg-orange-500/10 border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.15)]' 
+                ? 'bg-muted border-border' 
                 : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
             }`}
           >
             <div className="flex items-center gap-3">
-              <BookOpen className={`w-5 h-5 ${pathname.startsWith('/gutenberg') ? 'text-orange-400' : 'text-orange-500'}`} />
+              <BookOpen className={`w-5 h-5 ${pathname.startsWith('/gutenberg') ? 'text-foreground' : 'text-foreground'}`} />
               <span className={`font-bold ${pathname.startsWith('/gutenberg') ? 'text-foreground' : 'text-muted-foreground'}`}>
                 Public Domain Books
               </span>
@@ -190,12 +190,12 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             href="/tools/a-z-dictionary"
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
               pathname === '/tools/a-z-dictionary' 
-                ? 'bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)]' 
+                ? 'bg-brand-tint border-brand/30' 
                 : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
             }`}
           >
             <div className="flex items-center gap-3">
-              <BookOpen className={`w-5 h-5 ${pathname === '/tools/a-z-dictionary' ? 'text-emerald-400' : 'text-emerald-500'}`} />
+              <BookOpen className={`w-5 h-5 ${pathname === '/tools/a-z-dictionary' ? 'text-brand-ink' : 'text-brand-ink'}`} />
               <span className={`font-bold ${pathname === '/tools/a-z-dictionary' ? 'text-foreground' : 'text-muted-foreground'}`}>
                 A-Z Browser
               </span>
@@ -207,12 +207,12 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             href="/tools"
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
               pathname === '/tools' 
-                ? 'bg-purple-500/10 border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.15)]' 
+                ? 'bg-muted border-border' 
                 : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
             }`}
           >
             <div className="flex items-center gap-3">
-              <Sparkles className={`w-5 h-5 ${pathname === '/tools' ? 'text-purple-400' : 'text-purple-500'}`} />
+              <Sparkles className={`w-5 h-5 ${pathname === '/tools' ? 'text-foreground' : 'text-foreground'}`} />
               <span className={`font-bold ${pathname === '/tools' ? 'text-foreground' : 'text-muted-foreground'}`}>
                 Semua Alat
               </span>
@@ -224,12 +224,12 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             href="/lingowise"
             className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
               pathname.startsWith('/lingowise') 
-                ? 'bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)]' 
+                ? 'bg-brand-tint border-brand/30' 
                 : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
             }`}
           >
             <div className="flex items-center gap-3">
-              <MessageSquareText className={`w-5 h-5 ${pathname.startsWith('/lingowise') ? 'text-emerald-400' : 'text-emerald-500'}`} />
+              <MessageSquareText className={`w-5 h-5 ${pathname.startsWith('/lingowise') ? 'text-brand-ink' : 'text-brand-ink'}`} />
               <span className="flex flex-col">
                 <span className={`font-bold ${pathname.startsWith('/lingowise') ? 'text-foreground' : 'text-muted-foreground'}`}>
                   LingoWise AI
@@ -295,12 +295,12 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
               href="/admin"
               className={`w-full flex items-center p-4 rounded-2xl transition-all border ${
                 pathname.startsWith('/admin') 
-                  ? 'bg-red-500/10 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.15)]' 
+                  ? 'bg-danger-tint border-danger/30' 
                   : 'bg-muted border-border hover:bg-muted hover:bg-muted/80'
               }`}
             >
               <div className="flex items-center gap-3">
-                <ShieldAlert className={`w-5 h-5 ${pathname.startsWith('/admin') ? 'text-red-400' : 'text-red-500'}`} />
+                <ShieldAlert className={`w-5 h-5 ${pathname.startsWith('/admin') ? 'text-danger' : 'text-danger'}`} />
                 <span className={`font-bold ${pathname.startsWith('/admin') ? 'text-foreground' : 'text-muted-foreground'}`}>
                   Admin Panel
                 </span>
@@ -330,7 +330,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             <Settings className="w-4 h-4" />
           </Link>
           <form action="/auth/signout" method="post" className="m-0 p-0 flex">
-            <button type="submit" className="p-2 rounded-xl text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors" title="Sign Out">
+            <button type="submit" className="p-2 rounded-xl text-muted-foreground hover:text-danger hover:bg-danger-tint transition-colors" title="Sign Out">
               <LogOut className="w-4 h-4" />
             </button>
           </form>

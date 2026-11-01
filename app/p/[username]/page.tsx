@@ -105,7 +105,7 @@ export default async function PublicPortfolioPage({ params }: { params: { userna
                 </div>
                 {profile.cefr_level && (
                   <div className="bg-muted px-4 py-2 rounded-xl flex items-center gap-3">
-                    <GraduationCap className="w-5 h-5 text-amber-500" />
+                    <GraduationCap className="w-5 h-5 text-warning-ink" />
                     <div>
                       <p className="text-xs font-bold text-muted-foreground uppercase">Level CEFR</p>
                       <p className="font-bold text-lg">{profile.cefr_level}</p>
@@ -113,7 +113,7 @@ export default async function PublicPortfolioPage({ params }: { params: { userna
                   </div>
                 )}
                 <div className="bg-muted px-4 py-2 rounded-xl flex items-center gap-3">
-                  <Library className="w-5 h-5 text-blue-500" />
+                  <Library className="w-5 h-5 text-brand-ink" />
                   <div>
                     <p className="text-xs font-bold text-muted-foreground uppercase">Vocab Bank</p>
                     <p className="font-bold text-lg">{profile.vocab_count}</p>
@@ -136,7 +136,7 @@ export default async function PublicPortfolioPage({ params }: { params: { userna
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {memories?.map(mem => (
                 <div key={mem.id} className="bg-card shadow-sm border border-border rounded-3xl p-6 hover:shadow-lg transition-shadow">
-                  <p className="font-serif text-lg font-bold text-blue-400 mb-2">{mem.source_phrase}</p>
+                  <p className="font-serif text-lg font-bold text-brand-ink mb-2">{mem.source_phrase}</p>
                   <p className="font-serif text-lg text-foreground mb-4">{mem.translated_phrase}</p>
                   {mem.context && <p className="text-sm text-muted-foreground italic pl-4 border-l-2 border-brand/50">" {mem.context} "</p>}
                 </div>

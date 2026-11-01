@@ -74,7 +74,7 @@ export default function WritingAssistantPage() {
   return (
     <div className="max-w-7xl mx-auto py-8 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-8 flex items-center gap-4">
-        <div className="w-16 h-16 bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
+        <div className="w-16 h-16 bg-muted text-brand-ink rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
           <PenTool className="w-8 h-8" />
         </div>
         <div>
@@ -88,11 +88,11 @@ export default function WritingAssistantPage() {
         <div className="flex flex-col h-full">
           <div className="bg-card shadow-sm border border-border rounded-3xl p-6 flex flex-col flex-1 relative overflow-hidden">
             <label className="block text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-              <Type className="w-4 h-4 text-blue-500" /> Teks Esai / Karya Tulis
+              <Type className="w-4 h-4 text-brand-ink" /> Teks Esai / Karya Tulis
             </label>
             <TryExampleButton example={WRITING_ASSISTANT_EXAMPLE} onFill={setText} className="mb-2 self-start" />
             <textarea 
-              className="w-full flex-1 min-h-[400px] bg-background border border-border rounded-xl p-6 text-foreground text-lg leading-relaxed font-serif focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none resize-none custom-scrollbar"
+              className="w-full flex-1 min-h-[400px] bg-background border border-border rounded-xl p-6 text-foreground text-lg leading-relaxed font-serif focus:ring-2 focus:ring-border focus:border-transparent transition-all outline-none resize-none custom-scrollbar"
               placeholder="Paste tulisan berbahasa Inggris Anda di sini..."
               value={text}
               onChange={(e) => setText(e.target.value)}
@@ -105,13 +105,13 @@ export default function WritingAssistantPage() {
               <button 
                 onClick={handleAnalyze}
                 disabled={loading || !text.trim()}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 md:px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50 shadow-md"
+                className="bg-brand-solid hover:bg-brand-hover text-on-brand px-4 md:px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50 shadow-md"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
                 Analisis Tulisan
               </button>
             </div>
-            {error && <p className="text-red-500 mt-4 text-sm font-medium text-right">{error}</p>}
+            {error && <p className="text-danger mt-4 text-sm font-medium text-right">{error}</p>}
           </div>
         </div>
 
@@ -119,7 +119,7 @@ export default function WritingAssistantPage() {
         <div className="h-full">
           {loading && (
             <div className="h-full min-h-[400px] bg-card border border-border rounded-3xl flex flex-col items-center justify-center p-4 md:p-8 text-center">
-              <Loader2 className="w-12 h-12 text-blue-500 animate-spin mb-4" />
+              <Loader2 className="w-12 h-12 text-brand-ink animate-spin mb-4" />
               <h3 className="text-xl font-bold font-serif text-foreground">AI Sedang Membaca...</h3>
               <p className="text-muted-foreground mt-2">Menganalisis tata bahasa, diksi, dan alur kalimat Anda.</p>
             </div>
@@ -137,13 +137,13 @@ export default function WritingAssistantPage() {
             <div className="space-y-6 h-full overflow-y-auto pr-2 custom-scrollbar pb-10">
               
               {/* Score Card */}
-              <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-3xl p-6 flex items-center justify-between shadow-sm">
+              <div className="bg-muted border border-border rounded-3xl p-6 flex items-center justify-between shadow-sm">
                 <div>
-                  <h3 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-1">Overall Writing Score</h3>
+                  <h3 className="text-sm font-bold text-brand-ink uppercase tracking-wider mb-1">Overall Writing Score</h3>
                   <p className="text-muted-foreground text-sm">Berdasarkan kejelasan, grammar, dan gaya bahasa.</p>
                 </div>
-                <div className="w-20 h-20 shrink-0 rounded-full bg-background border-4 border-blue-500 flex items-center justify-center shadow-inner">
-                  <span className="text-3xl font-bold font-serif text-blue-600">{result.overall_score}</span>
+                <div className="w-20 h-20 shrink-0 rounded-full bg-background border-4 border-border flex items-center justify-center shadow-inner">
+                  <span className="text-3xl font-bold font-serif text-brand-ink">{result.overall_score}</span>
                 </div>
               </div>
 
@@ -151,21 +151,21 @@ export default function WritingAssistantPage() {
               {result.grammar_corrections.length > 0 && (
                 <div className="bg-card shadow-sm border border-border rounded-3xl p-6">
                   <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                    <AlertTriangle className="w-5 h-5 text-red-500" /> Grammar Issues
+                    <AlertTriangle className="w-5 h-5 text-danger" /> Grammar Issues
                   </h3>
                   <div className="space-y-4">
                     {result.grammar_corrections.map((item, idx) => (
                       <div key={idx} className="bg-muted/50 rounded-2xl p-4 border border-border">
                         <div className="flex flex-col sm:flex-row gap-3 mb-3 text-sm">
-                          <div className="flex-1 bg-red-500/10 text-red-600 border border-red-500/20 rounded-xl p-3 line-through decoration-red-500/50">
+                          <div className="flex-1 bg-danger-tint text-danger border border-danger/30 rounded-xl p-3 line-through decoration-danger/50">
                             {item.original}
                           </div>
-                          <div className="flex-1 bg-green-500/10 text-green-600 border border-green-500/20 rounded-xl p-3 font-medium">
+                          <div className="flex-1 bg-brand-tint text-brand-ink border border-brand/30 rounded-xl p-3 font-medium">
                             {item.correction}
                           </div>
                         </div>
                         <p className="text-sm text-muted-foreground flex items-start gap-2">
-                          <span className="shrink-0 mt-0.5 w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                          <span className="shrink-0 mt-0.5 w-1.5 h-1.5 rounded-full bg-brand-solid"></span>
                           {item.explanation}
                         </p>
                       </div>
@@ -178,7 +178,7 @@ export default function WritingAssistantPage() {
               {result.register_analysis.length > 0 && (
                 <div className="bg-card shadow-sm border border-border rounded-3xl p-6">
                   <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-500" /> Register (Gaya Bahasa)
+                    <CheckCircle2 className="w-5 h-5 text-brand-ink" /> Register (Gaya Bahasa)
                   </h3>
                   <div className="space-y-4">
                     {result.register_analysis.map((item, idx) => (
@@ -186,7 +186,7 @@ export default function WritingAssistantPage() {
                         <p className="text-sm text-muted-foreground mb-2">Alih-alih menggunakan:</p>
                         <p className="text-foreground bg-background border border-border rounded-xl p-3 text-sm mb-3">"{item.original}"</p>
                         <p className="text-sm text-muted-foreground mb-2">Coba alternatif akademis ini:</p>
-                        <p className="text-emerald-600 font-medium bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 text-sm mb-3">"{item.suggestion}"</p>
+                        <p className="text-brand-ink font-medium bg-brand-tint border border-brand/30 rounded-xl p-3 text-sm mb-3">"{item.suggestion}"</p>
                         <p className="text-sm text-muted-foreground flex items-start gap-2 italic">
                           {item.explanation}
                         </p>
@@ -200,18 +200,18 @@ export default function WritingAssistantPage() {
               {result.synonym_upgrades.length > 0 && (
                 <div className="bg-card shadow-sm border border-border rounded-3xl p-6">
                   <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-purple-500" /> Vocabulary Upgrades
+                    <Sparkles className="w-5 h-5 text-foreground" /> Vocabulary Upgrades
                   </h3>
                   <div className="flex flex-wrap gap-3">
                     {result.synonym_upgrades.map((item, idx) => (
                       <div key={idx} className="bg-background border border-border rounded-xl p-4 flex-1 min-w-[250px] shadow-sm">
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-muted-foreground line-through decoration-muted-foreground/50">{item.word}</span>
-                          <span className="text-purple-500 font-bold">→</span>
+                          <span className="text-foreground font-bold">→</span>
                         </div>
                         <div className="flex flex-wrap gap-2 mb-3">
                           {item.better_words.map((w, i) => (
-                            <span key={i} className="px-2 py-1 bg-purple-500/10 text-purple-600 border border-purple-500/20 rounded-lg text-sm font-medium">
+                            <span key={i} className="px-2 py-1 bg-muted text-foreground border border-border rounded-lg text-sm font-medium">
                               {w}
                             </span>
                           ))}
@@ -227,7 +227,7 @@ export default function WritingAssistantPage() {
               {result.sentence_variety.length > 0 && (
                 <div className="bg-card shadow-sm border border-border rounded-3xl p-6">
                   <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                    <PenTool className="w-5 h-5 text-amber-500" /> Sentence Variety
+                    <PenTool className="w-5 h-5 text-warning-ink" /> Sentence Variety
                   </h3>
                   <div className="space-y-4">
                     {result.sentence_variety.map((item, idx) => (
@@ -236,7 +236,7 @@ export default function WritingAssistantPage() {
                         <div className="text-sm text-muted-foreground mb-4"><Markdown>{item.feedback}</Markdown></div>
                         
                         <p className="text-sm font-bold text-foreground mb-2">Contoh Revisi:</p>
-                        <p className="text-amber-600 bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-sm italic">
+                        <p className="text-warning-ink bg-warning-tint border border-warning-ink/30 rounded-xl p-3 text-sm italic">
                           "{item.example_revision}"
                         </p>
                       </div>

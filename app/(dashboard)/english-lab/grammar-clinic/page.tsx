@@ -22,16 +22,16 @@ interface GrammarResult {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  "Tense": "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  "Subject-Verb Agreement": "bg-purple-500/15 text-purple-400 border-purple-500/30",
-  "Article": "bg-amber-500/15 text-amber-400 border-amber-500/30",
-  "Preposition": "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
-  "Spelling": "bg-red-500/15 text-red-400 border-red-500/30",
-  "Punctuation": "bg-pink-500/15 text-pink-400 border-pink-500/30",
-  "Word Choice": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  "Plural/Singular": "bg-orange-500/15 text-orange-400 border-orange-500/30",
-  "Run-on Sentence": "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
-  "Fragment": "bg-rose-500/15 text-rose-400 border-rose-500/30",
+  "Tense": "bg-muted text-foreground border-border",
+  "Subject-Verb Agreement": "bg-muted text-foreground border-border",
+  "Article": "bg-muted text-foreground border-border",
+  "Preposition": "bg-muted text-foreground border-border",
+  "Spelling": "bg-muted text-foreground border-border",
+  "Punctuation": "bg-muted text-foreground border-border",
+  "Word Choice": "bg-muted text-foreground border-border",
+  "Plural/Singular": "bg-muted text-foreground border-border",
+  "Run-on Sentence": "bg-muted text-foreground border-border",
+  "Fragment": "bg-muted text-foreground border-border",
 };
 
 function ScoreRing({ score }: { score: number }) {
@@ -193,7 +193,7 @@ export default function GrammarClinicPage() {
               title="Dikte Teks"
               className={`p-2 rounded-xl transition-all ${
                 isRecording
-                  ? "bg-red-500 text-white animate-pulse"
+                  ? "bg-danger text-on-brand animate-pulse"
                   : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"
               }`}
             >
@@ -209,7 +209,7 @@ export default function GrammarClinicPage() {
           <button
             onClick={handleAnalyze}
             disabled={loading || !text.trim()}
-            className="w-full mt-4 py-3.5 bg-brand text-background font-bold rounded-xl flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(62,207,142,0.3)] transition-all disabled:opacity-50"
+            className="w-full mt-4 py-3.5 bg-brand text-background font-bold rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50"
           >
             {loading ? (
               <><Loader2 className="w-5 h-5 animate-spin" /> Menganalisis Grammar...</>
@@ -221,7 +221,7 @@ export default function GrammarClinicPage() {
 
         {/* Result Panel */}
         <div className="bg-card border border-border rounded-3xl p-6 shadow-sm relative overflow-hidden min-h-[400px] flex flex-col">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-emerald-400 to-brand/0 opacity-50" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-muted opacity-50" />
 
           {!result && !loading ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center text-muted-foreground">
@@ -251,7 +251,7 @@ export default function GrammarClinicPage() {
               {result.corrections.length > 0 && (
                 <div>
                   <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-400" />
+                    <AlertTriangle className="w-4 h-4 text-warning-ink" />
                     {result.corrections.length} Koreksi Ditemukan
                   </h3>
                   <div className="space-y-2">
@@ -261,10 +261,10 @@ export default function GrammarClinicPage() {
                           onClick={() => setExpandedIdx(expandedIdx === i ? null : i)}
                           className="w-full flex items-center gap-3 p-3 text-left hover:bg-muted/50 transition-colors"
                         >
-                          <XCircle className="w-4 h-4 text-red-400 shrink-0" />
-                          <span className="text-sm text-red-400 line-through flex-1">{c.original}</span>
+                          <XCircle className="w-4 h-4 text-danger shrink-0" />
+                          <span className="text-sm text-danger line-through flex-1">{c.original}</span>
                           <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                          <span className="text-sm text-emerald-400 font-medium flex-1">{c.corrected}</span>
+                          <span className="text-sm text-brand-ink font-medium flex-1">{c.corrected}</span>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${CATEGORY_COLORS[c.category] || "bg-muted text-muted-foreground border-border"}`}>
                             {c.category}
                           </span>
@@ -299,14 +299,14 @@ export default function GrammarClinicPage() {
 
               {/* Tips */}
               {result.tips && result.tips.length > 0 && (
-                <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4">
-                  <h3 className="text-sm font-bold text-amber-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                <div className="bg-warning-tint border border-warning-ink/30 rounded-xl p-4">
+                  <h3 className="text-sm font-bold text-warning-ink uppercase tracking-wider mb-2 flex items-center gap-2">
                     <Lightbulb className="w-4 h-4" /> Tips Peningkatan
                   </h3>
                   <ul className="space-y-1">
                     {result.tips.map((tip, i) => (
                       <li key={i} className="text-sm text-foreground/80 flex items-start gap-2">
-                        <span className="text-amber-400 mt-1">•</span> <span><Markdown inline>{tip}</Markdown></span>
+                        <span className="text-warning-ink mt-1">•</span> <span><Markdown inline>{tip}</Markdown></span>
                       </li>
                     ))}
                   </ul>
@@ -336,7 +336,7 @@ export default function GrammarClinicPage() {
 
             <div className="bg-card border border-border rounded-3xl p-6 shadow-sm col-span-1 md:col-span-2">
               <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-400" /> Top 3 Kelemahan Anda
+                <AlertTriangle className="w-4 h-4 text-warning-ink" /> Top 3 Kelemahan Anda
               </h3>
               <div className="space-y-4">
                 {stats.topWeaknesses.map((weakness: any, i: number) => (
@@ -406,7 +406,7 @@ export default function GrammarClinicPage() {
                           <div key={idx} className="space-y-2">
                             <p className="text-foreground font-serif text-lg">
                               {parts[0]}
-                              <span className={`inline-block border-b-2 font-sans text-sm mx-2 min-w-[80px] text-center font-bold ${quizChecked ? (isCorrect ? 'border-emerald-500 text-emerald-500' : 'border-red-500 text-red-500') : 'border-brand text-brand'}`}>
+                              <span className={`inline-block border-b-2 font-sans text-sm mx-2 min-w-[80px] text-center font-bold ${quizChecked ? (isCorrect ? 'border-brand/30 text-brand-ink' : 'border-danger/30 text-danger') : 'border-brand text-brand'}`}>
                                 {answered || "____"}
                               </span>
                               {parts[1] || ""}
@@ -422,14 +422,14 @@ export default function GrammarClinicPage() {
                                     answered === opt 
                                       ? "bg-brand text-background border-brand" 
                                       : "bg-background text-foreground border-border hover:border-brand/50"
-                                  } ${quizChecked && opt === q.answer && answered !== opt ? "ring-2 ring-emerald-500 ring-offset-1 ring-offset-background" : ""}`}
+                                  } ${quizChecked && opt === q.answer && answered !== opt ? "ring-2 ring-brand/30 ring-offset-1 ring-offset-background" : ""}`}
                                 >
                                   {opt}
                                 </button>
                               ))}
                             </div>
                             {quizChecked && !isCorrect && (
-                              <p className="text-xs text-red-400 mt-1">Jawaban benar: <strong>{q.answer}</strong></p>
+                              <p className="text-xs text-danger mt-1">Jawaban benar: <strong>{q.answer}</strong></p>
                             )}
                           </div>
                         );
@@ -438,11 +438,11 @@ export default function GrammarClinicPage() {
 
                     <div className="mt-6 text-center">
                       {!quizChecked ? (
-                        <button onClick={checkQuiz} disabled={Object.keys(quizAnswers).length < miniLessonData.quiz.length} className="px-6 py-2.5 bg-brand text-background font-bold rounded-xl disabled:opacity-50 transition-all hover:shadow-[0_0_15px_rgba(62,207,142,0.3)]">
+                        <button onClick={checkQuiz} disabled={Object.keys(quizAnswers).length < miniLessonData.quiz.length} className="px-6 py-2.5 bg-brand text-background font-bold rounded-xl disabled:opacity-50 transition-all">
                           Cek Jawaban
                         </button>
                       ) : (
-                        <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold">
+                        <div className="flex items-center justify-center gap-2 text-brand-ink font-bold">
                           <CheckCircle className="w-5 h-5" /> Selesai! Tetap semangat berlatih.
                         </div>
                       )}

@@ -178,7 +178,7 @@ export default function CreateThreadPage() {
         <p className="text-muted-foreground mt-2">Pilih kategori yang tepat agar diskusi Anda mudah ditemukan oleh penulis lain.</p>
       </div>
 
-      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-xl flex-1">
+      <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-xl flex-1">
         <form onSubmit={handleSubmit} className="space-y-6 flex flex-col h-full">
           <div>
             <label className="block text-sm font-bold text-foreground mb-2">Kategori Diskusi</label>
@@ -210,14 +210,14 @@ export default function CreateThreadPage() {
 
           {currentUserProfile?.role === 'admin' && (
             <div>
-              <label className="flex items-center gap-2 cursor-pointer bg-red-500/10 p-4 rounded-xl border border-red-500/20 w-max">
+              <label className="flex items-center gap-2 cursor-pointer bg-danger-tint p-4 rounded-xl border border-danger/30 w-max">
                 <input 
                   type="checkbox" 
                   checked={isAnnouncement}
                   onChange={e => setIsAnnouncement(e.target.checked)}
-                  className="w-5 h-5 accent-red-500"
+                  className="w-5 h-5 accent-danger"
                 />
-                <span className="text-sm font-bold text-red-500">Jadikan Pengumuman Admin (Pin di Atas)</span>
+                <span className="text-sm font-bold text-danger">Jadikan Pengumuman Admin (Pin di Atas)</span>
               </label>
             </div>
           )}
@@ -257,7 +257,7 @@ export default function CreateThreadPage() {
                   title="Dikte Suara (Voice to Text)"
                   className={`p-2 rounded-lg transition-colors flex items-center gap-2 ${
                     isRecording 
-                      ? "bg-red-500/10 text-red-500 hover:bg-red-500/20" 
+                      ? "bg-danger-tint text-danger hover:bg-danger-tint" 
                       : "text-muted-foreground hover:bg-muted hover:bg-brand/10 hover:text-brand"
                   }`}
                 >

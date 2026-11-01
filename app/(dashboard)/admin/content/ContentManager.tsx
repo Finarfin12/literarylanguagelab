@@ -85,7 +85,7 @@ export default function ContentManager({
   return (
     <div className="space-y-10">
       {message && (
-        <p role="status" className={`text-sm font-bold rounded-xl border p-3 ${message.tone === "ok" ? "border-brand/30 bg-brand/10 text-brand" : "border-red-500/30 bg-red-500/10 text-red-500"}`}>
+        <p role="status" className={`text-sm font-bold rounded-xl border p-3 ${message.tone === "ok" ? "border-brand/30 bg-brand/10 text-brand" : "border-danger/30 bg-danger-tint text-danger"}`}>
           {message.text}
         </p>
       )}
@@ -132,7 +132,7 @@ export default function ContentManager({
                     <p className="font-bold text-foreground truncate">{t.title}</p>
                     <p className="text-xs text-muted-foreground">
                       {t.author} · {t.word_count ?? "?"} kata · {t.source ? SOURCE_LABELS[t.source] || t.source : "sumber tidak dicatat"} ·{" "}
-                      <span className={t.status === "draft" ? "text-amber-500 font-bold" : "text-brand font-bold"}>{t.status === "draft" ? "Draft" : "Terbit"}</span>
+                      <span className={t.status === "draft" ? "text-warning-ink font-bold" : "text-brand font-bold"}>{t.status === "draft" ? "Draft" : "Terbit"}</span>
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -166,7 +166,7 @@ export default function ContentManager({
                     >
                       {t.status === "published" ? <><EyeOff className="w-4 h-4" /> Tarik</> : <><Eye className="w-4 h-4" /> Terbitkan</>}
                     </button>
-                    <button className={`${buttonClass} bg-red-500/10 text-red-500 hover:bg-red-500/20`} disabled={pending} onClick={() => remove(t)} aria-label={`Hapus ${t.title}`}>
+                    <button className={`${buttonClass} bg-danger-tint text-danger hover:bg-danger-tint`} disabled={pending} onClick={() => remove(t)} aria-label={`Hapus ${t.title}`}>
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -215,7 +215,7 @@ export default function ContentManager({
               <span className="flex-1 min-w-0 truncate text-sm font-medium">{tp.sort_order}. {tp.title}</span>
               <button className={`${buttonClass} bg-muted border border-border`} onClick={() => setTopicForm({ slug: tp.slug, title: tp.title, cefr_level: tp.cefr_level, sort_order: tp.sort_order, summary_id: tp.summary_id })}>Edit</button>
               <button
-                className={`${buttonClass} bg-red-500/10 text-red-500`}
+                className={`${buttonClass} bg-danger-tint text-danger`}
                 disabled={pending}
                 aria-label={`Hapus ${tp.title}`}
                 onClick={() => window.confirm(`Hapus topik "${tp.title}"?`) && run(() => deleteGrammarTopic(tp.slug), "Topik dihapus.")}

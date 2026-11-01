@@ -192,8 +192,8 @@ export default function GutenbergSearchPage() {
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto min-h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10 text-center">
-        <div className="inline-flex items-center justify-center p-4 bg-orange-500/10 rounded-full mb-6">
-          <BookOpen className="w-12 h-12 text-orange-500" />
+        <div className="inline-flex items-center justify-center p-4 bg-muted rounded-full mb-6">
+          <BookOpen className="w-12 h-12 text-foreground" />
         </div>
         <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground">Public Domain Books</h1>
         <p className="text-muted-foreground mt-4 text-lg max-w-2xl mx-auto">
@@ -208,7 +208,7 @@ export default function GutenbergSearchPage() {
             onClick={() => setProvider("openlibrary")}
             className={`px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-1.5 ${
               provider === "openlibrary"
-                ? "bg-blue-500 text-white shadow-lg"
+                ? "bg-brand-solid text-on-brand shadow-lg"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -219,7 +219,7 @@ export default function GutenbergSearchPage() {
             onClick={() => setProvider("gutendex")}
             className={`px-5 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-1.5 ${
               provider === "gutendex"
-                ? "bg-orange-500 text-white shadow-lg"
+                ? "bg-brand-solid text-on-brand shadow-lg"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -242,13 +242,13 @@ export default function GutenbergSearchPage() {
           placeholder={provider === "openlibrary"
             ? "Cari judul buku atau nama penulis via OpenLibrary..."
             : "Cari judul buku atau nama penulis via Gutendex..."}
-          className="w-full bg-card border-2 border-border rounded-full py-4 pl-14 pr-32 text-lg focus:outline-none focus:border-orange-500 transition-colors shadow-sm"
+          className="w-full bg-card border-2 border-border rounded-full py-4 pl-14 pr-32 text-lg focus:outline-none focus:border-border transition-colors shadow-sm"
         />
         <Search className="w-6 h-6 text-muted-foreground absolute left-5 top-1/2 -translate-y-1/2" />
         <button
           type="submit"
           disabled={loading}
-          className="absolute right-2 top-2 bottom-2 px-4 md:px-8 bg-orange-500 text-white font-bold rounded-full hover:bg-orange-600 transition-colors disabled:opacity-50"
+          className="absolute right-2 top-2 bottom-2 px-4 md:px-8 bg-brand-solid text-on-brand font-bold rounded-full hover:bg-brand-hover transition-colors disabled:opacity-50"
         >
           {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Search"}
         </button>
@@ -256,13 +256,13 @@ export default function GutenbergSearchPage() {
 
       {loading && (
         <div className="flex justify-center items-center py-20">
-          <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
+          <Loader2 className="w-12 h-12 text-foreground animate-spin" />
         </div>
       )}
 
       {!loading && error && (
         <div className="text-center py-20 text-muted-foreground">
-          <p className="text-xl font-serif text-rose-500">{error}</p>
+          <p className="text-xl font-serif text-foreground">{error}</p>
           <button
             onClick={() => { setProvider(provider === "gutendex" ? "openlibrary" : "gutendex"); setError(""); }}
             className="mt-4 px-6 py-2 bg-brand text-white font-bold rounded-full hover:bg-brand-hover transition-colors"
@@ -284,7 +284,7 @@ export default function GutenbergSearchPage() {
             {books.map((book) => (
               <div
                 key={book.id}
-                className="bg-card border border-border rounded-3xl p-6 flex flex-col justify-between hover:shadow-lg transition-all hover:-translate-y-1"
+                className="bg-card border border-border rounded-3xl p-6 flex flex-col justify-between hover:shadow-lg transition-all"
               >
                 <div>
                   <div className="flex items-start justify-between gap-4 mb-4">
@@ -304,20 +304,20 @@ export default function GutenbergSearchPage() {
                     {book.subjects.slice(0, 2).map((sub, i) => (
                       <span
                         key={i}
-                        className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-orange-500/10 text-orange-600 rounded-full truncate max-w-full"
+                        className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-muted text-foreground rounded-full truncate max-w-full"
                       >
                         {sub.split("--")[0]}
                       </span>
                     ))}
                     {book.provider === "openlibrary" && (
-                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-blue-500/10 text-blue-500 rounded-full">OL</span>
+                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-muted text-brand-ink rounded-full">OL</span>
                     )}
                   </div>
                 </div>
 
                 <Link
                   href={getBookUrl(book)}
-                  className="w-full py-3 bg-muted border border-border text-foreground font-bold rounded-xl flex justify-center items-center gap-2 hover:bg-orange-500 hover:border-orange-500 hover:text-white transition-colors"
+                  className="w-full py-3 bg-muted border border-border text-foreground font-bold rounded-xl flex justify-center items-center gap-2 hover:bg-brand-hover hover:border-border hover:text-white transition-colors"
                 >
                   Baca Buku Full <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -330,7 +330,7 @@ export default function GutenbergSearchPage() {
               <button
                 onClick={loadMore}
                 disabled={loadingMore}
-                className="px-4 md:px-8 py-3 bg-muted border border-border text-foreground font-bold rounded-full hover:bg-orange-500 hover:border-orange-500 hover:text-white transition-colors disabled:opacity-50 flex items-center gap-2"
+                className="px-4 md:px-8 py-3 bg-muted border border-border text-foreground font-bold rounded-full hover:bg-brand-hover hover:border-border hover:text-white transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 {loadingMore && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loadingMore ? "Memuat..." : "Muat Lebih Banyak"}

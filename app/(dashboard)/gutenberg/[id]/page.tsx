@@ -208,7 +208,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   if (loading) {
     return (
       <div className="min-h-[80vh] flex flex-col justify-center items-center gap-4">
-        <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
+        <Loader2 className="w-12 h-12 text-foreground animate-spin" />
         <p className="text-muted-foreground animate-pulse font-serif">Mengambil buku raksasa dari arsip Gutenberg...</p>
       </div>
     );
@@ -217,9 +217,9 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   if (error) {
     return (
       <div className="p-4 md:p-8 max-w-4xl mx-auto text-center py-20">
-        <h2 className="text-2xl font-bold text-rose-500 mb-2">Error</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Error</h2>
         <p className="text-muted-foreground">{error}</p>
-        <Link href="/gutenberg" className="mt-6 inline-flex items-center gap-2 text-orange-500 hover:underline">
+        <Link href="/gutenberg" className="mt-6 inline-flex items-center gap-2 text-foreground hover:underline">
           <ArrowLeft className="w-4 h-4" /> Kembali ke Pencarian
         </Link>
       </div>
@@ -229,7 +229,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
   return (
     <div className="max-w-4xl mx-auto bg-card min-h-screen lg:border-x border-border relative">
       <div className="sticky top-0 bg-card border-b border-border px-3 py-2 md:p-4 pr-24 sm:pr-32 flex items-center justify-between z-10">
-        <Link href="/gutenberg" aria-label="Kembali ke pencarian" className="p-2.5 bg-muted hover:bg-orange-500 hover:text-white rounded-full transition-colors shrink-0">
+        <Link href="/gutenberg" aria-label="Kembali ke pencarian" className="p-2.5 bg-muted hover:bg-brand-hover hover:text-white rounded-full transition-colors shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1 text-center truncate px-4">
@@ -267,7 +267,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
               top: Math.max(10, selectionCoords.y - 50) 
             }}
           >
-            <button onClick={addHighlight} className="p-2 hover:bg-muted text-yellow-500 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors" title="Highlight">
+            <button onClick={addHighlight} className="p-2 hover:bg-muted text-warning-ink rounded-lg flex items-center gap-2 text-sm font-medium transition-colors" title="Highlight">
               <Highlighter className="w-4 h-4" /> <span className="hidden sm:inline">Sorot</span>
             </button>
             <div className="w-px h-6 bg-border mx-1"></div>
@@ -275,7 +275,7 @@ export default function GutenbergReaderPage({ params }: { params: Promise<{ id: 
               <BookmarkPlus className="w-4 h-4" /> <span className="hidden sm:inline">Tandai</span>
             </button>
             <div className="w-px h-6 bg-border mx-1"></div>
-            <button onClick={openAnalysis} className="p-2 hover:bg-muted text-blue-500 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors" title="Analisis">
+            <button onClick={openAnalysis} className="p-2 hover:bg-muted text-brand-ink rounded-lg flex items-center gap-2 text-sm font-medium transition-colors" title="Analisis">
               <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Analisis</span>
             </button>
           </div>

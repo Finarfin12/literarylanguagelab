@@ -44,7 +44,7 @@ export default function DeleteTextButton({ textId, title }: { textId: string, ti
     <button 
       onClick={handleDelete}
       disabled={deleting}
-      className="absolute top-4 right-4 p-2 bg-red-500/10 text-red-500 rounded-full hover:bg-red-500 hover:text-white transition-all z-20 disabled:opacity-50"
+      className="absolute top-4 right-4 p-2 bg-danger-tint text-danger rounded-full hover:bg-danger/90 hover:text-white transition-all z-20 disabled:opacity-50"
       title="Hapus (Admin Only)"
     >
       <Trash2 className="w-4 h-4" />

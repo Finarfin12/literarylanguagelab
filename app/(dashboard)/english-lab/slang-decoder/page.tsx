@@ -24,11 +24,11 @@ interface SlangResult {
 }
 
 const TYPE_COLORS: Record<string, string> = {
-  "Slang": "bg-purple-500/15 text-purple-400 border-purple-500/30",
-  "Abbreviation": "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  "Internet Lingo": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  "Pop Culture": "bg-pink-500/15 text-pink-400 border-pink-500/30",
-  "Idiom": "bg-amber-500/15 text-amber-400 border-amber-500/30",
+  "Slang": "bg-muted text-foreground border-border",
+  "Abbreviation": "bg-muted text-foreground border-border",
+  "Internet Lingo": "bg-muted text-foreground border-border",
+  "Pop Culture": "bg-muted text-foreground border-border",
+  "Idiom": "bg-muted text-foreground border-border",
   "Business Jargon": "bg-slate-500/15 text-slate-400 border-slate-500/30",
 };
 
@@ -122,7 +122,7 @@ export default function SlangDecoderPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Input Panel */}
           <div className="bg-card border border-border rounded-3xl p-6 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-purple-500 to-brand/0 opacity-50" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-muted opacity-50" />
             
             <div className="flex gap-3 items-start">
               <div className="flex-1 relative">
@@ -131,13 +131,13 @@ export default function SlangDecoderPage() {
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleDecode(); } }}
                   placeholder="Ketik kalimat atau frasa gaul (misal: 'That movie was lowkey mid, no cap')..."
-                  className="w-full h-32 bg-background border border-border rounded-2xl p-4 pr-12 text-foreground focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:outline-none resize-none text-lg leading-relaxed shadow-inner"
+                  className="w-full h-32 bg-background border border-border rounded-2xl p-4 pr-12 text-foreground focus:ring-1 focus:ring-border focus:border-border focus:outline-none resize-none text-lg leading-relaxed shadow-inner"
                   disabled={loading}
                 />
                 <button
                   onClick={isRecording ? stopRecording : startRecording}
                   disabled={isProcessing || loading}
-                  className={`absolute right-3 top-3 p-2 rounded-xl transition-all ${isRecording ? "bg-red-500 text-white animate-pulse" : "text-muted-foreground hover:bg-purple-500/10 hover:text-purple-400"}`}
+                  className={`absolute right-3 top-3 p-2 rounded-xl transition-all ${isRecording ? "bg-danger text-on-brand animate-pulse" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
                 >
                   {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                 </button>
@@ -147,7 +147,7 @@ export default function SlangDecoderPage() {
             <button
               onClick={() => handleDecode()}
               disabled={loading || !text.trim()}
-              className="w-full mt-4 py-4 bg-purple-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-purple-600 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all disabled:opacity-50"
+              className="w-full mt-4 py-4 bg-brand-solid text-on-brand font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-brand-hover transition-all disabled:opacity-50"
             >
               {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Mendecode...</> : <><Sparkles className="w-5 h-5" /> Decode Slang</>}
             </button>
@@ -173,7 +173,7 @@ export default function SlangDecoderPage() {
                           {phrase.type}
                         </span>
                       </div>
-                      <p className="text-lg text-purple-400 font-medium">{phrase.meaning_id}</p>
+                      <p className="text-lg text-foreground font-medium">{phrase.meaning_id}</p>
                     </div>
                     <button
                       onClick={() => saveToDictionary(phrase)}
@@ -195,8 +195,8 @@ export default function SlangDecoderPage() {
                     </div>
                   </div>
 
-                  <div className="mt-4 bg-purple-500/5 border border-purple-500/20 rounded-xl p-4">
-                    <p className="text-xs text-purple-400 uppercase tracking-wider font-bold mb-2 flex items-center gap-2"><Quote className="w-3 h-3" /> Contoh Penggunaan</p>
+                  <div className="mt-4 bg-muted border border-border rounded-xl p-4">
+                    <p className="text-xs text-foreground uppercase tracking-wider font-bold mb-2 flex items-center gap-2"><Quote className="w-3 h-3" /> Contoh Penggunaan</p>
                     <p className="text-foreground italic">{phrase.example}</p>
                   </div>
 
@@ -205,7 +205,7 @@ export default function SlangDecoderPage() {
                       <span className="text-xs text-muted-foreground font-bold">Formalitas:</span>
                       <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map(level => (
-                          <div key={level} className={`w-6 h-2 rounded-full ${level <= phrase.formality ? (phrase.formality <= 2 ? "bg-red-400" : phrase.formality <= 3 ? "bg-amber-400" : "bg-emerald-400") : "bg-muted"}`} />
+                          <div key={level} className={`w-6 h-2 rounded-full ${level <= phrase.formality ? (phrase.formality <= 2 ? "bg-danger" : phrase.formality <= 3 ? "bg-warning-ink" : "bg-brand-solid") : "bg-muted"}`} />
                         ))}
                       </div>
                       <span className="text-xs font-bold ml-1">{phrase.formality <= 2 ? "Sangat Kasual" : phrase.formality <= 3 ? "Biasa" : "Formal"}</span>
@@ -240,9 +240,9 @@ export default function SlangDecoderPage() {
                 <button
                   key={i}
                   onClick={() => handleDecode(item.phrase)}
-                  className="text-left px-3 py-2 bg-muted hover:bg-purple-500/10 hover:text-purple-400 hover:border-purple-500/30 border border-transparent rounded-xl text-sm transition-all flex flex-col group"
+                  className="text-left px-3 py-2 bg-muted hover:bg-muted hover:text-foreground hover:border-border border border-transparent rounded-xl text-sm transition-all flex flex-col group"
                 >
-                  <span className="font-bold text-foreground group-hover:text-purple-400 transition-colors">{item.phrase}</span>
+                  <span className="font-bold text-foreground group-hover:text-foreground transition-colors">{item.phrase}</span>
                   <span className="text-[10px] text-muted-foreground mt-0.5">{item.category}</span>
                 </button>
               ))}

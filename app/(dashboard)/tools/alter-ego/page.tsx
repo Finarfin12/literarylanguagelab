@@ -222,7 +222,7 @@ export default function AlterEgoChatPage() {
 
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left Sidebar: Chat History */}
-        <div className="w-72 flex flex-col border border-border rounded-3xl overflow-hidden bg-card shadow-sm backdrop-blur-md shrink-0 hidden md:flex">
+        <div className="w-72 flex flex-col border border-border rounded-3xl overflow-hidden bg-card shadow-sm shrink-0 hidden md:flex">
           <div className="p-4 border-b border-border">
             <button 
               onClick={handleNewSession}
@@ -253,7 +253,7 @@ export default function AlterEgoChatPage() {
                   </div>
                   <button 
                     onClick={(e) => handleDeleteSession(e, s.id)}
-                    className="opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-red-400 transition-all shrink-0"
+                    className="opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-danger transition-all shrink-0"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -264,7 +264,7 @@ export default function AlterEgoChatPage() {
         </div>
 
         {/* Right Chat Area */}
-        <div className="flex-1 bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl overflow-hidden flex flex-col shadow-xl relative">
+        <div className="flex-1 bg-card shadow-sm border border-border rounded-3xl overflow-hidden flex flex-col shadow-xl relative">
           
           {/* Author Selection Top Bar */}
           <div className="p-4 border-b border-border bg-background flex items-center justify-between">
@@ -288,10 +288,10 @@ export default function AlterEgoChatPage() {
             ) : (
               messages.map((m, i) => (
                 <div key={m.id || i} className={`flex gap-4 max-w-[85%] ${m.role === "user" ? "ml-auto flex-row-reverse" : "mr-auto"}`}>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${m.role === "user" ? "bg-blue-500/20 text-blue-400" : "bg-brand/20 text-brand"}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${m.role === "user" ? "bg-muted text-brand-ink" : "bg-brand/20 text-brand"}`}>
                     {m.role === "user" ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
                   </div>
-                  <div className={`p-5 rounded-2xl ${m.role === "user" ? "bg-blue-500/10 border border-blue-500/20 text-foreground" : "bg-brand/10 border border-brand/20 text-foreground"}`}>
+                  <div className={`p-5 rounded-2xl ${m.role === "user" ? "bg-muted border border-border text-foreground" : "bg-brand/10 border border-brand/20 text-foreground"}`}>
                     <div className="prose dark:prose-invert max-w-none prose-p:leading-relaxed text-sm">
                       {m.role === "user" ? m.content : <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>}
                     </div>
@@ -327,7 +327,7 @@ export default function AlterEgoChatPage() {
               <button
                 onClick={handleSend}
                 disabled={!input.trim() || loading}
-                className="w-14 h-14 bg-brand text-background rounded-2xl flex items-center justify-center hover:shadow-[0_0_15px_rgba(62,207,142,0.4)] disabled:opacity-50 transition-all shrink-0"
+                className="w-14 h-14 bg-brand text-background rounded-2xl flex items-center justify-center disabled:opacity-50 transition-all shrink-0"
               >
                 <Send className="w-6 h-6" />
               </button>

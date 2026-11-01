@@ -354,7 +354,7 @@ export default function SettingsPage() {
         </div>
 
         {message && (
-          <div className={`p-4 rounded-xl mb-6 ${message.includes('Gagal') ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-brand/10 text-brand border border-brand/20'}`}>
+          <div className={`p-4 rounded-xl mb-6 ${message.includes('Gagal') ? 'bg-danger-tint text-danger border border-danger/30' : 'bg-brand/10 text-brand border border-brand/20'}`}>
             {message}
           </div>
         )}

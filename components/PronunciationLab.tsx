@@ -61,9 +61,9 @@ export default function PronunciationLab() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return "text-emerald-500 bg-emerald-500/10 border-emerald-500/20";
-    if (score >= 70) return "text-yellow-500 bg-yellow-500/10 border-yellow-500/20";
-    return "text-red-500 bg-red-500/10 border-red-500/20";
+    if (score >= 90) return "text-foreground bg-muted border-border";
+    if (score >= 70) return "text-foreground bg-muted border-border";
+    return "text-foreground bg-muted border-border";
   };
 
   const getScoreMessage = (score: number) => {
@@ -100,7 +100,7 @@ export default function PronunciationLab() {
           <button
             onClick={isRecording ? stopRecording : startRecording}
             disabled={!targetText || isProcessing}
-            className={`px-4 md:px-8 py-3 font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 flex items-center gap-2 ${ isRecording ? "bg-red-500 text-white animate-pulse" : "bg-brand text-background hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(62,207,142,0.4)]" }`}
+            className={`px-4 md:px-8 py-3 font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 flex items-center gap-2 ${ isRecording ? "bg-danger text-on-brand animate-pulse" : "bg-brand text-background" }`}
           >
             {isProcessing ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -117,7 +117,7 @@ export default function PronunciationLab() {
         </div>
 
         {error && (
-          <div className="mt-6 p-4 rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 text-sm">
+          <div className="mt-6 p-4 rounded-xl bg-danger-tint text-danger border border-danger/30 text-sm">
             {error}
           </div>
         )}

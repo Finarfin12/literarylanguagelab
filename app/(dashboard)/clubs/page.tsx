@@ -83,7 +83,7 @@ export default async function ClubsPage() {
       {/* Discover Clubs Section */}
       <div>
         <h2 className="text-2xl font-serif font-bold text-foreground mb-6 flex items-center gap-2">
-          <Globe className="w-6 h-6 text-blue-500" /> Jelajahi Klub Publik
+          <Globe className="w-6 h-6 text-brand-ink" /> Jelajahi Klub Publik
         </h2>
         
         {publicClubs.length > 0 ? (
@@ -117,7 +117,7 @@ function ClubCard({ club, isMember }: { club: any, isMember: boolean }) {
       </div>
 
       <div className="flex justify-between items-start mb-4 relative z-10">
-        <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 ${club.is_public ? 'bg-green-500/10 text-green-600 border border-green-500/20' : 'bg-red-500/10 text-red-600 border border-red-500/20'}`}>
+        <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 ${club.is_public ? 'bg-brand-tint text-brand-ink border border-brand/30' : 'bg-danger-tint text-danger border border-danger/30'}`}>
           {club.is_public ? <><Globe className="w-3 h-3" /> Public</> : <><Lock className="w-3 h-3" /> Private</>}
         </div>
         

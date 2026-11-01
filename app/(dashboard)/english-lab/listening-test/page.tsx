@@ -20,10 +20,10 @@ interface TestData {
 }
 
 const LEVELS: { id: Level; label: string; color: string; bg: string; border: string }[] = [
-  { id: "A1", label: "Beginner", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30" },
+  { id: "A1", label: "Beginner", color: "text-foreground", bg: "bg-muted", border: "border-border" },
   { id: "A2", label: "Elementary", color: "text-brand", bg: "bg-brand/10", border: "border-brand/30" },
-  { id: "B1", label: "Intermediate", color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30" },
-  { id: "B2", label: "Upper Int.", color: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/30" },
+  { id: "B1", label: "Intermediate", color: "text-foreground", bg: "bg-muted", border: "border-border" },
+  { id: "B2", label: "Upper Int.", color: "text-foreground", bg: "bg-muted", border: "border-border" },
 ];
 
 export default function ListeningTestPage() {
@@ -317,7 +317,7 @@ export default function ListeningTestPage() {
           <div className="space-y-4">
             <button
               onClick={generateTest}
-              className="w-full py-4 bg-brand text-background font-bold rounded-xl text-lg hover:shadow-[0_0_20px_rgba(62,207,142,0.3)] transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 bg-brand text-background font-bold rounded-xl text-lg transition-all flex items-center justify-center gap-2"
             >
               <Headphones className="w-5 h-5" /> Generate Test Baru
             </button>
@@ -385,9 +385,9 @@ export default function ListeningTestPage() {
                 <div className="flex flex-wrap items-center gap-2 mt-2">
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-muted border border-border uppercase tracking-wider">{mode}</span>
                   {!uploadedFileName && <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand/10 text-brand border border-brand/20 uppercase tracking-wider">Level {level}</span>}
-                  {uploadedFileName && <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center gap-1"><FileAudio className="w-3 h-3" /> {uploadedFileName}</span>}
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wider">Diputar {replayCount}x</span>
-                  {audioUrl === "browser-tts" && <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase tracking-wider flex items-center gap-1"><Volume2 className="w-3 h-3"/> Browser TTS</span>}
+                  {uploadedFileName && <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-muted text-brand-ink border border-border flex items-center gap-1"><FileAudio className="w-3 h-3" /> {uploadedFileName}</span>}
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-warning-tint text-warning-ink border border-warning-ink/30 uppercase tracking-wider">Diputar {replayCount}x</span>
+                  {audioUrl === "browser-tts" && <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-muted text-foreground border border-border uppercase tracking-wider flex items-center gap-1"><Volume2 className="w-3 h-3"/> Browser TTS</span>}
                 </div>
               </div>
 
@@ -463,7 +463,7 @@ export default function ListeningTestPage() {
           {showResults && (
             <div className="bg-card border border-border rounded-3xl p-4 sm:p-8 animate-in fade-in slide-in-from-bottom-4">
               <div className="text-center mb-8">
-                <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full mb-4 ${score >= 80 ? "bg-emerald-500/20 text-emerald-500" : score >= 60 ? "bg-amber-500/20 text-amber-500" : "bg-red-500/20 text-red-500"}`}>
+                <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full mb-4 ${score >= 80 ? "bg-brand-tint text-brand-ink" : score >= 60 ? "bg-warning-tint text-warning-ink" : "bg-danger-tint text-danger"}`}>
                   <Trophy className="w-12 h-12" />
                 </div>
                 <h2 className="text-3xl font-serif font-bold text-foreground">Skor: {score} / 100</h2>
@@ -486,15 +486,15 @@ export default function ListeningTestPage() {
                     const userAnswer = answers[qIdx];
                     const isCorrect = userAnswer?.startsWith(q.correct);
                     return (
-                      <div key={qIdx} className={`p-4 rounded-xl border ${isCorrect ? "bg-emerald-500/5 border-emerald-500/30" : "bg-red-500/5 border-red-500/30"}`}>
+                      <div key={qIdx} className={`p-4 rounded-xl border ${isCorrect ? "bg-brand-tint border-brand/30" : "bg-danger-tint border-danger/30"}`}>
                         <p className="font-bold text-foreground mb-2">{qIdx + 1}. {q.question}</p>
                         <div className="flex items-center gap-2 text-sm">
                           {isCorrect ? (
-                            <><CheckCircle className="w-4 h-4 text-emerald-500" /> <span className="text-emerald-500 font-medium">{userAnswer}</span></>
+                            <><CheckCircle className="w-4 h-4 text-brand-ink" /> <span className="text-brand-ink font-medium">{userAnswer}</span></>
                           ) : (
                             <div className="flex flex-col gap-1">
-                              <div className="flex items-center gap-2"><XCircle className="w-4 h-4 text-red-500" /> <span className="text-red-500 line-through">{userAnswer || "Tidak dijawab"}</span></div>
-                              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-emerald-500" /> <span className="text-emerald-500 font-medium">Jawaban Benar: {q.options.find(o => o.startsWith(q.correct))}</span></div>
+                              <div className="flex items-center gap-2"><XCircle className="w-4 h-4 text-danger" /> <span className="text-danger line-through">{userAnswer || "Tidak dijawab"}</span></div>
+                              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-brand-ink" /> <span className="text-brand-ink font-medium">Jawaban Benar: {q.options.find(o => o.startsWith(q.correct))}</span></div>
                             </div>
                           )}
                         </div>

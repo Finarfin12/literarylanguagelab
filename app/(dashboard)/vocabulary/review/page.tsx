@@ -58,7 +58,7 @@ export default function FlashcardReviewPage() {
     <div className="p-4 md:p-8 max-w-3xl mx-auto min-h-full flex flex-col items-center pt-20">
       <div className="mb-12 text-center">
         <h1 className="text-3xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
-          <BookOpen className="w-8 h-8 text-amber-400" />
+          <BookOpen className="w-8 h-8 text-warning-ink" />
           Flashcard Review
         </h1>
         <p className="text-muted-foreground mt-2 font-mono bg-muted px-4 py-1 rounded-full inline-block">Kartu {currentIndex + 1} dari {cards.length}</p>
@@ -75,7 +75,7 @@ export default function FlashcardReviewPage() {
         >
           {/* Front of card */}
           <div 
-            className="absolute inset-0 bg-card shadow-sm backdrop-blur-xl border border-border rounded-3xl shadow-2xl flex flex-col items-center justify-center p-4 md:p-8 text-center"
+            className="absolute inset-0 bg-card shadow-sm border border-border rounded-3xl shadow-2xl flex flex-col items-center justify-center p-4 md:p-8 text-center"
             style={{ backfaceVisibility: 'hidden' }}
           >
             <p className="text-4xl md:text-6xl font-serif font-bold text-brand mb-4">{currentCard.word}</p>
@@ -84,7 +84,7 @@ export default function FlashcardReviewPage() {
 
           {/* Back of card */}
           <div 
-            className="absolute inset-0 bg-brand/10 backdrop-blur-xl border border-brand/30 rounded-3xl shadow-2xl flex flex-col items-center justify-center p-4 md:p-8 text-center"
+            className="absolute inset-0 bg-brand/10 border border-brand/30 rounded-3xl shadow-2xl flex flex-col items-center justify-center p-4 md:p-8 text-center"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
             <p className="text-sm font-bold text-brand/80 mb-4 uppercase tracking-widest">Arti</p>
@@ -101,13 +101,13 @@ export default function FlashcardReviewPage() {
       <div className={`mt-12 flex items-center gap-6 transition-all duration-500 ${showAnswer ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
         <button 
           onClick={(e) => { e.stopPropagation(); setShowAnswer(false); setTimeout(() => setCurrentIndex(c => c + 1), 150); }}
-          className="px-4 md:px-8 py-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold rounded-xl transition-all flex items-center gap-2 border border-red-500/20"
+          className="px-4 md:px-8 py-4 bg-danger-tint hover:bg-danger-tint text-danger font-bold rounded-xl transition-all flex items-center gap-2 border border-danger/30"
         >
           <XCircle className="w-5 h-5" /> Lupa
         </button>
         <button 
           onClick={(e) => { e.stopPropagation(); setShowAnswer(false); setTimeout(() => setCurrentIndex(c => c + 1), 150); }}
-          className="px-4 md:px-8 py-4 bg-brand text-background hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-1 font-bold rounded-xl transition-all flex items-center gap-2"
+          className="px-4 md:px-8 py-4 bg-brand text-background font-bold rounded-xl transition-all flex items-center gap-2"
         >
           <CheckCircle className="w-5 h-5" /> Ingat
         </button>

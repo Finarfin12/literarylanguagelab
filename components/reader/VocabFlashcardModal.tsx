@@ -130,7 +130,7 @@ export default function VocabFlashcardModal({ textContext, textId, onClose }: Vo
       
       <button 
         onClick={onClose}
-        className="absolute top-6 right-6 p-2 bg-muted text-muted-foreground hover:bg-rose-500 hover:text-white rounded-full transition-colors z-10"
+        className="absolute top-6 right-6 p-2 bg-muted text-muted-foreground hover:bg-brand-hover hover:text-white rounded-full transition-colors z-10"
         title="Tutup & Kembali Membaca"
       >
         <X className="w-6 h-6" />
@@ -163,7 +163,7 @@ export default function VocabFlashcardModal({ textContext, textId, onClose }: Vo
           </div>
 
           {/* Back */}
-          <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 shadow-[0_0_30px_rgba(62,207,142,0.2)] rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center">
+          <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center">
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground mb-3 sm:mb-4">{currentWord.word}</h2>
             <div className="text-lg sm:text-xl text-brand font-medium mb-4 sm:mb-6"><Markdown>{currentWord.definition}</Markdown></div>
             <div className="bg-muted/50 p-3 sm:p-4 rounded-xl text-sm italic text-muted-foreground border-l-4 border-l-brand w-full">
@@ -174,7 +174,7 @@ export default function VocabFlashcardModal({ textContext, textId, onClose }: Vo
               <button 
                 onClick={(e) => { e.stopPropagation(); handleSaveToVocab(currentWord); }}
                 disabled={isSaved || savingWord === currentWord.word}
-                className={`p-2 rounded-full border transition-all flex items-center gap-2 text-xs font-bold px-3 sm:px-4 ${isSaved ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-500' : 'bg-background border-border hover:bg-muted text-muted-foreground'}`}
+                className={`p-2 rounded-full border transition-all flex items-center gap-2 text-xs font-bold px-3 sm:px-4 ${isSaved ? 'bg-brand-tint border-brand/30 text-brand-ink' : 'bg-background border-border hover:bg-muted text-muted-foreground'}`}
               >
                 {savingWord === currentWord.word ? <Loader2 className="w-4 h-4 animate-spin" /> : isSaved ? <CheckCircle2 className="w-4 h-4" /> : <Save className="w-4 h-4" />}
                 <span className="hidden sm:inline">{isSaved ? "Tersimpan" : "Save to Vocab Bank"}</span>

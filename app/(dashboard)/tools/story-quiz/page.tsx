@@ -97,7 +97,7 @@ export default function StoryQuizPage() {
           <button 
             onClick={generateQuiz}
             disabled={loading}
-            className="bg-brand text-background px-4 py-3 rounded-xl font-bold hover:shadow-[0_0_15px_rgba(62,207,142,0.4)] transition-all flex items-center gap-2 disabled:opacity-50"
+            className="bg-brand text-background px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-2 disabled:opacity-50"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <RefreshCw className="w-5 h-5" />}
             Mulai Main
@@ -106,7 +106,7 @@ export default function StoryQuizPage() {
       </div>
 
       {errorMsg && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-6 rounded-2xl flex items-center gap-4 mb-8">
+        <div className="bg-danger-tint border border-danger/30 text-danger p-6 rounded-2xl flex items-center gap-4 mb-8">
           <AlertCircle className="w-6 h-6 shrink-0" />
           <p>{errorMsg}</p>
         </div>
@@ -121,7 +121,7 @@ export default function StoryQuizPage() {
 
       {quizData && (
         <div className="space-y-8 animate-in fade-in duration-700">
-          <div className="bg-card shadow-sm backdrop-blur-md border border-brand/20 rounded-3xl p-4 md:p-8 shadow-xl relative overflow-hidden">
+          <div className="bg-card shadow-sm border border-brand/20 rounded-3xl p-4 md:p-8 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
             <h2 className="text-xl font-serif font-bold text-brand mb-6 border-b border-border pb-4">The Story ({genre})</h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-lg font-serif italic text-foreground/90">
@@ -152,9 +152,9 @@ export default function StoryQuizPage() {
                     if (submitted) {
                       const isCorrect = q.correctAnswerIndex === optIndex;
                       if (isCorrect) {
-                        btnClass = "bg-green-500/20 border-green-500 text-green-400 font-bold";
+                        btnClass = "bg-muted border-border text-foreground font-bold";
                       } else if (isSelected && !isCorrect) {
-                        btnClass = "bg-red-500/20 border-red-500 text-red-400 line-through opacity-70";
+                        btnClass = "bg-muted border-border text-foreground line-through opacity-70";
                       } else {
                         btnClass = "bg-muted border-border text-muted-foreground opacity-50";
                       }
@@ -174,7 +174,7 @@ export default function StoryQuizPage() {
                 </div>
                 
                 {submitted && (
-                  <div className={`mt-4 p-4 rounded-xl ${answers[qIndex] === q.correctAnswerIndex ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>
+                  <div className={`mt-4 p-4 rounded-xl ${answers[qIndex] === q.correctAnswerIndex ? "bg-brand-tint text-brand-ink" : "bg-danger-tint text-danger"}`}>
                     <p className="text-sm font-bold mb-1">{answers[qIndex] === q.correctAnswerIndex ? "Jawaban Benar!" : "Jawaban Salah."}</p>
                     <div className="text-sm opacity-90"><Markdown>{q.explanation}</Markdown></div>
                   </div>
@@ -187,7 +187,7 @@ export default function StoryQuizPage() {
             <button
               onClick={handleSubmit}
               disabled={Object.keys(answers).length < 5}
-              className="w-full py-5 bg-brand hover:bg-brand-hover text-background font-bold text-xl rounded-2xl hover:shadow-[0_0_30px_rgba(62,207,142,0.4)] transition-all disabled:opacity-50"
+              className="w-full py-5 bg-brand hover:bg-brand-hover text-background font-bold text-xl rounded-2xl transition-all disabled:opacity-50"
             >
               Kirim Jawaban
             </button>
@@ -198,7 +198,7 @@ export default function StoryQuizPage() {
               <p className="text-muted-foreground mb-6">Pengetahuan konteks sastra Anda luar biasa!</p>
               <button
                 onClick={generateQuiz}
-                className="px-6 py-3 bg-brand text-background font-bold rounded-xl hover:shadow-[0_0_15px_rgba(62,207,142,0.4)] transition-all flex items-center gap-2"
+                className="px-6 py-3 bg-brand text-background font-bold rounded-xl transition-all flex items-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" /> Main Lagi
               </button>

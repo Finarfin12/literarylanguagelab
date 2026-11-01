@@ -97,11 +97,11 @@ export default function ParaphraseChallengePage() {
       </div>
 
       <div className="grid grid-cols-1 gap-8">
-        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500/0 via-blue-500 to-blue-500/0 opacity-50" />
+        <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-muted opacity-50" />
           
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-sm font-bold text-blue-400 uppercase tracking-wider">Tantangan Saat Ini</h2>
+            <h2 className="text-sm font-bold text-brand-ink uppercase tracking-wider">Tantangan Saat Ini</h2>
             <button onClick={() => generateChallenge()} disabled={loadingChallenge} className="flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-foreground bg-muted px-3 py-2 rounded-lg transition-colors">
               <RefreshCw className={`w-4 h-4 ${loadingChallenge ? "animate-spin" : ""}`} /> Ganti Teks
             </button>
@@ -136,7 +136,7 @@ export default function ParaphraseChallengePage() {
           <button
             onClick={handleEvaluate}
             disabled={loadingEval || !paraphrase.trim() || !challenge}
-            className="w-full py-4 bg-gradient-to-r from-brand to-brand-hover text-background font-bold text-lg rounded-xl hover:shadow-[0_0_30px_rgba(62,207,142,0.4)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-4 bg-gradient-to-r from-brand to-brand-hover text-background font-bold text-lg rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loadingEval ? <Loader2 className="w-6 h-6 animate-spin" /> : <Award className="w-6 h-6" />}
             Evaluasi Parafrase Saya
@@ -144,7 +144,7 @@ export default function ParaphraseChallengePage() {
         </div>
 
         {result && (
-          <div className="bg-card shadow-sm backdrop-blur-2xl border border-brand/30 rounded-3xl p-4 md:p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="bg-card shadow-sm border border-brand/30 rounded-3xl p-4 md:p-8 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
             <h2 className="text-2xl font-serif font-bold text-brand mb-6 border-b border-brand/20 pb-4">Feedback Evaluator</h2>
             <div className="prose dark:prose-invert prose-brand max-w-none prose-p:leading-relaxed prose-headings:font-serif">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>

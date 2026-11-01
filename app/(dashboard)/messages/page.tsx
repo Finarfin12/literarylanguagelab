@@ -209,7 +209,7 @@ function MessagesContent() {
     || searchResults.find(r => r.id === activeUserId);
 
   if (loading) {
-    return <div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>;
+    return <div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand-ink" /></div>;
   }
 
   return (
@@ -219,7 +219,7 @@ function MessagesContent() {
       <div className={`w-full md:w-1/3 bg-card border border-border rounded-3xl flex-col overflow-hidden shadow-sm ${activeUserId ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-6 border-b border-border">
           <h2 className="text-2xl font-serif font-bold mb-4 flex items-center gap-2">
-            <MessageSquare className="w-6 h-6 text-blue-500" /> Pesan
+            <MessageSquare className="w-6 h-6 text-brand-ink" /> Pesan
           </h2>
           
           <form onSubmit={handleSearch} className="relative">
@@ -229,7 +229,7 @@ function MessagesContent() {
               placeholder="Cari pengguna baru..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-muted border-transparent rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-background transition-all"
+              className="w-full bg-muted border-transparent rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-border focus:bg-background transition-all"
             />
           </form>
         </div>
@@ -263,12 +263,12 @@ function MessagesContent() {
               <button
                 key={c.other_user.id}
                 onClick={() => startChat(c.other_user)}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left mb-1 ${activeUserId === c.other_user.id ? 'bg-blue-500/10' : 'hover:bg-muted/50'}`}
+                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left mb-1 ${activeUserId === c.other_user.id ? 'bg-muted' : 'hover:bg-muted/50'}`}
               >
                 <div className="relative">
                   <img src={c.other_user.avatar_url || "https://ui-avatars.com/api/?name=U"} alt="" className="w-12 h-12 rounded-full bg-muted object-cover border border-border" />
                   {c.unread_count > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-card">
+                    <span className="absolute -top-1 -right-1 bg-danger text-on-brand text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-card">
                       {c.unread_count}
                     </span>
                   )}
@@ -300,7 +300,7 @@ function MessagesContent() {
             <p className="text-lg font-medium">Pilih obrolan untuk mulai mengirim pesan</p>
           </div>
         ) : chatLoading ? (
-          <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>
+          <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand-ink" /></div>
         ) : (
           <>
             {/* Chat Header */}
@@ -314,7 +314,7 @@ function MessagesContent() {
               <img src={activeContact?.avatar_url || "https://ui-avatars.com/api/?name=U"} alt="" className="w-10 h-10 rounded-full bg-muted object-cover" />
               <div>
                 <h3 className="font-bold text-foreground">{activeContact?.full_name}</h3>
-                <p className="text-xs text-emerald-500 font-medium">Online</p>
+                <p className="text-xs text-brand-ink font-medium">Online</p>
               </div>
             </div>
 
@@ -341,14 +341,14 @@ function MessagesContent() {
                       <div className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[70%] rounded-2xl p-4 shadow-sm ${
                           isMe 
-                            ? 'bg-blue-600 text-white rounded-br-none' 
+                            ? 'bg-brand-solid text-on-brand rounded-br-none' 
                             : 'bg-card border border-border text-foreground rounded-bl-none'
                         }`}>
                           <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-                          <div className={`flex items-center justify-end gap-1 mt-2 text-[10px] ${isMe ? 'text-blue-200' : 'text-muted-foreground'}`}>
+                          <div className={`flex items-center justify-end gap-1 mt-2 text-[10px] ${isMe ? 'text-brand-ink' : 'text-muted-foreground'}`}>
                             {format(new Date(msg.created_at), 'HH:mm')}
                             {isMe && (
-                              msg.is_read ? <CheckCheck className="w-3 h-3 text-blue-200" /> : <Check className="w-3 h-3" />
+                              msg.is_read ? <CheckCheck className="w-3 h-3 text-brand-ink" /> : <Check className="w-3 h-3" />
                             )}
                           </div>
                         </div>
@@ -367,7 +367,7 @@ function MessagesContent() {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Ketik pesan..."
-                  className="flex-1 bg-muted border border-border rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none max-h-32 min-h-[56px] custom-scrollbar"
+                  className="flex-1 bg-muted border border-border rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-border resize-none max-h-32 min-h-[56px] custom-scrollbar"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
@@ -378,7 +378,7 @@ function MessagesContent() {
                 <button 
                   type="submit" 
                   disabled={!newMessage.trim()}
-                  className="bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white p-4 rounded-2xl transition-all shrink-0 flex items-center justify-center shadow-md shadow-blue-500/20 h-[56px] w-[56px]"
+                  className="bg-brand-solid hover:bg-brand-hover disabled:opacity-50 text-on-brand p-4 rounded-2xl transition-all shrink-0 flex items-center justify-center shadow-md h-[56px] w-[56px]"
                 >
                   <Send className="w-5 h-5" />
                 </button>
@@ -394,7 +394,7 @@ function MessagesContent() {
 
 export default function MessagesPage() {
   return (
-    <Suspense fallback={<div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>}>
+    <Suspense fallback={<div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand-ink" /></div>}>
       <MessagesContent />
     </Suspense>
   );

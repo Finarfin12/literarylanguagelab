@@ -158,8 +158,8 @@ export default function OCRLensPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
         {/* Upload Section */}
         <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-6 relative flex flex-col">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500/0 via-blue-500 to-blue-500/0 opacity-50" />
-          <h2 className="text-sm font-bold text-blue-400 mb-4 uppercase tracking-wider flex justify-between">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-muted opacity-50" />
+          <h2 className="text-sm font-bold text-brand-ink mb-4 uppercase tracking-wider flex justify-between">
             <span>Gambar Sumber</span>
             {pagesScanned > 0 && <span className="text-xs normal-case tracking-normal text-muted-foreground">{pagesScanned} halaman terscan</span>}
           </h2>
@@ -168,10 +168,10 @@ export default function OCRLensPage() {
             type="button"
             onClick={() => galleryInput.current?.click()}
             disabled={busy}
-            className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-6 bg-background mb-4 min-h-[220px] hover:border-blue-400 transition-colors"
+            className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-6 bg-background mb-4 min-h-[220px] hover:border-border transition-colors"
           >
             {preparing ? (
-              <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+              <Loader2 className="w-8 h-8 animate-spin text-brand-ink" />
             ) : image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={image} alt="Pratinjau halaman" className="w-full h-full object-contain max-h-[300px]" />
@@ -209,7 +209,7 @@ export default function OCRLensPage() {
           <button
             onClick={handleScan}
             disabled={!image || busy}
-            className="w-full min-h-[44px] py-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full min-h-[44px] py-4 bg-brand-solid hover:bg-brand-hover text-on-brand font-bold rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
             {loading ? "Memindai Gambar..." : pagesScanned > 0 ? "Scan & Sambung" : "Mulai Scan"}
@@ -224,7 +224,7 @@ export default function OCRLensPage() {
             <span className="flex items-center gap-2">
               {wordCount > 0 && <span className="text-xs text-brand/70 bg-brand/10 px-2 py-1 rounded-full">{wordCount} kata</span>}
               {resultText && (
-                <button onClick={handleReset} className="p-2 rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-500/10" aria-label="Mulai dari awal">
+                <button onClick={handleReset} className="p-2 rounded-lg text-muted-foreground hover:text-danger hover:bg-danger-tint" aria-label="Mulai dari awal">
                   <RotateCcw className="w-4 h-4" />
                 </button>
               )}
@@ -256,7 +256,7 @@ export default function OCRLensPage() {
             <button
               onClick={handleSave}
               disabled={saving || !resultText || !title}
-              className="w-full min-h-[44px] py-4 bg-brand hover:bg-brand-hover text-background font-bold rounded-xl transition-all hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full min-h-[44px] py-4 bg-brand hover:bg-brand-hover text-background font-bold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
               Simpan ke Library <ArrowRight className="w-4 h-4" />

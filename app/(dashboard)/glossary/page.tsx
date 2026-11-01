@@ -17,7 +17,7 @@ export default async function GlossaryPage() {
     <div className="p-4 md:p-8 max-w-6xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-          <BookOpen className="w-8 h-8 text-amber-500" />
+          <BookOpen className="w-8 h-8 text-warning-ink" />
           Glossary Builder
         </h1>
         <p className="text-muted-foreground mt-2">Bangun kamus spesifik per buku atau penulis untuk menjaga konsistensi istilah teknis/sastra.</p>
@@ -26,31 +26,31 @@ export default async function GlossaryPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1">
           <div className="bg-card shadow-sm border border-border p-6 rounded-3xl sticky top-8">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Plus className="w-5 h-5 text-amber-500" /> Add Term</h2>
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Plus className="w-5 h-5 text-warning-ink" /> Add Term</h2>
             <form action={addGlossary} className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Term / Istilah</label>
-                <input type="text" name="term" required className="w-full mt-1 bg-background border border-border rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500" />
+                <input type="text" name="term" required className="w-full mt-1 bg-background border border-border rounded-xl p-3 text-sm focus:outline-none focus:border-warning-ink/30" />
               </div>
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Preferred Translation</label>
-                <input type="text" name="preferred_translation" required className="w-full mt-1 bg-background border border-border rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500" />
+                <input type="text" name="preferred_translation" required className="w-full mt-1 bg-background border border-border rounded-xl p-3 text-sm focus:outline-none focus:border-warning-ink/30" />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Buku (Opsional)</label>
-                  <input type="text" name="book_title" className="w-full mt-1 bg-background border border-border rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500" />
+                  <input type="text" name="book_title" className="w-full mt-1 bg-background border border-border rounded-xl p-3 text-sm focus:outline-none focus:border-warning-ink/30" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Penulis (Opsional)</label>
-                  <input type="text" name="author" className="w-full mt-1 bg-background border border-border rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500" />
+                  <input type="text" name="author" className="w-full mt-1 bg-background border border-border rounded-xl p-3 text-sm focus:outline-none focus:border-warning-ink/30" />
                 </div>
               </div>
               <div>
                 <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Notes (Opsional)</label>
-                <textarea name="notes" className="w-full mt-1 bg-background border border-border rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500" rows={2}></textarea>
+                <textarea name="notes" className="w-full mt-1 bg-background border border-border rounded-xl p-3 text-sm focus:outline-none focus:border-warning-ink/30" rows={2}></textarea>
               </div>
-              <SubmitButton className="w-full py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 transition-colors">
+              <SubmitButton className="w-full py-3 bg-warning-ink text-on-brand font-bold rounded-xl hover:bg-warning-ink/90 transition-colors">
                 Save to Glossary
               </SubmitButton>
             </form>
@@ -69,7 +69,7 @@ export default async function GlossaryPage() {
                 <div key={g.id} className="bg-card shadow-sm border border-border rounded-2xl p-5 flex flex-col md:flex-row gap-4 justify-between group">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="font-serif text-xl font-bold text-amber-500">{g.term}</span>
+                      <span className="font-serif text-xl font-bold text-warning-ink">{g.term}</span>
                       <span className="text-muted-foreground">→</span>
                       <span className="font-serif text-xl font-bold text-foreground">{g.preferred_translation}</span>
                     </div>
@@ -82,7 +82,7 @@ export default async function GlossaryPage() {
                     {g.notes && <p className="text-sm text-muted-foreground">Catatan: {g.notes}</p>}
                   </div>
                   <form action={async () => { "use server"; await deleteGlossary(g.id); }} className="shrink-0">
-                    <button className="p-2 text-muted-foreground hover:text-red-500 bg-muted rounded-xl hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100">
+                    <button className="p-2 text-muted-foreground hover:text-danger bg-muted rounded-xl hover:bg-danger-tint transition-colors opacity-0 group-hover:opacity-100">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </form>

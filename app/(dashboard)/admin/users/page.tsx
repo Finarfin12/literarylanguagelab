@@ -33,7 +33,7 @@ export default async function AdminUsersPage({
 
   if (error) {
     return (
-      <div className="p-4 md:p-8 text-center text-red-500">
+      <div className="p-4 md:p-8 text-center text-danger">
         <p>Error loading users: {error.message}</p>
       </div>
     );

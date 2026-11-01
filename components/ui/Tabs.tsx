@@ -30,7 +30,7 @@ export default function Tabs<T extends string>({
             aria-selected={active}
             onClick={() => onChange(item.value)}
             className={`flex items-center gap-2 px-4 min-h-[44px] text-sm font-bold whitespace-nowrap border-b-2 -mb-px transition-colors ${
-              active ? "border-brand text-brand" : "border-transparent text-muted-foreground hover:text-foreground"
+              active ? "border-brand-solid text-brand-ink" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             {item.icon}

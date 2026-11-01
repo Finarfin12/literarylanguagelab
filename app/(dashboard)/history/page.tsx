@@ -140,7 +140,7 @@ export default function HistoryPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         {/* Weekly Insights Cards */}
-        <div className="bg-card shadow-sm backdrop-blur-md border border-brand/20 rounded-3xl p-6 shadow-xl flex items-center gap-4">
+        <div className="bg-card shadow-sm border border-brand/20 rounded-3xl p-6 shadow-xl flex items-center gap-4">
           <div className="w-12 h-12 bg-brand/10 text-brand rounded-2xl flex items-center justify-center shrink-0">
             <BookOpen className="w-6 h-6" />
           </div>
@@ -150,8 +150,8 @@ export default function HistoryPage() {
           </div>
         </div>
 
-        <div className="bg-card shadow-sm backdrop-blur-md border border-blue-500/20 rounded-3xl p-6 shadow-xl flex items-center gap-4">
-          <div className="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-2xl flex items-center justify-center shrink-0">
+        <div className="bg-card shadow-sm border border-border rounded-3xl p-6 shadow-xl flex items-center gap-4">
+          <div className="w-12 h-12 bg-muted text-brand-ink rounded-2xl flex items-center justify-center shrink-0">
             <Activity className="w-6 h-6" />
           </div>
           <div>
@@ -160,8 +160,8 @@ export default function HistoryPage() {
           </div>
         </div>
 
-        <div className="bg-card shadow-sm backdrop-blur-md border border-purple-500/20 rounded-3xl p-6 shadow-xl flex items-center gap-4">
-          <div className="w-12 h-12 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center shrink-0">
+        <div className="bg-card shadow-sm border border-border rounded-3xl p-6 shadow-xl flex items-center gap-4">
+          <div className="w-12 h-12 bg-muted text-foreground rounded-2xl flex items-center justify-center shrink-0">
             <Clock className="w-6 h-6" />
           </div>
           <div>
@@ -170,8 +170,8 @@ export default function HistoryPage() {
           </div>
         </div>
 
-        <div className="bg-card shadow-sm backdrop-blur-md border border-red-500/20 rounded-3xl p-6 shadow-xl flex items-center gap-4">
-          <div className="w-12 h-12 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center shrink-0">
+        <div className="bg-card shadow-sm border border-danger/30 rounded-3xl p-6 shadow-xl flex items-center gap-4">
+          <div className="w-12 h-12 bg-danger-tint text-danger rounded-2xl flex items-center justify-center shrink-0">
             <Frown className="w-6 h-6" />
           </div>
           <div>
@@ -182,7 +182,7 @@ export default function HistoryPage() {
       </div>
 
       {/* Archive / Activity Log */}
-      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-xl">
+      <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-xl">
         <h2 className="text-xl font-serif font-bold text-brand mb-6 border-b border-border pb-4 flex items-center gap-2">
           <Clock className="w-5 h-5" /> Activity Archive
         </h2>

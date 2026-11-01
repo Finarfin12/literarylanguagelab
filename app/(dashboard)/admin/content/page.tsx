@@ -44,7 +44,7 @@ export default async function AdminContentPage({
       rows = (basic.data || []).map((t) => ({ ...t, cefr_level: null, status: "published" as const, source: null }));
     } else {
       return (
-        <div className="p-4 md:p-8 text-center text-red-500">
+        <div className="p-4 md:p-8 text-center text-danger">
           <p>Gagal memuat teks: {textsRes.error.message}</p>
         </div>
       );

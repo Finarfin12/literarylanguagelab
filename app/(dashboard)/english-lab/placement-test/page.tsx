@@ -21,10 +21,10 @@ interface SectionScore {
 }
 
 const SECTIONS: { id: Section; label: string; icon: typeof BookOpen; color: string; questions: number }[] = [
-  { id: 'reading', label: 'Reading', icon: BookOpen, color: 'text-blue-400', questions: 3 },
-  { id: 'grammar', label: 'Grammar', icon: PenLine, color: 'text-emerald-400', questions: 3 },
-  { id: 'vocabulary', label: 'Vocabulary', icon: BookMarked, color: 'text-purple-400', questions: 2 },
-  { id: 'listening', label: 'Listening', icon: Headphones, color: 'text-amber-400', questions: 2 },
+  { id: 'reading', label: 'Reading', icon: BookOpen, color: 'text-foreground', questions: 3 },
+  { id: 'grammar', label: 'Grammar', icon: PenLine, color: 'text-foreground', questions: 3 },
+  { id: 'vocabulary', label: 'Vocabulary', icon: BookMarked, color: 'text-foreground', questions: 2 },
+  { id: 'listening', label: 'Listening', icon: Headphones, color: 'text-foreground', questions: 2 },
 ];
 
 const CEFR_DESCRIPTIONS: Record<string, { title: string; desc: string }> = {
@@ -189,7 +189,7 @@ export default function PlacementTestPage() {
       <div className="min-h-full p-4 md:p-8 flex items-center justify-center">
         <div className="max-w-lg w-full">
           <div className="bg-card border border-border rounded-3xl p-6 md:p-10 shadow-xl text-center">
-            <div className="inline-flex p-5 bg-gradient-to-br from-brand/20 to-emerald-500/10 rounded-full mb-6">
+            <div className="inline-flex p-5 bg-muted rounded-full mb-6">
               <Sparkles className="w-10 h-10 text-brand" />
             </div>
             <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-3">Placement Test</h1>
@@ -211,7 +211,7 @@ export default function PlacementTestPage() {
 
             <button
               onClick={() => setPhase('testing')}
-              className="w-full py-3.5 bg-brand text-white font-bold rounded-2xl hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] transition-all mb-3 flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-brand text-white font-bold rounded-2xl transition-all mb-3 flex items-center justify-center gap-2"
             >
               Mulai Test <ArrowRight className="w-4 h-4" />
             </button>
@@ -262,7 +262,7 @@ export default function PlacementTestPage() {
             </div>
             <div className="h-2 bg-muted rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-brand to-emerald-400 rounded-full transition-all duration-500"
+                className="h-full bg-muted rounded-full transition-all duration-500"
                 style={{ width: `${((answeredQuestions + 1) / totalQuestions) * 100}%` }}
               />
             </div>
@@ -329,8 +329,8 @@ export default function PlacementTestPage() {
                     let optClass = 'bg-muted border-border hover:border-brand/50 hover:bg-muted/80 cursor-pointer';
 
                     if (showFeedback) {
-                      if (isCorrect) optClass = 'bg-emerald-500/10 border-emerald-500/50 ring-2 ring-emerald-500/30';
-                      else if (isSelected && !isCorrect) optClass = 'bg-red-500/10 border-red-500/50 ring-2 ring-red-500/30';
+                      if (isCorrect) optClass = 'bg-muted border-border ring-2 ring-border';
+                      else if (isSelected && !isCorrect) optClass = 'bg-muted border-border ring-2 ring-border';
                       else optClass = 'bg-muted border-border opacity-50';
                     } else if (isSelected) {
                       optClass = 'bg-brand/10 border-brand/50 ring-2 ring-brand/30';
@@ -344,8 +344,8 @@ export default function PlacementTestPage() {
                         className={`w-full text-left p-4 rounded-2xl border transition-all flex items-center gap-3 ${optClass}`}
                       >
                         <span className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 ${
-                          showFeedback && isCorrect ? 'bg-emerald-500 text-white'
-                          : showFeedback && isSelected && !isCorrect ? 'bg-red-500 text-white'
+                          showFeedback && isCorrect ? 'bg-brand-solid text-on-brand'
+                          : showFeedback && isSelected && !isCorrect ? 'bg-danger text-on-brand'
                           : 'bg-background border border-border text-muted-foreground'
                         }`}>
                           {showFeedback && isCorrect ? <CheckCircle2 className="w-4 h-4" />
@@ -362,11 +362,11 @@ export default function PlacementTestPage() {
                 {showFeedback && serverData && (
                   <div className={`rounded-2xl p-4 border ${
                     selectedAnswer === serverData.correct
-                      ? 'bg-emerald-500/5 border-emerald-500/20'
-                      : 'bg-red-500/5 border-red-500/20'
+                      ? 'bg-brand-tint border-brand/30'
+                      : 'bg-danger-tint border-danger/30'
                   }`}>
                     <p className={`text-sm font-bold mb-1 ${
-                      selectedAnswer === serverData.correct ? 'text-emerald-500' : 'text-red-500'
+                      selectedAnswer === serverData.correct ? 'text-brand-ink' : 'text-danger'
                     }`}>
                       {selectedAnswer === serverData.correct ? '✅ Benar!' : '❌ Kurang Tepat'}
                     </p>
@@ -379,7 +379,7 @@ export default function PlacementTestPage() {
                   <button
                     onClick={handleNext}
                     disabled={loading}
-                    className="w-full py-3.5 bg-brand text-white font-bold rounded-2xl hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] transition-all flex items-center justify-center gap-2"
+                    className="w-full py-3.5 bg-brand text-white font-bold rounded-2xl transition-all flex items-center justify-center gap-2"
                   >
                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> :
                       currentSectionIdx === SECTIONS.length - 1 && currentQuestionIdx + 1 === currentSection.questions
@@ -425,10 +425,10 @@ export default function PlacementTestPage() {
             {hasScores && (
               <div className="space-y-3 mb-8">
                 {[
-                  { label: '📖 Reading', score: finalResult.scores.reading, color: 'bg-blue-500' },
-                  { label: '📝 Grammar', score: finalResult.scores.grammar, color: 'bg-emerald-500' },
-                  { label: '📚 Vocabulary', score: finalResult.scores.vocabulary, color: 'bg-purple-500' },
-                  { label: '🎧 Listening', score: finalResult.scores.listening, color: 'bg-amber-500' },
+                  { label: '📖 Reading', score: finalResult.scores.reading, color: 'bg-brand-solid' },
+                  { label: '📝 Grammar', score: finalResult.scores.grammar, color: 'bg-brand-solid' },
+                  { label: '📚 Vocabulary', score: finalResult.scores.vocabulary, color: 'bg-brand-solid' },
+                  { label: '🎧 Listening', score: finalResult.scores.listening, color: 'bg-brand-solid' },
                 ].map(item => (
                   <div key={item.label} className="flex items-center gap-3">
                     <span className="text-xs font-bold text-muted-foreground w-28 text-left">{item.label}</span>
@@ -443,7 +443,7 @@ export default function PlacementTestPage() {
 
             <Link
               href="/dashboard"
-              className="block w-full py-3.5 bg-brand text-white font-bold rounded-2xl hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] transition-all mb-3"
+              className="block w-full py-3.5 bg-brand text-white font-bold rounded-2xl transition-all mb-3"
             >
               Kembali ke Dashboard
             </Link>

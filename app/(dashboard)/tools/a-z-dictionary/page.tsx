@@ -46,7 +46,7 @@ export default function AZDictionaryPage() {
     <div className="p-4 md:p-8 max-w-6xl mx-auto min-h-full flex flex-col">
       <div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4">
         <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center justify-center gap-3">
-          <Library className="w-8 h-8 text-blue-400" />
+          <Library className="w-8 h-8 text-brand-ink" />
           A-Z Dictionary Browser
         </h1>
         <p className="text-muted-foreground mt-2 text-lg max-w-2xl mx-auto">
@@ -63,7 +63,7 @@ export default function AZDictionaryPage() {
               onClick={() => setActiveLetter(letter)}
               className={`w-10 h-10 rounded-xl font-bold flex items-center justify-center transition-all ${
                 activeLetter === letter
-                  ? "bg-brand text-background shadow-[0_0_15px_rgba(62,207,142,0.4)] scale-110"
+                  ? "bg-brand text-background scale-110"
                   : "bg-muted text-muted-foreground hover:bg-muted hover:bg-muted/80 hover:text-foreground"
               }`}
             >
@@ -120,7 +120,7 @@ export default function AZDictionaryPage() {
                 <div 
                   key={item.word + idx} 
                   onClick={() => router.push(`/tools/lexicon-search?word=${item.word}`)}
-                  className="bg-card shadow-sm backdrop-blur-md border border-border hover:border-brand/30 p-5 rounded-2xl cursor-pointer group hover:bg-card shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
+                  className="bg-card shadow-sm border border-border hover:border-brand/30 p-5 rounded-2xl cursor-pointer group hover:bg-card shadow-sm transition-all hover:shadow-xl relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                     <ArrowRight className="w-4 h-4 text-brand" />

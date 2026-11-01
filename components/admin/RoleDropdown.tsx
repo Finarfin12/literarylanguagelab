@@ -116,13 +116,13 @@ export default function RoleDropdown({ userId, userName, currentRole }: RoleDrop
           disabled={updating}
           className={`appearance-none bg-background border rounded-lg px-3 py-1.5 pr-8 text-[11px] font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-brand disabled:opacity-50 transition-colors cursor-pointer ${
             currentRole === 'admin' 
-              ? 'text-red-500 border-red-500/50 hover:bg-red-500/10' 
+              ? 'text-danger border-danger/30 hover:bg-danger-tint' 
               : currentRole === 'banned'
               ? 'text-gray-500 border-gray-500/50 hover:bg-gray-500/10 bg-gray-500/5'
               : currentRole === 'curator'
-              ? 'text-purple-500 border-purple-500/50 hover:bg-purple-500/10'
+              ? 'text-foreground border-border hover:bg-muted'
               : currentRole === 'moderator'
-              ? 'text-blue-500 border-blue-500/50 hover:bg-blue-500/10'
+              ? 'text-brand-ink border-border hover:bg-muted'
               : 'text-foreground border-border hover:bg-muted'
           }`}
         >
@@ -146,7 +146,7 @@ export default function RoleDropdown({ userId, userName, currentRole }: RoleDrop
       <button 
         onClick={handleDelete}
         disabled={updating}
-        className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-red-500/70 hover:text-red-500 transition-colors px-2"
+        className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-danger/70 hover:text-danger transition-colors px-2"
       >
         <Trash2 className="w-3 h-3" /> Hapus
       </button>

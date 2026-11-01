@@ -29,7 +29,7 @@ const CORE_GROUP: MenuGroup = {
 const ADMIN_GROUP: MenuGroup = {
   title: "Admin",
   icon: ShieldAlert,
-  color: "text-red-500",
+  color: "text-foreground",
   items: [
     { name: "Ringkasan", path: "/admin", description: "Ringkasan penggunaan aplikasi." },
     { name: "Pengguna", path: "/admin/users", description: "Kelola akun pengguna." },
@@ -113,7 +113,7 @@ export default function MobileMenuPage() {
               >
                 <MessageSquare className="w-4 h-4" />
                 {unreadMessages > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white shadow-sm ring-2 ring-card animate-in zoom-in">
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-[9px] font-bold text-on-brand shadow-sm ring-2 ring-card animate-in zoom-in">
                     {unreadMessages > 99 ? '99+' : unreadMessages}
                   </span>
                 )}
@@ -202,12 +202,12 @@ export default function MobileMenuPage() {
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-card text-foreground font-medium hover:bg-muted transition-colors"
         >
-          {mounted ? (theme === "dark" ? <Sun className="w-5 h-5 text-amber-500" /> : <Moon className="w-5 h-5 text-blue-500" />) : <Moon className="w-5 h-5" />}
+          {mounted ? (theme === "dark" ? <Sun className="w-5 h-5 text-warning-ink" /> : <Moon className="w-5 h-5 text-brand-ink" />) : <Moon className="w-5 h-5" />}
           <span className="text-xs">Tema</span>
         </button>
         <button 
           onClick={handleSignOut}
-          className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-rose-500/20 bg-rose-500/10 text-rose-500 font-medium hover:bg-rose-500 hover:text-white transition-colors col-span-3"
+          className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-border bg-muted text-foreground font-medium hover:bg-brand-hover hover:text-white transition-colors col-span-3"
         >
           <LogOut className="w-4 h-4" />
           Keluar

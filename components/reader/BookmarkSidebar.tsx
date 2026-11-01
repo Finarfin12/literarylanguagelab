@@ -58,7 +58,7 @@ export default function BookmarkSidebar({ open, bookmarks, onGoTo, onDelete, onC
                     <span className="text-sm font-bold text-foreground">{b.label || `Posisi ${b.position}`}</span>
                     <button
                       onClick={(e) => { e.stopPropagation(); onDelete(b.id); }}
-                      className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-500 transition-all"
+                      className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-danger transition-all"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -84,7 +84,7 @@ export default function BookmarkSidebar({ open, bookmarks, onGoTo, onDelete, onC
                   {h.note && <p className="text-xs text-muted-foreground">{h.note}</p>}
                   <button
                     onClick={(e) => { e.stopPropagation(); onDelete(h.id); }}
-                    className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-500 transition-all mt-1"
+                    className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-danger transition-all mt-1"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>

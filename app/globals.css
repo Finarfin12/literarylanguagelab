@@ -2,60 +2,125 @@
 @plugin "@tailwindcss/typography";
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Token desain v4 ("perpustakaan akademis"): acuan tunggal docs/v4/DESIGN.md §3.
+ * Nama token lama dipertahankan (ratusan kelas Tailwind memakainya); hanya nilainya yang berubah.
+ */
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f6f2e9;
+  --foreground: #1f2420;
   --brand: #2fa16b;
-  --brand-hover: #238555;
-  --card: rgba(255, 255, 255, 0.7);
-  --card-foreground: #0f172a;
-  --popover: rgba(255, 255, 255, 0.95);
-  --popover-foreground: #0f172a;
-  --border: #e2e8f0;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --danger: #dc2626;
+  --brand-hover: #1b6d42;
+  --brand-ink: #1e6b45;
+  --brand-solid: #22804f;
+  --brand-tint: #e3efe6;
+  --on-brand: #ffffff;
+  --card: #ffffff;
+  --card-foreground: #1f2420;
+  --popover: #ffffff;
+  --popover-foreground: #1f2420;
+  --border: #e2dbcb;
+  --rule: #ede6d6;
+  --muted: #f1ecdf;
+  --muted-foreground: #5e5a50;
+  --danger: #b42318;
+  --danger-tint: #fbe9e7;
+  --warning-ink: #8a5a00;
+  --warning-tint: #fbf0d9;
+  --paper: #fbf8f1;
+  --ink: #2a2620;
 }
 
 .dark {
-  --background: #0f1115;
-  --foreground: #ededed;
+  --background: #17150f;
+  --foreground: #ede6d6;
   --brand: #3ecf8e;
   --brand-hover: #2eb87c;
-  --card: rgba(20, 22, 28, 0.4);
-  --card-foreground: #ededed;
-  --popover: rgba(20, 22, 28, 0.8);
-  --popover-foreground: #ededed;
-  --border: #2a2d36;
-  --muted: #1e212b;
-  --muted-foreground: #94a3b8;
+  --brand-ink: #3ecf8e;
+  --brand-solid: #3ecf8e;
+  --brand-tint: #1d3a2b;
+  --on-brand: #17150f;
+  --card: #211e17;
+  --card-foreground: #ede6d6;
+  --popover: #211e17;
+  --popover-foreground: #ede6d6;
+  --border: #3a352a;
+  --rule: #3a352a;
+  --muted: #2a261d;
+  --muted-foreground: #b3ab98;
   --danger: #f87171;
+  --danger-tint: #3a1a17;
+  --warning-ink: #e5b45a;
+  --warning-tint: #3a2e14;
+  --paper: #17150f;
+  --ink: #ede6d6;
 }
+
+/*
+ * Michelangelus: HANYA lewat local() (lisensi Microsoft 365, tanpa izin webfont; DESIGN.md §2.2).
+ * Jangan menaruh file fontnya di repo/public dan jangan memakai next/font/local untuknya.
+ * Perangkat tanpa huruf ini jatuh ke Alegreya (--font-alegreya, dari app/layout.tsx).
+ */
+@font-face {
+  font-family: "Michelangelus Local";
+  src: local("Michelangelus"), local("Michelangelus Regular"), local("Michelangelus-Regular");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Michelangelus Local";
+  src: local("Michelangelus Bold"), local("Michelangelus-Bold");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Michelangelus Local";
+  src: local("Michelangelus Italic"), local("Michelangelus-Italic");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Michelangelus Local";
+  src: local("Michelangelus Bold Italic"), local("Michelangelus-BoldItalic");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-brand: var(--brand);
   --color-brand-hover: var(--brand-hover);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-solid: var(--brand-solid);
+  --color-brand-tint: var(--brand-tint);
+  --color-on-brand: var(--on-brand);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-border: var(--border);
+  --color-rule: var(--rule);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-danger: var(--danger);
+  --color-danger-tint: var(--danger-tint);
+  --color-warning-ink: var(--warning-ink);
+  --color-warning-tint: var(--warning-tint);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
   --radius-control: 0.75rem;
-  --radius-card: 1.5rem;
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
+  --radius-card: 1rem;
+  --font-sans: var(--font-sans), system-ui, ui-sans-serif, sans-serif;
+  --font-serif: "Michelangelus Local", var(--font-alegreya), Georgia, ui-serif, serif;
 }
 
 body {
-  @apply bg-background text-foreground antialiased selection:bg-brand/30 selection:text-white min-h-screen;
-  background-image: 
-    radial-gradient(ellipse at 15% 50%, color-mix(in srgb, var(--brand) 8%, transparent), transparent 35%),
-    radial-gradient(ellipse at 85% 30%, color-mix(in srgb, #3b82f6 8%, transparent), transparent 35%);
-  background-attachment: fixed;
+  @apply bg-background text-foreground antialiased selection:bg-brand/30 min-h-screen;
   background-color: var(--background);
 }
 
@@ -74,14 +139,18 @@ body {
   text-indent: 0;
 }
 
+/* Angka rapi (lining + tabular) untuk statistik, progres, dan nomor halaman */
+@utility nums {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
 ::selection {
-  background-color: rgba(62, 207, 142, 0.3); /* Brand color transparent */
-  color: #ffffff;
+  background-color: color-mix(in srgb, var(--brand) 30%, transparent);
 }
 
 /* Fokus keyboard yang selalu terlihat (WCAG 2.4.7) */
 :focus-visible {
-  outline: 2px solid var(--brand);
+  outline: 2px solid var(--brand-solid);
   outline-offset: 2px;
 }
 

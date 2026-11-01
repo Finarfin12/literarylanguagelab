@@ -63,7 +63,7 @@ export default function LingoWiseClient() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* Left Column: Input & Tools */}
       <div className="lg:col-span-5 space-y-6">
-        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-6 shadow-xl relative overflow-hidden group">
+        <div className="bg-card shadow-sm border border-border rounded-3xl p-6 shadow-xl relative overflow-hidden group">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand/0 via-brand to-brand/0 opacity-50" />
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-serif font-bold text-foreground">Input Teks Sastra</h2>
@@ -73,7 +73,7 @@ export default function LingoWiseClient() {
               title="Dikte Teks (Voice to Text)"
               className={`p-2 rounded-xl transition-all ${
                 isRecording 
-                  ? "bg-red-500 text-white animate-pulse" 
+                  ? "bg-danger text-on-brand animate-pulse" 
                   : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"
               }`}
             >
@@ -102,8 +102,8 @@ export default function LingoWiseClient() {
                   disabled={loading && !isActive}
                   className={`flex flex-col items-start p-5 rounded-2xl border transition-all duration-300 text-left relative overflow-hidden group
                     ${isActive 
-                      ? "bg-brand/10 border-brand/50 shadow-[0_0_20px_rgba(62,207,142,0.2)]" 
-                      : "bg-card shadow-sm backdrop-blur-md border-border hover:bg-card shadow-sm hover:-translate-y-1 hover:shadow-xl hover:border-border"}
+                      ? "bg-brand/10 border-brand/50" 
+                      : "bg-card shadow-sm border-border hover:bg-card shadow-sm hover:shadow-xl hover:border-border"}
                     ${loading && !isActive ? "opacity-50 cursor-not-allowed" : ""}
                   `}
                 >
@@ -121,7 +121,7 @@ export default function LingoWiseClient() {
 
       {/* Right Column: Output */}
       <div className="lg:col-span-7">
-        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-xl min-h-[600px] h-full flex flex-col relative overflow-hidden">
+        <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-xl min-h-[600px] h-full flex flex-col relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5">
             <Sparkles className="w-64 h-64" />
           </div>

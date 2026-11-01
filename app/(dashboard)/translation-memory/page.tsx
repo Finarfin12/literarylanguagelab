@@ -17,7 +17,7 @@ export default async function TranslationMemoryPage() {
     <div className="p-4 md:p-8 max-w-6xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
          <h1 className="text-2xl md:text-4xl font-serif font-bold text-foreground flex items-center gap-3">
-          <Database className="w-8 h-8 text-blue-500" />
+          <Database className="w-8 h-8 text-brand-ink" />
           Translation Memory
         </h1>
         <p className="text-muted-foreground mt-2">Simpan frasa dan terjemahan favorit Anda agar konsisten di proyek berikutnya.</p>
@@ -58,12 +58,12 @@ export default async function TranslationMemoryPage() {
               {memories?.map(mem => (
                 <div key={mem.id} className="bg-card shadow-sm border border-border rounded-2xl p-5 flex flex-col md:flex-row gap-4 justify-between group">
                   <div className="flex-1">
-                    <p className="font-serif text-lg font-bold text-blue-400 mb-1">{mem.source_phrase}</p>
+                    <p className="font-serif text-lg font-bold text-brand-ink mb-1">{mem.source_phrase}</p>
                     <p className="font-serif text-lg text-foreground mb-3">{mem.translated_phrase}</p>
                     {mem.context && <p className="text-xs text-muted-foreground italic">Konteks: {mem.context}</p>}
                   </div>
                   <form action={async () => { "use server"; await deleteTranslationMemory(mem.id); }} className="shrink-0">
-                    <button className="p-2 text-muted-foreground hover:text-red-500 bg-muted rounded-xl hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100">
+                    <button className="p-2 text-muted-foreground hover:text-danger bg-muted rounded-xl hover:bg-danger-tint transition-colors opacity-0 group-hover:opacity-100">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </form>

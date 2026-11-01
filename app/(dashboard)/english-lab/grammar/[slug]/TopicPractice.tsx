@@ -145,7 +145,7 @@ export default function TopicPractice({ slug, title, summary }: { slug: string; 
             <p className="font-bold">Skor: {clinic.score ?? 0}/100</p>
             {(clinic.corrections || []).length === 0 && <p className="text-brand font-bold">Tidak ada kesalahan. Bagus!</p>}
             {(clinic.corrections || []).map((c, i) => (
-              <div key={i} className="border-l-4 border-amber-500/50 pl-3">
+              <div key={i} className="border-l-4 border-warning-ink/30 pl-3">
                 <p><span className="line-through text-muted-foreground">{c.original}</span> → <strong>{c.corrected}</strong></p>
                 {c.explanation_id && <div className="text-muted-foreground"><Markdown>{c.explanation_id}</Markdown></div>}
               </div>

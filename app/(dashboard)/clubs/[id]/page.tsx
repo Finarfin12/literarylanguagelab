@@ -58,7 +58,7 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
         <div className="relative z-10 flex flex-col md:flex-row gap-8 justify-between items-start md:items-center">
           <div>
             <div className="flex items-center gap-3 mb-3">
-              <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${group.is_public ? 'bg-green-500/10 text-green-600 border border-green-500/20' : 'bg-red-500/10 text-red-600 border border-red-500/20'}`}>
+              <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${group.is_public ? 'bg-brand-tint text-brand-ink border border-brand/30' : 'bg-danger-tint text-danger border border-danger/30'}`}>
                 {group.is_public ? 'Public Group' : 'Private Group'}
               </span>
               <span className="flex items-center gap-1.5 bg-muted px-3 py-1 rounded-full text-xs font-semibold text-muted-foreground border border-border">
@@ -173,7 +173,7 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
             {/* Current Reading */}
             <div className="bg-card shadow-sm border border-border rounded-3xl p-6">
               <h2 className="text-lg font-serif font-bold text-foreground mb-4 flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-blue-500" /> Current Reading
+                <BookOpen className="w-5 h-5 text-brand-ink" /> Current Reading
               </h2>
               
               {group.readings && group.readings.length > 0 ? (
@@ -184,7 +184,7 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
                         {reading.text?.cover_image ? (
                            <img src={reading.text.cover_image} alt="Cover" className="w-full h-full object-cover" />
                         ) : (
-                           <div className="w-full h-full flex items-center justify-center bg-blue-500/10 text-blue-500"><BookOpen className="w-6 h-6" /></div>
+                           <div className="w-full h-full flex items-center justify-center bg-muted text-brand-ink"><BookOpen className="w-6 h-6" /></div>
                         )}
                       </div>
                       <div>
@@ -209,7 +209,7 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
             {/* Members List */}
             <div className="bg-card shadow-sm border border-border rounded-3xl p-6">
               <h2 className="text-lg font-serif font-bold text-foreground mb-4 flex items-center gap-2">
-                <Users className="w-5 h-5 text-green-500" /> Anggota Klub ({group.members.length})
+                <Users className="w-5 h-5 text-brand-ink" /> Anggota Klub ({group.members.length})
               </h2>
               
               <div className="space-y-3">

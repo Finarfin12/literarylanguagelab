@@ -49,7 +49,7 @@ export default function ParallelTextPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-[calc(100vh-220px)]">
         <div className="flex flex-col bg-card border border-border rounded-2xl overflow-hidden">
           <div className="p-3 border-b border-border bg-muted/50 shrink-0">
-            <span className="text-xs font-bold text-blue-400 uppercase tracking-wider">English</span>
+            <span className="text-xs font-bold text-brand-ink uppercase tracking-wider">English</span>
           </div>
           <textarea
             value={english}
@@ -76,13 +76,13 @@ export default function ParallelTextPage() {
       {english && indonesian && (
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div ref={leftRef} onScroll={() => handleScroll("left")} className="bg-card border border-border rounded-2xl p-4 max-h-80 overflow-y-auto">
-            <h3 className="text-sm font-bold text-blue-400 mb-3 uppercase tracking-wider">Preview (English)</h3>
+            <h3 className="text-sm font-bold text-brand-ink mb-3 uppercase tracking-wider">Preview (English)</h3>
             {enSentences.map((s, i) => (
               <p
                 key={i}
                 onMouseEnter={() => setSyncedSentence(i)}
                 onMouseLeave={() => setSyncedSentence(null)}
-                className={`p-2 rounded-lg transition-colors text-sm leading-relaxed mb-1 ${syncedSentence === i ? "bg-blue-500/10 border border-blue-500/20" : ""}`}
+                className={`p-2 rounded-lg transition-colors text-sm leading-relaxed mb-1 ${syncedSentence === i ? "bg-muted border border-border" : ""}`}
               >
                 {s}
               </p>

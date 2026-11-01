@@ -206,7 +206,7 @@ export default function PreviewPage() {
           </div>
 
           {/* Back */}
-          <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 shadow-[0_0_30px_rgba(62,207,142,0.15)] rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center overflow-y-auto">
+          <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-card border-2 border-brand/50 rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center overflow-y-auto">
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground mb-2 sm:mb-4 pt-8 sm:pt-0">{currentWord.word}</h2>
             <div className="text-lg sm:text-xl text-brand font-medium mb-4 sm:mb-6"><Markdown>{currentWord.definition}</Markdown></div>
             <div className="bg-muted/50 p-3 sm:p-4 rounded-xl text-xs sm:text-sm italic text-muted-foreground border-l-4 border-l-brand w-full overflow-hidden">
@@ -217,7 +217,7 @@ export default function PreviewPage() {
               <button 
                 onClick={(e) => { e.stopPropagation(); handleSaveToVocab(currentWord); }}
                 disabled={isSaved || savingWord === currentWord.word}
-                className={`p-1.5 sm:p-2 rounded-full border transition-all flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold px-2 sm:px-4 ${isSaved ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-500' : 'bg-background border-border hover:bg-muted text-muted-foreground'}`}
+                className={`p-1.5 sm:p-2 rounded-full border transition-all flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold px-2 sm:px-4 ${isSaved ? 'bg-brand-tint border-brand/30 text-brand-ink' : 'bg-background border-border hover:bg-muted text-muted-foreground'}`}
               >
                 {savingWord === currentWord.word ? <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" /> : isSaved ? <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" /> : <Save className="w-3 h-3 sm:w-4 sm:h-4" />}
                 <span className="hidden sm:inline">{isSaved ? "Tersimpan" : "Save to Vocab Bank"}</span>

@@ -144,7 +144,7 @@ export default function SegmentPanel({
             <h3 className="text-sm font-bold mb-2">Pemeriksaan otomatis</h3>
             <ul className="space-y-1">
               {warnings.map((w, i) => (
-                <li key={i} className="text-sm text-amber-600 dark:text-amber-400">• {w.message}</li>
+                <li key={i} className="text-sm text-warning-ink ">• {w.message}</li>
               ))}
             </ul>
           </section>

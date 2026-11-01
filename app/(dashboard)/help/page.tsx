@@ -258,12 +258,12 @@ export default function HelpPage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
             {[
-              { icon: BookOpen, label: "Public Domain Books", desc: "70.000+ buku klasik gratis dari Project Gutenberg", href: "/gutenberg", color: "text-orange-500" },
+              { icon: BookOpen, label: "Public Domain Books", desc: "70.000+ buku klasik gratis dari Project Gutenberg", href: "/gutenberg", color: "text-foreground" },
               { icon: BrainCircuit, label: "LingoWise AI", desc: "8 mode analisis teks sastra dengan kecerdasan buatan", href: "/lingowise", color: "text-brand" },
-              { icon: MessageCircle, label: "Forum & Community", desc: "Diskusi forum, klub baca, dan anotasi bersama", href: "/forum", color: "text-rose-400" },
-              { icon: GraduationCap, label: "Translation Workshop", desc: "Latihan terjemahan English→Indonesia dengan evaluasi AI", href: "/translation-workshop", color: "text-blue-400" },
-              { icon: Globe, label: "Vocabulary & Review", desc: "Bank kosa kata + spaced repetition SM-2", href: "/vocabulary", color: "text-purple-400" },
-              { icon: Gamepad2, label: "Tools & Games", desc: "25+ tools: Story Quiz, Paraphrase Challenge, Alter Ego Chat", href: "/tools", color: "text-amber-400" },
+              { icon: MessageCircle, label: "Forum & Community", desc: "Diskusi forum, klub baca, dan anotasi bersama", href: "/forum", color: "text-foreground" },
+              { icon: GraduationCap, label: "Translation Workshop", desc: "Latihan terjemahan English→Indonesia dengan evaluasi AI", href: "/translation-workshop", color: "text-foreground" },
+              { icon: Globe, label: "Vocabulary & Review", desc: "Bank kosa kata + spaced repetition SM-2", href: "/vocabulary", color: "text-foreground" },
+              { icon: Gamepad2, label: "Tools & Games", desc: "25+ tools: Story Quiz, Paraphrase Challenge, Alter Ego Chat", href: "/tools", color: "text-foreground" },
             ].map((item) => (
               <Link key={item.href} href={item.href} className="bg-card border border-border rounded-xl md:rounded-2xl p-3 md:p-4 hover:bg-muted transition-all group flex items-center gap-3 md:gap-4">
                 <item.icon className={`w-5 h-5 md:w-6 md:h-6 ${item.color} shrink-0`} />
@@ -303,6 +303,9 @@ export default function HelpPage() {
             <p>
               Pemetaan peringkat frekuensi ke perkiraan level CEFR (A1-B2) dibuat oleh Literary Language Lab dan hanya berupa estimasi untuk belajar,
               bukan penilaian CEFR resmi. Teks berjenjang buatan AI ditinjau admin sebelum diterbitkan.
+            </p>
+            <p>
+              Huruf: Michelangelus (studiogusto/Microsoft, tampil bila terpasang di perangkat), Alegreya dan Source Sans 3 (SIL Open Font License).
             </p>
           </div>
         </section>

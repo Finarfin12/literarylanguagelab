@@ -760,7 +760,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           </div>
           <button 
             onClick={() => setShowCompanion(true)} 
-            className="shrink-0 min-h-[40px] px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-full font-medium flex items-center gap-2 text-sm"
+            className="shrink-0 min-h-[40px] px-4 py-2 bg-brand-solid hover:bg-brand-hover text-on-brand rounded-full font-medium flex items-center gap-2 text-sm"
           >
             <MessageSquareQuote className="w-4 h-4" />
             <span className="hidden md:inline">Ask AI Companion</span>
@@ -799,11 +799,11 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
 
         {/* Legend Bedah Sintaksis */}
         {activeSyntaxIndex !== null && (
-          <div className="bg-blue-500/10 border-b border-blue-500/20 px-6 py-2 flex flex-wrap items-center justify-center gap-6 text-sm z-20 relative animate-in fade-in slide-in-from-top-2">
-            <span className="font-bold flex items-center gap-2"><Search className="w-4 h-4 text-blue-500" /> Legenda Sintaksis:</span>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 bg-blue-500/50 border border-blue-500 rounded-sm"></span> Subjek</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 bg-red-500/50 border border-red-500 rounded-sm"></span> Verba / Predikat</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 bg-yellow-500/50 border border-yellow-500 rounded-sm"></span> Objek</div>
+          <div className="bg-muted border-b border-border px-6 py-2 flex flex-wrap items-center justify-center gap-6 text-sm z-20 relative animate-in fade-in slide-in-from-top-2">
+            <span className="font-bold flex items-center gap-2"><Search className="w-4 h-4 text-brand-ink" /> Legenda Sintaksis:</span>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 bg-muted border border-border rounded-sm"></span> Subjek</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 bg-danger-tint border border-danger/30 rounded-sm"></span> Verba / Predikat</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 bg-warning-tint border border-warning-ink/30 rounded-sm"></span> Objek</div>
           </div>
         )}
 
@@ -898,16 +898,16 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
       {showQuizModal && (
         <div className="absolute inset-0 z-[100] bg-background/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
           <div className="bg-card border border-border shadow-2xl rounded-3xl max-w-lg w-full overflow-hidden">
-            <div className="bg-orange-500 p-6 text-white text-center relative overflow-hidden">
+            <div className="bg-brand-solid p-6 text-on-brand text-center relative overflow-hidden">
               <BrainCircuit className="w-24 h-24 absolute -right-4 -top-4 opacity-20" />
               <h3 className="text-2xl font-bold font-serif relative z-10">Comprehension Checkpoint</h3>
-              <p className="text-orange-100 mt-1 relative z-10 text-sm">Mari pastikan Anda memahami bab sebelumnya!</p>
+              <p className="text-foreground mt-1 relative z-10 text-sm">Mari pastikan Anda memahami bab sebelumnya!</p>
             </div>
             
             <div className="p-4 md:p-8">
               {quizLoading ? (
                 <div className="flex flex-col items-center justify-center py-8">
-                  <Loader2 className="w-10 h-10 animate-spin text-orange-500 mb-4" />
+                  <Loader2 className="w-10 h-10 animate-spin text-foreground mb-4" />
                   <p className="text-muted-foreground animate-pulse">Menyiapkan kuis pemahaman...</p>
                 </div>
               ) : quizData ? (
@@ -922,8 +922,8 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                       
                       let btnClass = "bg-muted hover:bg-muted/80 text-foreground border-transparent";
                       if (showResult) {
-                        if (isCorrect) btnClass = "bg-green-500/10 border-green-500 text-green-600 dark:text-green-400";
-                        else if (isSelected) btnClass = "bg-red-500/10 border-red-500 text-red-600 dark:text-red-400";
+                        if (isCorrect) btnClass = "bg-muted border-border text-foreground ";
+                        else if (isSelected) btnClass = "bg-muted border-border text-foreground ";
                         else btnClass = "bg-muted opacity-50 border-transparent";
                       }
 
@@ -947,7 +947,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                       <div className="text-sm text-muted-foreground mb-4"><Markdown>{quizData.explanation}</Markdown></div>
                       <button 
                         onClick={handleCloseQuiz}
-                        className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold shadow-md transition-all active:scale-95"
+                        className="w-full py-3 bg-brand-solid hover:bg-brand-hover text-on-brand rounded-xl font-bold shadow-md transition-all active:scale-95"
                       >
                         Lanjutkan Membaca
                       </button>
@@ -1007,8 +1007,8 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                   </div>
                   <div className="space-y-4 mt-4 max-h-40 overflow-y-auto pr-2">
                     {listeningResult.evaluations?.map((ev: any, i: number) => (
-                      <div key={i} className={`p-3 rounded-xl border text-sm ${ev.is_correct ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-                        <p className="font-bold flex items-center gap-2">Q{ev.question_number} {ev.is_correct ? <CheckCircle2 className="w-4 h-4 text-green-500"/> : <XCircle className="w-4 h-4 text-red-500"/>}</p>
+                      <div key={i} className={`p-3 rounded-xl border text-sm ${ev.is_correct ? 'bg-brand-tint border-brand/30' : 'bg-danger-tint border-danger/30'}`}>
+                        <p className="font-bold flex items-center gap-2">Q{ev.question_number} {ev.is_correct ? <CheckCircle2 className="w-4 h-4 text-brand-ink"/> : <XCircle className="w-4 h-4 text-danger"/>}</p>
                         <div className="text-muted-foreground mt-1"><Markdown>{ev.feedback}</Markdown></div>
                       </div>
                     ))}
@@ -1029,7 +1029,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                     </div>
                     
                     {!isRecording ? (
-                      <button onClick={() => { setIsRecording(true); recognitionRef.current?.start(); }} className="w-full py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
+                      <button onClick={() => { setIsRecording(true); recognitionRef.current?.start(); }} className="w-full py-3 bg-danger hover:bg-danger/90 text-on-brand rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
                         <Mic className="w-5 h-5" /> Mulai Merekam Jawaban
                       </button>
                     ) : (
@@ -1065,10 +1065,10 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
       {showWritingPrompt && (
         <div className="absolute inset-0 z-[100] bg-background/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
           <div className="bg-card border border-border shadow-2xl rounded-3xl max-w-2xl w-full overflow-hidden">
-            <div className="bg-blue-600 p-6 text-white text-center relative overflow-hidden">
+            <div className="bg-brand-solid p-6 text-on-brand text-center relative overflow-hidden">
               <BookOpen className="w-24 h-24 absolute -right-4 -top-4 opacity-20" />
               <h3 className="text-2xl font-bold font-serif relative z-10">Latihan Menulis</h3>
-              <p className="text-blue-100 mt-1 relative z-10 text-sm">Rangkum bab ini dalam 3-5 kalimat!</p>
+              <p className="text-brand-ink mt-1 relative z-10 text-sm">Rangkum bab ini dalam 3-5 kalimat!</p>
             </div>
             
             <div className="p-4 md:p-8">
@@ -1077,7 +1077,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                   <p className="text-muted-foreground text-sm mb-4">Gunakan kata-kata berikut yang telah Anda pelajari dari bab ini:</p>
                   <div className="flex flex-wrap gap-2 mb-6">
                     {writingPromptVocab.map(word => (
-                      <span key={word} className={`px-3 py-1 rounded-full text-xs font-bold border ${writingResponse.toLowerCase().includes(word.toLowerCase()) ? 'bg-green-500/20 text-green-600 border-green-500' : 'bg-muted text-muted-foreground border-border'}`}>
+                      <span key={word} className={`px-3 py-1 rounded-full text-xs font-bold border ${writingResponse.toLowerCase().includes(word.toLowerCase()) ? 'bg-brand-tint text-brand-ink border-brand/30' : 'bg-muted text-muted-foreground border-border'}`}>
                         {word} {writingResponse.toLowerCase().includes(word.toLowerCase()) && '✓'}
                       </span>
                     ))}
@@ -1087,7 +1087,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                     value={writingResponse}
                     onChange={(e) => setWritingResponse(e.target.value)}
                     placeholder="Contoh: The melancholy atmosphere settled over the house..."
-                    className="w-full h-32 bg-background border border-border rounded-xl p-4 text-foreground focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                    className="w-full h-32 bg-background border border-border rounded-xl p-4 text-foreground focus:ring-2 focus:ring-border outline-none resize-none"
                     disabled={writingEvaluating}
                   />
 
@@ -1115,7 +1115,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                       }
                     }}
                     disabled={writingResponse.trim().length < 10 || writingEvaluating}
-                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2"
+                    className="w-full py-3 bg-brand-solid hover:bg-brand-hover disabled:opacity-50 text-on-brand rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2"
                   >
                     {writingEvaluating ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Kirim Tulisan'}
                   </button>
@@ -1124,15 +1124,15 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                 <div className="space-y-6">
                   <div className="flex items-center justify-center gap-6 mb-6">
                     <div className="text-center">
-                      <p className="text-3xl font-bold text-blue-500">{writingResult.grammar}</p>
+                      <p className="text-3xl font-bold text-brand-ink">{writingResult.grammar}</p>
                       <p className="text-xs uppercase text-muted-foreground font-bold">Grammar</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-3xl font-bold text-green-500">{writingResult.vocabulary}</p>
+                      <p className="text-3xl font-bold text-brand-ink">{writingResult.vocabulary}</p>
                       <p className="text-xs uppercase text-muted-foreground font-bold">Vocab</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-3xl font-bold text-purple-500">{writingResult.coherence}</p>
+                      <p className="text-3xl font-bold text-foreground">{writingResult.coherence}</p>
                       <p className="text-xs uppercase text-muted-foreground font-bold">Kohesi</p>
                     </div>
                   </div>
@@ -1143,8 +1143,8 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
                   </div>
                   
                   {writingResult.corrected_text && writingResult.corrected_text !== writingResponse && (
-                     <div className="bg-green-500/10 p-4 rounded-xl border border-green-500/30 mt-4">
-                       <p className="text-sm font-bold text-green-600 mb-2">Koreksi:</p>
+                     <div className="bg-brand-tint p-4 rounded-xl border border-brand/30 mt-4">
+                       <p className="text-sm font-bold text-brand-ink mb-2">Koreksi:</p>
                        <p className="text-sm text-foreground italic">"{writingResult.corrected_text}"</p>
                      </div>
                   )}
@@ -1186,7 +1186,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
           setIsInspectMode(!isInspectMode);
           if (isInspectMode) setInspectedSentence(null);
         }}
-        className={`fixed bottom-24 right-4 md:bottom-8 md:left-8 md:right-auto z-[90] p-4 rounded-full shadow-lg transition-all flex items-center justify-center gap-2 group ${isInspectMode ? 'bg-brand text-white shadow-[0_0_20px_rgba(168,85,247,0.4)] animate-pulse' : 'bg-card border border-border text-foreground hover:bg-muted'}`}
+        className={`fixed bottom-24 right-4 md:bottom-8 md:left-8 md:right-auto z-[90] p-4 rounded-full shadow-lg transition-all flex items-center justify-center gap-2 group ${isInspectMode ? 'bg-brand text-white animate-pulse' : 'bg-card border border-border text-foreground hover:bg-muted'}`}
         title={isInspectMode ? "Matikan Tongkat Ajaib" : "Aktifkan Tongkat Ajaib"}
       >
         <Wand2 className="w-6 h-6" />
@@ -1194,7 +1194,7 @@ export default function TextDisplay({ textId, title, author, content, blocks, on
 
       {/* Inspect Mode Bottom Sheet */}
       {isInspectMode && inspectedSentence && (
-        <div className="fixed inset-x-0 bottom-0 md:inset-auto md:bottom-8 md:left-1/2 md:-translate-x-1/2 z-[100] bg-background/95 backdrop-blur-3xl border-t md:border border-border rounded-t-3xl md:rounded-3xl shadow-2xl p-6 md:w-[600px] animate-in slide-in-from-bottom-8">
+        <div className="fixed inset-x-0 bottom-0 md:inset-auto md:bottom-8 md:left-1/2 md:-translate-x-1/2 z-[100] bg-background/95 border-t md:border border-border rounded-t-3xl md:rounded-3xl shadow-2xl p-6 md:w-[600px] animate-in slide-in-from-bottom-8">
           <div className="flex justify-between items-start mb-4">
             <h3 className="font-bold text-foreground flex items-center gap-2">
               <Wand2 className="w-5 h-5 text-brand" />

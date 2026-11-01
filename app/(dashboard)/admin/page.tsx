@@ -102,12 +102,12 @@ export default async function AdminOverviewPage() {
 
   const cards = [
     { icon: Activity, color: "text-brand", label: "Request AI 24 jam", value: requests24h.toLocaleString("id-ID") },
-    { icon: Activity, color: "text-blue-400", label: "Request AI 7 hari", value: requests.length.toLocaleString("id-ID") },
-    { icon: AlertTriangle, color: errorRate > 5 ? "text-red-500" : "text-amber-500", label: "Error rate 7 hari", value: `${errorRate}%` },
-    { icon: Users, color: "text-purple-400", label: "Pengguna aktif AI 7 hari", value: `${activeUsers7d} / ${usersRes.count ?? "?"}` },
+    { icon: Activity, color: "text-foreground", label: "Request AI 7 hari", value: requests.length.toLocaleString("id-ID") },
+    { icon: AlertTriangle, color: errorRate > 5 ? "text-danger" : "text-warning-ink", label: "Error rate 7 hari", value: `${errorRate}%` },
+    { icon: Users, color: "text-foreground", label: "Pengguna aktif AI 7 hari", value: `${activeUsers7d} / ${usersRes.count ?? "?"}` },
     {
       icon: DollarSign,
-      color: "text-emerald-500",
+      color: "text-foreground",
       label: pricedCalls ? `Estimasi biaya 7 hari (${pricedCalls} panggilan berharga)` : "Estimasi biaya (isi harga di tab Model)",
       value: `$${cost.toFixed(2)}`,
     },
@@ -148,7 +148,7 @@ export default async function AdminOverviewPage() {
                   <span className="truncate text-foreground">{getFeature(key)?.label || key}</span>
                   <span className="shrink-0 text-muted-foreground">
                     {v.total}
-                    {v.errors > 0 && <span className="text-red-500"> · {v.errors} error</span>}
+                    {v.errors > 0 && <span className="text-danger"> · {v.errors} error</span>}
                   </span>
                 </li>
               ))}

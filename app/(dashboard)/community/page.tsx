@@ -132,7 +132,7 @@ export default function CommunityPage() {
                 onClick={() => handleFollowToggle(profile.id, !!profile.is_following)}
                 className={`flex-1 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
                   profile.is_following 
-                    ? 'bg-foreground/5 text-foreground hover:bg-red-500/10 hover:text-red-500' 
+                    ? 'bg-foreground/5 text-foreground hover:bg-danger-tint hover:text-danger' 
                     : 'bg-brand text-background hover:bg-brand-hover hover:scale-105'
                 }`}
               >

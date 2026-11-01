@@ -170,7 +170,7 @@ export default function LexiconSearchPage() {
             title="Dikte Kata"
             className={`p-3 rounded-xl transition-all ${
               isRecording 
-                ? "bg-red-500 text-white animate-pulse" 
+                ? "bg-danger text-on-brand animate-pulse" 
                 : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"
             }`}
           >
@@ -187,7 +187,7 @@ export default function LexiconSearchPage() {
       </form>
 
       {result && result.dictionary && result.dictionary.length > 0 && (
-        <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-700">
           
           {/* Header Section */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-border pb-8">
@@ -257,7 +257,7 @@ export default function LexiconSearchPage() {
               {/* LibreTranslate */}
               <div className="bg-muted border border-border rounded-2xl p-6">
                 <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <Sparkles className="w-4 h-4 text-warning-ink" />
                   Terjemahan
                 </h4>
                 {result.translation ? (
@@ -270,13 +270,13 @@ export default function LexiconSearchPage() {
               {/* Datamuse: Synonyms */}
               <div className="bg-muted border border-border rounded-2xl p-6">
                 <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-blue-400" />
+                  <Sparkles className="w-4 h-4 text-brand-ink" />
                   Sinonim
                 </h4>
                 {result.synonyms && result.synonyms.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {result.synonyms.map((syn: string, i: number) => (
-                      <span key={i} className="px-3 py-1 bg-blue-500/10 text-blue-400 text-sm rounded-lg border border-blue-500/20">
+                      <span key={i} className="px-3 py-1 bg-muted text-brand-ink text-sm rounded-lg border border-border">
                         {syn}
                       </span>
                     ))}
@@ -289,13 +289,13 @@ export default function LexiconSearchPage() {
               {/* Datamuse: Rhymes */}
               <div className="bg-muted border border-border rounded-2xl p-6">
                 <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  <Sparkles className="w-4 h-4 text-foreground" />
                   Rima (Rhymes)
                 </h4>
                 {result.rhymes && result.rhymes.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {result.rhymes.map((rhy: string, i: number) => (
-                      <span key={i} className="px-3 py-1 bg-purple-500/10 text-purple-400 text-sm rounded-lg border border-purple-500/20">
+                      <span key={i} className="px-3 py-1 bg-muted text-foreground text-sm rounded-lg border border-border">
                         {rhy}
                       </span>
                     ))}
@@ -312,7 +312,7 @@ export default function LexiconSearchPage() {
       )}
 
       {result && (!result.dictionary || result.dictionary.length === 0) && (
-        <div className="text-center py-20 bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl mt-8">
+        <div className="text-center py-20 bg-card shadow-sm border border-border rounded-3xl mt-8">
           <AlertCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           {result.dictionaryStatus === "unavailable" ? (
             <>

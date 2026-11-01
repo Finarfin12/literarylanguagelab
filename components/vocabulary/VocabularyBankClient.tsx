@@ -94,7 +94,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
           <button 
             onClick={() => setIsFlashcardMode(true)}
             disabled={vocab.length === 0}
-            className="mt-4 px-6 py-2.5 bg-brand text-background font-bold rounded-full flex items-center gap-2 hover:shadow-[0_0_15px_rgba(62,207,142,0.4)] transition-all active:scale-95 disabled:opacity-50"
+            className="mt-4 px-6 py-2.5 bg-brand text-background font-bold rounded-full flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
           >
             <BrainCircuit className="w-5 h-5" /> Mulai Belajar (Flashcard)
           </button>
@@ -145,7 +145,7 @@ export default function VocabularyBankClient({ initialVocab }: VocabularyBankCli
                     <div className="bg-brand/10 border border-brand/20 px-3 py-1 rounded-full text-xs font-medium text-brand">
                       Level {item.mastery_level}
                     </div>
-                    <button onClick={() => handleDelete(item.id)} className="p-1.5 rounded-md hover:bg-red-500/20 text-muted-foreground hover:text-red-400 transition-colors">
+                    <button onClick={() => handleDelete(item.id)} className="p-1.5 rounded-md hover:bg-danger-tint text-muted-foreground hover:text-danger transition-colors">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>

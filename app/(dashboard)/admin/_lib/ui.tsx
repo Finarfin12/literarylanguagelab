@@ -20,7 +20,7 @@ export function AdminPageHeader({ icon, title, description }: { icon: React.Reac
 }
 
 export function Notice({ children, tone = "warning" }: { children: React.ReactNode; tone?: "warning" | "error" }) {
-  const color = tone === "error" ? "border-red-500/30 bg-red-500/10 text-red-500" : "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400";
+  const color = tone === "error" ? "border-danger/30 bg-danger-tint text-danger" : "border-warning-ink/30 bg-warning-tint text-warning-ink ";
   return (
     <div className={`flex gap-3 items-start border rounded-xl p-4 text-sm mb-6 ${color}`}>
       <AlertTriangle className="w-5 h-5 shrink-0" />

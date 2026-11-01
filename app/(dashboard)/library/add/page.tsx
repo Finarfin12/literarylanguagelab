@@ -77,7 +77,7 @@ export default function AddTextPage() {
           </button>
           <button 
             onClick={() => setMode("manual")}
-            className={`flex-1 py-4 px-6 text-sm font-bold flex items-center justify-center gap-2 transition-colors ${mode === "manual" ? "bg-blue-500/10 text-blue-400 border-b-2 border-blue-400" : "text-muted-foreground hover:bg-foreground/5"}`}
+            className={`flex-1 py-4 px-6 text-sm font-bold flex items-center justify-center gap-2 transition-colors ${mode === "manual" ? "bg-muted text-brand-ink border-b-2 border-border" : "text-muted-foreground hover:bg-foreground/5"}`}
           >
             <PenTool className="w-4 h-4" /> Manual Entry
           </button>
@@ -201,7 +201,7 @@ export default function AddTextPage() {
             </div>
 
             <div className="pt-6 border-t border-foreground/20 flex justify-end">
-              <SubmitButton className="px-4 md:px-8 py-4 rounded-xl bg-gradient-to-r from-brand to-brand-hover text-background font-bold hover:shadow-[0_0_20px_rgba(62,207,142,0.4)] hover:-translate-y-0.5 transition-all duration-300">
+              <SubmitButton className="px-4 md:px-8 py-4 rounded-xl bg-gradient-to-r from-brand to-brand-hover text-background font-bold transition-all duration-300">
                 Simpan ke Library
               </SubmitButton>
             </div>

@@ -45,39 +45,39 @@ export default function ToolsDashboardPage() {
       ...t, 
       path: `/tools/${t.id}`, 
       category: "Analysis Extractors", 
-      colorClass: "text-blue-400", 
-      bgClass: "bg-blue-500/10", 
-      borderClass: "hover:border-blue-400/30" 
+      colorClass: "text-foreground", 
+      bgClass: "bg-muted", 
+      borderClass: "hover:border-border" 
     })),
     { 
       id: "paraphrase", title: "Paraphrase Challenge", description: "Latih kemampuan menulis ulang tanpa kehilangan esensi sastra.", 
       icon: "PenTool", path: "/tools/paraphrase", category: "Interactive", 
-      colorClass: "text-amber-400", bgClass: "bg-amber-500/10", borderClass: "hover:border-amber-400/30" 
+      colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     },
     { 
       id: "alter-ego", title: "Alter Ego Chat", description: "Ngobrol langsung dengan penulis legendaris secara interaktif.", 
       icon: "Sparkles", path: "/tools/alter-ego", category: "Interactive", 
-      colorClass: "text-purple-400", bgClass: "bg-purple-500/10", borderClass: "hover:border-purple-400/30" 
+      colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     },
     { 
       id: "story-quiz", title: "Story Mode Quiz", description: "Kuis berbasis cerpen menggunakan koleksi kosa kata Anda.", 
       icon: "CheckSquare", path: "/tools/story-quiz", category: "Interactive", 
-      colorClass: "text-green-400", bgClass: "bg-green-500/10", borderClass: "hover:border-green-400/30" 
+      colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     },
     { 
       id: "cultural-context", title: "Cultural Context Library", description: "Editor untuk menambah & mengelola referensi mitologi atau sejarah.", 
       icon: "Landmark", path: "/tools/cultural-context", category: "Lexicon & Databases", 
-      colorClass: "text-amber-500", bgClass: "bg-amber-500/10", borderClass: "hover:border-amber-500/30" 
+      colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     },
     { 
       id: "idioms", title: "Idiom Library", description: "Direktori idiom bahasa Inggris beserta penjelasan & terjemahannya.", 
       icon: "Quote", path: "/idioms", category: "Lexicon & Databases", 
-      colorClass: "text-emerald-500", bgClass: "bg-emerald-500/10", borderClass: "hover:border-emerald-500/30" 
+      colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     },
     { 
       id: "glossary", title: "Glossary Builder", description: "Buat glosarium kosa kata khusus per buku dengan mudah.", 
       icon: "BookOpen", path: "/glossary", category: "Lexicon & Databases", 
-      colorClass: "text-blue-500", bgClass: "bg-blue-500/10", borderClass: "hover:border-blue-500/30" 
+      colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     }
   ];
 
@@ -159,7 +159,7 @@ export default function ToolsDashboardPage() {
                       <Link 
                         key={tool.id} 
                         href={tool.path} 
-                        className={`bg-card shadow-sm backdrop-blur-md border border-border rounded-2xl p-6 hover:bg-muted transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98] group ${tool.borderClass}`}
+                        className={`bg-card shadow-sm border border-border rounded-2xl p-6 hover:bg-muted transition-all duration-300 hover:shadow-lg active:scale-[0.98] group ${tool.borderClass}`}
                       >
                         <div className={`${tool.bgClass} w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                           <Icon className={`w-6 h-6 ${tool.colorClass}`} />

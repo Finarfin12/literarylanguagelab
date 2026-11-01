@@ -17,6 +17,7 @@
 | 10 (v3) Level per keterampilan & Tes Naik Level | Selesai di kode (bukti keterampilan, `lib/levels.ts`, kartu level di profil, Tes Naik Level dinilai di server). Migrasi `0008_skill_levels.sql` **belum dijalankan**; Tes Naik Level butuh `SUPABASE_SERVICE_ROLE_KEY` | lihat `git log` |
 | 11 (v3) Jalur penerjemahan akademik | Selesai di kode (Ruang Kerja Segmen, anotasi teknik, rubrik Nababan, tahap penerjemah, ekspor CSV). Migrasi `0010_translation_academic.sql` **belum dijalankan** | lihat `git log` |
 | 14g (v4) Pengayaan Kosakata Inti (definisi & bentuk kata NGSL) | Selesai di kode. Migrasi `0015_core_words_enrichment.sql` **belum dijalankan**; setelah itu jalankan `scripts/enrich-ngsl.mjs` (`--dry-run` dulu) dengan CSV definisi & bentuk kata | lihat `git log` |
+| 12 (v4) Fondasi desain | Selesai di kode (token warna v4, Source Sans 3 + Alegreya + Michelangelus via `local()`, komponen dasar + `Eyebrow`/`SectionHeading`/`BookSpine`/`ProgressBar`, `tests/contrast.test.mts`, `scripts/v4-restyle.mjs` sudah dijalankan; laporan `docs/v4/restyle-report.md`). Tanpa migrasi. Tinjauan manual tersisa di laporan (gradasi/blur/animate-pulse, berkas pengecualian) untuk Fase 14 | lihat `git log` |
 
 **Handoff sesi terbaru (1 Nov 2026): [`HANDOFF_NEXT_SESSION.md`](HANDOFF_NEXT_SESSION.md)** — keadaan repo, status migrasi, tindakan menunggu pemilik, jebakan, resep verifikasi, dan prompt pembuka.
 

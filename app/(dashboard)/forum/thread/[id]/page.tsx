@@ -280,9 +280,9 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
   };
 
   const renderRoleBadge = (role: string) => {
-    if (role === 'admin') return <span className="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Librarian (Admin)</span>;
-    if (role === 'moderator') return <span className="bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Archivist (Mod)</span>;
-    if (role === 'curator') return <span className="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Curator</span>;
+    if (role === 'admin') return <span className="bg-danger-tint text-danger px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Librarian (Admin)</span>;
+    if (role === 'moderator') return <span className="bg-muted text-foreground px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Archivist (Mod)</span>;
+    if (role === 'curator') return <span className="bg-muted text-brand-ink px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Curator</span>;
     return null;
   };
 
@@ -302,7 +302,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
       </Link>
 
       {/* Original Thread Post */}
-      <div className="bg-card shadow-sm backdrop-blur-md border border-border rounded-3xl p-4 md:p-8 shadow-xl mb-8 relative">
+      <div className="bg-card shadow-sm border border-border rounded-3xl p-4 md:p-8 shadow-xl mb-8 relative">
         {canEditOrDelete(thread?.user_id || '') && !isEditing && (
            <div className="absolute top-6 right-6 flex items-center gap-2">
              <button 
@@ -314,7 +314,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
              </button>
              <button 
                onClick={handleDeleteThread}
-               className="p-2 text-muted-foreground hover:text-red-400 bg-muted hover:bg-muted hover:bg-muted/80 rounded-xl transition-all"
+               className="p-2 text-muted-foreground hover:text-danger bg-muted hover:bg-muted hover:bg-muted/80 rounded-xl transition-all"
                title="Hapus Diskusi"
              >
                <Trash2 className="w-5 h-5" />
@@ -388,7 +388,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
             <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-6 pr-24">{thread?.title}</h1>
             
             <div className="flex items-center gap-3 mb-8 pb-6 border-b border-border">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border ${threadAuthor.role === 'admin' ? 'bg-red-500/20 border-red-500/40 text-red-400' : 'bg-brand/20 border-brand/30 text-brand'} overflow-hidden`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border ${threadAuthor.role === 'admin' ? 'bg-danger-tint border-danger/30 text-danger' : 'bg-brand/20 border-brand/30 text-brand'} overflow-hidden`}>
                 {threadAuthor.avatar_url ? (
                   <img src={threadAuthor.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
@@ -433,7 +433,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
                      setComments(comments.filter(c => c.id !== comment.id));
                    }
                 }}
-                className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-red-400 bg-muted hover:bg-muted hover:bg-muted/80 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-danger bg-muted hover:bg-muted hover:bg-muted/80 rounded-xl transition-all opacity-0 group-hover:opacity-100"
                 title="Hapus Komentar"
               >
                 <Trash2 className="w-4 h-4" />
@@ -441,7 +441,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
             )}
             
             <div className="flex items-center gap-3 mb-4">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${comment.author.role === 'admin' ? 'bg-red-500/20 border-red-500/30 text-red-400' : 'bg-blue-500/20 border-blue-500/30 text-blue-400'} overflow-hidden`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${comment.author.role === 'admin' ? 'bg-danger-tint border-danger/30 text-danger' : 'bg-muted border-border text-brand-ink'} overflow-hidden`}>
                 {comment.author.avatar_url ? (
                   <img src={comment.author.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
@@ -480,7 +480,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
             title="Dikte Balasan (Voice to Text)"
             className={`p-2 rounded-lg transition-colors flex items-center gap-2 ${
               isRecording 
-                ? "bg-red-500/10 text-red-500 hover:bg-red-500/20" 
+                ? "bg-danger-tint text-danger hover:bg-danger-tint" 
                 : "text-muted-foreground hover:bg-muted hover:bg-brand/10 hover:text-brand"
             }`}
           >

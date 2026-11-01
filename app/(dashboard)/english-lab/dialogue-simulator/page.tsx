@@ -24,7 +24,7 @@ interface Feedback {
 }
 
 function ScoreBadge({ label, score }: { label: string; score: number }) {
-  const color = score >= 80 ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/30" : score >= 60 ? "text-amber-400 bg-amber-500/10 border-amber-500/30" : "text-red-400 bg-red-500/10 border-red-500/30";
+  const color = score >= 80 ? "text-brand-ink bg-brand-tint border-brand/30" : score >= 60 ? "text-warning-ink bg-warning-tint border-warning-ink/30" : "text-danger bg-danger-tint border-danger/30";
   return (
     <div className={`rounded-2xl border p-4 text-center ${color}`}>
       <p className="text-3xl font-bold">{score}</p>
@@ -146,9 +146,9 @@ export default function DialogueSimulatorPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {DIALOGUE_SCENARIOS.filter(s => s.category === cat).map(scenario => {
                 const Icon = ICON_MAP[scenario.icon] || MessageSquare;
-                const diffColor = ["A1", "A2"].includes(scenario.difficulty) ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" : ["B1", "B2"].includes(scenario.difficulty) ? "bg-amber-500/10 text-amber-400 border-amber-500/30" : "bg-red-500/10 text-red-400 border-red-500/30";
+                const diffColor = ["A1", "A2"].includes(scenario.difficulty) ? "bg-brand-tint text-brand-ink border-brand/30" : ["B1", "B2"].includes(scenario.difficulty) ? "bg-warning-tint text-warning-ink border-warning-ink/30" : "bg-danger-tint text-danger border-danger/30";
                 return (
-                  <button key={scenario.id} onClick={() => startScenario(scenario)} className="bg-card border border-border rounded-2xl p-6 text-left hover:border-brand/50 hover:-translate-y-1 hover:shadow-xl transition-all group">
+                  <button key={scenario.id} onClick={() => startScenario(scenario)} className="bg-card border border-border rounded-2xl p-6 text-left hover:border-brand/50 hover:shadow-xl transition-all group">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="p-2 bg-brand/10 rounded-xl"><Icon className="w-5 h-5 text-brand" /></div>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${diffColor} uppercase tracking-wider`}>{scenario.difficulty}</span>
@@ -173,7 +173,7 @@ export default function DialogueSimulatorPage() {
           <ArrowLeft className="w-4 h-4" /> Kembali ke Skenario
         </button>
         <div className="text-center mb-8">
-          <Trophy className="w-12 h-12 text-amber-400 mx-auto mb-3" />
+          <Trophy className="w-12 h-12 text-warning-ink mx-auto mb-3" />
           <h1 className="text-3xl font-serif font-bold text-foreground">Feedback Percakapan</h1>
           <p className="text-muted-foreground mt-1">Skenario: {activeScenario.titleId}</p>
         </div>
@@ -186,33 +186,33 @@ export default function DialogueSimulatorPage() {
           <div className="text-foreground leading-relaxed"><Markdown>{feedback.overall_feedback_id}</Markdown></div>
         </div>
         {feedback.strengths.length > 0 && (
-          <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-5 mb-6">
-            <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-3 flex items-center gap-2"><CheckCircle className="w-4 h-4" /> Hal Positif</h3>
-            <ul className="space-y-1">{feedback.strengths.map((s, i) => <li key={i} className="text-sm text-foreground/80 flex gap-2"><span className="text-emerald-400">•</span><span><Markdown inline>{s}</Markdown></span></li>)}</ul>
+          <div className="bg-brand-tint border border-brand/30 rounded-2xl p-5 mb-6">
+            <h3 className="text-sm font-bold text-brand-ink uppercase tracking-wider mb-3 flex items-center gap-2"><CheckCircle className="w-4 h-4" /> Hal Positif</h3>
+            <ul className="space-y-1">{feedback.strengths.map((s, i) => <li key={i} className="text-sm text-foreground/80 flex gap-2"><span className="text-brand-ink">•</span><span><Markdown inline>{s}</Markdown></span></li>)}</ul>
           </div>
         )}
         {feedback.corrections.length > 0 && (
-          <div className="bg-red-500/5 border border-red-500/20 rounded-2xl p-5 mb-6">
-            <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider mb-3 flex items-center gap-2"><XCircle className="w-4 h-4" /> Koreksi</h3>
+          <div className="bg-danger-tint border border-danger/30 rounded-2xl p-5 mb-6">
+            <h3 className="text-sm font-bold text-danger uppercase tracking-wider mb-3 flex items-center gap-2"><XCircle className="w-4 h-4" /> Koreksi</h3>
             <div className="space-y-3">{feedback.corrections.map((c, i) => (
               <div key={i} className="bg-background/50 rounded-xl p-3">
-                <div className="flex items-center gap-2 text-sm mb-1"><span className="text-red-400 line-through">{c.original}</span><ArrowRight className="w-3 h-3 text-muted-foreground" /><span className="text-emerald-400 font-medium">{c.corrected}</span></div>
+                <div className="flex items-center gap-2 text-sm mb-1"><span className="text-danger line-through">{c.original}</span><ArrowRight className="w-3 h-3 text-muted-foreground" /><span className="text-brand-ink font-medium">{c.corrected}</span></div>
                 <div className="text-xs text-muted-foreground"><Markdown>{c.explanation_id}</Markdown></div>
               </div>
             ))}</div>
           </div>
         )}
         {feedback.vocabulary_suggestions.length > 0 && (
-          <div className="bg-blue-500/5 border border-blue-500/20 rounded-2xl p-5 mb-6">
-            <h3 className="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3 flex items-center gap-2"><Star className="w-4 h-4" /> Saran Kosakata</h3>
+          <div className="bg-muted border border-border rounded-2xl p-5 mb-6">
+            <h3 className="text-sm font-bold text-brand-ink uppercase tracking-wider mb-3 flex items-center gap-2"><Star className="w-4 h-4" /> Saran Kosakata</h3>
             <div className="space-y-2">{feedback.vocabulary_suggestions.map((v, i) => (
               <div key={i} className="text-sm"><span className="text-muted-foreground">Anda menggunakan "</span><span className="text-foreground font-bold">{v.used}</span><span className="text-muted-foreground">" → coba "</span><span className="text-blue-400 font-bold">{v.better}</span><span className="text-muted-foreground">"</span><div className="text-xs text-muted-foreground mt-0.5"><Markdown>{v.context_id}</Markdown></div></div>
             ))}</div>
           </div>
         )}
         {feedback.cultural_tip && (
-          <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5 mb-6">
-            <h3 className="text-sm font-bold text-amber-400 uppercase tracking-wider mb-2 flex items-center gap-2"><Lightbulb className="w-4 h-4" /> Tips Budaya</h3>
+          <div className="bg-warning-tint border border-warning-ink/30 rounded-2xl p-5 mb-6">
+            <h3 className="text-sm font-bold text-warning-ink uppercase tracking-wider mb-2 flex items-center gap-2"><Lightbulb className="w-4 h-4" /> Tips Budaya</h3>
             <div className="text-sm text-foreground/80"><Markdown>{feedback.cultural_tip}</Markdown></div>
           </div>
         )}
@@ -231,7 +231,7 @@ export default function DialogueSimulatorPage() {
           <h2 className="font-bold text-foreground text-sm">{activeScenario.title}</h2>
           <p className="text-xs text-muted-foreground">{activeScenario.descriptionId}</p>
         </div>
-        <button onClick={endAndGetFeedback} disabled={loadingFeedback || messages.filter(m => m.role === "user").length === 0} className="px-4 py-2 bg-amber-500/10 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold hover:bg-amber-500/20 transition-colors disabled:opacity-50 flex items-center gap-1.5">
+        <button onClick={endAndGetFeedback} disabled={loadingFeedback || messages.filter(m => m.role === "user").length === 0} className="px-4 py-2 bg-warning-tint text-warning-ink border border-warning-ink/30 rounded-xl text-xs font-bold hover:bg-warning-tint transition-colors disabled:opacity-50 flex items-center gap-1.5">
           {loadingFeedback ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trophy className="w-3 h-3" />} Akhiri & Feedback
         </button>
       </div>
@@ -270,7 +270,7 @@ export default function DialogueSimulatorPage() {
       {/* Input */}
       <div className="p-4 border-t border-border shrink-0">
         <div className="flex items-center gap-2">
-          <button onClick={isRecording ? stopRecording : startRecording} disabled={isProcessing || loading} className={`p-3 rounded-xl transition-all shrink-0 ${isRecording ? "bg-red-500 text-white animate-pulse" : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"}`}>
+          <button onClick={isRecording ? stopRecording : startRecording} disabled={isProcessing || loading} className={`p-3 rounded-xl transition-all shrink-0 ${isRecording ? "bg-danger text-on-brand animate-pulse" : "bg-muted text-muted-foreground hover:bg-brand/10 hover:text-brand"}`}>
             {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
           </button>
           <input
