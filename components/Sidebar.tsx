@@ -7,11 +7,18 @@ import { useTheme } from "next-themes";
 import { createClient } from "@/utils/supabase/client";
 import { 
   ChevronDown, ChevronRight, LogOut, 
-  Sun, Moon, Sparkles, User, Settings,
+  Sun, Moon, Sparkles, User, Settings, Library, BookOpen, BookA,
   Menu, PanelLeftClose, LayoutDashboard, ShieldAlert, BrainCircuit, MessageSquareText
 } from "lucide-react";
 import { MENU_GROUPS } from "@/lib/menu-config";
 import { ROOMS, resolveItem } from "@/lib/rooms";
+
+// Pintasan utama (PINNED_PATHS di lib/menu-config.ts): Text Library, Buku Klasik, Kamus A-Z
+const PINNED_LINKS = [
+  { href: "/gutenberg", label: "Buku Klasik", icon: BookOpen },
+  { href: "/tools/a-z-dictionary", label: "Kamus A-Z", icon: BookA },
+  { href: "/library", label: "Text Library", icon: Library },
+];
 
 interface SidebarProps {
   userEmail?: string;
@@ -146,6 +153,24 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
             <LayoutDashboard className="w-5 h-5" aria-hidden="true" />
             <span className="font-semibold">Beranda</span>
           </Link>
+
+          {/* Fitur utama yang paling sering dipakai: selalu di atas, tepat di bawah Beranda */}
+          {PINNED_LINKS.map(({ href, label, icon: Icon }) => {
+            const active = pathname === href || pathname.startsWith(href + "/");
+            return (
+              <Link
+                key={href}
+                href={href}
+                aria-current={active ? "page" : undefined}
+                className={`w-full flex items-center gap-3 px-4 min-h-[48px] rounded-control transition-colors ${
+                  active ? "bg-brand-tint text-brand-ink" : "text-foreground hover:bg-card"
+                }`}
+              >
+                <Icon className="w-5 h-5" aria-hidden="true" />
+                <span className="font-semibold">{label}</span>
+              </Link>
+            );
+          })}
 
           <p className="px-4 pt-4 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Ruang belajar</p>
 
