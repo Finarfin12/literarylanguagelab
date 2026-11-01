@@ -66,7 +66,7 @@ Uji unit (jalankan satu per satu, lihat §6): `cefr` 8, `levels` 17, `next-step`
 
 ## 5. Tindakan yang menunggu PEMILIK (bukan pekerjaan kode)
 
-1. **URGEN — ganti service role key Supabase.** Nilainya sempat terlihat penuh di tangkapan layar PowerShell di sesi ini. Buat/ganti kunci di Supabase (Project Settings → API/JWT keys), lalu perbarui `SUPABASE_SERVICE_ROLE_KEY` di Vercel dan deploy ulang. Jangan pernah menulis kunci di baris perintah yang akan di-screenshot atau dibagikan.
+1. **Service role key bocor (1 Nov 2026) — SEBAGIAN SELESAI.** Pemilik sudah membuat secret key + publishable key baru (format `sb_secret_...`/`sb_publishable_...`), mengisinya ke variabel Vercel **yang namanya tetap** (`SUPABASE_SERVICE_ROLE_KEY` dan `NEXT_PUBLIC_SUPABASE_ANON_KEY`), deploy ulang, dan aplikasi berfungsi. **Yang masih harus dilakukan pemilik:** (a) hapus variabel Vercel yang tidak terpakai `SUPABASE_SECRET_KEY` dan `SUPABASE_PUBLISHABLE_KEY` (kode tidak membaca nama itu); (b) di Supabase → Settings → API Keys, **nonaktifkan key legacy** (`anon` dan `service_role`); (c) cabut JWT secret lama lewat halaman JWT Signing Keys (Migrate JWT secret → rotate → revoke legacy), karena `service_role` lama sudah bocor. Urutan penting: nonaktifkan key lama paling akhir. Kode memakai nama variabel lama dengan nilai key baru; jangan mengganti nama variabel tanpa mengubah kode. Jangan pernah menulis kunci di baris perintah yang akan di-screenshot atau dibagikan (pakai `Read-Host -AsSecureString`).
 2. Jalankan `0008` dan `0010` di Supabase SQL Editor jika belum.
 3. Jalankan `0015`, lalu pengayaan Kosakata Inti. File definisi aslinya xlsx; skrip hanya membaca CSV UTF-8 (Excel → Save As → CSV UTF-8). Jalankan **dari folder proyek**:
    ```powershell
