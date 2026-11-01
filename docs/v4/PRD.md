@@ -183,7 +183,7 @@ Detail perbaikan: IMPLEMENTATION_PLAN Fase 14f.
 
 | # | Pertanyaan | Asumsi default |
 |---|---|---|
-| Q1 | ~~Bottom nav HP?~~ | **Diputuskan:** Beranda · Baca · Kosakata · Ruang · Menu (§5.2) |
+| Q1 | ~~Bottom nav HP?~~ | **Diputuskan (diubah pemilik 1 Nov 2026):** Beranda · Kamus · Baca Buku · Grammar · Menu. Semula Beranda · Baca · Kosakata · Ruang · Menu |
 | Q2 | ~~Pasangan huruf final?~~ | **Diputuskan:** Michelangelus (`local()`) + cadangan Alegreya, dengan Source Sans 3 (DESIGN.md §2) |
 | Q3 | Daftar & urutan 12 unit Kursus Dasar? | Seperti §6.2; pemilik boleh mengubah |
 | Q4 | Unit dikunci berurutan atau bebas? | Bebas, hanya disarankan |

@@ -13,9 +13,9 @@ import {
 import { MENU_GROUPS } from "@/lib/menu-config";
 import { ROOMS, resolveItem } from "@/lib/rooms";
 
-// Pintasan utama (PINNED_PATHS di lib/menu-config.ts): Text Library, Buku Klasik, Kamus A-Z
+// Pintasan utama (PINNED_PATHS di lib/menu-config.ts): Text Library, Baca Buku, Kamus A-Z
 const PINNED_LINKS = [
-  { href: "/gutenberg", label: "Buku Klasik", icon: BookOpen },
+  { href: "/gutenberg", label: "Baca Buku", icon: BookOpen },
   { href: "/tools/a-z-dictionary", label: "Kamus A-Z", icon: BookA },
   { href: "/library", label: "Text Library", icon: Library },
 ];

@@ -278,7 +278,7 @@ export default async function DashboardPage() {
               action={
                 <div className="flex flex-wrap gap-2 justify-center">
                   <ButtonLink href="/library">Buka Library</ButtonLink>
-                  <ButtonLink href="/gutenberg" variant="secondary">Buku Klasik</ButtonLink>
+                  <ButtonLink href="/gutenberg" variant="secondary">Baca Buku</ButtonLink>
                 </div>
               }
             />
@@ -353,7 +353,7 @@ export default async function DashboardPage() {
       {/* Pintasan */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 md:mt-6">
         {[
-          { href: "/gutenberg", label: "Buku Klasik", icon: BookOpen },
+          { href: "/gutenberg", label: "Baca Buku", icon: BookOpen },
           { href: "/library/add/ocr", label: "Scan Halaman", icon: Camera },
           { href: "/vocabulary", label: "Bank Kosakata", icon: BookMarked },
           { href: "/tools", label: "Semua Alat", icon: Sparkles },

@@ -182,7 +182,7 @@ Pemetaan untuk skrip `v4-restyle` (Fase 12.4):
 - Panel samping (Word Lookup, Analisis, Bookmark) memakai `ResponsivePanel` di kanan.
 
 ### 6.2 HP (< 1024 px)
-- Header ringkas (logo + pencarian), konten satu kolom, **bottom nav** 5 tujuan (keputusan Q1 di PRD).
+- Header ringkas (logo + pencarian), konten satu kolom, **bottom nav** 5 tujuan: Beranda · Kamus · Baca Buku · Grammar · Menu.
 - Panel = bottom sheet (`ResponsivePanel`) dengan pegangan di atas.
 - Tidak ada scroll horizontal di 375 px; tabel admin menjadi kartu.
 
@@ -261,4 +261,5 @@ Semua di `components/ui/` (fondasi dari v2). **Props yang ada tidak boleh beruba
 | 31 Okt 2026 | Tongkat Ajaib bisa digeser |
 | 1 Nov 2026 | Tata letak disetel dengan Alegreya (yang dilihat kebanyakan pengguna); Michelangelus diuji sebagai variasi |
 | 1 Nov 2026 | Warna kategori/neon diganti token semantik (§3.4); kategori dibedakan lewat ikon & label |
-| 1 Nov 2026 | Bottom nav HP: Beranda · Baca · Kosakata · Ruang · Menu |
+| 1 Nov 2026 | Bottom nav HP: Beranda · Baca · Kosakata · Ruang · Menu (Q1) |
+| 1 Nov 2026 | **Menggantikan Q1** (keputusan pemilik): Bottom nav HP = Beranda · Kamus · Baca Buku · Grammar · Menu; "Buku Klasik" diganti nama "Baca Buku" |

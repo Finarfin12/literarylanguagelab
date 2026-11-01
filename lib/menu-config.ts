@@ -35,7 +35,7 @@ export const MENU_GROUPS: MenuGroup[] = [
     color: "text-foreground",
     items: [
       { name: "Text Library", path: "/library", description: "Koleksi teks bacaan dengan filter level.", goals: ["umum", "sastra", "penerjemahan"] },
-      { name: "Buku Klasik", path: "/gutenberg", description: "Ribuan karya sastra domain publik dari Project Gutenberg.", goals: ["sastra"] },
+      { name: "Baca Buku", path: "/gutenberg", description: "Ribuan karya sastra domain publik dari Project Gutenberg.", goals: ["sastra"] },
       { name: "OCR Lens", path: "/library/add/ocr", description: "Foto halaman buku, ubah jadi teks yang bisa dibaca." },
       { name: "Word Lookup (A-Z)", path: "/tools/a-z-dictionary", description: "Cari arti dan contoh kata dengan cepat.", goals: ["umum"] },
       { name: "Cultural Context", path: "/tools/cultural-context", description: "Referensi mitologi dan sejarah di balik sebuah teks.", goals: ["sastra"] },

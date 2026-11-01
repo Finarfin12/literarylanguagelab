@@ -17,7 +17,7 @@ const CORE_GROUP: MenuGroup = {
   color: "text-brand",
   items: [
     { name: "Beranda", path: "/dashboard", description: "Langkah berikutnya dan ringkasan belajarmu." },
-    { name: "Buku Klasik", path: "/gutenberg", description: "Ribuan karya sastra domain publik dari Project Gutenberg." },
+    { name: "Baca Buku", path: "/gutenberg", description: "Ribuan karya sastra domain publik dari Project Gutenberg." },
     { name: "Kamus A-Z", path: "/tools/a-z-dictionary", description: "Cari arti dan contoh kata dengan cepat." },
     { name: "Text Library", path: "/library", description: "Koleksi teks bacaan dengan filter level." },
     { name: "Ruang belajar", path: "/ruang", description: "Tiga ruang belajar, Koleksi saya, dan Komunitas." },
