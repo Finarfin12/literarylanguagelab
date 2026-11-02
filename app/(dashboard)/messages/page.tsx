@@ -390,7 +390,7 @@ function MessagesContent() {
                             onClick={() => deleteMessage(msg)}
                             aria-label="Hapus pesan"
                             title="Hapus pesan"
-                            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full text-muted-foreground hover:text-danger hover:bg-danger-tint opacity-60 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 transition-opacity"
+                            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full text-muted-foreground hover:text-danger hover:bg-danger-tint opacity-70 hover:opacity-100 focus-visible:opacity-100 transition-opacity"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
