@@ -71,7 +71,29 @@ async function loadLevelUpTarget(supabase: Awaited<ReturnType<typeof createClien
   }
 }
 
-const SESSION_COLUMNS = "text_id, time_spent_seconds, last_active_at, texts(title, author)";
+// Fase 15: topik grammar yang jadwal reviewnya sudah lewat (tabel grammar_progress, migrasi 0012). Sebelum migrasi: null.
+async function loadGrammarDue(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string | undefined
+): Promise<{ count: number; slug: string; title: string } | null> {
+  if (!userId) return null;
+  try {
+    const { data, error } = await supabase
+      .from("grammar_progress")
+      .select("topic_slug, completed_at, next_review_at")
+      .eq("user_id", userId)
+      .not("completed_at", "is", null)
+      .lte("next_review_at", new Date().toISOString())
+      .order("next_review_at", { ascending: true });
+    if (error || !data || data.length === 0) return null;
+    const { data: topic } = await supabase.from("grammar_topics").select("title").eq("slug", data[0].topic_slug).maybeSingle();
+    return { count: data.length, slug: data[0].topic_slug as string, title: (topic?.title as string | undefined) ?? "Grammar" };
+  } catch {
+    return null;
+  }
+}
+
+const SESSION_COLUMNS ="text_id, time_spent_seconds, last_active_at, texts(title, author)";
 
 function formatAgo(iso: string | null) {
   if (!iso) return "";
@@ -89,7 +111,7 @@ export default async function DashboardPage() {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-  const [vocabRes, dueRes, dueWordsRes, reviewedRes, sessionsRes, newVocabRes, personal, levelUpTarget] = await Promise.all([
+  const [vocabRes, dueRes, dueWordsRes, reviewedRes, sessionsRes, newVocabRes, personal, levelUpTarget, grammarDue] = await Promise.all([
     // Total kosa kata
     supabase.from("vocabulary").select("*", { count: "exact", head: true }).eq("user_id", user?.id),
     // Jumlah kata jatuh tempo
@@ -114,6 +136,7 @@ export default async function DashboardPage() {
     // Tujuan belajar & level untuk "Langkah berikutnya"
     loadPersonalization(supabase, user?.id),
     loadLevelUpTarget(supabase, user?.id),
+    loadGrammarDue(supabase, user?.id),
   ]);
 
   const vocabCount = vocabRes.count || 0;
@@ -168,6 +191,7 @@ export default async function DashboardPage() {
     goal: personal.goal,
     cefr: personal.cefr,
     dueCount,
+    grammarDue,
     continueReading: openReading ? { title: openReading.title, href: openReading.href } : null,
     levelText,
     levelUpTarget,
@@ -215,7 +239,7 @@ export default async function DashboardPage() {
 
         {/* Kosakata Jatuh Tempo */}
         <Card className="flex flex-col">
-          <Eyebrow className="mb-2">Kosa Kata Hari Ini</Eyebrow>
+          <Eyebrow className="mb-2">Review Hari Ini</Eyebrow>
           <p className="font-serif text-[32px] md:text-[40px] font-medium leading-none text-foreground nums">
             {dueCount} <span className="text-sm font-sans font-normal text-muted-foreground">kata menunggu review</span>
           </p>
@@ -228,9 +252,24 @@ export default async function DashboardPage() {
               ))}
             </div>
           )}
+          {grammarDue && (
+            <Link
+              href={`/english-lab/grammar/${grammarDue.slug}?review=1`}
+              className="mt-3 flex items-center justify-between gap-2 min-h-[44px] rounded-control border border-border px-3 text-sm hover:bg-muted"
+            >
+              <span>
+                <span className="font-bold nums">{grammarDue.count}</span> topik grammar menunggu review
+                <span className="block text-xs text-muted-foreground">{grammarDue.title}</span>
+              </span>
+              <ChevronRight className="w-4 h-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+            </Link>
+          )}
           <div className="mt-auto pt-4">
-            <ButtonLink href={dueCount > 0 ? "/review" : "/vocabulary"} className="w-full">
-              {dueCount > 0 ? "Mulai Review" : "Buka Bank Kosakata"}
+            <ButtonLink
+              href={dueCount > 0 ? "/review" : grammarDue ? `/english-lab/grammar/${grammarDue.slug}?review=1` : "/vocabulary"}
+              className="w-full"
+            >
+              {dueCount > 0 ? "Mulai Review" : grammarDue ? "Review Grammar" : "Buka Bank Kosakata"}
             </ButtonLink>
           </div>
         </Card>

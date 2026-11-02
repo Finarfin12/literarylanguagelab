@@ -23,6 +23,21 @@ test("review jatuh tempo menang atas semuanya", () => {
   assert.match(s.title, /7 kata/);
 });
 
+test("review grammar jatuh tempo (Fase 15): kalah dari review kata, menang atas Tes Naik Level dan bacaan", () => {
+  const grammarDue = { count: 2, slug: "present-simple", title: "Present simple" };
+  const g = getNextStep({ goal: "umum", cefr: "B1", dueCount: 0, grammarDue, continueReading: reading, levelUpTarget: "B2" });
+  assert.equal(g.href, "/english-lab/grammar/present-simple?review=1");
+  assert.match(g.title, /Present simple/);
+  assert.match(g.title, /\+1 topik/);
+  const both = getNextStep({ goal: "umum", cefr: "B1", dueCount: 4, grammarDue });
+  assert.equal(both.href, "/review");
+  assert.match(both.reason, /2 topik grammar/);
+  const single = getNextStep({ goal: "umum", cefr: "B1", dueCount: 0, grammarDue: { count: 1, slug: "to-be", title: "To be" } });
+  assert.equal(single.title, "Review grammar: To be");
+  assert.equal(getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, grammarDue: { count: 0, slug: "x", title: "x" } }).href, "/english-lab/grammar-clinic");
+  assert.equal(getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, grammarDue: null }).href, "/english-lab/grammar-clinic");
+});
+
 test("siap naik level: Tes Naik Level menang atas bacaan, kalah dari review", () => {
   const ready = getNextStep({ goal: "umum", cefr: "B1", dueCount: 0, continueReading: reading, levelText, levelUpTarget: "B2" });
   assert.equal(ready.href, "/english-lab/level-test");

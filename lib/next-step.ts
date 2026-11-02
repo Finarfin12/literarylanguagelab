@@ -7,6 +7,8 @@ export interface NextStepInput {
   cefr: string | null;
   /** Jumlah kata yang jatuh tempo untuk di-review. */
   dueCount: number;
+  /** Fase 15: topik grammar yang jadwal reviewnya sudah lewat (yang paling lama menunggu); null jika tidak ada. */
+  grammarDue?: { count: number; slug: string; title: string } | null;
   /** Bacaan terakhir yang belum selesai (teks Library atau buku Gutenberg). */
   continueReading?: { title: string; href: string } | null;
   /** Fase 10: level berikutnya jika semua syarat naik level terpenuhi dan tes boleh diambil; selain itu null. */
@@ -39,15 +41,25 @@ const GOAL_FALLBACK: Record<LearningGoal, NextStep> = {
   },
 };
 
-/** Prioritas: review jatuh tempo > Tes Naik Level (jika siap) > lanjutkan bacaan > bacaan sesuai level > tes level > alat sesuai tujuan. */
+/** Prioritas: review kata jatuh tempo > review topik grammar jatuh tempo > Tes Naik Level (jika siap) > lanjutkan bacaan > bacaan sesuai level > tes level > alat sesuai tujuan. */
 export function getNextStep(input: NextStepInput): NextStep {
-  const { goal, cefr, dueCount, continueReading, levelText, levelUpTarget } = input;
+  const { goal, cefr, dueCount, grammarDue, continueReading, levelText, levelUpTarget } = input;
 
   if (dueCount > 0) {
     return {
       title: `Review ${dueCount} kata`,
       href: "/review",
-      reason: "Kata ini sudah waktunya diulang. Mengulang tepat waktu membuatnya lebih awet.",
+      reason: grammarDue && grammarDue.count > 0
+        ? `Kata ini sudah waktunya diulang. Ada juga ${grammarDue.count} topik grammar yang perlu diulang.`
+        : "Kata ini sudah waktunya diulang. Mengulang tepat waktu membuatnya lebih awet.",
+    };
+  }
+
+  if (grammarDue && grammarDue.count > 0) {
+    return {
+      title: grammarDue.count > 1 ? `Review grammar: ${grammarDue.title} (+${grammarDue.count - 1} topik)` : `Review grammar: ${grammarDue.title}`,
+      href: `/english-lab/grammar/${grammarDue.slug}?review=1`,
+      reason: "Topik ini sudah waktunya diulang. Beberapa soal singkat cukup untuk mengingatkan.",
     };
   }
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
+import { getRequestUser } from "@/utils/supabase/get-user";
 import AnimatedPage from "@/components/AnimatedPage";
 import { Card, CardTitle } from "@/components/ui/primitives";
 import TopicPractice from "./TopicPractice";
@@ -9,6 +10,8 @@ import TopicPractice from "./TopicPractice";
 export const dynamic = "force-dynamic";
 
 type Example = { en: string; id: string };
+
+const isPast = (iso: string) => new Date(iso).getTime() <= Date.now();
 
 export default async function GrammarTopicPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -36,6 +39,19 @@ export default async function GrammarTopicPage({ params }: { params: Promise<{ s
     : { data: [] as { id: string; title: string; cefr_level: string | null }[] };
 
   const examples = (Array.isArray(topic.examples) ? topic.examples : []) as Example[];
+
+  // Fase 15: jumlah soal terstruktur terbit + apakah jadwal review topik ini sudah lewat.
+  // Sebelum migrasi 0012 kedua tabel belum ada: error diabaikan dan halaman tampil seperti sebelumnya.
+  const { user } = await getRequestUser();
+  const [exerciseRes, progressRes] = await Promise.all([
+    supabase.from("exercises").select("id", { count: "exact", head: true }).eq("topic_slug", topic.slug).eq("status", "published"),
+    user
+      ? supabase.from("grammar_progress").select("completed_at, next_review_at").eq("user_id", user.id).eq("topic_slug", topic.slug).maybeSingle()
+      : Promise.resolve({ data: null, error: null }),
+  ]);
+  const exerciseCount = exerciseRes.error ? 0 : exerciseRes.count ?? 0;
+  const progress = progressRes.error ? null : progressRes.data;
+  const reviewDue = !!progress?.completed_at && !!progress.next_review_at && isPast(progress.next_review_at);
 
   return (
     <AnimatedPage className="p-4 lg:p-8 max-w-3xl mx-auto pb-24">
@@ -67,7 +83,7 @@ export default async function GrammarTopicPage({ params }: { params: Promise<{ s
         </Card>
       )}
 
-      <TopicPractice slug={topic.slug} title={topic.title} summary={topic.summary_id} />
+      <TopicPractice slug={topic.slug} title={topic.title} summary={topic.summary_id} exerciseCount={exerciseCount} reviewDue={reviewDue} />
 
       {related && related.length > 0 && (
         <Card className="mt-4">

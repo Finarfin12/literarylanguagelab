@@ -45,6 +45,7 @@ export const AI_FEATURES: AIFeature[] = [
   { key: "dynamic-tools", label: "Toolkits Hub (tools dinamis)", group: "Tools", requires: "text" },
   { key: "generate-text", label: "Generator Teks", group: "Tools", requires: "text" },
   { key: "graded-text-generate", label: "Generator Teks Berjenjang (admin)", group: "Tools", requires: "text" },
+  { key: "exercise-generate", label: "Generator Soal Latihan (admin)", group: "English Lab", requires: "text" },
 
   { key: "translation", label: "Translation Workshop", group: "Translation", requires: "text" },
   { key: "translation-rubric", label: "Penilaian Rubrik Terjemahan", group: "Translation", requires: "text" },

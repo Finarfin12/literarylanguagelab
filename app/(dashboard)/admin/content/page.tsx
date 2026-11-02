@@ -4,7 +4,8 @@ import { requireAdminPage } from "../_lib/guard";
 import { AdminPageHeader, MigrationNotice, Notice } from "../_lib/ui";
 import { CEFR_LEVELS, isCefrLevel } from "@/lib/cefr";
 import { MISSING_SCHEMA_CODES, type AdminTextRow, type GrammarTopicRow } from "../_lib/content-types";
-import ContentManager, { type EditableText } from "./ContentManager";
+import ContentSubnav from "./ContentSubnav";
+import ContentManager,{ type EditableText } from "./ContentManager";
 
 export const dynamic = "force-dynamic";
 
@@ -94,8 +95,10 @@ export default async function AdminContentPage({
       <AdminPageHeader
         icon={<Library className="w-7 h-7" />}
         title="Konten"
-        description="Tandai level teks, buat teks berjenjang dengan AI, dan kelola topik grammar dasar."
+        description="Tandai level teks, buat teks berjenjang dengan AI, kelola topik grammar dasar, dan kelola soal latihan."
       />
+
+      <ContentSubnav />
 
       {textsMissing && <MigrationNotice file="0007_graded_content.sql" message={textsMissing} />}
       {topicsMissing && !textsMissing && <MigrationNotice file="0007_graded_content.sql" message={topicsMissing} />}

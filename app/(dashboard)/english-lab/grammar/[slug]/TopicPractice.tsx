@@ -2,19 +2,37 @@
 
 import Markdown from "@/components/ui/Markdown";
 import { useEffect, useState } from "react";
-import { CheckCircle2, Lightbulb, PenLine } from "lucide-react";
+import { CheckCircle2, Lightbulb, PenLine, RefreshCw } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Button, Card, CardTitle } from "@/components/ui/primitives";
-import { isTopicDone, setTopicDone } from "@/lib/grammar-progress";
+import { isTopicDone, loadGrammarProgressSynced, saveTopicDone } from "@/lib/grammar-progress";
+import ExerciseSession from "@/components/exercises/ExerciseSession";
 
 type QuizItem = { sentence: string; answer: string; options: string[] };
 type Lesson = { title?: string; lesson_text?: string; quiz?: QuizItem[] };
 type Correction = { original: string; corrected: string; explanation_id?: string };
 type ClinicResult = { score?: number; corrections?: Correction[]; corrected_text?: string; tips?: string[] };
 
-export default function TopicPractice({ slug, title, summary }: { slug: string; title: string; summary: string }) {
+export default function TopicPractice({
+  slug,
+  title,
+  summary,
+  exerciseCount = 0,
+  reviewDue = false,
+}: {
+  slug: string;
+  title: string;
+  summary: string;
+  /** Jumlah soal terstruktur yang terbit untuk topik ini (Fase 15); 0 menyembunyikan kartu latihan. */
+  exerciseCount?: number;
+  /** Jadwal review topik ini sudah lewat (Fase 15). */
+  reviewDue?: boolean;
+}) {
   const [done, setDone] = useState(false);
+  const [dueNow, setDueNow] = useState(reviewDue);
+  const [reviewNote, setReviewNote] = useState("");
+  const [reviewBusy, setReviewBusy] = useState(false);
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [lessonLoading, setLessonLoading] = useState(false);
   const [picked, setPicked] = useState<Record<number, string>>({});
@@ -27,12 +45,44 @@ export default function TopicPractice({ slug, title, summary }: { slug: string; 
     // localStorage hanya ada di browser
     // eslint-disable-next-line react-hooks/set-state-in-effect -- membaca penyimpanan setelah mount
     setDone(isTopicDone(slug));
+    // Fase 15: database (bila migrasi 0012 sudah dijalankan) menggantikan localStorage
+    let cancelled = false;
+    loadGrammarProgressSynced([slug]).then((rows) => {
+      if (cancelled || rows === null) return;
+      setDone(rows.some((r) => r.topic_slug === slug && !!r.completed_at));
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
-  const toggleDone = () => {
+  const toggleDone = async () => {
     const next = !done;
-    setTopicDone(slug, next);
     setDone(next);
+    const rows = await saveTopicDone(slug, next);
+    if (rows !== null) setDone(rows.some((r) => r.topic_slug === slug && !!r.completed_at));
+    if (!next) setDueNow(false);
+  };
+
+  // Review manual untuk topik tanpa soal terstruktur: "Masih ingat" (kualitas 4) atau "Perlu diulang" (kualitas 2)
+  const reviewManually = async (quality: number) => {
+    setReviewBusy(true);
+    setError("");
+    try {
+      const res = await fetch("/api/grammar/progress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "review", slug, quality }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal menyimpan review.");
+      setDueNow(false);
+      setReviewNote(`Tersimpan. Topik ini muncul lagi dalam ${data.review.interval} hari.`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Gagal menyimpan review.");
+    } finally {
+      setReviewBusy(false);
+    }
   };
 
   const loadLesson = async () => {
@@ -78,6 +128,31 @@ export default function TopicPractice({ slug, title, summary }: { slug: string; 
   return (
     <div className="space-y-4">
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+
+      {dueNow && (
+        <Card className="border-warning-ink/30 bg-warning-tint">
+          <CardTitle icon={<RefreshCw className="w-5 h-5 text-warning-ink" />}>Waktunya mengulang topik ini</CardTitle>
+          {exerciseCount > 0 ? (
+            <p className="text-sm text-foreground">Kerjakan latihan terstruktur di bawah. Hasilnya menentukan kapan topik ini muncul lagi.</p>
+          ) : (
+            <div>
+              <p className="text-sm text-foreground mb-3">Baca ringkasan di atas, lalu pilih seberapa kamu masih mengingatnya.</p>
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={() => reviewManually(4)} loading={reviewBusy}>Masih ingat</Button>
+                <Button variant="secondary" onClick={() => reviewManually(2)} disabled={reviewBusy}>Perlu diulang</Button>
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
+      {reviewNote && <p role="status" className="text-sm font-bold text-brand-ink">{reviewNote}</p>}
+
+      {exerciseCount > 0 && (
+        <ExerciseSession
+          topicSlug={slug}
+          onFinished={() => setDueNow(false)}
+        />
+      )}
 
       <Card>
         <CardTitle icon={<Lightbulb className="w-5 h-5 text-brand-ink" />}>Penjelasan lebih detail</CardTitle>

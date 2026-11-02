@@ -35,7 +35,7 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 | Landing page (3 langkah, 3 tujuan) | `app/page.tsx` |
 | Login & daftar (email + OAuth) | `app/(auth)/login`, `app/(auth)/register`, `app/(auth)/actions.ts`, `components/ui/OAuthButtons.tsx` |
 | Onboarding 3 langkah (level / tujuan / waktu), bisa dilewati | `app/(dashboard)/onboarding/` |
-| Beranda: Langkah berikutnya (`lib/next-step.ts`), alat sesuai tujuan, Lanjutkan Membaca (+progres, termasuk Gutenberg), Kosa Kata Hari Ini, Progres Pribadi + grafik, pintasan, loading skeleton | `app/(dashboard)/dashboard/` |
+| Beranda: Langkah berikutnya (`lib/next-step.ts`), alat sesuai tujuan, Lanjutkan Membaca (+progres, termasuk Gutenberg), Kosa Kata Hari Ini (kini "Review Hari Ini", Fase 15), Progres Pribadi + grafik, pintasan, loading skeleton | `app/(dashboard)/dashboard/` |
 | **(14a, ✅ diuji 375px/1280px, terang/gelap, keadaan kosong)** Beranda v4: sapaan serif, Langkah berikutnya + Kosa Kata Hari Ini, rak Lanjutkan Membaca (sampul, progres), blok baru "Tiga ruang belajar" (tanda Tujuanmu), Progres Pribadi + grafik (warna ikut tema), Alat untuk kamu, pintasan, skeleton | `app/(dashboard)/dashboard/`, `components/dashboard/VocabChart.tsx` |
 
 ## C. Membaca (Library, Buku Klasik, Reader)
@@ -96,6 +96,17 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 | Kosakata Inti: **definisi bahasa Inggris** di bawah kata (14g; tanpa definisi → tampilan lama), definisi ikut tersimpan saat kata ditambahkan ke Review | `app/(dashboard)/vocabulary/core/page.tsx`, `actions.ts`, migrasi `0015` |
 | Kosakata Inti: **pengenalan bentuk kata** (`searched` dihitung sebagai `search` pada status & "Tambah 10 kata") (14g) | `lib/core-words.ts`, `vocabulary/core/` |
 | Skrip `scripts/enrich-ngsl.mjs` (UPDATE `definition_en`/`forms`, `--dry-run`, `--core-from`) dan petunjuk di Admin → Konten (14g) | `scripts/enrich-ngsl.mjs`, `scripts/lib/ngsl-enrich.mjs`, `app/(dashboard)/admin/content/` |
+
+> **(Fase 15, ✅ diuji 375px/1280px, terang/gelap)** Mesin latihan terstruktur + review grammar (baris baru; latihan kalimat bebas, Penjelasan lebih detail, dan Grammar Clinic di halaman topik **tetap ada**):
+>
+> | Fitur | Lokasi / cara uji |
+> |---|---|
+> | Lima tipe soal (pilihan ganda, isian, susun kalimat, pasangkan, dikte) dinilai tanpa AI, umpan balik + penjelasan Indonesia | `components/exercises/`, `lib/exercises/`; uji unit `tests/exercises.test.mts`; buka `/english-lab/grammar/<topik>` → kartu "Latihan terstruktur" (muncul bila ada soal terbit) |
+> | Sesi latihan: soal yang pernah salah diprioritaskan; hasil → `exercise_attempts` + bukti kemampuan (grammar/vocabulary/listening) | `app/api/exercises/{session,attempt,finish}`; dinilai ulang di server |
+> | Status selesai topik grammar pindah ke database (`grammar_progress`), `localStorage` dimigrasikan sekali dan tetap jadi cadangan sebelum `0012` | `lib/grammar-progress.ts`, `app/api/grammar/progress`; ubah centang topik → muncul di perangkat lain |
+> | Review grammar terjadwal (SM-2, `calculateSM2`): lencana "Waktunya diulang" di daftar topik, banner + "Masih ingat / Perlu diulang" bila topik tanpa soal | `TopicList.tsx`, `[slug]/TopicPractice.tsx` |
+> | Beranda: kartu "Review Hari Ini" (dulu "Kosa Kata Hari Ini") memuat topik grammar jatuh tempo; `getNextStep` menyarankan review grammar setelah review kata | `dashboard/page.tsx`, `lib/next-step.ts` (uji `next-step`) |
+> | Admin → Konten → **Latihan**: daftar, filter, pratinjau, edit, terbitkan massal; "Buat soal dengan AI" (`exercise-generate`, draft → ditinjau → terbit); "Buat soal dari Kosakata Inti" tanpa AI | `app/(dashboard)/admin/content/exercises/`, `admin/exercise-actions.ts`, `lib/exercises/from-core-words.ts` |
 | Review SRS (SM-2): kartu, konteks, **Lihat di teks**, skor 0–3 | `app/(dashboard)/review/`, `app/(dashboard)/vocabulary/review/`, `components/vocabulary/ReviewClient.tsx` |
 | Flashcard SRS (English Lab): mode **guess-word, guess-meaning, dictation, collocation** | `app/(dashboard)/english-lab/flashcard/page.tsx` |
 | Idiom Library | `app/(dashboard)/idioms/page.tsx` |
