@@ -1,4 +1,5 @@
--- Hapus pesan (halaman Pesan): pengirim boleh menghapus pesannya sendiri.
+-- Hapus pesan & hapus percakapan (halaman Pesan): pengirim boleh menghapus pesannya; pengirim ATAU penerima boleh
+-- menghapus pesan dalam percakapan mereka (dipakai tombol "Hapus percakapan", yang menghapus kedua arah untuk kedua pihak).
 -- Tabel direct_messages tidak dibuat oleh migrasi di repo (dibuat langsung di Supabase), jadi blok ini hanya
 -- bertindak bila tabelnya ada dan hanya menambah kebijakan DELETE yang belum ada. RLS tidak diaktifkan/dimatikan di sini:
 -- jika RLS pada tabel ini aktif, tanpa kebijakan ini penghapusan ditolak diam-diam; jika tidak aktif, penghapusan sudah boleh.
@@ -13,11 +14,11 @@ BEGIN
 
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies
-    WHERE schemaname = 'public' AND tablename = 'direct_messages' AND policyname = 'Pengirim dapat menghapus pesannya'
+    WHERE schemaname = 'public' AND tablename = 'direct_messages' AND policyname = 'Peserta percakapan dapat menghapus pesan'
   ) THEN
-    CREATE POLICY "Pengirim dapat menghapus pesannya"
+    CREATE POLICY "Peserta percakapan dapat menghapus pesan"
       ON public.direct_messages
       FOR DELETE
-      USING (auth.uid() = sender_id);
+      USING (auth.uid() = sender_id OR auth.uid() = receiver_id);
   END IF;
 END $$;

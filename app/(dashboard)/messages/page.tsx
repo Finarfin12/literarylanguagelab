@@ -244,6 +244,43 @@ function MessagesContent() {
     fetchConversations(currentUser.id);
   }
 
+  // Hapus seluruh percakapan dengan satu orang: pesan kedua arah dihapus permanen untuk kedua pihak.
+  async function deleteConversation() {
+    if (!currentUser || !activeUserId) return;
+    const name = (conversations.find((c) => c.other_user.id === activeUserId)?.other_user ?? searchResults.find((r) => r.id === activeUserId))?.full_name || "pengguna ini";
+    const confirm = await Swal.fire({
+      title: `Hapus percakapan dengan ${name}?`,
+      text: "Semua pesan, milikmu dan miliknya, dihapus permanen untuk kamu dan dia. Tindakan ini tidak bisa dibatalkan.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Hapus semua",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "#ef4444",
+    });
+    if (!confirm.isConfirmed) return;
+
+    const me = currentUser.id;
+    const other = activeUserId;
+    const { data, error } = await supabase
+      .from("direct_messages")
+      .delete()
+      .or(`and(sender_id.eq.${me},receiver_id.eq.${other}),and(sender_id.eq.${other},receiver_id.eq.${me})`)
+      .select("id");
+    const deleted = data?.length ?? 0;
+    if (error || deleted === 0) {
+      Swal.fire({
+        title: "Percakapan belum bisa dihapus",
+        text: "Server menolak penghapusan. Hubungi admin untuk mengaktifkan fitur hapus pesan.",
+        icon: "warning",
+        confirmButtonColor: "#2fa16b",
+      });
+      return;
+    }
+    setMessages([]);
+    setActiveUserId(null);
+    fetchConversations(me);
+  }
+
   const activeContact = conversations.find(c => c.other_user.id === activeUserId)?.other_user 
     || searchResults.find(r => r.id === activeUserId);
 
@@ -361,6 +398,18 @@ function MessagesContent() {
                   <p className="text-xs text-muted-foreground font-medium">Offline</p>
                 )}
               </div>
+              {messages.length > 0 && (
+                <button
+                  type="button"
+                  onClick={deleteConversation}
+                  className="ml-auto min-h-[44px] px-3 rounded-control flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-danger hover:bg-danger-tint transition-colors"
+                  title="Hapus seluruh percakapan"
+                >
+                  <Trash2 className="w-4 h-4" aria-hidden="true" />
+                  <span className="hidden sm:inline">Hapus percakapan</span>
+                  <span className="sm:hidden sr-only">Hapus percakapan</span>
+                </button>
+              )}
             </div>
 
             {/* Messages Area */}
