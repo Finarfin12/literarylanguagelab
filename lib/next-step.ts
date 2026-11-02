@@ -9,6 +9,8 @@ export interface NextStepInput {
   dueCount: number;
   /** Fase 15: topik grammar yang jadwal reviewnya sudah lewat (yang paling lama menunggu); null jika tidak ada. */
   grammarDue?: { count: number; slug: string; title: string } | null;
+  /** Fase 16: unit Kursus Dasar yang disarankan (lib/course.ts). Isi hanya bila kursus boleh tampil (flag `kursus_dasar` / admin). */
+  courseUnit?: { title: string; href: string; started: boolean } | null;
   /** Bacaan terakhir yang belum selesai (teks Library atau buku Gutenberg). */
   continueReading?: { title: string; href: string } | null;
   /** Fase 10: level berikutnya jika semua syarat naik level terpenuhi dan tes boleh diambil; selain itu null. */
@@ -41,9 +43,9 @@ const GOAL_FALLBACK: Record<LearningGoal, NextStep> = {
   },
 };
 
-/** Prioritas: review kata jatuh tempo > review topik grammar jatuh tempo > Tes Naik Level (jika siap) > lanjutkan bacaan > bacaan sesuai level > tes level > alat sesuai tujuan. */
+/** Prioritas: review kata jatuh tempo > review topik grammar jatuh tempo > Tes Naik Level (jika siap) > lanjutkan bacaan > unit Kursus Dasar > bacaan sesuai level > tes level > alat sesuai tujuan. */
 export function getNextStep(input: NextStepInput): NextStep {
-  const { goal, cefr, dueCount, grammarDue, continueReading, levelText, levelUpTarget } = input;
+  const { goal, cefr, dueCount, grammarDue, courseUnit, continueReading, levelText, levelUpTarget } = input;
 
   if (dueCount > 0) {
     return {
@@ -76,6 +78,14 @@ export function getNextStep(input: NextStepInput): NextStep {
       title: `Lanjutkan membaca: ${continueReading.title}`,
       href: continueReading.href,
       reason: "Kamu berhenti di tengah bacaan ini.",
+    };
+  }
+
+  if (courseUnit) {
+    return {
+      title: `${courseUnit.started ? "Lanjutkan" : "Mulai"} Kursus Dasar: ${courseUnit.title}`,
+      href: courseUnit.href,
+      reason: courseUnit.started ? "Kamu sudah memulai unit ini. Lanjutkan langkah berikutnya." : "Unit berikutnya di Kursus Dasar, langkah demi langkah.",
     };
   }
 

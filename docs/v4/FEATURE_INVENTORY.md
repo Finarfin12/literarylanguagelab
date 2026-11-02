@@ -107,6 +107,17 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 > | Review grammar terjadwal (SM-2, `calculateSM2`): lencana "Waktunya diulang" di daftar topik, banner + "Masih ingat / Perlu diulang" bila topik tanpa soal | `TopicList.tsx`, `[slug]/TopicPractice.tsx` |
 > | Beranda: kartu "Review Hari Ini" (dulu "Kosa Kata Hari Ini") memuat topik grammar jatuh tempo; `getNextStep` menyarankan review grammar setelah review kata | `dashboard/page.tsx`, `lib/next-step.ts` (uji `next-step`) |
 > | Admin → Konten → **Latihan**: daftar, filter, pratinjau, edit, terbitkan massal; "Buat soal dengan AI" (`exercise-generate`, draft → ditinjau → terbit); "Buat soal dari Kosakata Inti" tanpa AI | `app/(dashboard)/admin/content/exercises/`, `admin/exercise-actions.ts`, `lib/exercises/from-core-words.ts` |
+
+> **(Fase 16, ✅ pemutar & admin diuji 375px/1280px, terang/gelap)** Kursus Dasar (baris baru; tersembunyi dari pengguna biasa sampai flag `kursus_dasar` dinyalakan):
+>
+> | Fitur | Lokasi / cara uji |
+> |---|---|
+> | 12 unit A0–A2 (tabel `course_units`, seed di `0013`); daftar per level, unit yang disarankan, progres per unit, tidak ada yang dikunci | `app/(dashboard)/kursus/page.tsx`, `lib/course.ts` (uji `course`); admin buka `/kursus` |
+> | Pemutar unit: enam jenis langkah (kosakata, grammar, baca, dengar, latihan, bicara), bebas berpindah langkah, langkah kosong ditandai "belum tersedia" dan bisa dilewati, kemajuan tersimpan di `unit_progress` | `app/(dashboard)/kursus/[slug]`, `components/course/`, `app/api/course/progress` |
+> | Unit contoh lengkap "Salam & perkenalan" (kata, grammar to-be, bacaan, dengar, 6 soal terbit, bicara) | seed `0013`; uji `course` memvalidasi seed |
+> | Flag `kursus_dasar` (default mati; pengguna biasa hanya melihat "Segera hadir"; admin melihat label "Pratinjau admin"); item tersembunyi di Ruang I, Sidebar, Menu HP + pencarian; Kursus Dasar tetap terdaftar di Ruang I (urutan ke-2) | `lib/course-access.ts`, `components/CourseVisibility.tsx`, `lib/rooms.ts` (`isPathVisible`), uji `menu-coverage` |
+> | Beranda: "Langkah berikutnya" menyarankan unit Kursus Dasar berikutnya (hanya bila kursus boleh tampil) | `lib/next-step.ts` (`courseUnit`), uji `next-step` |
+> | Admin → Konten → **Kursus**: tambah/edit/terbitkan/hapus unit, editor langkah (pilih topik, teks Library, skenario Dialogue Simulator, urutkan langkah); Admin → Konten → Latihan: soal bisa dikaitkan ke unit + filter `?unit=` | `app/(dashboard)/admin/content/course/`, `admin/course-actions.ts` |
 | Review SRS (SM-2): kartu, konteks, **Lihat di teks**, skor 0–3 | `app/(dashboard)/review/`, `app/(dashboard)/vocabulary/review/`, `components/vocabulary/ReviewClient.tsx` |
 | Flashcard SRS (English Lab): mode **guess-word, guess-meaning, dictation, collocation** | `app/(dashboard)/english-lab/flashcard/page.tsx` |
 | Idiom Library | `app/(dashboard)/idioms/page.tsx` |

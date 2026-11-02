@@ -23,6 +23,9 @@ export interface Room {
   sections: RoomSection[];
 }
 
+/** Kursus Dasar (Fase 16). Disembunyikan dari pengguna biasa selama flag `kursus_dasar` mati; tetap terdaftar di ruang agar uji cakupan menu tidak gagal. */
+export const COURSE_PATH = "/kursus";
+
 export const ROOMS: Room[] = [
   {
     slug: "belajar-dasar",
@@ -32,6 +35,7 @@ export const ROOMS: Room[] = [
     goal: "umum",
     sections: [
       { title: "Ketahui levelmu", blurb: "Mulai di sini bila belum yakin level CEFR kamu.", paths: ["/english-lab/placement-test", "/english-lab/level-test"] },
+      { title: "Kursus Dasar", blurb: "Unit bertema A0–A2: kosakata, grammar, bacaan, dengar, latihan, dan bicara.", paths: [COURSE_PATH] },
       { title: "Grammar & kosakata inti", blurb: "Fondasi yang paling sering dipakai.", paths: ["/english-lab/grammar", "/vocabulary/core"] },
       { title: "Bacaan berjenjang", blurb: "Teks yang disaring menurut level.", paths: ["/library"] },
       {
@@ -154,6 +158,7 @@ export function getRoom(slug: string): Room | undefined {
 
 /** Item yang tidak ada di lib/menu-config.ts (halaman utama, alat dinamis di luar menu, dll.). */
 export const EXTRA_ITEMS: Record<string, { name: string; description: string }> = {
+  [COURSE_PATH]: { name: "Kursus Dasar", description: "Unit bertema A0–A2 dengan langkah berurutan; unit berikutnya disarankan, tidak dikunci." },
   "/dashboard": { name: "Rak bacaan", description: "Lanjutkan membaca dari terakhir kamu berhenti." },
   "/library/add": { name: "Tambah Teks", description: "Tulis teks sendiri atau buat teks bacaan dengan AI." },
   "/lingowise": { name: "LingoWise AI", description: "Asisten AI untuk bertanya soal bahasa dan sastra." },
@@ -162,6 +167,18 @@ export const EXTRA_ITEMS: Record<string, { name: string; description: string }> 
   "/tools/essay-auditor": { name: "Essay Auditor", description: "Audit kekuatan argumen dan kohesi paragraf esai." },
   "/tools/case-study-generator": { name: "Portfolio Case Study Generator", description: "Buat case study profesional untuk portofolio." },
 };
+
+/** Path yang disembunyikan menurut flag; `courseVisible` = Kursus Dasar boleh tampil (flag menyala atau pengguna admin). */
+export function isPathVisible(path: string, courseVisible: boolean): boolean {
+  return courseVisible || path !== COURSE_PATH;
+}
+
+/** Bagian ruang tanpa item yang disembunyikan; bagian yang jadi kosong ikut dibuang. */
+export function visibleSections(room: Room, courseVisible: boolean): RoomSection[] {
+  return room.sections
+    .map((s) => ({ ...s, paths: s.paths.filter((p) => isPathVisible(p, courseVisible)) }))
+    .filter((s) => s.paths.length > 0);
+}
 
 /** Semua path yang terjangkau lewat ruang (untuk uji cakupan). */
 export function allRoomPaths(): Set<string> {

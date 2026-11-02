@@ -16,7 +16,7 @@ const PAGE_LIMIT = 100;
 export default async function AdminExercisesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ type?: string; level?: string; status?: string; topic?: string }>;
+  searchParams: Promise<{ type?: string; level?: string; status?: string; topic?: string; unit?: string }>;
 }) {
   const { supabase } = await requireAdminPage();
   const params = await searchParams;
@@ -24,6 +24,7 @@ export default async function AdminExercisesPage({
   const level = isCefrLevel(params.level) ? params.level : "";
   const status = params.status === "draft" || params.status === "published" ? params.status : "";
   const topic = /^[a-z0-9-]{2,64}$/.test(params.topic ?? "") ? params.topic! : "";
+  const unit = /^[a-z0-9-]{2,64}$/.test(params.unit ?? "") ? params.unit! : "";
 
   let q = supabase
     .from("exercises")
@@ -34,14 +35,21 @@ export default async function AdminExercisesPage({
   if (level) q = q.eq("cefr_level", level);
   if (status) q = q.eq("status", status);
   if (topic) q = q.eq("topic_slug", topic);
+  if (unit) q = q.eq("unit_slug", unit);
 
-  const [res, topicsRes] = await Promise.all([q, supabase.from("grammar_topics").select("slug, title").order("sort_order")]);
+  const [res, topicsRes, unitsRes] = await Promise.all([
+    q,
+    supabase.from("grammar_topics").select("slug, title").order("sort_order"),
+    // Tabel course_units dari migrasi 0013; error (belum ada) diabaikan
+    supabase.from("course_units").select("slug, title").order("sort_order"),
+  ]);
   const missing = !!res.error && !!res.error.code && MISSING_SCHEMA_CODES.includes(res.error.code);
   const rows = (res.error ? [] : res.data || []) as AdminExerciseRow[];
   const topics = (topicsRes.data || []) as { slug: string; title: string }[];
+  const units = (unitsRes.error ? [] : unitsRes.data || []) as { slug: string; title: string }[];
 
-  const filterHref = (next: Partial<Record<"type" | "level" | "status" | "topic", string>>) => {
-    const merged = { type, level, status, topic, ...next };
+  const filterHref = (next: Partial<Record<"type" | "level" | "status" | "topic" | "unit", string>>) => {
+    const merged = { type, level, status, topic, unit, ...next };
     const sp = new URLSearchParams();
     for (const [k, v] of Object.entries(merged)) if (v) sp.set(k, v);
     const qs = sp.toString();
@@ -78,7 +86,7 @@ export default async function AdminExercisesPage({
         <Link href={filterHref({ status: "published" })} className={chip(status === "published")}>Terbit</Link>
       </div>
 
-      <ExerciseManager rows={rows} topics={topics} schemaReady={!missing} activeTopic={topic} />
+      <ExerciseManager rows={rows} topics={topics} units={units} schemaReady={!missing} activeTopic={topic} />
       {rows.length >= PAGE_LIMIT && <p className="text-xs text-muted-foreground mt-4">Menampilkan {PAGE_LIMIT} soal terbaru. Gunakan filter untuk mempersempit.</p>}
     </div>
   );

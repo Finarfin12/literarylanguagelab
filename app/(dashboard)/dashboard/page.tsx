@@ -12,6 +12,9 @@ import { neighborLevels } from "@/lib/cefr";
 import { loadLevelContext } from "@/lib/skill-evidence";
 import { canTakeLevelTest, levelUpReadiness } from "@/lib/levels";
 import { toolsForGoal } from "@/lib/menu-config";
+import { getCourseAccess } from "@/lib/course-access";
+import { loadUnitProgress, loadUnits } from "@/lib/course-server";
+import { suggestNextUnit } from "@/lib/course";
 import { GOAL_LABELS, isLearningGoal, type LearningGoal } from "@/lib/learning-goals";
 
 type RecentSession = {
@@ -88,6 +91,26 @@ async function loadGrammarDue(
     if (error || !data || data.length === 0) return null;
     const { data: topic } = await supabase.from("grammar_topics").select("title").eq("slug", data[0].topic_slug).maybeSingle();
     return { count: data.length, slug: data[0].topic_slug as string, title: (topic?.title as string | undefined) ?? "Grammar" };
+  } catch {
+    return null;
+  }
+}
+
+// Fase 16: unit Kursus Dasar yang disarankan; null bila kursus belum boleh tampil (flag mati, bukan admin) atau tabelnya belum ada.
+async function loadCourseSuggestion(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string | undefined,
+  cefr: string | null
+): Promise<{ title: string; href: string; started: boolean } | null> {
+  if (!userId) return null;
+  try {
+    const access = await getCourseAccess(supabase, userId);
+    if (!access.visible) return null;
+    const [{ available, units }, progress] = await Promise.all([loadUnits(supabase), loadUnitProgress(supabase, userId)]);
+    if (!available) return null;
+    const unit = suggestNextUnit(units, progress, cefr);
+    if (!unit) return null;
+    return { title: unit.title, href: `/kursus/${unit.slug}`, started: (progress.find((p) => p.unit_slug === unit.slug)?.step_index ?? 0) > 0 };
   } catch {
     return null;
   }
@@ -187,11 +210,13 @@ export default async function DashboardPage() {
     : null;
 
   const openReading = continueReading.find((t) => t.progress === null || t.progress < 100) ?? null;
+  const courseUnit = await loadCourseSuggestion(supabase, user?.id, personal.cefr);
   const nextStep = getNextStep({
     goal: personal.goal,
     cefr: personal.cefr,
     dueCount,
     grammarDue,
+    courseUnit,
     continueReading: openReading ? { title: openReading.title, href: openReading.href } : null,
     levelText,
     levelUpTarget,

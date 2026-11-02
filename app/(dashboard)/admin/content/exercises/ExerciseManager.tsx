@@ -16,6 +16,7 @@ interface FormState {
   type: ExerciseType;
   cefr_level: string;
   topic_slug: string;
+  unit_slug: string;
   tags: string;
   prompt: string;
   answer: string;
@@ -28,6 +29,7 @@ const emptyForm = (type: ExerciseType = "mcq"): FormState => ({
   type,
   cefr_level: "A1",
   topic_slug: "",
+  unit_slug: "",
   tags: "",
   prompt: pretty(EXERCISE_TEMPLATES[type].prompt),
   answer: pretty(EXERCISE_TEMPLATES[type].answer),
@@ -37,11 +39,14 @@ const emptyForm = (type: ExerciseType = "mcq"): FormState => ({
 export default function ExerciseManager({
   rows,
   topics,
+  units,
   schemaReady,
   activeTopic,
 }: {
   rows: AdminExerciseRow[];
   topics: { slug: string; title: string }[];
+  /** Unit Kursus Dasar (Fase 16) untuk mengaitkan soal; kosong bila migrasi 0013 belum dijalankan. */
+  units: { slug: string; title: string }[];
   schemaReady: boolean;
   activeTopic: string;
 }) {
@@ -98,6 +103,7 @@ export default function ExerciseManager({
           type: form.type,
           cefr_level: form.cefr_level,
           topic_slug: form.topic_slug || null,
+          unit_slug: form.unit_slug || null,
           tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
           prompt: prompt.value,
           answer: answer.value,
@@ -114,6 +120,7 @@ export default function ExerciseManager({
       type: row.type,
       cefr_level: row.cefr_level,
       topic_slug: row.topic_slug ?? "",
+      unit_slug: row.unit_slug ?? "",
       tags: (row.tags ?? []).join(", "),
       prompt: pretty(row.prompt),
       answer: pretty(row.answer),
@@ -278,6 +285,13 @@ export default function ExerciseManager({
                 </select>
               </label>
             </div>
+            <label className="text-sm font-medium block">Unit Kursus Dasar (opsional)
+              <select className={`${inputClass} min-h-[44px] mt-1`} value={form.unit_slug} onChange={(e) => setForm({ ...form, unit_slug: e.target.value })}>
+                <option value="">(tanpa unit)</option>
+                {units.map((u) => <option key={u.slug} value={u.slug}>{u.title}</option>)}
+                {form.unit_slug && !units.some((u) => u.slug === form.unit_slug) && <option value={form.unit_slug}>{form.unit_slug}</option>}
+              </select>
+            </label>
             <label className="text-sm font-medium block">Tag (pisahkan dengan koma)
               <input className={`${inputClass} min-h-[44px] mt-1`} value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="core-word, l1-error" />
             </label>
@@ -311,7 +325,7 @@ export default function ExerciseManager({
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-foreground line-clamp-2">{exerciseSummary(row) || "(soal kosong)"}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {EXERCISE_TYPE_LABELS[row.type]} · {row.cefr_level} · {row.topic_slug ?? "tanpa topik"} · {row.source === "ai" ? "AI" : "Admin"} ·{" "}
+                        {EXERCISE_TYPE_LABELS[row.type]} · {row.cefr_level} · {row.topic_slug ?? "tanpa topik"}{row.unit_slug ? ` · unit ${row.unit_slug}` : ""} · {row.source === "ai" ? "AI" : "Admin"} ·{" "}
                         <span className={row.status === "draft" ? "text-warning-ink font-bold" : "text-brand-ink font-bold"}>{row.status === "draft" ? "Draft" : "Terbit"}</span>
                       </p>
                     </div>

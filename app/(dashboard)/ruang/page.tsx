@@ -2,13 +2,17 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import AnimatedPage from "@/components/AnimatedPage";
 import { Badge, Eyebrow, Card } from "@/components/ui/primitives";
-import { ROOMS } from "@/lib/rooms";
+import { ROOMS, visibleSections } from "@/lib/rooms";
+import { getRequestUser } from "@/utils/supabase/get-user";
+import { getCourseAccess } from "@/lib/course-access";
 import { loadLearningGoal } from "./_lib/goal";
 
 export const metadata = { title: "Ruang · Literary Language Lab" };
 
 export default async function RuangIndexPage() {
   const goal = await loadLearningGoal();
+  const { supabase, user } = await getRequestUser();
+  const courseAccess = await getCourseAccess(supabase, user?.id);
   // Ruang sesuai tujuan belajar tampil pertama; urutan sisanya tetap
   const learning = ROOMS.filter((r) => r.goal).sort((a, b) => Number(b.goal === goal) - Number(a.goal === goal));
   const others = ROOMS.filter((r) => !r.goal);
@@ -25,7 +29,8 @@ export default async function RuangIndexPage() {
 
       <div className="space-y-4">
         {learning.map((room) => {
-          const count = new Set(room.sections.flatMap((s) => s.paths)).size;
+          const sections = visibleSections(room, courseAccess.visible);
+          const count = new Set(sections.flatMap((s) => s.paths)).size;
           return (
             <Link key={room.slug} href={`/ruang/${room.slug}`} className="block group">
               <Card className="transition-colors group-hover:border-brand-solid">
@@ -37,7 +42,7 @@ export default async function RuangIndexPage() {
                     </div>
                     <h2 className="font-serif text-[22px] md:text-[26px] font-medium leading-[1.2] text-foreground mt-1">{room.title}</h2>
                     <p className="text-sm text-muted-foreground mt-1.5">{room.description}</p>
-                    <p className="text-xs text-muted-foreground mt-3 nums">{room.sections.length} bagian · {count} alat</p>
+                    <p className="text-xs text-muted-foreground mt-3 nums">{sections.length} bagian · {count} alat</p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0 mt-1" aria-hidden="true" />
                 </div>

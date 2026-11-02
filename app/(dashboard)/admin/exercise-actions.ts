@@ -155,6 +155,7 @@ export async function saveExercise(input: {
   type: string;
   cefr_level: string;
   topic_slug: string | null;
+  unit_slug?: string | null;
   tags: string[];
   prompt: unknown;
   answer: unknown;
@@ -162,16 +163,16 @@ export async function saveExercise(input: {
 }): Promise<ActionResult<{ id: string }>> {
   try {
     const { supabase, user } = await assertAdmin();
-    const v = validateExerciseDraft({ ...input, unit_slug: null });
+    const v = validateExerciseDraft({ ...input, unit_slug: input.unit_slug || null });
     if (!v.ok) return { ok: false, error: v.error };
     const d = v.value;
 
     if (input.id) {
-      const { data: before } = await supabase.from("exercises").select("status, unit_slug").eq("id", input.id).maybeSingle();
-      // Mengubah soal menurunkannya ke draft agar ditinjau lagi; unit_slug (Fase 16) tidak ditimpa
+      const { data: before } = await supabase.from("exercises").select("status").eq("id", input.id).maybeSingle();
+      // Mengubah soal menurunkannya ke draft agar ditinjau lagi
       const { error } = await supabase
         .from("exercises")
-        .update({ type: d.type, cefr_level: d.cefr_level, topic_slug: d.topic_slug, tags: d.tags, prompt: d.prompt, answer: d.answer, explanation_id: d.explanation_id, status: "draft" })
+        .update({ type: d.type, cefr_level: d.cefr_level, topic_slug: d.topic_slug, unit_slug: d.unit_slug, tags: d.tags, prompt: d.prompt, answer: d.answer, explanation_id: d.explanation_id, status: "draft" })
         .eq("id", input.id);
       if (error) return { ok: false, error: dbError(error) };
       await logAdminAction({ actorId: user.id, action: "exercise.edit", target: input.id, before: { status: before?.status ?? null }, after: { type: d.type, cefr_level: d.cefr_level } });

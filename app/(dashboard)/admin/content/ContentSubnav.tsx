@@ -6,9 +6,10 @@ import { usePathname } from "next/navigation";
 const ITEMS = [
   { href: "/admin/content", label: "Teks & Grammar", exact: true },
   { href: "/admin/content/exercises", label: "Latihan" },
+  { href: "/admin/content/course", label: "Kursus" },
 ];
 
-/** Sub-tab di dalam tab Konten: Teks & Grammar | Latihan (Fase 15). */
+/** Sub-tab di dalam tab Konten: Teks & Grammar | Latihan (Fase 15) | Kursus (Fase 16). */
 export default function ContentSubnav() {
   const pathname = usePathname();
   return (

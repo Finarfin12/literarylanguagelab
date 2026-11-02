@@ -6,6 +6,8 @@ import Sidebar from "@/components/Sidebar";
 import TopActions from "@/components/TopActions";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import PresenceTracker from "@/components/PresenceTracker";
+import { CourseVisibilityProvider } from "@/components/CourseVisibility";
+import { getCourseAccess } from "@/lib/course-access";
 
 export default async function DashboardLayout({
   children,
@@ -31,7 +33,11 @@ export default async function DashboardLayout({
     }
   }
 
+  // Fase 16: Kursus Dasar tersembunyi dari menu sampai flag `kursus_dasar` menyala (admin selalu melihatnya)
+  const courseAccess = await getCourseAccess(supabase, user.id);
+
   return (
+    <CourseVisibilityProvider visible={courseAccess.visible}>
     <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar 
         userEmail={user?.email} 
@@ -48,5 +54,6 @@ export default async function DashboardLayout({
       <MobileBottomNav />
       <PresenceTracker />
     </div>
+    </CourseVisibilityProvider>
   );
 }

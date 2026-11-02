@@ -4,7 +4,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import AnimatedPage from "@/components/AnimatedPage";
 import { Badge, Eyebrow } from "@/components/ui/primitives";
 import { MENU_GROUPS } from "@/lib/menu-config";
-import { ROOMS, getRoom, resolveItem } from "@/lib/rooms";
+import { ROOMS, getRoom, resolveItem, visibleSections } from "@/lib/rooms";
+import { getRequestUser } from "@/utils/supabase/get-user";
+import { getCourseAccess } from "@/lib/course-access";
 import { loadLearningGoal } from "../_lib/goal";
 
 export function generateStaticParams() {
@@ -17,9 +19,12 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
   if (!room) notFound();
 
   const goal = await loadLearningGoal();
+  const { supabase, user } = await getRequestUser();
+  const courseAccess = await getCourseAccess(supabase, user?.id);
+  const sections = visibleSections(room, courseAccess.visible);
   const menu = MENU_GROUPS.flatMap((g) => g.items);
   // Nomor berlanjut antar bagian (gaya daftar isi)
-  const starts = room.sections.map((_, i) => room.sections.slice(0, i).reduce((sum, s) => sum + s.paths.length, 0));
+  const starts = sections.map((_, i) => sections.slice(0, i).reduce((sum, s) => sum + s.paths.length, 0));
 
   return (
     <AnimatedPage className="mx-auto w-full max-w-[960px] px-4 md:px-6 pt-6 pb-24 lg:pb-12">
@@ -37,7 +42,7 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
       </header>
 
       <div className="space-y-10">
-        {room.sections.map((section, si) => (
+        {sections.map((section, si) => (
           <section key={section.title} aria-labelledby={`sec-${si}`}>
             <div className="mb-2">
               <Eyebrow>Bagian {si + 1}</Eyebrow>

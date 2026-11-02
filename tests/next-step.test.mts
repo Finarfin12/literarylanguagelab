@@ -38,6 +38,17 @@ test("review grammar jatuh tempo (Fase 15): kalah dari review kata, menang atas 
   assert.equal(getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, grammarDue: null }).href, "/english-lab/grammar-clinic");
 });
 
+test("unit Kursus Dasar (Fase 16): setelah lanjutkan bacaan, sebelum bacaan sesuai level", () => {
+  const courseUnit = { title: "Salam & perkenalan", href: "/kursus/salam-perkenalan", started: false };
+  const c = getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, courseUnit, levelText });
+  assert.equal(c.href, "/kursus/salam-perkenalan");
+  assert.match(c.title, /^Mulai Kursus Dasar/);
+  assert.match(getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, courseUnit: { ...courseUnit, started: true } }).title, /^Lanjutkan Kursus Dasar/);
+  assert.equal(getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, courseUnit, continueReading: reading }).href, reading.href);
+  assert.equal(getNextStep({ goal: "umum", cefr: "A1", dueCount: 2, courseUnit }).href, "/review");
+  assert.equal(getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, courseUnit: null, levelText }).href, levelText.href);
+});
+
 test("siap naik level: Tes Naik Level menang atas bacaan, kalah dari review", () => {
   const ready = getNextStep({ goal: "umum", cefr: "B1", dueCount: 0, continueReading: reading, levelText, levelUpTarget: "B2" });
   assert.equal(ready.href, "/english-lab/level-test");

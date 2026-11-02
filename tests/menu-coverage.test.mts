@@ -89,4 +89,19 @@ test("resolveItem: menu, extra, dan path tak dikenal tidak hilang", () => {
   assert.equal(rooms.resolveItem("/zzz", menu).path, "/zzz");
 });
 
+test("Kursus Dasar (Fase 16): urutan ke-2 di Ruang I, terdaftar walau flag mati, tersembunyi bagi pengguna biasa", () => {
+  const room = rooms.getRoom("belajar-dasar");
+  const flat = room.sections.flatMap((s: { paths: string[] }) => s.paths);
+  assert.equal(flat[2], "/kursus"); // setelah Placement Test dan Tes Naik Level (urutan ke-2 dari tahap belajar)
+  assert.ok(covered.has("/kursus"));
+  assert.equal(rooms.resolveItem("/kursus", []).name, "Kursus Dasar");
+  assert.equal(rooms.isPathVisible("/kursus", false), false);
+  assert.equal(rooms.isPathVisible("/kursus", true), true);
+  assert.equal(rooms.isPathVisible("/library", false), true);
+  const hidden = rooms.visibleSections(room, false);
+  assert.ok(!hidden.some((s: { paths: string[] }) => s.paths.includes("/kursus")));
+  assert.ok(!hidden.some((s: { title: string }) => s.title === "Kursus Dasar")); // bagian kosong ikut dibuang
+  assert.equal(rooms.visibleSections(room, true).length, room.sections.length);
+});
+
 console.log(`\n${passed} lulus, 0 gagal`);
