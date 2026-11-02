@@ -16,12 +16,13 @@ export interface EditStep {
   note_id: string;
   text: string;
   count: string;
+  tag: string;
   sentences: string; // satu kalimat per baris
   scenario_id: string;
 }
 
 export const emptyEditStep = (type: StepType): EditStep => ({
-  type, title: "", vocab: "", topic_slug: "", text_id: "", content: "", note_id: "", text: "", count: "", sentences: "", scenario_id: "",
+  type, title: "", vocab: "", topic_slug: "", text_id: "", content: "", note_id: "", text: "", count: "", tag: "", sentences: "", scenario_id: "",
 });
 
 export function toEditStep(step: CourseStep): EditStep {
@@ -45,6 +46,7 @@ export function toEditStep(step: CourseStep): EditStep {
       break;
     case "exercise":
       e.count = step.count ? String(step.count) : "";
+      e.tag = step.tag ?? "";
       break;
     case "speak":
       e.sentences = step.sentences.join("\n");
@@ -83,6 +85,7 @@ export function fromEditStep(e: EditStep): Record<string, unknown> {
       break;
     case "exercise":
       if (e.count.trim()) base.count = Number(e.count);
+      if (e.tag.trim()) base.tag = e.tag.trim();
       break;
     case "speak":
       base.sentences = e.sentences.split("\n").map((l) => l.trim()).filter(Boolean);
@@ -164,10 +167,16 @@ export default function StepEditor({
             </>
           )}
           {s.type === "exercise" && (
+            <>
             <label className={field}>Jumlah soal per sesi (1-20, kosong = 6)
               <input type="number" min={1} max={20} className={input} value={s.count} onChange={(e) => update(i, { count: e.target.value })} />
               <span className="block text-xs text-muted-foreground mt-1">Soal diambil dari soal terbit yang bertanda unit ini (atur di tab Latihan).</span>
             </label>
+            <label className={field}>Tag soal (opsional)
+              <input className={input} value={s.tag} maxLength={64} onChange={(e) => update(i, { tag: e.target.value })} placeholder="for:rutinitas-harian" />
+              <span className="block text-xs text-muted-foreground mt-1">Bila diisi, soal diambil dari soal terbit bertag ini (mis. l1-error, minimal-pair), bukan soal unit.</span>
+            </label>
+            </>
           )}
           {s.type === "speak" && (
             <>

@@ -118,6 +118,15 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 > | Flag `kursus_dasar` (default mati; pengguna biasa hanya melihat "Segera hadir"; admin melihat label "Pratinjau admin"); item tersembunyi di Ruang I, Sidebar, Menu HP + pencarian; Kursus Dasar tetap terdaftar di Ruang I (urutan ke-2) | `lib/course-access.ts`, `components/CourseVisibility.tsx`, `lib/rooms.ts` (`isPathVisible`), uji `menu-coverage` |
 > | Beranda: "Langkah berikutnya" menyarankan unit Kursus Dasar berikutnya (hanya bila kursus boleh tampil) | `lib/next-step.ts` (`courseUnit`), uji `next-step` |
 > | Admin → Konten → **Kursus**: tambah/edit/terbitkan/hapus unit, editor langkah (pilih topik, teks Library, skenario Dialogue Simulator, urutkan langkah); Admin → Konten → Latihan: soal bisa dikaitkan ke unit + filter `?unit=` | `app/(dashboard)/admin/content/course/`, `admin/course-actions.ts` |
+
+> **(Fase 17, ✅ diuji 375px/1280px, terang/gelap)** Modul khas penutur Indonesia (baris baru; tampil di Ruang I, bagian "Khas penutur Indonesia", tidak di balik flag):
+>
+> | Fitur | Lokasi / cara uji |
+> |---|---|
+> | **Kesalahan Umum**: 16 kartu salah → benar + penjelasan Indonesia (ditulis sendiri), latihan campuran dan latihan per kartu (pilihan ganda, dinilai otomatis tanpa AI) | `app/(dashboard)/kesalahan-umum/`, `components/l1/ErrorCards.tsx`, tabel `l1_errors` (`0014`); uji `l1` |
+> | **Pasangan Bunyi**: 15 pasangan + IPA + catatan, latihan dengar (TTS, pilih kata yang didengar, 10 ronde), dikte bertag `minimal-pair`, dan Pronunciation Clinic tertanam | `app/(dashboard)/pasangan-bunyi/`, `components/l1/PairsDrill.tsx`, tabel `minimal_pairs`; uji `l1` |
+> | Sesi latihan bisa disaring per tag (`l1-error`, `l1:<slug>`, `minimal-pair`) dan langkah `exercise` Kursus Dasar punya bidang `tag` opsional | `app/api/exercises/session`, `lib/course.ts`, editor langkah di Admin → Konten → Kursus |
+> | Kursus Dasar: langkah latihan bertag ("Kesalahan umum penutur Indonesia", "Pasangan bunyi") ditambahkan ke unit terkait oleh `0014` bila `0013` sudah dijalankan | `supabase/migrations/0014_l1_modules.sql` |
 | Review SRS (SM-2): kartu, konteks, **Lihat di teks**, skor 0–3 | `app/(dashboard)/review/`, `app/(dashboard)/vocabulary/review/`, `components/vocabulary/ReviewClient.tsx` |
 | Flashcard SRS (English Lab): mode **guess-word, guess-meaning, dictation, collocation** | `app/(dashboard)/english-lab/flashcard/page.tsx` |
 | Idiom Library | `app/(dashboard)/idioms/page.tsx` |

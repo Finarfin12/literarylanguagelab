@@ -17,12 +17,15 @@ interface FinishInfo { scorePct: number; review: { next_review_at: string; inter
 export default function ExerciseSession({
   topicSlug,
   unitSlug,
+  tag,
   count = 8,
   title = "Latihan terstruktur",
   onFinished,
 }: {
   topicSlug?: string;
   unitSlug?: string;
+  /** Fase 17: hanya soal bertanda ini (mis. "l1-error", "minimal-pair"). */
+  tag?: string;
   count?: number;
   title?: string;
   /** Dipanggil setelah sesi ditutup (mis. untuk memuat ulang jadwal review). */
@@ -44,7 +47,7 @@ export default function ExerciseSession({
       const res = await fetch("/api/exercises/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic_slug: topicSlug, unit_slug: unitSlug, count }),
+        body: JSON.stringify({ topic_slug: topicSlug, unit_slug: unitSlug, tag, count }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Gagal memuat soal.");

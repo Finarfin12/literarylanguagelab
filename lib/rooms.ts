@@ -37,6 +37,7 @@ export const ROOMS: Room[] = [
       { title: "Ketahui levelmu", blurb: "Mulai di sini bila belum yakin level CEFR kamu.", paths: ["/english-lab/placement-test", "/english-lab/level-test"] },
       { title: "Kursus Dasar", blurb: "Unit bertema A0–A2: kosakata, grammar, bacaan, dengar, latihan, dan bicara.", paths: [COURSE_PATH] },
       { title: "Grammar & kosakata inti", blurb: "Fondasi yang paling sering dipakai.", paths: ["/english-lab/grammar", "/vocabulary/core"] },
+      { title: "Khas penutur Indonesia", blurb: "Kesalahan yang sering muncul dan bunyi yang mirip di telinga kita.", paths: ["/kesalahan-umum", "/pasangan-bunyi"] },
       { title: "Bacaan berjenjang", blurb: "Teks yang disaring menurut level.", paths: ["/library"] },
       {
         title: "Latihan keterampilan",
@@ -158,6 +159,8 @@ export function getRoom(slug: string): Room | undefined {
 
 /** Item yang tidak ada di lib/menu-config.ts (halaman utama, alat dinamis di luar menu, dll.). */
 export const EXTRA_ITEMS: Record<string, { name: string; description: string }> = {
+  "/kesalahan-umum": { name: "Kesalahan Umum", description: "Kesalahan khas penutur Indonesia: kalimat salah, perbaikan, penjelasan, dan latihan." },
+  "/pasangan-bunyi": { name: "Pasangan Bunyi", description: "Latihan dengar dan ucapkan kata yang bunyinya mirip, seperti ship dan sheep." },
   [COURSE_PATH]: { name: "Kursus Dasar", description: "Unit bertema A0–A2 dengan langkah berurutan; unit berikutnya disarankan, tidak dikunci." },
   "/dashboard": { name: "Rak bacaan", description: "Lanjutkan membaca dari terakhir kamu berhenti." },
   "/library/add": { name: "Tambah Teks", description: "Tulis teks sendiri atau buat teks bacaan dengan AI." },

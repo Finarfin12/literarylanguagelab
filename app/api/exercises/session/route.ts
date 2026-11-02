@@ -6,8 +6,9 @@ import { mulberry32, pickSession } from "@/lib/exercises/session";
 import type { AttemptSummary, Exercise } from "@/lib/exercises/types";
 
 // Memilih soal latihan terstruktur untuk satu sesi. Tidak memanggil AI.
-// Body: { topic_slug?: string, unit_slug?: string, count?: number }
+// Body: { topic_slug?: string, unit_slug?: string, tag?: string, count?: number } (minimal salah satu dari ketiganya)
 const SLUG = /^[a-z0-9-]{2,64}$/;
+const TAG = /^[a-z0-9:-]{2,64}$/;
 const POOL_LIMIT = 300;
 
 export async function POST(req: Request) {
@@ -18,11 +19,14 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const topic = typeof body?.topic_slug === "string" && SLUG.test(body.topic_slug) ? body.topic_slug : null;
   const unit = typeof body?.unit_slug === "string" && SLUG.test(body.unit_slug) ? body.unit_slug : null;
-  if (!topic && !unit) return NextResponse.json({ error: "Tentukan topik atau unit." }, { status: 400 });
+  const tag = typeof body?.tag === "string" && TAG.test(body.tag) ? body.tag : null;
+  if (!topic && !unit && !tag) return NextResponse.json({ error: "Tentukan topik, unit, atau tag." }, { status: 400 });
   const count = Math.max(1, Math.min(20, Math.floor(Number(body?.count) || 8)));
 
   let q = supabase.from("exercises").select("*").eq("status", "published").limit(POOL_LIMIT);
-  q = topic ? q.eq("topic_slug", topic) : q.eq("unit_slug", unit as string);
+  if (topic) q = q.eq("topic_slug", topic);
+  else if (unit) q = q.eq("unit_slug", unit);
+  if (tag) q = q.contains("tags", [tag]); // Fase 17: mis. "l1-error", "l1:third-person-s", "minimal-pair"
   const { data, error } = await q;
   if (error) {
     if (isMissingSchema(error)) return NextResponse.json({ available: false, total: 0, exercises: [] });

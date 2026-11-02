@@ -116,7 +116,9 @@ export function ListenStep({ view }: { view: StepView }) {
 
 export function ExerciseStep({ view, unitSlug }: { view: StepView; unitSlug: string }) {
   const count = view.step.type === "exercise" ? view.step.count : undefined;
-  return <ExerciseSession unitSlug={unitSlug} count={count ?? 6} title={view.step.title ?? "Latihan unit"} />;
+  const tag = view.step.type === "exercise" ? view.step.tag : undefined;
+  // Langkah bertanda mengambil soal dari tag itu saja; selain itu soal unit
+  return <ExerciseSession unitSlug={tag ? undefined : unitSlug} tag={tag} count={count ?? 6} title={view.step.title ?? "Latihan unit"} />;
 }
 
 export function SpeakStep({ view }: { view: StepView }) {

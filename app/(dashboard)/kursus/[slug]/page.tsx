@@ -69,6 +69,12 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
     texts.set(t.id, { id: t.id, title: t.title, author: t.author ?? undefined, content: t.content });
   }
   const exerciseCount = exerciseRes.error ? 0 : exerciseRes.count ?? 0;
+  // Langkah latihan bertanda (Fase 17): hitung soal terbit per tag
+  const tagCounts = new Map<string, number>();
+  for (const tg of Array.from(new Set(steps.flatMap((s) => (s.type === "exercise" && s.tag ? [s.tag] : []))))) {
+    const r = await supabase.from("exercises").select("id", { count: "exact", head: true }).eq("status", "published").contains("tags", [tg]);
+    tagCounts.set(tg, r.error ? 0 : r.count ?? 0);
+  }
 
   const views: StepView[] = steps.map((step) => {
     const base: StepView = { step, empty: isStepEmpty(step) };
@@ -86,7 +92,10 @@ export default async function UnitPage({ params }: { params: Promise<{ slug: str
         return { ...base, text, empty: !text };
       }
       case "exercise":
-        return { ...base, exerciseCount, empty: exerciseCount === 0 };
+      {
+        const n = step.tag ? tagCounts.get(step.tag) ?? 0 : exerciseCount;
+        return { ...base, exerciseCount: n, empty: n === 0 };
+      }
       case "speak": {
         const sc = step.scenario_id ? DIALOGUE_SCENARIOS.find((d) => d.id === step.scenario_id) : undefined;
         return { ...base, scenario: sc ? { id: sc.id, title: sc.title } : null };

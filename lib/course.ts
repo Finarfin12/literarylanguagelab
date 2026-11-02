@@ -32,7 +32,7 @@ export type CourseStep =
   | (StepBase & { type: "grammar"; topic_slug: string })
   | (StepBase & { type: "read"; text_id?: string; content?: string; note_id?: string })
   | (StepBase & { type: "listen"; text: string; note_id?: string })
-  | (StepBase & { type: "exercise"; count?: number })
+  | (StepBase & { type: "exercise"; count?: number; /** Fase 17: ambil soal bertanda ini (mis. "for:rutinitas-harian") selain/pengganti soal unit. */ tag?: string })
   | (StepBase & { type: "speak"; sentences: string[]; scenario_id?: string });
 
 export interface CourseUnitLike {
@@ -54,6 +54,7 @@ export interface UnitProgressLike {
 export const COURSE_LEVELS = ["A0", "A1", "A2", "B1", "B2", "C1", "C2"] as const;
 
 const SLUG = /^[a-z0-9-]{2,64}$/;
+const TAG = /^[a-z0-9:-]{2,64}$/;
 
 const str = (v: unknown, max: number): string | undefined => {
   if (typeof v !== "string") return undefined;
@@ -110,9 +111,12 @@ export function cleanStep(raw: unknown): CourseStep | null {
       return { ...base, type: "listen", text, ...(note ? { note_id: note } : {}) };
     }
     case "exercise": {
-      if (r.count === undefined || r.count === null) return { ...base, type: "exercise" };
+      const tag = r.tag === undefined || r.tag === "" ? undefined : typeof r.tag === "string" && TAG.test(r.tag) ? r.tag : null;
+      if (tag === null) return null;
+      const extra = tag ? { tag } : {};
+      if (r.count === undefined || r.count === null) return { ...base, type: "exercise", ...extra };
       const n = Number(r.count);
-      return Number.isInteger(n) && n >= 1 && n <= 20 ? { ...base, type: "exercise", count: n } : null;
+      return Number.isInteger(n) && n >= 1 && n <= 20 ? { ...base, type: "exercise", count: n, ...extra } : null;
     }
     case "speak": {
       const list = Array.isArray(r.sentences) ? r.sentences : r.sentences === undefined ? [] : null;
