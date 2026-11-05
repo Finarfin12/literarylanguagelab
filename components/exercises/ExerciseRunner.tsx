@@ -10,6 +10,7 @@ import DictationExercise from "./DictationExercise";
 import MatchExercise from "./MatchExercise";
 import McqExercise from "./McqExercise";
 import OrderExercise from "./OrderExercise";
+import PatternBuilder from "./PatternBuilder";
 import { ExerciseFeedback } from "./shared";
 
 /**
@@ -44,6 +45,7 @@ export default function ExerciseRunner({
       {exercise.type === "order" && <OrderExercise exercise={exercise} locked={locked} result={result} onSubmit={submit} />}
       {exercise.type === "match" && <MatchExercise exercise={exercise} locked={locked} result={result} onSubmit={submit} />}
       {exercise.type === "dictation" && <DictationExercise exercise={exercise} locked={locked} result={result} onSubmit={submit} />}
+      {exercise.type === "pattern" && <PatternBuilder exercise={exercise} locked={locked} result={result} onSubmit={submit} />}
 
       {result && (
         <div className="mt-4 space-y-3">

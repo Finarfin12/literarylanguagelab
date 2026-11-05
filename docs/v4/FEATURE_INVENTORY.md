@@ -126,6 +126,17 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 > | **Kesalahan Umum**: 16 kartu salah → benar + penjelasan Indonesia (ditulis sendiri), latihan campuran dan latihan per kartu (pilihan ganda, dinilai otomatis tanpa AI) | `app/(dashboard)/kesalahan-umum/`, `components/l1/ErrorCards.tsx`, tabel `l1_errors` (`0014`); uji `l1` |
 > | **Pasangan Bunyi**: 15 pasangan + IPA + catatan, latihan dengar (TTS, pilih kata yang didengar, 10 ronde), dikte bertag `minimal-pair`, dan Pronunciation Clinic tertanam | `app/(dashboard)/pasangan-bunyi/`, `components/l1/PairsDrill.tsx`, tabel `minimal_pairs`; uji `l1` |
 > | Sesi latihan bisa disaring per tag (`l1-error`, `l1:<slug>`, `minimal-pair`) dan langkah `exercise` Kursus Dasar punya bidang `tag` opsional | `app/api/exercises/session`, `lib/course.ts`, editor langkah di Admin → Konten → Kursus |
+
+>
+> **(Fase 22, v5)** Latihan pemula (fitur baru; tidak ada fitur lama yang berubah kecuali yang tercatat):
+>
+> | Fitur | Lokasi |
+> |---|---|
+> | Tipe soal **Penyusun kalimat** (`pattern`): pilih subjek, kata kerja, dan objek; bentuk kata kerja mengikuti subjek dengan catatan Indonesia; warna selalu disertai label | `lib/exercises/patterns.ts`, `components/exercises/PatternBuilder.tsx`; uji `patterns` |
+> | Toleransi salah ketik (satu huruf, kata ≥ 6 huruf) pada isian dan dikte; soal ejaan tetap ketat | `lib/exercises/grade.ts` (`typoMatch`), `components/exercises/shared.tsx`; uji `patterns` |
+> | Sakelar **Bantuan pemula** di Dialogue Simulator (bawaan nyala untuk A1): arti frasa bantuan, awalan kalimat, tombol "Lihat terjemahan"; frasa bantuan dan input lama tidak berubah | `lib/dialogue-help.ts`, `app/(dashboard)/english-lab/dialogue-simulator/page.tsx`, `app/api/dialogue-simulator/translate`; uji `phrases-help` |
+> | **Frasa harian** `/frasa-harian` (Ruang I): audio, arti natural, arti kata per kata, simpan ke Review; Admin → Konten → Frasa untuk meninjau dan menerbitkan | `app/(dashboard)/frasa-harian/`, `app/(dashboard)/admin/content/phrases/`, `lib/phrases.ts`, migrasi `0021` |
+> | Kosakata Inti: tab **Per tema** (tampil bila ada data) dan tombol tambah kata tema ke Review; skrip `scripts/enrich-a0.mjs` | `app/(dashboard)/vocabulary/core/`, `lib/core-themes.ts`, migrasi `0022` |
 > | Kursus Dasar: langkah latihan bertag ("Kesalahan umum penutur Indonesia", "Pasangan bunyi") ditambahkan ke unit terkait oleh `0014` bila `0013` sudah dijalankan | `supabase/migrations/0014_l1_modules.sql` |
 
 > **(Fase 18, ✅ admin diuji 375px/1280px, terang/gelap)** Paket konten Kursus Dasar dan tiga jalur bacaan (baris baru; Kursus Dasar tetap tersembunyi sampai flag `kursus_dasar` dinyalakan):

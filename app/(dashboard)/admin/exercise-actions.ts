@@ -28,6 +28,7 @@ const SHAPES: Record<ExerciseType, string> = {
   order: `{"type":"order","prompt":{"tokens":["goes","She","school","to","."],"hint":"Dia pergi ke sekolah."},"answer":{"sentences":["She goes to school."]}}`,
   match: `{"type":"match","prompt":{"lefts":["cat","dog"],"rights":["anjing","kucing"]},"answer":{"pairs":[{"left":"cat","right":"kucing"},{"left":"dog","right":"anjing"}]}}`,
   dictation: `{"type":"dictation","prompt":{"text":"She goes to school every day."},"answer":{"accept":["She goes to school every day."]}}`,
+  pattern: `{"type":"pattern","prompt":{"subjects":[{"text":"I","person":"i"},{"text":"She","person":"sg3"},{"text":"They","person":"other"}],"verbs":[{"base":"eat","third":"eats","meaning_id":"makan"},{"base":"like","third":"likes","meaning_id":"suka"}],"objects":["rice","tea"],"hint":"Dia (perempuan) makan nasi."},"answer":{"sentences":["She eats rice."]}}`,
 };
 
 const MAX_AI_COUNT = 10;

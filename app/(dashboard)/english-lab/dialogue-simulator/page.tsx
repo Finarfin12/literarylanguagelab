@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import { ArrowLeft, Send, Loader2, Mic, MicOff, Volume2, MessageSquare, Star, CheckCircle, XCircle, ArrowRight, Lightbulb, Trophy, Coffee, Briefcase, Plane, Building, Stethoscope, UtensilsCrossed, Users, Headphones } from "lucide-react";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import { DIALOGUE_SCENARIOS, type DialogueScenario } from "@/lib/dialogue-scenarios";
+import { helpFor, phraseMeaning, resolveBeginnerHelp } from "@/lib/dialogue-help";
 import { createClient } from "@/utils/supabase/client";
 import Swal from "sweetalert2";
 
@@ -42,6 +43,58 @@ export default function DialogueSimulatorPage() {
   const [loadingFeedback, setLoadingFeedback] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
+
+  // Bantuan pemula (Fase 22.3): bawaan menyala untuk A1, mati untuk lainnya; pilihan pengguna diingat di perangkat
+  const [beginnerHelp, setBeginnerHelp] = useState(false);
+  const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [translating, setTranslating] = useState<string | null>(null);
+  const [translateError, setTranslateError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      let stored: string | null = null;
+      try { stored = localStorage.getItem("dialogue_beginner_help"); } catch { /* storage diblokir: pakai bawaan */ }
+      let cefr: string | null = null;
+      if (stored !== "on" && stored !== "off") {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data } = await supabase.from("profiles").select("cefr_level").eq("id", user.id).maybeSingle();
+          cefr = (data?.cefr_level as string | null) ?? null;
+        }
+      }
+      if (!cancelled) setBeginnerHelp(resolveBeginnerHelp(stored, cefr));
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- dibaca sekali saat halaman dibuka
+  }, []);
+
+  const toggleBeginnerHelp = () => {
+    const next = !beginnerHelp;
+    setBeginnerHelp(next);
+    try { localStorage.setItem("dialogue_beginner_help", next ? "on" : "off"); } catch { /* tidak diingat */ }
+  };
+
+  // Terjemahan balasan AI: dimuat saat diklik, disimpan selama sesi supaya tidak mengulang panggilan
+  const translateReply = async (text: string) => {
+    if (translations[text] || translating) return;
+    setTranslating(text);
+    setTranslateError(null);
+    try {
+      const res = await fetch("/api/dialogue-simulator/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Terjemahan gagal.");
+      setTranslations((prev) => ({ ...prev, [text]: data.translation }));
+    } catch (err: unknown) {
+      setTranslateError(err instanceof Error ? err.message : "Terjemahan gagal. Coba lagi.");
+    } finally {
+      setTranslating(null);
+    }
+  };
 
   const { isRecording, isProcessing, transcript, startRecording, stopRecording } = useSpeechToText({
     onComplete: (speechText) => setInputText(speechText),
@@ -225,12 +278,20 @@ export default function DialogueSimulatorPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] max-w-3xl mx-auto">
       {/* Header */}
-      <div className="p-4 border-b border-border flex items-center gap-3 shrink-0">
+      <div className="p-4 border-b border-border flex flex-wrap items-center gap-3 shrink-0">
         <button onClick={() => { setActiveScenario(null); setMessages([]); }} className="p-2 hover:bg-muted rounded-control transition-colors"><ArrowLeft className="w-5 h-5 text-muted-foreground" /></button>
-        <div className="flex-1">
+        <div className="flex-1 min-w-[160px]">
           <h2 className="font-bold text-foreground text-sm">{activeScenario.title}</h2>
           <p className="text-xs text-muted-foreground">{activeScenario.descriptionId}</p>
         </div>
+        <button
+          type="button"
+          onClick={toggleBeginnerHelp}
+          aria-pressed={beginnerHelp}
+          className={`min-h-[44px] px-3 rounded-control border text-xs font-bold transition-colors ${beginnerHelp ? "bg-brand-tint text-brand-ink border-brand/40" : "bg-card text-muted-foreground border-border hover:bg-muted"}`}
+        >
+          Bantuan pemula: {beginnerHelp ? "Nyala" : "Mati"}
+        </button>
         <button onClick={endAndGetFeedback} disabled={loadingFeedback || messages.filter(m => m.role === "user").length === 0} className="px-4 py-2 bg-warning-tint text-warning-ink border border-warning-ink/30 rounded-control text-xs font-bold hover:bg-warning-tint transition-colors disabled:opacity-50 flex items-center gap-1.5">
           {loadingFeedback ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trophy className="w-3 h-3" />} Akhiri & Feedback
         </button>
@@ -243,8 +304,19 @@ export default function DialogueSimulatorPage() {
           <div className="bg-brand-tint border border-brand/20 rounded-control p-3 mb-2">
             <p className="text-xs text-muted-foreground font-bold mb-1.5">💡 Frasa bantuan:</p>
             <div className="flex flex-wrap gap-1.5">{activeScenario.hintPhrases.map((h, i) => (
-              <button key={i} onClick={() => setInputText(h)} className="text-xs bg-brand-tint text-brand-ink px-2.5 py-1 rounded-lg hover:bg-brand-tint transition-colors border border-brand/20">{h}</button>
+              <button key={i} onClick={() => setInputText(h)} className="text-xs bg-brand-tint text-brand-ink px-2.5 py-1 rounded-lg hover:bg-brand-tint transition-colors border border-brand/20">
+                {h}
+                {beginnerHelp && phraseMeaning(activeScenario.id, h) && <span className="block text-[11px] font-normal text-muted-foreground">{phraseMeaning(activeScenario.id, h)}</span>}
+              </button>
             ))}</div>
+            {beginnerHelp && (helpFor(activeScenario.id)?.starters.length ?? 0) > 0 && (
+              <>
+                <p className="text-xs text-muted-foreground font-bold mt-3 mb-1.5">Mulai kalimatmu dengan:</p>
+                <div className="flex flex-wrap gap-1.5">{helpFor(activeScenario.id)!.starters.map((s) => (
+                  <button key={s} onClick={() => setInputText(s)} className="text-xs bg-card text-foreground px-2.5 py-1.5 rounded-lg hover:bg-muted transition-colors border border-border min-h-[36px]">{s.trim()}...</button>
+                ))}</div>
+              </>
+            )}
           </div>
         )}
         {messages.map((msg, i) => (
@@ -253,6 +325,25 @@ export default function DialogueSimulatorPage() {
               <p className="text-sm leading-relaxed">{msg.content}</p>
               {msg.role === "assistant" && (
                 <button onClick={() => playTTS(msg.content)} className="mt-2 text-xs text-muted-foreground hover:text-brand-ink flex items-center gap-1 transition-colors"><Volume2 className="w-3 h-3" /> Dengarkan</button>
+              )}
+              {msg.role === "assistant" && beginnerHelp && (
+                <div className="mt-1">
+                  {translations[msg.content] ? (
+                    <p className="text-sm text-muted-foreground border-t border-border pt-2 mt-1">{translations[msg.content]}</p>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => translateReply(msg.content)}
+                      disabled={translating !== null}
+                      className="min-h-[36px] text-xs text-muted-foreground hover:text-brand-ink flex items-center gap-1 transition-colors disabled:opacity-50"
+                    >
+                      {translating === msg.content ? <Loader2 className="w-3 h-3 animate-spin" /> : null} Lihat terjemahan
+                    </button>
+                  )}
+                  {translateError && translating === null && !translations[msg.content] && i === messages.length - 1 && (
+                    <p role="alert" className="text-xs text-danger mt-1">{translateError}</p>
+                  )}
+                </div>
               )}
             </div>
           </div>

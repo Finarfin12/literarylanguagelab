@@ -1,5 +1,6 @@
 // Penilaian dan validasi soal latihan (Fase 15). Fungsi murni tanpa akses database dan tanpa AI.
 // Tanpa impor runtime agar bisa diuji unit (tests/exercises.test.mts); hanya `import type`.
+import { buildPatternSentence, patternKey, validatePattern } from "./patterns.ts";
 import type {
   ClozeAnswer,
   ClozePrompt,
@@ -14,13 +15,15 @@ import type {
   MatchPrompt,
   McqAnswer,
   McqPrompt,
+  PatternAnswer,
+  PatternPrompt,
   OrderAnswer,
   OrderPrompt,
   ValidationResult,
 } from "./types";
 
 const CEFR = ["A1", "A2", "B1", "B2", "C1", "C2"];
-const TYPES: readonly string[] = ["mcq", "cloze", "order", "match", "dictation"];
+const TYPES: readonly string[] = ["mcq", "cloze", "order", "match", "dictation", "pattern"];
 const BLANK = "___";
 
 /**
@@ -42,6 +45,43 @@ export function normalizeAnswer(input: unknown): string {
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 const isStringArray = (v: unknown): v is string[] => Array.isArray(v) && v.every((x) => typeof x === "string");
 
+// --- Toleransi salah ketik (Fase 22.2) ---
+
+/** Kata dengan panjang minimal ini yang boleh salah satu huruf (kata pendek harus persis). */
+export const MIN_TYPO_WORD_LENGTH = 6;
+
+/** Soal ejaan: salah ketik TIDAK ditoleransi. */
+const STRICT_SPELLING_TAGS = ["ejaan", "spelling", "strict-spelling", "minimal-pair"];
+export function isStrictSpelling(tags: readonly string[] | null | undefined): boolean {
+  return (tags ?? []).some((t) => STRICT_SPELLING_TAGS.includes(t));
+}
+
+/** true bila a dan b berbeda tepat satu penyisipan, penghapusan, atau penggantian huruf (jarak Levenshtein 1). */
+export function oneEditApart(a: string, b: string): boolean {
+  if (a === b || Math.abs(a.length - b.length) > 1) return false;
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) i++;
+  if (a.length === b.length) return a.slice(i + 1) === b.slice(i + 1);
+  return a.length < b.length ? a.slice(i) === b.slice(i + 1) : a.slice(i + 1) === b.slice(i);
+}
+
+/**
+ * Jawaban hampir benar: kalimat sama persis kecuali satu kata (panjang minimal 6 huruf) yang salah satu huruf.
+ * Mengembalikan kata yang diketik dan kata yang benar, atau null.
+ */
+export function typoMatch(given: string, accepted: string): { given: string; expected: string } | null {
+  const g = normalizeAnswer(given).split(" ");
+  const a = normalizeAnswer(accepted).split(" ");
+  if (g.length !== a.length || g[0] === "") return null;
+  let found: { given: string; expected: string } | null = null;
+  for (let i = 0; i < a.length; i++) {
+    if (g[i] === a[i]) continue;
+    if (found || a[i].length < MIN_TYPO_WORD_LENGTH || !oneEditApart(g[i], a[i])) return null;
+    found = { given: g[i], expected: a[i] };
+  }
+  return found;
+}
+
 /** Hasil kosong untuk jawaban yang bentuknya rusak (tidak pernah melempar error). */
 function wrong(expected: string): GradeResult {
   return { correct: false, expected, score: 0 };
@@ -57,8 +97,9 @@ export function fillCloze(text: string, blanks: string[][]): string {
  * Menilai satu jawaban. `response` datang dari klien atau dari body request, jadi bentuknya tidak dipercaya:
  * bentuk yang salah dinilai salah, bukan error.
  */
-export function gradeAnswer(exercise: Pick<Exercise, "type" | "prompt" | "answer">, response: unknown): GradeResult {
+export function gradeAnswer(exercise: Pick<Exercise, "type" | "prompt" | "answer"> & { tags?: string[] | null }, response: unknown): GradeResult {
   const r = isRecord(response) ? response : {};
+  const strict = isStrictSpelling(exercise.tags);
 
   switch (exercise.type) {
     case "mcq": {
@@ -73,12 +114,24 @@ export function gradeAnswer(exercise: Pick<Exercise, "type" | "prompt" | "answer
       const expected = fillCloze(prompt.text, answer.blanks);
       if (!isStringArray(r.blanks)) return wrong(expected);
       const given = r.blanks;
+      const typos: { given: string; expected: string }[] = [];
       const right = answer.blanks.filter((accepted, i) => {
         const g = normalizeAnswer(given[i]);
-        return g !== "" && accepted.some((a) => normalizeAnswer(a) === g);
+        if (g === "") return false;
+        if (accepted.some((a) => normalizeAnswer(a) === g)) return true;
+        if (strict) return false;
+        for (const a of accepted) {
+          const t = typoMatch(g, a);
+          if (t) {
+            typos.push(t);
+            return true;
+          }
+        }
+        return false;
       }).length;
       const total = answer.blanks.length;
-      return { correct: total > 0 && right === total, expected, score: total ? right / total : 0 };
+      const correct = total > 0 && right === total;
+      return { correct, expected, score: total ? right / total : 0, ...(correct && typos[0] ? { typo: typos[0] } : {}) };
     }
     case "order": {
       const answer = exercise.answer as OrderAnswer;
@@ -101,7 +154,21 @@ export function gradeAnswer(exercise: Pick<Exercise, "type" | "prompt" | "answer
       const answer = exercise.answer as DictationAnswer;
       const expected = answer.accept[0] ?? "";
       const given = typeof r.text === "string" ? normalizeAnswer(r.text) : "";
-      const correct = given !== "" && answer.accept.some((a) => normalizeAnswer(a) === given);
+      const exact = given !== "" && answer.accept.some((a) => normalizeAnswer(a) === given);
+      if (exact) return { correct: true, expected, score: 1 };
+      if (given !== "" && !strict) {
+        for (const a of answer.accept) {
+          const t = typoMatch(given, a);
+          if (t) return { correct: true, expected, score: 1, typo: t };
+        }
+      }
+      return { correct: false, expected, score: 0 };
+    }
+    case "pattern": {
+      const answer = exercise.answer as PatternAnswer;
+      const expected = answer.sentences[0] ?? "";
+      const built = buildPatternSentence(exercise.prompt as PatternPrompt, r);
+      const correct = built !== null && answer.sentences.some((s) => patternKey(s) === patternKey(built));
       return { correct, expected, score: correct ? 1 : 0 };
     }
     default:
@@ -213,6 +280,10 @@ function validatePrompt(type: ExerciseType, prompt: unknown, answer: unknown): V
       if (instruction === null) return { ok: false, error: "Pasangkan: petunjuk maksimal 200 karakter." };
       const value: { prompt: MatchPrompt; answer: MatchAnswer } = { prompt: instruction ? { lefts, rights, instruction } : { lefts, rights }, answer: { pairs } };
       return { ok: true, value };
+    }
+    case "pattern": {
+      const v = validatePattern(prompt, answer);
+      return v.ok ? { ok: true, value: v.value } : { ok: false, error: v.error };
     }
     case "dictation": {
       const spoken = text(prompt.text, 1, 300);

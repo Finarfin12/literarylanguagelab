@@ -6,6 +6,8 @@ import { Card, EmptyState } from "@/components/ui/primitives";
 import { isCefrLevel } from "@/lib/cefr";
 import { coreStatus, wordCandidates, type CoreStatus } from "@/lib/core-words";
 import AddWordsButton from "./AddWordsButton";
+import ThemeView from "./ThemeView";
+import { countThemes } from "@/lib/core-themes";
 
 const PAGE_SIZE = 50;
 const LEVELS = ["A1", "A2", "B1", "B2"] as const;
@@ -31,7 +33,7 @@ const STATUS_LABEL: Record<WordStatus, { text: string; cls: string }> = {
   dikuasai: { text: "Dikuasai", cls: "bg-brand-tint text-brand-ink" },
 };
 
-export default async function CoreWordsPage({ searchParams }: { searchParams: Promise<{ level?: string; page?: string }> }) {
+export default async function CoreWordsPage({ searchParams }: { searchParams: Promise<{ level?: string; page?: string; view?: string; theme?: string }> }) {
   const supabase = await createClient();
   const params = await searchParams;
   const { data: { user } } = await supabase.auth.getUser();
@@ -45,6 +47,12 @@ export default async function CoreWordsPage({ searchParams }: { searchParams: Pr
   const requested = params.level === "all" ? "all" : isCefrLevel(params.level) && (LEVELS as readonly string[]).includes(params.level) ? params.level : null;
   const level = requested ?? (userLevel && (LEVELS as readonly string[]).includes(userLevel) ? userLevel : "A1");
   const page = Math.max(1, Number(params.page) || 1);
+
+  // Fase 22.5: tab "Per tema" hanya muncul bila ada kata bertema (migrasi 0022 + CSV dari pemilik); tanpa itu halaman tidak berubah
+  const themeRes = await supabase.from("core_words").select("theme").not("theme", "is", null).limit(3000);
+  const themes = themeRes.error ? [] : countThemes((themeRes.data || []) as { theme: string | null }[]);
+  const showThemes = params.view === "tema" && themes.length > 0;
+  const activeTheme = showThemes ? (themes.find((t) => t.slug === params.theme)?.slug ?? themes[0].slug) : null;
 
   const fetchWords = (columns: string) => {
     let q = supabase
@@ -94,6 +102,17 @@ export default async function CoreWordsPage({ searchParams }: { searchParams: Pr
         </p>
       </div>
 
+      {themes.length > 0 && (
+        <nav aria-label="Tampilan kosakata" className="flex flex-wrap gap-2 mb-4">
+          <Link href={href(level)} aria-current={!showThemes ? "page" : undefined} className={chip(!showThemes)}>Per level</Link>
+          <Link href="/vocabulary/core?view=tema" aria-current={showThemes ? "page" : undefined} className={chip(showThemes)}>Per tema</Link>
+        </nav>
+      )}
+
+      {showThemes && activeTheme ? (
+        <ThemeView theme={activeTheme} userId={user?.id} themes={themes} />
+      ) : (
+      <>
       <nav aria-label="Filter level" className="flex flex-wrap gap-2 mb-6">
         {LEVELS.map((l) => (
           <Link key={l} href={href(l)} className={chip(level === l)}>{l}</Link>
@@ -145,6 +164,8 @@ export default async function CoreWordsPage({ searchParams }: { searchParams: Pr
             </div>
           )}
         </>
+      )}
+      </>
       )}
     </AnimatedPage>
   );

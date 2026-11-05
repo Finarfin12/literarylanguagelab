@@ -89,3 +89,62 @@ export async function addNextCoreWords(level: string): Promise<AddCoreWordsResul
   revalidatePath("/vocabulary");
   return { ok: true, added: picked.length };
 }
+
+const THEME_BATCH = 40;
+
+/**
+ * Fase 22.5: tambahkan kata satu tema (kolom `theme` dari migrasi 0022) ke Vocabulary Bank, dengan arti Indonesia sebagai
+ * definisi. Kata yang sudah dimiliki dilewati dan tidak ditimpa. Tanpa AI.
+ */
+export async function addThemeWords(theme: string): Promise<AddCoreWordsResult> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Silakan masuk terlebih dahulu." };
+  if (typeof theme !== "string" || !/^[a-z0-9-]{2,40}$/.test(theme)) return { ok: false, error: "Tema tidak valid." };
+
+  const { data, error } = await supabase
+    .from("core_words")
+    .select("word, example, translation_id")
+    .eq("theme", theme)
+    .order("band", { ascending: true })
+    .limit(THEME_BATCH);
+  if (error) {
+    if (error.code === "42703" || error.code === "PGRST204") return { ok: false, error: "Kosakata per tema belum aktif (migrasi 0022 belum dijalankan)." };
+    return { ok: false, error: "Gagal memuat kata tema ini." };
+  }
+  const rows = (data ?? []) as { word: string; example: string | null; translation_id: string | null }[];
+  if (rows.length === 0) return { ok: true, added: 0 };
+
+  const { data: owned, error: ownedError } = await supabase
+    .from("vocabulary")
+    .select("word")
+    .eq("user_id", user.id)
+    .in("word", rows.map((r) => r.word.toLowerCase()));
+  if (ownedError) return { ok: false, error: "Gagal memeriksa Vocabulary Bank. Coba lagi." };
+  const ownedSet = new Set((owned ?? []).map((o) => String(o.word).toLowerCase()));
+  const fresh = rows.filter((r) => !ownedSet.has(r.word.toLowerCase()));
+  if (fresh.length === 0) return { ok: true, added: 0 };
+
+  const now = new Date().toISOString();
+  const { error: saveError } = await supabase.from("vocabulary").upsert(
+    fresh.map((r) => ({
+      user_id: user.id,
+      word: r.word.toLowerCase(),
+      definition: r.translation_id ?? "",
+      context_sentence: r.example ?? null,
+      context_source: "Kosakata Inti (tema)",
+      mastery_level: 0,
+      next_review_at: now,
+      interval: 0,
+      repetition_count: 0,
+      efactor: 2.5,
+      is_collocation: false,
+    })),
+    { onConflict: "user_id,word", ignoreDuplicates: true }
+  );
+  if (saveError) return { ok: false, error: "Gagal menyimpan ke Vocabulary Bank. Coba lagi." };
+
+  revalidatePath("/vocabulary/core");
+  revalidatePath("/vocabulary");
+  return { ok: true, added: fresh.length };
+}

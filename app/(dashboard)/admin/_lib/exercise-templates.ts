@@ -10,6 +10,15 @@ export const EXERCISE_TEMPLATES: Record<ExerciseType, { prompt: unknown; answer:
     answer: { pairs: [{ left: "cat", right: "kucing" }, { left: "dog", right: "anjing" }] },
   },
   dictation: { prompt: { text: "She goes to school every day." }, answer: { accept: ["She goes to school every day."] } },
+  pattern: {
+    prompt: {
+      subjects: [{ text: "I", person: "i" }, { text: "She", person: "sg3" }, { text: "They", person: "other" }],
+      verbs: [{ base: "eat", third: "eats", meaning_id: "makan" }, { base: "like", third: "likes", meaning_id: "suka" }],
+      objects: ["rice", "tea"],
+      hint: "Dia (perempuan) makan nasi.",
+    },
+    answer: { sentences: ["She eats rice."] },
+  },
 };
 
 export interface AdminExerciseRow {
@@ -40,6 +49,8 @@ export function exerciseSummary(row: AdminExerciseRow): string {
       return Array.isArray(p.lefts) ? p.lefts.join(", ") : "";
     case "dictation":
       return String(p.text ?? "");
+    case "pattern":
+      return String(p.hint ?? "") || (Array.isArray(p.objects) ? p.objects.join(", ") : "");
   }
 }
 

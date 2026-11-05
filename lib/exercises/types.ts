@@ -1,7 +1,7 @@
 // Bentuk data mesin latihan terstruktur (Fase 15). Hanya tipe dan konstanta: aman diimpor dari klien, server, dan uji unit.
 // `prompt` dan `answer` disimpan sebagai jsonb di tabel `exercises` (migrasi 0012); validasinya ada di grade.ts.
 
-export const EXERCISE_TYPES = ["mcq", "cloze", "order", "match", "dictation"] as const;
+export const EXERCISE_TYPES = ["mcq", "cloze", "order", "match", "dictation", "pattern"] as const;
 export type ExerciseType = (typeof EXERCISE_TYPES)[number];
 
 export const EXERCISE_TYPE_LABELS: Record<ExerciseType, string> = {
@@ -10,6 +10,7 @@ export const EXERCISE_TYPE_LABELS: Record<ExerciseType, string> = {
   order: "Susun kalimat",
   match: "Pasangkan",
   dictation: "Dikte",
+  pattern: "Penyusun kalimat",
 };
 
 /** Penanda bagian kosong pada soal cloze. */
@@ -40,7 +41,14 @@ export interface DictationPrompt { text: string }
 export interface DictationAnswer { accept: string[] }
 export interface DictationResponse { text: string }
 
-export type ExerciseResponse = McqResponse | ClozeResponse | OrderResponse | MatchResponse | DictationResponse;
+// --- Penyusun kalimat (Fase 22): pilih subjek, kata kerja, dan objek; bentuk kata kerja mengikuti subjek (lib/exercises/patterns.ts) ---
+export interface PatternSubject { text: string; /** i = I; sg3 = he/she/it dan subjek tunggal lain; other = you/we/they dan jamak */ person: "i" | "sg3" | "other" }
+export interface PatternVerb { base: string; /** bentuk setelah he/she/it (eats) */ third: string; /** bentuk setelah I bila berbeda (am) */ first?: string; meaning_id?: string }
+export interface PatternPrompt { subjects: PatternSubject[]; verbs: PatternVerb[]; objects: string[]; hint?: string; note_id?: string }
+export interface PatternAnswer { sentences: string[] }
+export interface PatternResponse { subject: string; verb: string; object: string }
+
+export type ExerciseResponse = McqResponse | ClozeResponse | OrderResponse | MatchResponse | DictationResponse | PatternResponse;
 
 export interface ExerciseBase {
   cefr_level: string;
@@ -56,7 +64,8 @@ type Variant =
   | { type: "cloze"; prompt: ClozePrompt; answer: ClozeAnswer }
   | { type: "order"; prompt: OrderPrompt; answer: OrderAnswer }
   | { type: "match"; prompt: MatchPrompt; answer: MatchAnswer }
-  | { type: "dictation"; prompt: DictationPrompt; answer: DictationAnswer };
+  | { type: "dictation"; prompt: DictationPrompt; answer: DictationAnswer }
+  | { type: "pattern"; prompt: PatternPrompt; answer: PatternAnswer };
 
 /** Soal yang belum disimpan (hasil AI, generator, atau formulir admin). */
 export type ExerciseDraft = ExerciseBase & Variant;
@@ -69,6 +78,8 @@ export interface GradeResult {
   expected: string;
   /** 0..1; < 1 untuk soal yang sebagian benar (pasangkan, cloze dengan beberapa bagian kosong). */
   score: number;
+  /** Fase 22.2: dinilai benar walau ada satu salah ketik pada kata panjang. Berisi kata yang diketik dan yang benar. */
+  typo?: { given: string; expected: string };
 }
 
 /** Riwayat singkat satu percobaan, dipakai untuk memilih soal sesi berikutnya. */
