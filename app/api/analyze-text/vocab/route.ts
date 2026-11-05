@@ -1,5 +1,6 @@
 import { runAI } from "@/lib/ai/run";
 import { guardAIRoute } from "@/lib/ai/guard";
+import { getServiceClient } from "@/lib/ai/admin-client";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -64,7 +65,10 @@ ${textSample}
     }
 
     // Cache to DB
-    await supabase.from('texts').update({ key_vocabulary: parsed.vocab }).eq('id', textId);
+    // Fase 19.1: UPDATE tabel texts hanya untuk admin di RLS, jadi cache ditulis dengan service client
+    // (pengguna sudah terautentikasi dan sudah berhak membaca teksnya di atas).
+    const service = getServiceClient();
+    if (service) await service.from('texts').update({ key_vocabulary: parsed.vocab }).eq('id', textId);
 
     return NextResponse.json({ vocab: parsed.vocab });
   } catch (error: any) {

@@ -81,3 +81,12 @@ for (const p of ss.SCHEMA_PROBES) {
 }
 
 console.log("ai-limits-flags: OK");
+
+// --- 0018 blok A (texts): policy longgar ditutup, pengguna hanya boleh teks pribadi ---
+const rls = fs.readFileSync(path.join(repo, "supabase/migrations/0018_rls_baseline.sql"), "utf8");
+for (const name of ["Users can delete texts", "Anyone can insert texts", "Users can insert texts"]) {
+  assert.match(rls, new RegExp(`DROP POLICY IF EXISTS "${name}" ON texts`));
+}
+assert.match(rls, /CREATE POLICY "Admins manage texts"[\s\S]*?is_admin\(\)/);
+assert.match(rls, /WITH CHECK \(owner_id = auth\.uid\(\) AND is_public = false\)/);
+assert.ok(!/CREATE POLICY[^;]*is_public = true/i.test(rls.replace(/^--.*$/gm, "")), "tidak boleh ada policy baru yang membuka teks publik");

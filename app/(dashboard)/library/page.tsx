@@ -26,12 +26,11 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
   const useDefault = !explicitLevel && !showAll && defaultLevels.length > 0;
   const activeChip = explicitLevel ?? (showAll || !useDefault ? "all" : "default");
 
-  const buildQuery = (withLevel: boolean) => {
-    let qb = supabase
-      .from("texts")
-      .select("*", { count: "exact" })
-      .eq("is_public", true)
-      .order("created_at", { ascending: false });
+  // Teks pribadi milik pengguna (kolom owner_id dari migrasi 0018) ikut tampil bagi pemiliknya
+  const buildQuery = (withLevel: boolean, withOwner: boolean) => {
+    let qb = supabase.from("texts").select("*", { count: "exact" });
+    qb = withOwner && user ? qb.or(`is_public.eq.true,owner_id.eq.${user.id}`) : qb.eq("is_public", true);
+    qb = qb.order("created_at", { ascending: false });
     if (searchTerm) qb = qb.or(`title.ilike.%${searchTerm}%,author.ilike.%${searchTerm}%`);
     if (withLevel) {
       if (explicitLevel) qb = qb.eq("cefr_level", explicitLevel);
@@ -40,10 +39,12 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
     return qb;
   };
 
-  let { data: texts, error, count } = await buildQuery(true);
+  let { data: texts, error, count } = await buildQuery(true, true);
+  // Kolom owner_id belum ada (migrasi 0018 belum dijalankan): hanya teks publik
+  if (error) ({ data: texts, error, count } = await buildQuery(true, false));
   // Kolom cefr_level belum ada (migrasi 0007 belum dijalankan): tampilkan tanpa filter level
   const levelsReady = !error;
-  if (error) ({ data: texts, error, count } = await buildQuery(false));
+  if (error) ({ data: texts, error, count } = await buildQuery(false, false));
 
   const chipHref = (level: string) => {
     const p = new URLSearchParams();

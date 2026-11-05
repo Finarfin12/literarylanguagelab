@@ -29,9 +29,13 @@ export async function addText(formData: FormData) {
     throw new Error("Missing required fields");
   }
 
-  const { error } = await supabase
-    .from("texts")
-    .insert([{ title, author, content, era, genre, difficulty, word_count: wordCount, is_public: true }]);
+  // Fase 19.1: teks tambahan pengguna bersifat pribadi (hanya admin yang menerbitkan). Kolom owner_id dari migrasi 0018;
+  // sebelum migrasi dijalankan, jatuh ke perilaku lama (langsung publik).
+  const base = { title, author, content, era, genre, difficulty, word_count: wordCount };
+  let { error } = await supabase.from("texts").insert([{ ...base, is_public: false, owner_id: user.id }]);
+  if (error && (error.code === "42703" || error.code === "PGRST204")) {
+    ({ error } = await supabase.from("texts").insert([{ ...base, is_public: true }]));
+  }
 
   if (error) {
     console.error("addText error:", error);
