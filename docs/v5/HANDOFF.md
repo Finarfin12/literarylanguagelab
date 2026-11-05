@@ -23,7 +23,7 @@ ATURAN UTAMA: jangan menghapus fitur atau route. Kerjakan HANYA fase yang saya s
 
 ## Prompt per fase
 
-**Urutan:** 19 → 20 → 21 → *(titik henti: pemilik mencoba di HP)* → 22 → 23 → 24 → 25.
+**Urutan:** 19 → 20 → 21 → *(titik henti: pemilik mencoba di HP)* → 22 → 23 → 24 → *(titik henti: pemilik menilai mata pelajaran percobaan)* → 25 → 26 → 27 → 28 → 29.
 
 **Fase 19** — `Kerjakan Fase 19 (Keamanan & biaya AI). Mulai dari 19.1: minta saya menjalankan query policy dan menunjukkan hasilnya, laporkan temuan, tunggu persetujuan sebelum menulis perubahan policy. Tulis migrasi 0018 dan 0019 tapi jangan jalankan. Jangan memakai akun atau database produksi.`
 
@@ -35,7 +35,9 @@ ATURAN UTAMA: jangan menghapus fitur atau route. Kerjakan HANYA fase yang saya s
 
 **Fase 23** — `Kerjakan Fase 23 (Susunan & label). Slug ruang, route, dan nama alat tidak berubah. Mulai dari lib/tool-categories.ts dan uji unitnya. menu-coverage harus lulus.`
 
-**Fase 24** — `Kerjakan Fase 24 (Peta belajar). Cocokkan docs/v5/COMPETENCY_MAP.md dengan dokumen acuan yang saya lampirkan (jangan di-commit), lalu usulkan daftar topik beserta urutannya dan tunggu persetujuan. Urutan empat tahap hanya saran, tanpa kunci. Jangan memakai "Semester", kode mata kuliah, atau materi berhak cipta. Mulai dari lib/topics.ts dan uji unitnya. Tulis migrasi 0022 tapi jangan jalankan.`
+**Fase 24** — `Kerjakan Fase 24 (Modul Belajar: mesin + satu mata pelajaran percobaan). Cocokkan docs/v5/COMPETENCY_MAP.md dengan dokumen acuan yang saya lampirkan (jangan disalin, jangan di-commit), lalu usulkan daftar mata pelajaran beserta urutannya dan tunggu persetujuan. Mulai dari lib/study.ts dan lib/lesson-check.ts dengan uji unitnya. Tulis migrasi 0022 tapi jangan jalankan. Mata pelajaran percobaan harus bisa dituntaskan tanpa AI dan tanpa alat.`
+
+**Fase 25–28** — `Kerjakan satu mata pelajaran: <nama>, tahap <tahap>, sesuai docs/v5/CONTENT_GUIDE.md. Tulis di content/modules/ berstatus draft. Materi orisinal; jangan menyalin buku atau modul. Sumber harus nyata; yang tidak pasti tandai [perlu cek], jangan dikarang. Jalankan pemeriksaan dan laporkan hasilnya.`
 
 ---
 
@@ -44,7 +46,7 @@ ATURAN UTAMA: jangan menghapus fitur atau route. Kerjakan HANYA fase yang saya s
 1. **Tidak ada penghapusan fitur.** Yang boleh diubah: urutan, kelompok, label ruang, dan kategori `/tools`, sesuai plan. Slug, route, dan nama alat tetap.
 2. **Perubahan policy RLS butuh persetujuan pemilik** dan harus punya jalan kembali. Salah policy bisa mengunci pengguna dari datanya sendiri.
 3. **Tanpa AI** di alur unit pemula dan penilaian latihan.
-4. **Materi**: tulis sendiri. Gratis dibaca bukan berarti boleh disalin. Catat sumber dan lisensi.
+4. **Materi**: tulis sendiri. Gratis dibaca bukan berarti boleh disalin. Catat sumber dan lisensi. Jangan mengarang rujukan.
 5. **Bahasa klaim**: hindari "akurat", "siap skripsi/TAP", "offline penuh", "aman secara hukum".
 6. **Identitas & batas**: commit sebagai `finarfin112 <finarfinar112@gmail.com>`, push setelah bertanya, jangan menyentuh `.env*`, dan jangan menulis kunci. Test hapus akun hanya dengan akun uji.
 
@@ -85,4 +87,5 @@ Setelah fase selesai, perbarui tabel status di `docs/SESSION_HANDOFF.md`.
 | Fase 22 | Jalankan `0020`, `0021`; tinjau frasa; isi CSV kata per tema |
 | Fase 23 | Telusuri tiga ruang dan `/tools`; pastikan alat favoritmu masih ada |
 | Sebelum Fase 24 | Siapkan `Buku-Pembelajaran…docx` dan `DAFTAR-PER-SEMESTER.txt` untuk dicocokkan dengan peta cakupan |
-| Fase 24 | Setujui daftar & urutan topik; jalankan `0022`; tinjau enam topik dari keempat tahap; coba "Topik berikutnya"; nyalakan `peta_belajar` |
+| Fase 24 | Setujui daftar & urutan mata pelajaran; jalankan `0022`; impor mata pelajaran percobaan; pelajari sampai kuis di HP; **nilai kedalaman dan gaya penjelasan sebelum Fase 25** |
+| Fase 25–28 | Impor tiap mata pelajaran; tinjau (dibantu peninjau bidang di tahap Pendalaman & Lanjut); terbitkan; nyalakan `modul_belajar` setelah Fondasi lengkap |

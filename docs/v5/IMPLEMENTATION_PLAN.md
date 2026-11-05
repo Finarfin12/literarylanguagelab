@@ -17,10 +17,11 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v4 (terakhir Fase 18, migra
 | 21 | Alur pemula: pintu masuk, Beranda, dua unit tuntas | — | 3–4 hari | 19 (bagian biaya) |
 | 22 | Latihan pemula: penyusun kalimat, bantuan dialog, frasa, tema | `0020`, `0021` | 4–6 hari | 21 |
 | 23 | Susunan & label: ruang, Beranda, `/tools`, Grammar | — | 2–3 hari | 21 |
-| 24 | Peta belajar + "Pelajari dengan AI" + materi manual | `0022` | 4–5 hari | 19, 23 |
-| 25 | Tambahan sesuai kebutuhan | per item | per item | data pemakaian |
+| 24 | Modul Belajar: mesin + satu mata pelajaran percobaan | `0022` | 6–8 hari | 15, 19, 23 |
+| 25–28 | Konten Modul Belajar per tahap (±110–170 pelajaran) | — (berkas + impor) | satu sesi per mata pelajaran, ditambah peninjauan pemilik | 24 disetujui |
+| 29 | Tambahan sesuai kebutuhan | per item | per item | data pemakaian |
 
-**Urutan kerja:** **19 → 20 → 21 → (titik henti: pemilik mencoba alur pemula di HP) → 22 → 23 → 24 → 25.** Fase 20 kecil dan boleh dikerjakan paralel dengan 19, selama file-nya tidak bersinggungan (route `alter-ego` hanya disentuh Fase 20; ia sudah memakai `checkRateLimit`, pelindung baru menyusul di 19.2).
+**Urutan kerja:** **19 → 20 → 21 → (titik henti: pemilik mencoba alur pemula di HP) → 22 → 23 → 24 → (titik henti: pemilik menilai mata pelajaran percobaan) → 25 → 26 → 27 → 28 → 29.** Fase 20 kecil dan boleh dikerjakan paralel dengan 19, selama file-nya tidak bersinggungan (route `alter-ego` hanya disentuh Fase 20; ia sudah memakai `checkRateLimit`, pelindung baru menyusul di 19.2).
 
 **Prasyarat dari pemilik sebelum Fase 19 selesai:** hasil query policy (19.1).
 
@@ -52,7 +53,7 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v4 (terakhir Fase 18, migra
 - Satu permintaan dihitung satu kali. Hindari pencatatan ganda dengan baris `requested` di `ai_usage_logs`, tanpa merusak statistik Admin.
 
 **19.4 Flag fitur** (`lib/ai/flags.ts`)
-- `FEATURE_DEFAULTS` untuk fitur yang bawaannya mati (`kursus_dasar`, `peta_belajar`). Key lain tetap aktif bila tidak terdaftar.
+- `FEATURE_DEFAULTS` untuk fitur yang bawaannya mati (`kursus_dasar`, `modul_belajar`). Key lain tetap aktif bila tidak terdaftar.
 - Bila konfigurasi gagal dibaca: pakai nilai terakhir yang berhasil dibaca, lalu `FEATURE_DEFAULTS`. Admin → Fitur menampilkan peringatan bila konfigurasi tidak terbaca.
 
 **19.5 Aksesibilitas dasar** (`app/layout.tsx`)
@@ -176,37 +177,75 @@ Mengubah data dan urutan, **bukan** route atau alat. Gaya tetap DESIGN.md.
 
 ---
 
-## Fase 24 — Peta belajar + "Pelajari dengan AI" + materi manual
+## Fase 24 — Modul Belajar: mesin + satu mata pelajaran percobaan
 
 **Sebelum mulai:**
-- Cocokkan [COMPETENCY_MAP.md](COMPETENCY_MAP.md) dengan dokumen acuan pemilik (Q7). Setiap kompetensi harus berakhir pada satu topik, bagian dari topik lain, atau "di luar cakupan" dengan alasan. Jangan menyalin isi dokumen acuan bila bersumber dari modul berhak cipta; jangan meng-commit filenya.
-- Usulkan daftar topik beserta urutannya kepada pemilik (Q6). Draf saat ini 28 topik. Topik ditulis sendiri, tanpa kode mata kuliah dan tanpa "Semester".
+- Cocokkan [COMPETENCY_MAP.md](COMPETENCY_MAP.md) dengan dokumen acuan pemilik (Q7). Setiap kompetensi harus berakhir pada satu mata pelajaran, bagian dari mata pelajaran lain, atau "di luar cakupan" dengan alasan. Dokumen acuan hanya untuk cakupan: jangan menyalin isinya dan jangan meng-commit filenya.
+- Usulkan daftar mata pelajaran beserta urutannya (draf: 28) kepada pemilik (Q6). Tanpa kode mata kuliah dan tanpa "Semester".
 
-**24.1 Skema** (`0022_learning_topics.sql`)
-- `learning_topics (slug pk, room_slug, stage, title, outcomes jsonb, tool_paths text[], activity jsonb, sources jsonb, sort_order, status)`. `stage` = `fondasi | transisi | pendalaman | lanjut`. `sort_order` unik global dan menjadi urutan belajar lintas tahap. `room_slug` boleh `belajar-dasar` untuk topik Fondasi. `sources` berisi judul, URL, penyedia, lisensi, dan jenis pemakaian.
-- `topic_explanations (id, topic_slug, source 'manual'|'ai', content, status 'draft'|'published', model, created_by, reviewed_by, updated_at)` dengan unik `(topic_slug, source)`.
-- RLS: topik dan penjelasan terbit dibaca pengguna login; tulis admin. Penjelasan AI baru ditulis server lewat service role. Feature key `topic-explain`, `topic-chat`. Flag `peta_belajar` mati.
+**24.1 Skema** (`0022_study_modules.sql`)
+- `study_subjects (slug pk, stage, title, description_id, outcomes jsonb, room_slug, sources jsonb, sort_order, status)`. `stage` = `fondasi | transisi | pendalaman | lanjut`. `sort_order` unik dan menjadi urutan belajar lintas tahap.
+- `study_lessons (slug pk, subject_slug, sort_order, title, objectives jsonb, body_md, summary_md, task jsonb, tool_paths text[], sources jsonb, status, origin 'claude'|'manual'|'ai', edited_at, reviewed_by, reviewed_at)`.
+- `ALTER TABLE exercises ADD COLUMN IF NOT EXISTS lesson_slug TEXT, subject_slug TEXT`. Soal dengan `subject_slug` dan tanpa `lesson_slug` = kuis akhir.
+- `lesson_progress (user_id, lesson_slug, completed_at, pk(user_id, lesson_slug))` dan `lesson_tasks (user_id, lesson_slug, content, updated_at, pk(...))` untuk jawaban tugas pribadi.
+- `lesson_simple_versions (lesson_slug pk, content, model, created_at)` untuk "Jelaskan lebih sederhana".
+- RLS: subject & lesson terbit dibaca pengguna login, tulis admin; progres & tugas milik sendiri; versi sederhana dibaca pengguna login, tulis lewat server. Feature key `lesson-simplify`, `lesson-chat`, `lesson-draft`. Flag `modul_belajar` mati (`FEATURE_DEFAULTS`).
 
-**24.2 Logika murni** (`lib/topics.ts`, **diuji unit**)
-- `pickExplanation(rows)`: manual terbit → AI ditinjau → AI baru → tidak ada. `validateTopic`: wajib punya capaian, satu latihan, dan alat yang benar-benar ada di `lib/rooms.ts`/`menu-config`. `nextTopic(topics, currentSlug)`: topik terbit berikutnya menurut `sort_order`, melewati draft.
+**24.2 Logika murni** (**diuji unit**)
+- `lib/study.ts`: `nextLesson`, persen per mata pelajaran & tahap, pelajaran yang disarankan.
+- `lib/lesson-check.ts`: `checkLesson(lesson, exercises)` → ada tujuan, jumlah kata isi dalam rentang (±600–1.500), minimal 3 latihan, ada rangkuman, ada sumber, alat yang dirujuk ada di `lib/rooms.ts`. Ditampilkan di Admin; hanya informasi, seperti `graded-check`.
+- `scripts/lib/parse-lesson.mjs`: membaca berkas pelajaran (lihat 24.5).
 
-**24.3 UI**
-- Bagian **Peta belajar** di halaman ruang Membaca & Sastra dan Menerjemahkan, dikelompokkan per tahap (Fondasi, Transisi, Pendalaman, Lanjut & proyek). Di Belajar Bahasa Inggris tampil topik Fondasi, dengan tautan ke materi yang sudah ada (Kursus Dasar, Grammar, Kosakata Inti, bacaan berjenjang). Tidak ada menu tingkat atas baru.
-- Halaman `/topik/[slug]`: capaian → penjelasan → latihan → alat → sumber → tombol **"Topik berikutnya"**. Urutan hanya saran; **tidak ada topik yang dikunci**. Jangan menampilkan "Semester", SKS, atau nilai.
-- Tombol **"Pelajari dengan AI"** bila belum ada penjelasan. Dibuat sekali lalu disimpan; permintaan bersamaan tidak boleh memanggil AI dua kali. Label "Dibuat AI, periksa kembali". Tanya-jawab lanjutan lewat pelindung Fase 19, tidak disimpan untuk umum.
-- Keterangan tetap: "Pendamping belajar mandiri; bukan program resmi lembaga mana pun."
+**24.3 Halaman belajar**
+- `/modul` (tahap & mata pelajaran), `/modul/[subject]` (daftar pelajaran, tujuan, progres, kuis), `/modul/[subject]/[lesson]`.
+- Halaman pelajaran bergaya bacaan DESIGN.md (serif untuk isi, lebar nyaman, tema gelap): tujuan → isi → contoh → latihan (`ExerciseSession`) → rangkuman → tugas (disimpan, tanpa penilaian AI) → sumber → tombol "Praktikkan" opsional → **"Pelajaran berikutnya"**. Tidak ada yang dikunci.
+- Markdown dirender aman (tanpa HTML mentah). Teks Inggris diberi `lang="en"`. Tandai selesai hanya lewat tindakan jelas.
+- Tautan dari halaman ruang; daftarkan di `lib/rooms.ts` dan `menu-coverage`. Keterangan tetap: "Pendamping belajar mandiri; bukan program resmi lembaga mana pun."
 
-**24.4 Admin → Konten**
-- Tab Topik: buat & edit topik; **tulis penjelasan manual**; tinjau, edit, buat ulang, dan terbitkan penjelasan AI; lihat sumber. `logAdminAction` untuk semua aksi.
+**24.4 AI pendamping**
+- **"Jelaskan lebih sederhana"**: dibuat sekali lalu disimpan; permintaan bersamaan tidak memanggil AI dua kali; label "Dibuat AI, periksa kembali".
+- **Tanya jawab** seputar pelajaran lewat pelindung Fase 19, tidak disimpan untuk umum. Halaman tetap utuh tanpa AI.
 
-**24.5 Kartu praktik**
-- Tombol alat membuka alat terkait. Bila alat sudah mendukung contoh (`lib/tool-examples.ts`), pakai contoh yang sudah ada.
+**24.5 Konten sebagai berkas & Admin**
+- Sumber draf sesi Claude: `content/modules/<subject>/<nn>-<lesson>.md` (frontmatter + isi + soal). Bisa ditinjau lewat diff.
+- `scripts/import-modules.mjs [--dry-run]`: upsert sebagai `draft`; **melewati pelajaran yang sudah ditinjau atau disunting di Admin** kecuali `--force`.
+- Admin → Konten → tab **Modul**: daftar & hasil `checkLesson`; **tulis pelajaran manual**; edit; "Buat draf dengan AI" (`lesson-draft`, jadi draft); tinjau & terbitkan. `logAdminAction` untuk semua aksi. Soal dikelola lewat tab Latihan yang sudah ada.
 
-**Selesai jika:** COMPETENCY_MAP selesai dicocokkan (atau dicatat "menunggu dokumen pemilik"); enam topik contoh lengkap (setengah manual, setengah AI ditinjau) mencakup keempat tahap; "Topik berikutnya" mengikuti urutan dan tidak mengunci; satu penjelasan tidak memicu AI berulang; manual selalu didahulukan; uji unit lulus; flag mati menyembunyikan peta; `menu-coverage` lulus; build lulus.
+**24.6 Panduan penulisan** (`docs/v5/CONTENT_GUIDE.md`, ditulis di fase ini)
+- Bahasa Indonesia yang jelas; istilah Inggris dijelaskan saat pertama muncul; contoh Inggris selalu dibahas.
+- Pola tiap pelajaran mengikuti 9.1 PRD; satu gagasan per bagian.
+- **Ditulis sendiri.** Jangan menyalin definisi, urutan paragraf, contoh, atau latihan khas buku/modul. Teks contoh: domain publik, tulisan sendiri, atau berlisensi; catat di `sources`.
+- **Sumber harus nyata.** Bila tidak bisa dipastikan, tandai `[perlu cek]`, jangan dikarang. Jangan mengklaim hasil penelitian tanpa rujukan.
+
+**24.7 Percobaan: satu mata pelajaran lengkap**
+- Tulis **"Membaca Cepat & Ide Pokok"** (4–6 pelajaran + kuis akhir) sesuai panduan.
+
+**Selesai jika:** mata pelajaran percobaan bisa dituntaskan di HP dari pelajaran pertama sampai kuis **tanpa AI dan tanpa membuka alat**; progres tersimpan; suntingan Admin tidak tertimpa impor; flag mati menyembunyikan modul; uji unit lulus; `menu-coverage` lulus; FEATURE_INVENTORY diperbarui; build lulus.
+
+**Titik henti:** pemilik menilai kedalaman dan gaya penjelasan. Fase 25 baru dimulai setelah disetujui, dan panduan penulisan diperbarui bila perlu.
 
 ---
 
-## Fase 25 — Tambahan sesuai kebutuhan
+## Fase 25–28 — Konten Modul Belajar per tahap
+
+| Fase | Tahap | Mata pelajaran (draf) | Perkiraan pelajaran | Peninjauan |
+|---|---|---|---|---|
+| 25 | Fondasi | 4 (satu sudah jadi percobaan) | 16–24 | Pemilik |
+| 26 | Transisi | 8 | 32–48 | Pemilik |
+| 27 | Pendalaman | 8 | 32–48 | Pemilik + disarankan peninjau bidang |
+| 28 | Lanjut & proyek | 7 | 28–42 | Pemilik + disarankan peninjau bidang |
+
+**Cara kerja:**
+- **Satu sesi = satu mata pelajaran** (commit per mata pelajaran). Berkas di `content/modules/`, status draft.
+- Setiap mata pelajaran menyertakan latihan per pelajaran dan kuis akhir. Tahap Lanjut mengutamakan **proyek** (mis. menerjemahkan 500–1.000 kata, menganotasi teknik, menilai hasil, mengekspor data), memakai Ruang Kerja Segmen secara opsional.
+- `checkLesson` lulus untuk semua pelajaran; daftar sumber & `[perlu cek]` masuk laporan.
+- Pemilik menjalankan `import-modules.mjs`, meninjau, lalu menerbitkan. Flag `modul_belajar` boleh dinyalakan setelah minimal satu tahap (Fondasi) terbit lengkap; tahap lain tampil "segera hadir".
+
+**Selesai jika (per mata pelajaran):** berkas lengkap sesuai panduan; `--dry-run` tanpa galat; tidak ada teks salinan; COMPETENCY_MAP ditandai tercakup.
+
+---
+
+## Fase 29 — Tambahan sesuai kebutuhan
 
 Tiap item menjadi fase kecil tersendiri **setelah** ada permintaan atau data pemakaian. Rincian menyusul; batasannya di PRD §10.
 
@@ -221,5 +260,5 @@ Tiap item menjadi fase kecil tersendiri **setelah** ada permintaan atau data pem
 - [ ] Alur "Baru mulai dari nol" tuntas sampai review, tanpa AI, di HP.
 - [ ] Penyusun kalimat, bantuan dialog, frasa, dan tema berfungsi atau jelas menyatakan belum tersedia.
 - [ ] Tiga label ruang konsisten; kategori `/tools` berbahasa Indonesia; `menu-coverage` lulus.
-- [ ] Peta belajar: empat tahap berurutan tanpa kunci; tanpa "Semester" dan kode mata kuliah; sumber berlisensi tercatat; setiap kompetensi di COMPETENCY_MAP punya topik atau alasan di luar cakupan.
+- [ ] Modul Belajar: mata pelajaran bisa dituntaskan tanpa AI dan tanpa alat; empat tahap berurutan tanpa kunci; tanpa "Semester" dan kode mata kuliah; materi orisinal; sumber nyata & tercatat; setiap kompetensi di COMPETENCY_MAP punya mata pelajaran atau alasan di luar cakupan.
 - [ ] Migrasi `0018`–`0022` tercantum di `docs/SESSION_HANDOFF.md`.

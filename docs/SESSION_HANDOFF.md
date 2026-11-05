@@ -33,7 +33,7 @@
 
 **Handoff sesi terbaru (1 Nov 2026): [`HANDOFF_NEXT_SESSION.md`](HANDOFF_NEXT_SESSION.md)** — keadaan repo, status migrasi, tindakan menunggu pemilik, jebakan, resep verifikasi, dan prompt pembuka.
 
-**Berikutnya: v5** — keamanan & biaya AI, penulis fantasi di Alter Ego, alur pemula dari nol, susunan & label, peta belajar (Fase 19–25). Dokumen di [`docs/v5/`](v5/). Mulai sesi baru dengan "Prompt pembuka" di [`docs/v5/HANDOFF.md`](v5/HANDOFF.md).
+**Berikutnya: v5** — keamanan & biaya AI, penulis fantasi di Alter Ego, alur pemula dari nol, susunan & label, Modul Belajar lengkap (Fase 19–29). Dokumen di [`docs/v5/`](v5/). Mulai sesi baru dengan "Prompt pembuka" di [`docs/v5/HANDOFF.md`](v5/HANDOFF.md).
 
 **v4 (selesai di kode sampai Fase 18)** — redesign "perpustakaan yang ramah" (hanya tampilan, **tanpa menghapus fitur**), susunan fitur per tiga Ruang, Tongkat Ajaib bisa digeser, dan Kursus Dasar (Fase 12–17). Dokumen di [`docs/v4/`](v4/): PRD, IMPLEMENTATION_PLAN, HANDOFF, dan [FEATURE_INVENTORY](v4/FEATURE_INVENTORY.md) (daftar periksa wajib). Urutan: **14g → 12 → 13 → (titik henti) → 14a–14f → 15 → 16 → 17 → 18 (konten Kursus Dasar, terakhir)**. Mulai sesi baru dengan "Prompt pembuka" di [`docs/v4/HANDOFF.md`](v4/HANDOFF.md). Prasyarat: migrasi `0006`–`0010` sudah dijalankan.
 

@@ -39,7 +39,7 @@ v4 membuat aplikasi tampil rapi dan menambah mesin latihan serta Kursus Dasar. P
 | Skema bisa direproduksi | Database kosong + migrasi repo menghasilkan tabel dan policy yang setara dengan produksi |
 | Pemula bisa mulai sendiri | Pengguna baru memilih "Baru mulai dari nol", menyelesaikan unit pertama, dan kata-katanya muncul di review, tanpa tes dan tanpa AI |
 | Lebih mudah dipahami | Pengguna dapat menebak ruang yang tepat dari labelnya; setiap alat tetap terjangkau ≤ 2 ketukan |
-| Belajar topik mendalam | Topik sastra dan penerjemahan dapat dipelajari lewat penjelasan AI atau manual, dengan latihan dan sumber |
+| Belajar mendalam tanpa alat | Satu mata pelajaran bisa dituntaskan dari pelajaran pertama sampai kuis akhir hanya dengan membaca dan mengerjakan latihan |
 
 ## 4. Bukan tujuan
 
@@ -50,6 +50,7 @@ v4 membuat aplikasi tampil rapi dan menambah mesin latihan serta Kursus Dasar. P
 - Gamifikasi (XP, streak, peringkat).
 - Layanan terjemahan pihak ketiga seperti MyMemory untuk masukan pengguna.
 - Target 100–150 frasa dan 1.000 kata sebelum alur kecil terbukti berjalan.
+- Sertifikat, SKS, atau klaim setara kuliah.
 
 ---
 
@@ -132,27 +133,50 @@ Tampilan bawaan **tidak berubah** (keputusan pemilik di v4). Opsi "Tampilan ring
 
 **Tetap:** route dan slug ruang, nama alat, DESIGN.md, Koleksi & Komunitas, dan bottom nav yang sekarang (Beranda · Kamus · Baca Buku · Grammar · Menu, lihat Q2).
 
-## 9. Peta belajar + "Pelajari dengan AI" (Fase 24)
+## 9. Modul Belajar: pembelajaran lengkap (Fase 24–28)
 
-Keputusan pemilik: **tidak memakai nama Semester 1–8**, materi bisa dipelajari lewat AI, dan pemilik bisa menambahkan materi manual.
+Keputusan pemilik: pengguna bisa **belajar murni seperti mengikuti modul kuliah**, dengan penjelasan lengkap, bukan hanya alat siap pakai. Tidak memakai nama Semester 1–8.
 
-- **Topik bernama umum**, mis. "Membaca Cepat & Ide Pokok", "Menulis Paragraf", "Membaca Kritis", "Variasi Bahasa", "Dasar Penerjemahan", "Penyuntingan Terjemahan", "Struktur Kata & Kalimat", "Makna & Nuansa". Ditempatkan di dalam **Membaca & Sastra** dan **Menerjemahkan**; topik Fondasi juga ditautkan dari **Belajar Bahasa Inggris**, ke materi yang sudah ada di sana.
-- **Urutan belajar tetap mengikuti konsep Semester 1–8, dengan nama umum:** **Fondasi** (Sem. 1–2) → **Transisi** (Sem. 3–4) → **Pendalaman** (Sem. 5–6) → **Lanjut & proyek** (Sem. 7–8). Padanan ini hanya untuk tim. Di tampilan, setiap topik punya nomor urut dan satu tombol "Topik berikutnya" yang **disarankan, tidak dikunci**. Pengguna yang sudah mahir boleh mulai dari tahap mana pun.
-- **Peta cakupan kompetensi** ([COMPETENCY_MAP.md](COMPETENCY_MAP.md), internal): setiap kompetensi dari daftar mata kuliah inti harus punya topik atau alasan tertulis mengapa di luar cakupan. Kode mata kuliah tidak ikut masuk aplikasi maupun repo.
-- **Bukan kuliah resmi:** tidak ada SKS, nilai, atau ijazah.
-- **Setiap topik berisi**: capaian belajar → penjelasan → latihan/proyek → alat terkait → sumber terbuka.
-- **Penjelasan punya tiga sumber**, dengan urutan tampil: **manual → AI yang sudah ditinjau → AI baru**.
-- **Tombol "Pelajari dengan AI"**: penjelasan pertama disimpan untuk semua pengguna, supaya biayanya tidak berulang. Ada label "Dibuat AI, periksa kembali" dan tautan sumber. Pertanyaan lanjutan melewati pelindung biaya Fase 19.
-- **Admin** bisa menulis, mengedit, menyetujui, dan membuat ulang penjelasan.
-- Di balik flag `peta_belajar` sampai minimal enam topik siap, mencakup keempat tahap.
+### 9.1 Struktur
 
-## 10. Tambahan sesuai kebutuhan nyata (Fase 25)
+```text
+Tahap (Fondasi → Transisi → Pendalaman → Lanjut & proyek)
+  └─ Mata pelajaran (mis. "Membaca Kritis")
+       ├─ Pelajaran: tujuan → penjelasan lengkap → contoh & pembahasan
+       │             → latihan dinilai otomatis → rangkuman
+       │             → tugas (bila relevan) → bacaan lanjutan & sumber
+       └─ Kuis akhir mata pelajaran
+```
+
+- **Bisa dipelajari tanpa membuka alat.** Alat hanya tombol "Praktikkan" yang opsional.
+- **Urutan mengikuti konsep Semester 1–8:** Fondasi (Sem. 1–2), Transisi (Sem. 3–4), Pendalaman (Sem. 5–6), Lanjut & proyek (Sem. 7–8). Padanan ini hanya catatan tim. Tombol "Pelajaran berikutnya" **menyarankan, tidak mengunci**.
+- **Progres tersimpan** per pelajaran. Latihan memakai mesin Fase 15, tanpa AI.
+- **Tempat:** halaman Modul Belajar dibuka dari Membaca & Sastra dan Menerjemahkan; tahap Fondasi juga dari Belajar Bahasa Inggris. Tidak ada menu tingkat atas baru.
+
+### 9.2 Isi dan siapa yang membuatnya
+
+- **Isi utama adalah materi yang sudah ditinjau**, bukan keluaran AI langsung saat dibuka.
+- **Tiga jalur draf**, semuanya berakhir draf → ditinjau → terbit: ditulis sesi Claude di repo, **ditulis manual** oleh pemilik di Admin, atau "Buat draf dengan AI" di Admin. Suntingan manual tidak ditimpa impor berikutnya.
+- **AI untuk pengguna hanya pendamping:** "Jelaskan lebih sederhana" (hasilnya disimpan agar tidak berulang) dan tanya jawab, dengan label "Dibuat AI, periksa kembali" dan pelindung biaya Fase 19.
+
+### 9.3 Batas
+
+- **Setara kedalaman modul, bukan salinan modul.** Penjelasan, contoh, dan latihan ditulis sendiri. Teori boleh diajarkan dengan kata sendiri sambil menyebut sumbernya. Teks contoh: domain publik, tulisan sendiri, atau berlisensi yang mengizinkan.
+- **Sumber harus nyata.** Rujukan yang tidak bisa dipastikan ditandai untuk diperiksa, tidak boleh dikarang.
+- **Bukan kuliah resmi:** tanpa SKS, nilai resmi, atau ijazah, tanpa kode mata kuliah, dan tidak mengaku menggantikan perkuliahan.
+- **Butuh peninjau**, terutama linguistik dan teori penerjemahan.
+
+### 9.4 Volume dan cara mengerjakan
+
+Draf saat ini 28 mata pelajaran × 4–6 pelajaran ≈ **110–170 pelajaran**, atau 100–250 ribu kata. Karena itu: mesin dan **satu mata pelajaran percobaan** dulu (Fase 24), pemilik menilai kedalamannya, lalu konten per tahap (Fase 25–28). Peta cakupan: [COMPETENCY_MAP.md](COMPETENCY_MAP.md).
+
+## 10. Tambahan sesuai kebutuhan nyata (Fase 29)
 
 Dikerjakan hanya bila ada permintaan atau data pemakaian:
 1. Penyuntingan bahasa Indonesia hasil terjemahan (saran untuk diperiksa manusia).
 2. Ringkasan statistik proyek terjemahan: label "ringkasan untuk ditinjau", dengan rumus dan data yang dikecualikan.
-3. Latihan skimming/scanning: timer opsional, teks tidak disembunyikan paksa.
-4. Morfologi dan relasi makna: cakupan terbatas.
+3. Latihan skimming/scanning interaktif: timer opsional, teks tidak disembunyikan paksa.
+4. Alat morfologi dan relasi makna: cakupan terbatas.
 5. Topik grammar B2–C1 bertema sastra (inversi, subjunctive, klausa partisipel).
 
 ## 11. Kebutuhan non-fungsional
@@ -174,5 +198,6 @@ Dikerjakan hanya bila ada permintaan atau data pemakaian:
 | Q3 | Staging (proyek Supabase kedua)? | Diputuskan setelah tinjauan policy. Disarankan bila policy perlu diubah |
 | Q4 | Siapa peninjau materi Inggris–Indonesia dan cara baca? | Pemilik |
 | Q5 | Daftar 8 penulis fantasi di §6 sudah pas? | Ya |
-| Q6 | Daftar topik peta belajar? | Diusulkan sesi Fase 24 dari [COMPETENCY_MAP.md](COMPETENCY_MAP.md), disetujui pemilik sebelum diisi |
-| Q7 | Pemilik melampirkan `Buku-Pembelajaran…docx` dan `DAFTAR-PER-SEMESTER.txt` untuk mencocokkan peta cakupan? | Ya, sebelum Fase 24; filenya tidak di-commit |
+| Q6 | Daftar mata pelajaran Modul Belajar? | Diusulkan sesi Fase 24 dari [COMPETENCY_MAP.md](COMPETENCY_MAP.md), disetujui pemilik sebelum ditulis |
+| Q7 | Pemilik melampirkan `Buku-Pembelajaran…docx` dan `DAFTAR-PER-SEMESTER.txt`? | Ya, sebelum Fase 24; hanya acuan cakupan, tidak disalin dan tidak di-commit |
+| Q8 | Siapa peninjau materi tahap Pendalaman dan Lanjut? | Pemilik; disarankan dibantu dosen atau rekan |
