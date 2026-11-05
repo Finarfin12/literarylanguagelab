@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 import { requireUser } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { buildSystemPrompt, parseAlterEgoRequest } from "@/lib/alter-ego";
 
 export async function POST(req: Request) {
   try {
@@ -17,24 +18,15 @@ export async function POST(req: Request) {
       return rateLimitRes;
     }
 
-    const { author, messages } = await req.json();
-
-    if (!author || !messages || !Array.isArray(messages)) {
-      return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
+    const body = await req.json().catch(() => null);
+    const parsed = parseAlterEgoRequest(body);
+    if (!parsed.ok) {
+      return NextResponse.json({ error: parsed.error }, { status: 400 });
     }
 
-    const systemPrompt = `You are ${author}. Embody their exact writing style, vocabulary, era, and worldview. 
-Respond to the user's messages as if you are having a conversation with them in the present day, but maintaining your distinct historical persona. 
-Use your famous quotes if relevant, but blend them naturally.
-Respond ENTIRELY in English. You MUST NOT use Indonesian.
-Your tone, diction, and syntactic structure MUST be a perfect, immersive imitation of your historical literary style. Keep your responses concise enough for a chat interface (max 2-3 paragraphs).`;
-
     const formattedMessages = [
-      { role: "system", content: withAITextOutputRules(systemPrompt) },
-      ...messages.map((m: any) => ({
-        role: m.role,
-        content: m.content
-      }))
+      { role: "system" as const, content: withAITextOutputRules(buildSystemPrompt(parsed.author)) },
+      ...parsed.messages,
     ];
 
     const completion = await runAI("alter-ego", {

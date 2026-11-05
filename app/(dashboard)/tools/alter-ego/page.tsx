@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
+import { AUTHOR_GROUPS, AUTHORS, DEFAULT_AUTHOR, SIMULATION_NOTE } from "@/lib/alter-ego";
 
 interface Message {
   id?: string;
@@ -21,19 +22,9 @@ interface ChatSession {
   created_at: string;
 }
 
-const AUTHORS = [
-  "William Shakespeare",
-  "Jane Austen",
-  "Edgar Allan Poe",
-  "Ernest Hemingway",
-  "Virginia Woolf",
-  "Chinua Achebe",
-  "Pramoedya Ananta Toer"
-];
-
 export default function AlterEgoChatPage() {
   const supabase = createClient();
-  const [author, setAuthor] = useState(AUTHORS[0]);
+  const [author, setAuthor] = useState(DEFAULT_AUTHOR);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -217,6 +208,7 @@ export default function AlterEgoChatPage() {
             Alter Ego Chat
           </h1>
           <p className="text-muted-foreground mt-2">Ngobrol langsung dengan penulis legendaris pilihan Anda.</p>
+          <p className="text-muted-foreground mt-1 text-sm">{SIMULATION_NOTE}</p>
         </div>
       </div>
 
@@ -274,7 +266,13 @@ export default function AlterEgoChatPage() {
               onChange={handleAuthorChange}
               className="w-full sm:w-64 bg-background border border-border rounded-control p-2.5 text-foreground font-serif focus:ring-2 focus:ring-brand outline-none cursor-pointer text-sm"
             >
-              {AUTHORS.map(a => <option key={a} value={a}>{a}</option>)}
+              {AUTHOR_GROUPS.map(g => (
+                <optgroup key={g.label} label={g.label}>
+                  {g.authors.map(a => <option key={a} value={a}>{a}</option>)}
+                </optgroup>
+              ))}
+              {/* Riwayat lama dengan penulis di luar daftar tetap bisa dibuka. */}
+              {!AUTHORS.includes(author) && <option value={author}>{author}</option>}
             </select>
           </div>
 

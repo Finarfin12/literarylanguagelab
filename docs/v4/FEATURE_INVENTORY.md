@@ -171,7 +171,7 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 | 28 alat dinamis (satu halaman `tools/[id]`, tombol "Coba dengan contoh"): mood-transformer, era-translator, critical-lens, pronunciation-clinic, dialect-diver, rhetorical-spotter, vibe-translator, diction-lab, sentence-architect, sentiment-spectrum, imagery-sketcher, metaphor-generator, academic-outline, **essay-auditor**, plot-twist, conflict-mapper, semantic-visual, character-monologue, literary-synonyms, nuance-detector, time-traveler, poem-to-palette, semantic-map, **case-study-generator**, imagery-grader, difficulty-analyzer, idiom-detector, tone-detector* | `lib/tools-config.ts`, `app/(dashboard)/tools/[id]/page.tsx`, `lib/tool-examples.ts` |
 | Tone & Gaya: mode **Deteksi Nada** dan **Analisis & Ubah Nada** (gabungan Tone Analyzer + Tone Detector Fase 8; `/tools/tone-detector` di-redirect) | `tools/tone-analyzer` |
 | LingoWise AI: 8 mode (Dialect Diver, Tone & Grammar, Vibe Translator, Mood Transformer, Diction Lab, Era Translator, Sentence Architect, Rhetorical Spotter) | `app/(dashboard)/lingowise`, `components/lingowise/LingoWiseClient.tsx` |
-| Alter Ego Chat (persona penulis) | `tools/alter-ego` |
+| Alter Ego Chat (persona penulis; v5 Fase 20: 15 penulis, kelompok Klasik & Modern + Fantasi, `lib/alter-ego.ts`) | `tools/alter-ego` |
 | Cultural Context Library (CRUD referensi budaya yang dipakai reader) | `tools/cultural-context` |
 | My Annotations | `tools/annotations` |
 | Archive & Insights (waktu baca, kata dikuasai, area lemah, analisis) | `app/(dashboard)/history` |
