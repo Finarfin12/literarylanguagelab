@@ -137,6 +137,19 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 > | Sakelar **Bantuan pemula** di Dialogue Simulator (bawaan nyala untuk A1): arti frasa bantuan, awalan kalimat, tombol "Lihat terjemahan"; frasa bantuan dan input lama tidak berubah | `lib/dialogue-help.ts`, `app/(dashboard)/english-lab/dialogue-simulator/page.tsx`, `app/api/dialogue-simulator/translate`; uji `phrases-help` |
 > | **Frasa harian** `/frasa-harian` (Ruang I): audio, arti natural, arti kata per kata, simpan ke Review; Admin → Konten → Frasa untuk meninjau dan menerbitkan | `app/(dashboard)/frasa-harian/`, `app/(dashboard)/admin/content/phrases/`, `lib/phrases.ts`, migrasi `0021` |
 > | Kosakata Inti: tab **Per tema** (tampil bila ada data) dan tombol tambah kata tema ke Review; skrip `scripts/enrich-a0.mjs` | `app/(dashboard)/vocabulary/core/`, `lib/core-themes.ts`, migrasi `0022` |
+
+>
+> **(Fase 23, v5)** Susunan & label (tidak ada fitur yang dihapus; yang berubah hanya urutan, kelompok, dan label):
+>
+> | Perubahan | Lokasi |
+> |---|---|
+> | Label ruang: Belajar Bahasa Inggris, Membaca & Sastra, Menerjemahkan (slug `belajar-dasar`, `baca-sastra`, `terjemah` tetap) | `lib/rooms.ts` |
+> | Membaca & Sastra: lima seksi berurutan; Penulisan & portofolio memuat academic-outline, writing-assistant, essay-auditor, paraphrase, case-study-generator | `lib/rooms.ts`; uji `tool-categories`, `menu-coverage` |
+> | Menerjemahkan: seksi Pra-terjemah (idiom-detector, cultural-context, dialect-diver, untranslatables) dan Imagery Grader di evaluasi | `lib/rooms.ts` |
+> | `/tools/paraphrase` pindah dari Ruang I ke Ruang II (masih terjangkau; Latihan Interaktif di `/tools`) | `lib/rooms.ts` |
+> | Beranda: tiga pintasan Mulai dari Nol / Lanjutkan Membaca / Mulai Menerjemahkan | `app/(dashboard)/dashboard/page.tsx`, `lib/rooms.ts` (`homeShortcuts`) |
+> | `/tools`: kategori Pemahaman & Kosakata, Kajian Sastra & Teori, Penulisan, Bantuan Penerjemahan, Latihan Interaktif + Semua Alat; pencarian dan seluruh alat tetap | `lib/tool-categories.ts`, `app/(dashboard)/tools/page.tsx` |
+> | Grammar: progres total dan filter Semua / Belum / Selesai | `app/(dashboard)/english-lab/grammar/TopicList.tsx`, `lib/topic-filter.ts` |
 > | Kursus Dasar: langkah latihan bertag ("Kesalahan umum penutur Indonesia", "Pasangan bunyi") ditambahkan ke unit terkait oleh `0014` bila `0013` sudah dijalankan | `supabase/migrations/0014_l1_modules.sql` |
 
 > **(Fase 18, ✅ admin diuji 375px/1280px, terang/gelap)** Paket konten Kursus Dasar dan tiga jalur bacaan (baris baru; Kursus Dasar tetap tersembunyi sampai flag `kursus_dasar` dinyalakan):

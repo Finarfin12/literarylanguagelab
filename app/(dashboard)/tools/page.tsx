@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { TOOLS } from "@/lib/tools-config";
+import { ALL_CATEGORY, TOOL_CATEGORIES, categoryOf, filterTools, groupToolsByCategory } from "@/lib/tool-categories";
 import { 
   Wrench, Sparkles, Wand2, Hourglass, Eye, Ear, Search, FlaskConical, 
   Building2, Palette, Image as ImageIcon, PenTool, ListOrdered, CheckSquare, 
@@ -15,28 +16,19 @@ const iconMap: Record<string, any> = {
   Quote, Mic, Landmark, Globe, BookOpen
 };
 
-const CATEGORIES = [
-  "All",
-  "Targeted Transformers",
-  "Analysis Extractors",
-  "Interactive",
-  "Lexicon & Databases"
-];
-
 import AnimatedPage from "@/components/AnimatedPage";
 
 export default function ToolsDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState<string>(ALL_CATEGORY);
 
   const dropdownTools = TOOLS.filter(t => t.type === "dropdown");
   const textareaTools = TOOLS.filter(t => t.type === "textarea");
 
-  const allTools = [
+  const rawTools = [
     ...dropdownTools.map(t => ({ 
       ...t, 
       path: `/tools/${t.id}`, 
-      category: "Targeted Transformers", 
       colorClass: "text-brand-ink", 
       bgClass: "bg-brand-tint", 
       borderClass: "hover:border-brand/30" 
@@ -44,55 +36,47 @@ export default function ToolsDashboardPage() {
     ...textareaTools.map(t => ({ 
       ...t, 
       path: `/tools/${t.id}`, 
-      category: "Analysis Extractors", 
       colorClass: "text-foreground", 
       bgClass: "bg-muted", 
       borderClass: "hover:border-border" 
     })),
     { 
       id: "paraphrase", title: "Paraphrase Challenge", description: "Latih kemampuan menulis ulang tanpa kehilangan esensi sastra.", 
-      icon: "PenTool", path: "/tools/paraphrase", category: "Interactive", 
+      icon: "PenTool", path: "/tools/paraphrase", 
       colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     },
     { 
       id: "alter-ego", title: "Alter Ego Chat", description: "Ngobrol langsung dengan penulis legendaris secara interaktif.", 
-      icon: "Sparkles", path: "/tools/alter-ego", category: "Interactive", 
+      icon: "Sparkles", path: "/tools/alter-ego", 
       colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     },
     { 
       id: "story-quiz", title: "Story Mode Quiz", description: "Kuis berbasis cerpen menggunakan koleksi kosa kata Anda.", 
-      icon: "CheckSquare", path: "/tools/story-quiz", category: "Interactive", 
+      icon: "CheckSquare", path: "/tools/story-quiz", 
       colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     },
     { 
       id: "cultural-context", title: "Cultural Context Library", description: "Editor untuk menambah & mengelola referensi mitologi atau sejarah.", 
-      icon: "Landmark", path: "/tools/cultural-context", category: "Lexicon & Databases", 
+      icon: "Landmark", path: "/tools/cultural-context", 
       colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     },
     { 
       id: "idioms", title: "Idiom Library", description: "Direktori idiom bahasa Inggris beserta penjelasan & terjemahannya.", 
-      icon: "Quote", path: "/idioms", category: "Lexicon & Databases", 
+      icon: "Quote", path: "/idioms", 
       colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     },
     { 
       id: "glossary", title: "Glossary Builder", description: "Buat glosarium kosa kata khusus per buku dengan mudah.", 
-      icon: "BookOpen", path: "/glossary", category: "Lexicon & Databases", 
+      icon: "BookOpen", path: "/glossary", 
       colorClass: "text-foreground", bgClass: "bg-muted", borderClass: "hover:border-border" 
     }
   ];
 
-  const filteredTools = allTools.filter(tool => {
-    const matchesSearch = tool.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          tool.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "All" || tool.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Kategori ada di lib/tool-categories.ts (diuji: setiap alat punya kategori)
+  const allTools = rawTools.map((t) => ({ ...t, category: categoryOf(t.id) }));
 
-  // Group filtered tools by category
-  const groupedTools = CATEGORIES.slice(1).reduce((acc, cat) => {
-    acc[cat] = filteredTools.filter(t => t.category === cat);
-    return acc;
-  }, {} as Record<string, typeof allTools>);
+  const filteredTools = filterTools(allTools, { query: searchQuery, category: selectedCategory });
+  const groups = groupToolsByCategory(filteredTools);
 
   return (
     <AnimatedPage className="p-4 lg:p-8 max-w-7xl mx-auto pb-24">
@@ -123,8 +107,9 @@ export default function ToolsDashboardPage() {
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="w-full pl-12 pr-10 py-3 bg-card border border-border rounded-card text-foreground font-bold text-sm focus:outline-none focus:ring-2 focus:ring-brand appearance-none cursor-pointer transition-all hover:border-brand/50"
           >
-            {CATEGORIES.map(cat => (
-              <option key={cat} value={cat}>{cat === "All" ? "Semua Kategori" : cat}</option>
+            <option value={ALL_CATEGORY}>Semua Alat</option>
+            {TOOL_CATEGORIES.map((cat) => (
+              <option key={cat.id} value={cat.id}>{cat.label}</option>
             ))}
           </select>
           <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -143,15 +128,15 @@ export default function ToolsDashboardPage() {
         </div>
       ) : (
         <div className="space-y-12">
-          {CATEGORIES.slice(1).map(category => {
-            const items = groupedTools[category];
-            if (items.length === 0) return null;
+          {groups.map((group) => {
+            const items = group.tools;
 
             return (
-              <div key={category}>
-                <h2 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wider border-b border-border pb-2">
-                  {category}
+              <div key={group.id}>
+                <h2 className="text-xl font-bold text-foreground uppercase tracking-wider border-b border-border pb-2">
+                  {group.label}
                 </h2>
+                <p className="text-sm text-muted-foreground mt-2 mb-6">{group.blurb}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {items.map(tool => {
                     const Icon = iconMap[tool.icon] || Sparkles;

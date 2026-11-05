@@ -30,8 +30,8 @@ export const ROOMS: Room[] = [
   {
     slug: "belajar-dasar",
     eyebrow: "Ruang I",
-    title: "Belajar Dasar",
-    description: "Mulai dari level kamu, lalu bangun grammar, kosakata, dan keterampilan Inggris sehari-hari selangkah demi selangkah.",
+    title: "Belajar Bahasa Inggris",
+    description: "Dari nol sampai level B1: bangun grammar, kosakata, dan keterampilan Inggris sehari-hari selangkah demi selangkah.",
     goal: "umum",
     sections: [
       { title: "Ketahui levelmu", blurb: "Mulai di sini bila belum yakin level CEFR kamu.", paths: ["/english-lab/placement-test", "/english-lab/level-test"] },
@@ -54,21 +54,21 @@ export const ROOMS: Room[] = [
       {
         title: "Latihan lanjutan",
         blurb: "Menulis ulang, menyusun kalimat, dan bahasa informal.",
-        paths: ["/tools/paraphrase", "/tools/writing-assistant", "/tools/sentence-architect", "/tools/story-quiz", "/english-lab/slang-decoder"],
+        paths: ["/tools/writing-assistant", "/tools/sentence-architect", "/tools/story-quiz", "/english-lab/slang-decoder"],
       },
     ],
   },
   {
     slug: "baca-sastra",
     eyebrow: "Ruang II",
-    title: "Baca & Kajian Sastra",
-    description: "Baca karya klasik, pahami teksnya, lalu bedah gaya dan maknanya.",
+    title: "Membaca & Sastra",
+    description: "Baca karya klasik, pahami konteksnya, bedah gaya dan maknanya, lalu tulis dan berkreasi dari bacaanmu.",
     goal: "sastra",
     sections: [
-      { title: "Bacaan", blurb: "Koleksi teks, buku klasik, dan teks dari fotomu sendiri.", paths: ["/library", "/gutenberg", "/library/add/ocr", "/library/add"] },
+      { title: "Sumber bacaan", blurb: "Koleksi teks, buku klasik, dan teks dari fotomu sendiri.", paths: ["/library", "/gutenberg", "/library/add/ocr", "/library/add"] },
       {
-        title: "Alat memahami teks",
-        blurb: "Arti kata, latar budaya, dan tingkat kesulitan.",
+        title: "Memahami konteks",
+        blurb: "Arti kata, latar budaya, tingkat kesulitan, dan tanya jawab dengan AI.",
         paths: [
           "/tools/a-z-dictionary",
           "/tools/lexicon-search",
@@ -77,12 +77,12 @@ export const ROOMS: Room[] = [
           "/tools/idiom-detector",
           "/tools/nuance-detector",
           "/tools/literary-synonyms",
+          "/lingowise",
         ],
       },
-      { title: "LingoWise AI", blurb: "Tanya AI soal bahasa dan sastra (8 mode).", paths: ["/lingowise"] },
       {
-        title: "Analisis sastra",
-        blurb: "Nada, majas, konflik, dan teori kritis.",
+        title: "Bedah sastra & teori",
+        blurb: "Nada, majas, konflik, citraan, dan teori kritis.",
         paths: [
           "/tools/tone-analyzer",
           "/tools/rhetorical-spotter",
@@ -94,12 +94,15 @@ export const ROOMS: Room[] = [
           "/tools/imagery-grader",
           "/tools/semantic-map",
           "/tools/semantic-visual",
-          "/tools/academic-outline",
-          "/tools/essay-auditor",
         ],
       },
       {
-        title: "Kreatif",
+        title: "Penulisan & portofolio",
+        blurb: "Kerangka esai, menulis ulang, audit argumen, dan studi kasus portofolio.",
+        paths: ["/tools/academic-outline", "/tools/writing-assistant", "/tools/essay-auditor", "/tools/paraphrase", "/tools/case-study-generator"],
+      },
+      {
+        title: "Eksperimen kreatif",
         blurb: "Mengubah gaya, suasana, dan sudut pandang.",
         paths: [
           "/tools/alter-ego",
@@ -112,7 +115,6 @@ export const ROOMS: Room[] = [
           "/tools/time-traveler",
           "/tools/character-monologue",
           "/tools/plot-twist",
-          "/tools/case-study-generator",
         ],
       },
       { title: "Catatanmu", paths: ["/tools/annotations"] },
@@ -121,13 +123,14 @@ export const ROOMS: Room[] = [
   {
     slug: "terjemah",
     eyebrow: "Ruang III",
-    title: "Ruang Terjemah",
-    description: "Berlatih menerjemahkan, menyimpan hasilnya, dan membandingkan pilihan terjemahan.",
+    title: "Menerjemahkan",
+    description: "Siapkan teks sebelum diterjemahkan, berlatih menerjemahkan, simpan hasilnya, lalu bandingkan dan nilai.",
     goal: "penerjemahan",
     sections: [
+      { title: "Pra-terjemah", blurb: "Kenali idiom, budaya, dan dialek sebelum menerjemahkan.", paths: ["/tools/idiom-detector", "/tools/cultural-context", "/tools/dialect-diver", "/tools/untranslatables"] },
       { title: "Menerjemahkan", blurb: "Latihan bernilai AI, lalu teks panjang per kalimat.", paths: ["/translation-workshop", "/translation-workspace"] },
       { title: "Memori & glosarium", paths: ["/translation-memory", "/glossary"] },
-      { title: "Membandingkan & memadankan", paths: ["/tools/comparator", "/tools/parallel-text", "/tools/untranslatables"] },
+      { title: "Evaluasi & perbandingan", blurb: "Bandingkan pilihan terjemahan dan nilai citraannya.", paths: ["/tools/comparator", "/tools/parallel-text", "/tools/imagery-grader"] },
       { title: "Menelusuri proses", paths: ["/tools/translation-timelapse"] },
       { title: "Tahap penerjemah", blurb: "Lihat tahapmu di profil.", paths: ["/profile"] },
     ],
@@ -150,6 +153,19 @@ export const ROOMS: Room[] = [
     sections: [{ title: "Bersama pembaca lain", paths: ["/forum", "/clubs", "/community", "/community-annotations", "/messages"] }],
   },
 ];
+
+/**
+ * Tiga pintasan Beranda (Fase 23.3): membuka bagian yang sudah ada, bukan katalog baru.
+ * Mulai dari Nol → unit kursus berikutnya (bila kursus boleh tampil) atau Ruang I;
+ * Lanjutkan Membaca → bacaan terakhir yang belum selesai atau Ruang II; Mulai Menerjemahkan → Ruang III.
+ */
+export function homeShortcuts(input: { courseHref?: string | null; readingHref?: string | null }): { label: string; href: string }[] {
+  return [
+    { label: "Mulai dari Nol", href: input.courseHref || "/ruang/belajar-dasar" },
+    { label: "Lanjutkan Membaca", href: input.readingHref || "/ruang/baca-sastra" },
+    { label: "Mulai Menerjemahkan", href: "/ruang/terjemah" },
+  ];
+}
 
 /** Tiga ruang belajar (tanpa Koleksi & Komunitas). */
 export const LEARNING_ROOMS = ROOMS.filter((r) => r.goal);

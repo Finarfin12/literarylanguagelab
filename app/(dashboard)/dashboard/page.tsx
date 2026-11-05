@@ -1,11 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
 import { getRequestUser } from "@/utils/supabase/get-user";
 import Link from "next/link";
-import { BookOpen, BookMarked, Clock, CheckCircle2, TrendingUp, ChevronRight, Library, Camera, Sparkles } from "lucide-react";
+import { BookOpen, BookMarked, Clock, CheckCircle2, TrendingUp, ChevronRight, Library, Camera, Sparkles, Languages, GraduationCap } from "lucide-react";
 import VocabChart from "@/components/dashboard/VocabChart";
 import AnimatedPage from "@/components/AnimatedPage";
 import { Badge, BookSpine, ButtonLink, Card, CardTitle, EmptyState, Eyebrow, ProgressBar, SectionHeading } from "@/components/ui/primitives";
-import { LEARNING_ROOMS } from "@/lib/rooms";
+import { LEARNING_ROOMS, homeShortcuts } from "@/lib/rooms";
 import WotdCard from "@/components/wotd/WotdCard";
 import { getNextStep, isNewBeginner } from "@/lib/next-step";
 import { neighborLevels } from "@/lib/cefr";
@@ -323,6 +323,20 @@ export default async function DashboardPage() {
           </div>
         </Card>
       </div>
+
+      {/* Tiga pintasan (Fase 23.3): membuka bagian yang sudah ada, bukan katalog baru */}
+      <nav aria-label="Pintasan utama" className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10">
+        {homeShortcuts({ courseHref: courseUnit?.href, readingHref: openReading?.href }).map((s, i) => {
+          const Icon = [GraduationCap, BookOpen, Languages][i];
+          return (
+            <Link key={s.label} href={s.href} className="flex items-center gap-3 p-4 min-h-[56px] rounded-card border border-border bg-card hover:border-brand-solid transition-colors">
+              <Icon className="w-5 h-5 text-brand-ink shrink-0" aria-hidden="true" />
+              <span className="font-semibold text-foreground">{s.label}</span>
+              <ChevronRight className="w-4 h-4 ml-auto text-muted-foreground shrink-0" aria-hidden="true" />
+            </Link>
+          );
+        })}
+      </nav>
 
       {/* Lanjutkan Membaca (rak bacaan) */}
       <section className="mb-10" aria-labelledby="rak-bacaan">

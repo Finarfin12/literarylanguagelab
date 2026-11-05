@@ -5,6 +5,8 @@ import Link from "next/link";
 import { CheckCircle2, ChevronRight, Circle, RefreshCw } from "lucide-react";
 import { loadGrammarProgressSynced, readDoneSlugs } from "@/lib/grammar-progress";
 import { dueGrammarTopics, mergeDoneSlugs } from "@/lib/exercises/review";
+import { ProgressBar } from "@/components/ui/primitives";
+import { TOPIC_FILTERS, filterTopics, levelProgressText, topicProgress, type TopicFilter } from "@/lib/topic-filter";
 
 export interface TopicSummary {
   slug: string;
@@ -17,6 +19,7 @@ export interface TopicSummary {
 export default function TopicList({ topics }: { topics: TopicSummary[] }) {
   const [done, setDone] = useState<Set<string>>(new Set());
   const [due, setDue] = useState<Set<string>>(new Set());
+  const [filter, setFilter] = useState<TopicFilter>("semua");
 
   useEffect(() => {
     let cancelled = false;
@@ -36,17 +39,46 @@ export default function TopicList({ topics }: { topics: TopicSummary[] }) {
   }, [topics]);
 
   const levels = Array.from(new Set(topics.map((t) => t.cefr_level)));
+  const progress = topicProgress(topics, done);
+  const visible = filterTopics(topics, done, filter);
 
   return (
     <div className="space-y-8">
+      {/* Fase 23.5: progres total dan filter Semua / Belum / Selesai */}
+      <div className="rounded-card border border-border bg-card p-4">
+        <p className="font-bold text-foreground nums">{progress.text}</p>
+        <ProgressBar value={progress.percent} label={`Progres grammar: ${progress.text}`} className="mt-2" />
+        <div role="group" aria-label="Filter topik" className="flex flex-wrap gap-2 mt-4">
+          {TOPIC_FILTERS.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              aria-pressed={filter === f.id}
+              onClick={() => setFilter(f.id)}
+              className={`inline-flex items-center min-h-[44px] px-4 rounded-full text-sm font-bold border ${filter === f.id ? "bg-brand-solid text-on-brand border-brand" : "bg-card text-muted-foreground border-border hover:bg-muted"}`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {visible.length === 0 && (
+        <p role="status" className="text-sm text-muted-foreground">
+          {filter === "selesai" ? "Belum ada topik yang selesai. Mulailah dari level pertama." : "Semua topik sudah selesai. Kerja bagus!"}
+        </p>
+      )}
+
       {levels.map((level) => {
-        const inLevel = topics.filter((t) => t.cefr_level === level);
-        const doneCount = inLevel.filter((t) => done.has(t.slug)).length;
+        const allInLevel = topics.filter((t) => t.cefr_level === level);
+        const inLevel = visible.filter((t) => t.cefr_level === level);
+        if (inLevel.length === 0) return null;
+        const doneCount = allInLevel.filter((t) => done.has(t.slug)).length;
         return (
           <section key={level} aria-labelledby={`lvl-${level}`}>
             <h2 id={`lvl-${level}`} className="flex items-center gap-3 text-lg font-medium font-serif mb-3">
-              Level {level}
-              <span className="text-xs font-sans font-bold text-muted-foreground">{doneCount}/{inLevel.length} selesai</span>
+              Level {level}{" "}
+              <span className="text-xs font-sans font-bold text-muted-foreground">{levelProgressText(doneCount, allInLevel.length)}</span>
             </h2>
             <ul className="divide-y divide-border bg-card border border-border rounded-card overflow-hidden">
               {inLevel.map((t) => {
