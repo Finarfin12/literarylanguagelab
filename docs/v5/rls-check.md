@@ -47,6 +47,8 @@ Uji tambahan setelah blok B–D (akun uji):
 
 Tabel lain: belum diuji (policy belum diubah).
 
+> **Status:** pemilik melaporkan `0018` dan `0019` sudah dijalankan (5 Nov 2026). Hasil uji per blok di bawah belum dilaporkan: tetap **perlu diuji pemilik**.
+
 ## Urutan menjalankan `0018` (blok A–D, satu per satu)
 
 1. Deploy kode terbaru (addText, Library, route vocab).
