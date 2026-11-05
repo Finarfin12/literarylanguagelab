@@ -30,6 +30,9 @@ export type DailyMinutes = (typeof DAILY_MINUTES)[number];
 /** Level dari pilihan "Belum tahu, tes dulu". */
 export const LEVEL_UNKNOWN = "unknown" as const;
 
+// "Baru mulai dari nol" (Fase 21): aturannya ada di lib/onboarding-flow.ts (murni, diuji unit).
+export { LEVEL_ZERO, FIRST_COURSE_UNIT, onboardingCefr, onboardingDestination } from "./onboarding-flow";
+
 export function isLearningGoal(v: unknown): v is LearningGoal {
   return typeof v === "string" && (LEARNING_GOALS as readonly string[]).includes(v);
 }

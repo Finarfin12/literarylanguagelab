@@ -11,13 +11,14 @@ import {
   GOAL_LABELS,
   LEARNING_GOALS,
   LEVEL_UNKNOWN,
+  LEVEL_ZERO,
   type CefrLevel,
   type DailyMinutes,
   type LearningGoal,
 } from "@/lib/learning-goals";
 import { saveOnboarding } from "./actions";
 
-type Level = CefrLevel | typeof LEVEL_UNKNOWN;
+type Level = CefrLevel | typeof LEVEL_UNKNOWN | typeof LEVEL_ZERO;
 
 const STEPS = ["Level", "Tujuan", "Waktu"] as const;
 
@@ -85,6 +86,12 @@ export default function OnboardingPage() {
         {step === 0 && (
           <fieldset className="space-y-2">
             <legend className="font-serif text-xl font-medium text-foreground mb-3">Level bahasa Inggris kamu?</legend>
+            <Option
+              selected={level === LEVEL_ZERO}
+              onClick={() => setLevel(LEVEL_ZERO)}
+              title="Baru mulai dari nol"
+              description="Belum pernah belajar atau lupa semua. Tidak perlu tes."
+            />
             <Option
               selected={level === LEVEL_UNKNOWN}
               onClick={() => setLevel(LEVEL_UNKNOWN)}

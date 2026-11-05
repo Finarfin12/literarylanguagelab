@@ -20,6 +20,8 @@ export interface VocabItem {
   meaning_id?: string;
   /** Definisi bahasa Inggris sederhana; bila kosong diambil dari Kosakata Inti (definition_en, Fase 14g). */
   definition_en?: string;
+  /** Fase 21: cara baca versi Indonesia (mis. "wenz-dei"). Hanya perkiraan; audio tetap acuan utama. */
+  reading_aid?: string;
 }
 
 interface StepBase {
@@ -73,8 +75,10 @@ function cleanItems(raw: unknown): VocabItem[] | null {
     const item: VocabItem = { word };
     const m = str(o?.meaning_id, 160);
     const d = str(o?.definition_en, 240);
+    const a = str(o?.reading_aid, 60);
     if (m) item.meaning_id = m;
     if (d) item.definition_en = d;
+    if (a) item.reading_aid = a;
     out.push(item);
   }
   return out;
@@ -255,6 +259,22 @@ export function unitVocabWords(steps: readonly CourseStep[]): string[] {
   for (const s of steps) {
     if (s.type !== "vocab") continue;
     for (const i of s.items) if (!out.includes(i.word.toLowerCase())) out.push(i.word.toLowerCase());
+  }
+  return out;
+}
+
+/** Kata unit lengkap dengan arti, untuk disimpan ke Review (Fase 21). Tanpa duplikat (huruf kecil), urutan kemunculan. */
+export function unitVocabEntries(steps: readonly CourseStep[]): { word: string; meaning_id?: string; definition_en?: string }[] {
+  const seen = new Set<string>();
+  const out: { word: string; meaning_id?: string; definition_en?: string }[] = [];
+  for (const s of steps) {
+    if (s.type !== "vocab") continue;
+    for (const i of s.items) {
+      const key = i.word.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push({ word: key, ...(i.meaning_id ? { meaning_id: i.meaning_id } : {}), ...(i.definition_en ? { definition_en: i.definition_en } : {}) });
+    }
   }
   return out;
 }

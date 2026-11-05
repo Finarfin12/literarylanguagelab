@@ -128,7 +128,7 @@ export default function UnitPlayer({
           </div>
         ) : (
           <>
-            {view.step.type === "vocab" && <VocabStep view={view} />}
+            {view.step.type === "vocab" && <VocabStep view={view} unitSlug={unitSlug} />}
             {view.step.type === "grammar" && <GrammarStep view={view} />}
             {view.step.type === "read" && <ReadStep view={view} />}
             {view.step.type === "listen" && <ListenStep view={view} />}

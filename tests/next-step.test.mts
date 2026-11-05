@@ -92,4 +92,56 @@ test("selalu mengembalikan title, href, reason", () => {
   assert.ok(s.title && s.href && s.reason);
 });
 
+// --- Fase 21: alur pemula ---
+const { isNewBeginner } = await import(pathToFileURL(path.join(repo, "lib/next-step.ts")).href);
+const goals = await import(pathToFileURL(path.join(repo, "lib/onboarding-flow.ts")).href);
+
+test("isNewBeginner: A1 dan belum menyelesaikan dua unit", () => {
+  assert.equal(isNewBeginner({ cefr: "A1", completedUnits: 0 }), true);
+  assert.equal(isNewBeginner({ cefr: "A1", completedUnits: 1 }), true);
+  assert.equal(isNewBeginner({ cefr: "A1", completedUnits: 2 }), false);
+  assert.equal(isNewBeginner({ cefr: "A2", completedUnits: 0 }), false);
+  assert.equal(isNewBeginner({ cefr: null, completedUnits: 0 }), false);
+  // kursus tidak tampil (jumlah tidak diketahui): Beranda tidak berubah
+  assert.equal(isNewBeginner({ cefr: "A1", completedUnits: undefined }), false);
+  assert.equal(isNewBeginner({ cefr: "A1", completedUnits: null }), false);
+});
+
+test("pemula baru: unit kursus di atas grammar, bacaan, dan tes; review kata tetap paling atas", () => {
+  const courseUnit = { title: "Bunyi & huruf", href: "/kursus/bunyi-huruf", started: false };
+  const grammarDue = { count: 1, slug: "to-be", title: "To be" };
+  const s = getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, completedUnits: 0, courseUnit, grammarDue, continueReading: reading, levelText, levelUpTarget: "A2" });
+  assert.equal(s.href, "/kursus/bunyi-huruf");
+  assert.equal(s.minutes, 10);
+  assert.match(s.title, /^Mulai: Bunyi/);
+  const started = getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, completedUnits: 1, courseUnit: { ...courseUnit, started: true }, continueReading: reading });
+  assert.match(started.title, /^Lanjutkan:/);
+  assert.equal(getNextStep({ goal: "umum", cefr: "A1", dueCount: 3, completedUnits: 0, courseUnit }).href, "/review");
+});
+
+test("pengguna lain: urutan prioritas lama tidak berubah", () => {
+  const courseUnit = { title: "Salam", href: "/kursus/salam-perkenalan", started: false };
+  // A1 yang sudah menyelesaikan dua unit
+  assert.equal(getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, completedUnits: 2, courseUnit, continueReading: reading }).href, reading.href);
+  // A2 tidak dianggap pemula
+  assert.equal(getNextStep({ goal: "umum", cefr: "A2", dueCount: 0, completedUnits: 0, courseUnit, continueReading: reading }).href, reading.href);
+  // tanpa completedUnits (kursus tersembunyi): sama seperti sebelum Fase 21
+  assert.equal(getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, courseUnit, continueReading: reading }).href, reading.href);
+  assert.equal(getNextStep({ goal: "umum", cefr: "A1", dueCount: 0, courseUnit: null, levelText }).href, levelText.href);
+});
+
+test("onboarding 'Baru mulai dari nol': disimpan sebagai A1 dan tujuan sesuai akses kursus", () => {
+  assert.equal(goals.LEVEL_ZERO, "zero");
+  assert.equal(goals.onboardingCefr("zero"), "A1");
+  assert.equal(goals.onboardingCefr("B2"), "B2");
+  assert.equal(goals.onboardingCefr("unknown"), null);
+  assert.equal(goals.onboardingCefr("Z9"), null);
+  assert.equal(goals.onboardingDestination({ level: "zero", courseVisible: true }), "/kursus/bunyi-huruf");
+  assert.equal(goals.onboardingDestination({ level: "zero", courseVisible: false }), "/dashboard");
+  assert.equal(goals.onboardingDestination({ level: "unknown", courseVisible: true }), "/english-lab/placement-test");
+  assert.equal(goals.onboardingDestination({ level: "B1", courseVisible: true }), "/dashboard");
+  assert.equal(goals.onboardingDestination({ level: "zero", skipped: true, courseVisible: true }), "/dashboard");
+  assert.equal(goals.onboardingDestination({ level: "unknown", skipped: true, courseVisible: true }), "/dashboard");
+});
+
 console.log(`\n${passed} lulus, 0 gagal`);

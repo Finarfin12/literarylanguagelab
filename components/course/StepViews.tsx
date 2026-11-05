@@ -2,27 +2,28 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BookOpen, ExternalLink, Turtle, Volume2 } from "lucide-react";
+import { BookOpen, BookmarkPlus, Check, ExternalLink, Loader2, Turtle, Volume2 } from "lucide-react";
 import { Card } from "@/components/ui/primitives";
 import ExerciseSession from "@/components/exercises/ExerciseSession";
 import PronunciationLab from "@/components/PronunciationLab";
 import { smallButtonClass } from "@/components/exercises/shared";
 import type { StepView } from "./types";
 import { speakText } from "./speak";
+import { saveUnitWordsToReview } from "@/app/(dashboard)/kursus/actions";
 
-/** Tombol putar + putar pelan untuk satu kalimat/kata. */
+/** Tombol Normal dan Lambat untuk satu kalimat/kata. Bila perangkat tidak punya suara, teksnya tetap bisa dibaca. */
 export function SpeakButtons({ text, label }: { text: string; label?: string }) {
   const [problem, setProblem] = useState(false);
   const play = async (slow: boolean) => setProblem(!(await speakText(text, slow)));
   return (
     <span className="inline-flex items-center gap-2">
-      <button type="button" onClick={() => play(false)} aria-label={`Putar${label ? `: ${label}` : ""}`} className={`${smallButtonClass} !px-3`}>
-        <Volume2 className="w-4 h-4" aria-hidden="true" />
+<button type="button" onClick={() => play(false)} aria-label={`Putar normal${label ? `: ${label}` : ""}`} className={`${smallButtonClass} !px-3`}>
+        <Volume2 className="w-4 h-4" aria-hidden="true" /> <span className="text-xs font-semibold">Normal</span>
       </button>
-      <button type="button" onClick={() => play(true)} aria-label={`Putar pelan${label ? `: ${label}` : ""}`} className={`${smallButtonClass} !px-3`}>
-        <Turtle className="w-4 h-4" aria-hidden="true" />
+      <button type="button" onClick={() => play(true)} aria-label={`Putar lambat${label ? `: ${label}` : ""}`} className={`${smallButtonClass} !px-3`}>
+        <Turtle className="w-4 h-4" aria-hidden="true" /> <span className="text-xs font-semibold">Lambat</span>
       </button>
-      {problem && <span role="alert" className="text-xs text-danger">Perangkat tidak mendukung suara.</span>}
+      {problem && <span role="alert" className="text-xs text-danger">Perangkat ini tidak punya suara. Baca teksnya saja.</span>}
     </span>
   );
 }
@@ -31,20 +32,66 @@ function Note({ children }: { children: React.ReactNode }) {
   return <p className="mt-4 text-sm text-foreground bg-brand-tint border border-brand/20 rounded-control p-3 leading-relaxed">{children}</p>;
 }
 
-export function VocabStep({ view }: { view: StepView }) {
+type SaveState = { status: "idle" } | { status: "saving" } | { status: "done"; added: number; skipped: number } | { status: "error"; message: string };
+
+/** Tombol "Simpan kata ke Review": hanya bertindak setelah diketuk; kata yang sudah dimiliki dilewati, galat bisa dicoba lagi. */
+function SaveWordsButton({ unitSlug }: { unitSlug: string }) {
+  const [state, setState] = useState<SaveState>({ status: "idle" });
+  const save = async () => {
+    setState({ status: "saving" });
+    try {
+      const res = await saveUnitWordsToReview(unitSlug);
+      setState(res.ok ? { status: "done", added: res.added, skipped: res.skipped } : { status: "error", message: res.error });
+    } catch {
+      setState({ status: "error", message: "Gagal menyimpan. Periksa koneksi, lalu coba lagi." });
+    }
+  };
   return (
-    <ul className="divide-y divide-border">
-      {(view.vocab ?? []).map((v) => (
-        <li key={v.word} className="flex items-start gap-3 py-3 min-h-[56px]">
-          <div className="min-w-0 flex-1">
-            <p className="font-serif text-xl text-foreground">{v.word}</p>
-            {v.meaning_id && <p className="text-sm text-foreground">{v.meaning_id}</p>}
-            {v.definition_en && <p className="text-sm text-muted-foreground">{v.definition_en}</p>}
-          </div>
-          <SpeakButtons text={v.word} label={v.word} />
-        </li>
-      ))}
-    </ul>
+    <div className="mt-4" aria-live="polite">
+      {state.status !== "done" && (
+        <button type="button" onClick={save} disabled={state.status === "saving"} className={smallButtonClass}>
+          {state.status === "saving" ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : <BookmarkPlus className="w-4 h-4" aria-hidden="true" />}
+          {state.status === "saving" ? "Menyimpan..." : state.status === "error" ? "Coba lagi" : "Simpan kata ke Review"}
+        </button>
+      )}
+      {state.status === "done" && (
+        <p className="flex items-center gap-2 text-sm text-brand-ink font-semibold">
+          <Check className="w-4 h-4" aria-hidden="true" />
+          {state.added > 0 ? `${state.added} kata disimpan ke Review.` : "Semua kata ini sudah ada di Review."}
+          {state.added > 0 && state.skipped > 0 ? ` ${state.skipped} kata sudah kamu miliki.` : ""}
+          <Link href="/review" className="underline">Buka Review</Link>
+        </p>
+      )}
+      {state.status === "error" && <p role="alert" className="mt-2 text-sm text-danger">{state.message}</p>}
+    </div>
+  );
+}
+
+export function VocabStep({ view, unitSlug }: { view: StepView; unitSlug: string }) {
+  const words = view.vocab ?? [];
+  const hasAid = words.some((v) => v.reading_aid);
+  return (
+    <div>
+      <ul className="divide-y divide-border">
+        {words.map((v) => (
+          <li key={v.word} className="flex items-start gap-3 py-3 min-h-[56px]">
+            <div className="min-w-0 flex-1">
+              <p lang="en" className="font-serif text-xl text-foreground">{v.word}</p>
+              {v.reading_aid && (
+                <p className="text-sm text-muted-foreground">
+                  <span className="text-xs uppercase tracking-wide">cara baca perkiraan</span> <span className="font-semibold text-foreground">{v.reading_aid}</span>
+                </p>
+              )}
+              {v.meaning_id && <p className="text-sm text-foreground">{v.meaning_id}</p>}
+              {v.definition_en && <p lang="en" className="text-sm text-muted-foreground">{v.definition_en}</p>}
+            </div>
+            <SpeakButtons text={v.word} label={v.word} />
+          </li>
+        ))}
+      </ul>
+      {hasAid && <Note>Cara baca di atas hanya perkiraan dengan huruf Indonesia. Dengarkan audionya sebagai acuan utama.</Note>}
+      {words.length > 0 && <SaveWordsButton unitSlug={unitSlug} />}
+    </div>
   );
 }
 

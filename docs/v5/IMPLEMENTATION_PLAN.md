@@ -15,9 +15,9 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v4 (terakhir Fase 18, migra
 | 19 | Keamanan & biaya AI | `0018`, `0019` | 4–6 hari | — |
 | 20 | Alter Ego: penulis fantasi | — | ½–1 hari | — |
 | 21 | Alur pemula: pintu masuk, Beranda, dua unit tuntas | — | 3–4 hari | 19 (bagian biaya) |
-| 22 | Latihan pemula: penyusun kalimat, bantuan dialog, frasa, tema | `0020`, `0021` | 4–6 hari | 21 |
+| 22 | Latihan pemula: penyusun kalimat, bantuan dialog, frasa, tema | `0021`, `0022` | 4–6 hari | 21 |
 | 23 | Susunan & label: ruang, Beranda, `/tools`, Grammar | — | 2–3 hari | 21 |
-| 24 | Modul Belajar: mesin + satu mata pelajaran percobaan | `0022` | 6–8 hari | 15, 19, 23 |
+| 24 | Modul Belajar: mesin + satu mata pelajaran percobaan | `0023` | 6–8 hari | 15, 19, 23 |
 | 25–28 | Konten Modul Belajar per tahap (±110–170 pelajaran) | — (berkas + impor) | satu sesi per mata pelajaran, ditambah peninjauan pemilik | 24 disetujui |
 | 29 | Tambahan sesuai kebutuhan | per item | per item | data pemakaian |
 
@@ -113,7 +113,7 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v4 (terakhir Fase 18, migra
 **21.6 Konten dua unit** (`bunyi-huruf`, `salam-perkenalan`)
 - Lengkapi `bunyi-huruf`: bunyi yang asing bagi penutur Indonesia (`th`, `v/f`, `sh/s`), huruf bisu, mengeja nama, bacaan sangat pendek, latihan, dan ucapan. Tulis sendiri.
 - Tambah field opsional `reading_aid` pada item kata (tanpa perubahan skema, di dalam `steps`), ditampilkan dengan label "cara baca perkiraan".
-- Pakai migrasi `0020` hanya bila perlu mengisi lewat seed; jika cukup, lewat Admin → Konten. Status tetap draft sampai ditinjau pemilik.
+- (Dikerjakan sebagai `0020_beginner_units.sql`; nomor migrasi Fase 22 dan 24 bergeser satu.) Pakai migrasi `0020` hanya bila perlu mengisi lewat seed; jika cukup, lewat Admin → Konten. Status tetap draft sampai ditinjau pemilik.
 - Rilis: pemilik meninjau → Terbitkan → nyalakan `kursus_dasar` setelah minimal dua unit lengkap dan migrasi `0012`–`0016` sudah jalan.
 
 **Selesai jika:** dari akun uji baru: daftar → "Baru mulai dari nol" → unit pertama → latihan → simpan kata → kata muncul di `/review` → Beranda menyarankan unit kedua; **tidak ada panggilan AI** di alur itu; keadaan gagal/coba lagi terlihat; uji keyboard, zoom, 375px; uji unit lulus; build lulus.
@@ -136,11 +136,11 @@ Turunan dari [PRD.md](PRD.md). Penomoran melanjutkan v4 (terakhir Fase 18, migra
 - Data lokal per skenario: arti untuk `hintPhrases` yang sudah ada, dan 2–3 awalan kalimat. Klik mengisi kolom ketik.
 - Tombol "Lihat terjemahan" pada balasan AI: dimuat saat diklik, lewat pelindung Fase 19, disimpan selama sesi agar tidak berulang.
 
-**22.4 Frasa harian** (`0020_daily_phrases.sql`, halaman `/frasa-harian`)
+**22.4 Frasa harian** (`0021_daily_phrases.sql`, halaman `/frasa-harian`)
 - Tabel `daily_phrases (slug, situation, text_en, text_id, literal_id, sort_order, status)`, baca untuk pengguna login, tulis admin. ±30 frasa awal berstatus draft: salam, angka & waktu, sopan & minta bantuan, belanja & makan, arah, darurat.
 - Tampilkan: Inggris + audio → arti natural → arti kata per kata. Tombol simpan ke Review. Daftarkan di Ruang I dan `menu-coverage`. Admin → Konten: tinjau & terbitkan. Tanpa tabel: pesan "belum tersedia".
 
-**22.5 Kosakata per tema** (`0021_core_words_a0.sql`, `scripts/enrich-a0.mjs`, `vocabulary/core`)
+**22.5 Kosakata per tema** (`0022_core_words_a0.sql`, `scripts/enrich-a0.mjs`, `vocabulary/core`)
 - `ALTER TABLE core_words ADD COLUMN IF NOT EXISTS translation_id TEXT, theme TEXT` + indeks. Skrip hanya UPDATE (pola `enrich-ngsl.mjs`) dari CSV ±300 kata yang ditinjau pemilik.
 - Tab **"Per tema"**, tampil hanya bila data ada. Urutan frekuensi tetap bawaan.
 - Tatoeba, Free Dictionary, dan ikon pihak ketiga **tidak** termasuk fase ini. Bila dipakai kelak: catat sumber, lisensi, versi, dan atribusi lebih dulu.
@@ -183,7 +183,7 @@ Mengubah data dan urutan, **bukan** route atau alat. Gaya tetap DESIGN.md.
 - Cocokkan [COMPETENCY_MAP.md](COMPETENCY_MAP.md) dengan dokumen acuan pemilik (Q7). Setiap kompetensi harus berakhir pada satu mata pelajaran, bagian dari mata pelajaran lain, atau "di luar cakupan" dengan alasan. Dokumen acuan hanya untuk cakupan: jangan menyalin isinya dan jangan meng-commit filenya.
 - Usulkan daftar mata pelajaran beserta urutannya (draf: 28) kepada pemilik (Q6). Tanpa kode mata kuliah dan tanpa "Semester".
 
-**24.1 Skema** (`0022_study_modules.sql`)
+**24.1 Skema** (`0023_study_modules.sql`)
 - `study_subjects (slug pk, stage, title, description_id, outcomes jsonb, room_slug, sources jsonb, sort_order, status)`. `stage` = `fondasi | transisi | pendalaman | lanjut`. `sort_order` unik dan menjadi urutan belajar lintas tahap.
 - `study_lessons (slug pk, subject_slug, sort_order, title, objectives jsonb, body_md, summary_md, task jsonb, tool_paths text[], sources jsonb, status, origin 'claude'|'manual'|'ai', edited_at, reviewed_by, reviewed_at)`.
 - `ALTER TABLE exercises ADD COLUMN IF NOT EXISTS lesson_slug TEXT, subject_slug TEXT`. Soal dengan `subject_slug` dan tanpa `lesson_slug` = kuis akhir.
@@ -261,4 +261,4 @@ Tiap item menjadi fase kecil tersendiri **setelah** ada permintaan atau data pem
 - [ ] Penyusun kalimat, bantuan dialog, frasa, dan tema berfungsi atau jelas menyatakan belum tersedia.
 - [ ] Tiga label ruang konsisten; kategori `/tools` berbahasa Indonesia; `menu-coverage` lulus.
 - [ ] Modul Belajar: mata pelajaran bisa dituntaskan tanpa AI dan tanpa alat; empat tahap berurutan tanpa kunci; tanpa "Semester" dan kode mata kuliah; materi orisinal; sumber nyata & tercatat; setiap kompetensi di COMPETENCY_MAP punya mata pelajaran atau alasan di luar cakupan.
-- [ ] Migrasi `0018`–`0022` tercantum di `docs/SESSION_HANDOFF.md`.
+- [ ] Migrasi `0018`–`0023` tercantum di `docs/SESSION_HANDOFF.md`.

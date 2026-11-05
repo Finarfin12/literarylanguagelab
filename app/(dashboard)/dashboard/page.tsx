@@ -7,7 +7,7 @@ import AnimatedPage from "@/components/AnimatedPage";
 import { Badge, BookSpine, ButtonLink, Card, CardTitle, EmptyState, Eyebrow, ProgressBar, SectionHeading } from "@/components/ui/primitives";
 import { LEARNING_ROOMS } from "@/lib/rooms";
 import WotdCard from "@/components/wotd/WotdCard";
-import { getNextStep } from "@/lib/next-step";
+import { getNextStep, isNewBeginner } from "@/lib/next-step";
 import { neighborLevels } from "@/lib/cefr";
 import { loadLevelContext } from "@/lib/skill-evidence";
 import { canTakeLevelTest, levelUpReadiness } from "@/lib/levels";
@@ -97,22 +97,28 @@ async function loadGrammarDue(
 }
 
 // Fase 16: unit Kursus Dasar yang disarankan; null bila kursus belum boleh tampil (flag mati, bukan admin) atau tabelnya belum ada.
+// Fase 21: completedUnits (undefined bila kursus tidak tampil) dipakai untuk mengenali pemula baru.
 async function loadCourseSuggestion(
   supabase: Awaited<ReturnType<typeof createClient>>,
   userId: string | undefined,
   cefr: string | null
-): Promise<{ title: string; href: string; started: boolean } | null> {
-  if (!userId) return null;
+): Promise<{ suggestion: { title: string; href: string; started: boolean } | null; completedUnits: number | undefined }> {
+  const none = { suggestion: null, completedUnits: undefined };
+  if (!userId) return none;
   try {
     const access = await getCourseAccess(supabase, userId);
-    if (!access.visible) return null;
+    if (!access.visible) return none;
     const [{ available, units }, progress] = await Promise.all([loadUnits(supabase), loadUnitProgress(supabase, userId)]);
-    if (!available) return null;
+    if (!available) return none;
+    const completedUnits = progress.filter((p) => p.completed_at).length;
     const unit = suggestNextUnit(units, progress, cefr);
-    if (!unit) return null;
-    return { title: unit.title, href: `/kursus/${unit.slug}`, started: (progress.find((p) => p.unit_slug === unit.slug)?.step_index ?? 0) > 0 };
+    if (!unit) return { suggestion: null, completedUnits };
+    return {
+      suggestion: { title: unit.title, href: `/kursus/${unit.slug}`, started: (progress.find((p) => p.unit_slug === unit.slug)?.step_index ?? 0) > 0 },
+      completedUnits,
+    };
   } catch {
-    return null;
+    return none;
   }
 }
 
@@ -210,13 +216,16 @@ export default async function DashboardPage() {
     : null;
 
   const openReading = continueReading.find((t) => t.progress === null || t.progress < 100) ?? null;
-  const courseUnit = await loadCourseSuggestion(supabase, user?.id, personal.cefr);
+  const { suggestion: courseUnit, completedUnits } = await loadCourseSuggestion(supabase, user?.id, personal.cefr);
+  // Fase 21: pemula baru melihat satu kartu besar berisi langkah berikutnya; bagian lain tetap ada, hanya turun ke bawah
+  const beginner = isNewBeginner({ cefr: personal.cefr, completedUnits });
   const nextStep = getNextStep({
     goal: personal.goal,
     cefr: personal.cefr,
     dueCount,
     grammarDue,
     courseUnit,
+    completedUnits,
     continueReading: openReading ? { title: openReading.title, href: openReading.href } : null,
     levelText,
     levelUpTarget,
@@ -251,19 +260,34 @@ export default async function DashboardPage() {
         <p className="text-muted-foreground mt-2 md:text-lg">Lanjutkan bacaan dan ulangi kosa kata yang sudah waktunya.</p>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-10">
-        {/* Langkah berikutnya */}
-        <Card className="lg:col-span-2 border-brand-solid/40 bg-brand-tint/40 flex flex-col">
-          <Eyebrow active className="mb-2">Langkah berikutnya</Eyebrow>
-          <p className="font-serif text-[22px] md:text-[26px] font-medium leading-[1.2] text-foreground">{nextStep.title}</p>
-          <p className="text-sm md:text-base text-muted-foreground mt-2">{nextStep.reason}</p>
+      {/* Pemula baru: satu kartu besar (Fase 21) */}
+      {beginner && (
+        <Card className="mb-4 md:mb-6 border-brand-solid/40 bg-brand-tint/40 flex flex-col">
+          <Eyebrow active className="mb-2">Mulai di sini</Eyebrow>
+          <p className="font-serif text-[26px] md:text-[34px] font-medium leading-[1.15] text-foreground">{nextStep.title}</p>
+          <p className="text-base text-muted-foreground mt-2">{nextStep.reason}</p>
+          {nextStep.minutes && <p className="text-sm font-semibold text-foreground mt-2 nums">Perkiraan waktu: sekitar {nextStep.minutes} menit</p>}
           <div className="mt-5">
-            <ButtonLink href={nextStep.href}>Mulai</ButtonLink>
+            <ButtonLink href={nextStep.href} className="w-full sm:w-auto">Mulai sekarang</ButtonLink>
           </div>
         </Card>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-10">
+        {/* Langkah berikutnya */}
+        {!beginner && (
+          <Card className="lg:col-span-2 border-brand-solid/40 bg-brand-tint/40 flex flex-col">
+            <Eyebrow active className="mb-2">Langkah berikutnya</Eyebrow>
+            <p className="font-serif text-[22px] md:text-[26px] font-medium leading-[1.2] text-foreground">{nextStep.title}</p>
+            <p className="text-sm md:text-base text-muted-foreground mt-2">{nextStep.reason}</p>
+            <div className="mt-5">
+              <ButtonLink href={nextStep.href}>Mulai</ButtonLink>
+            </div>
+          </Card>
+        )}
 
         {/* Kosakata Jatuh Tempo */}
-        <Card className="flex flex-col">
+        <Card className={`flex flex-col${beginner ? " lg:col-span-3" : ""}`}>
           <Eyebrow className="mb-2">Review Hari Ini</Eyebrow>
           <p className="font-serif text-[32px] md:text-[40px] font-medium leading-none text-foreground nums">
             {dueCount} <span className="text-sm font-sans font-normal text-muted-foreground">kata menunggu review</span>

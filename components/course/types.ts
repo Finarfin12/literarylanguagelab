@@ -5,6 +5,8 @@ export interface ResolvedVocab {
   word: string;
   meaning_id?: string;
   definition_en?: string;
+  /** Fase 21: cara baca perkiraan versi Indonesia. */
+  reading_aid?: string;
 }
 
 export interface ResolvedTopic {

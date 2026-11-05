@@ -31,11 +31,11 @@ ATURAN UTAMA: jangan menghapus fitur atau route. Kerjakan HANYA fase yang saya s
 
 **Fase 21** — `Kerjakan Fase 21 (Alur pemula). Mulai dari fungsi murni di lib/next-step.ts dan uji unitnya. Alur harus tuntas tanpa panggilan AI. Pengguna lain melihat Beranda seperti sekarang. Tulis konten sendiri dan biarkan berstatus draft.`
 
-**Fase 22** — `Kerjakan Fase 22 (Latihan pemula). Mulai dari lib/exercises/patterns.ts dan uji unitnya. Word Lookup bawaan tidak berubah. Jangan memakai dataset atau API pihak ketiga. Tulis migrasi 0020 dan 0021 tapi jangan jalankan.`
+**Fase 22** — `Kerjakan Fase 22 (Latihan pemula). Mulai dari lib/exercises/patterns.ts dan uji unitnya. Word Lookup bawaan tidak berubah. Jangan memakai dataset atau API pihak ketiga. Tulis migrasi 0021 dan 0022 tapi jangan jalankan.`
 
 **Fase 23** — `Kerjakan Fase 23 (Susunan & label). Slug ruang, route, dan nama alat tidak berubah. Mulai dari lib/tool-categories.ts dan uji unitnya. menu-coverage harus lulus.`
 
-**Fase 24** — `Kerjakan Fase 24 (Modul Belajar: mesin + satu mata pelajaran percobaan). Cocokkan docs/v5/COMPETENCY_MAP.md dengan dokumen acuan yang saya lampirkan (jangan disalin, jangan di-commit), lalu usulkan daftar mata pelajaran beserta urutannya dan tunggu persetujuan. Mulai dari lib/study.ts dan lib/lesson-check.ts dengan uji unitnya. Tulis migrasi 0022 tapi jangan jalankan. Mata pelajaran percobaan harus bisa dituntaskan tanpa AI dan tanpa alat.`
+**Fase 24** — `Kerjakan Fase 24 (Modul Belajar: mesin + satu mata pelajaran percobaan). Cocokkan docs/v5/COMPETENCY_MAP.md dengan dokumen acuan yang saya lampirkan (jangan disalin, jangan di-commit), lalu usulkan daftar mata pelajaran beserta urutannya dan tunggu persetujuan. Mulai dari lib/study.ts dan lib/lesson-check.ts dengan uji unitnya. Tulis migrasi 0023 tapi jangan jalankan. Mata pelajaran percobaan harus bisa dituntaskan tanpa AI dan tanpa alat.`
 
 **Fase 25–28** — `Kerjakan satu mata pelajaran: <nama>, tahap <tahap>, sesuai docs/v5/CONTENT_GUIDE.md. Tulis di content/modules/ berstatus draft. Materi orisinal; jangan menyalin buku atau modul. Sumber harus nyata; yang tidak pasti tandai [perlu cek], jangan dikarang. Jalankan pemeriksaan dan laporkan hasilnya.`
 
@@ -84,8 +84,9 @@ Setelah fase selesai, perbarui tabel status di `docs/SESSION_HANDOFF.md`.
 | Fase 19 | Tinjau temuan policy; jalankan `0018`, `0019`; nonaktifkan kunci legacy; cek kartu Status skema |
 | Fase 20 | Ngobrol dengan satu penulis fantasi; pastikan tidak ada kutipan panjang |
 | Fase 21 | Buat akun uji; jalani alur "Baru mulai dari nol" di HP; tinjau & terbitkan dua unit; nyalakan `kursus_dasar` |
-| Fase 22 | Jalankan `0020`, `0021`; tinjau frasa; isi CSV kata per tema |
+| Fase 21 | Jalankan `0020`; tinjau & terbitkan dua unit; nyalakan `kursus_dasar` |
+| Fase 22 | Jalankan `0021`, `0022`; tinjau frasa; isi CSV kata per tema |
 | Fase 23 | Telusuri tiga ruang dan `/tools`; pastikan alat favoritmu masih ada |
 | Sebelum Fase 24 | Siapkan `Buku-Pembelajaran…docx` dan `DAFTAR-PER-SEMESTER.txt` untuk dicocokkan dengan peta cakupan |
-| Fase 24 | Setujui daftar & urutan mata pelajaran; jalankan `0022`; impor mata pelajaran percobaan; pelajari sampai kuis di HP; **nilai kedalaman dan gaya penjelasan sebelum Fase 25** |
+| Fase 24 | Setujui daftar & urutan mata pelajaran; jalankan `0023`; impor mata pelajaran percobaan; pelajari sampai kuis di HP; **nilai kedalaman dan gaya penjelasan sebelum Fase 25** |
 | Fase 25–28 | Impor tiap mata pelajaran; tinjau (dibantu peninjau bidang di tahap Pendalaman & Lanjut); terbitkan; nyalakan `modul_belajar` setelah Fondasi lengkap |

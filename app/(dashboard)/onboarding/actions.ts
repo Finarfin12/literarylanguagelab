@@ -3,9 +3,12 @@
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { ONBOARDED_COOKIE, onboardedCookieOptions } from "@/lib/onboarding-cookie";
+import { getCourseAccess } from "@/lib/course-access";
 import {
   LEVEL_UNKNOWN,
-  isCefrLevel,
+  LEVEL_ZERO,
+  onboardingCefr,
+  onboardingDestination,
   isDailyMinutes,
   isLearningGoal,
   type CefrLevel,
@@ -16,7 +19,7 @@ import {
 export type OnboardingResult = { ok: true; next: string } | { ok: false; error: string };
 
 export type OnboardingInput = {
-  level: CefrLevel | typeof LEVEL_UNKNOWN | null;
+  level: CefrLevel | typeof LEVEL_UNKNOWN | typeof LEVEL_ZERO | null;
   goal: LearningGoal | null;
   minutes: DailyMinutes | null;
   skipped?: boolean;
@@ -42,7 +45,8 @@ export async function saveOnboarding(input: OnboardingInput): Promise<Onboarding
   if (!input.skipped) {
     if (!isDailyMinutes(input.minutes)) return { ok: false, error: "Pilih waktu belajar per hari." };
     update.daily_minutes = input.minutes;
-    if (isCefrLevel(input.level)) update.cefr_level = input.level;
+    const cefr = onboardingCefr(input.level);
+    if (cefr) update.cefr_level = cefr;
     else if (input.level !== LEVEL_UNKNOWN) return { ok: false, error: "Pilih level bahasa Inggris." };
   }
 
@@ -57,8 +61,16 @@ export async function saveOnboarding(input: OnboardingInput): Promise<Onboarding
 
   (await cookies()).set(ONBOARDED_COOKIE, user.id, onboardedCookieOptions());
 
-  const next = !input.skipped && input.level === LEVEL_UNKNOWN ? "/english-lab/placement-test" : "/dashboard";
-  return { ok: true, next };
+  // "Baru mulai dari nol" langsung ke unit pertama, tetapi hanya bila Kursus Dasar boleh tampil (flag `kursus_dasar` / admin)
+  let courseVisible = false;
+  if (!input.skipped && input.level === LEVEL_ZERO) {
+    try {
+      courseVisible = (await getCourseAccess(supabase, user.id)).visible;
+    } catch {
+      courseVisible = false;
+    }
+  }
+  return { ok: true, next: onboardingDestination({ level: input.level, skipped: input.skipped, courseVisible }) };
 }
 
 /** Ubah tujuan & waktu belajar dari Pengaturan (tidak menyentuh onboarded_at). */

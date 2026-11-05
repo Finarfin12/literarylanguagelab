@@ -179,4 +179,26 @@ test("seed migrasi 0013: semua langkah dan soal contoh lolos validasi", () => {
   assert.equal(c.readySteps(c.parseSteps(example)), example.length);
 });
 
+// --- Fase 21 ---
+test("reading_aid: dipertahankan, dibatasi 60 karakter, tidak wajib", () => {
+  const ok = c.cleanStep({ type: "vocab", items: [{ word: "Wednesday", meaning_id: "Rabu", reading_aid: "wenz-dei" }, { word: "cat" }] });
+  assert.equal(ok.items[0].reading_aid, "wenz-dei");
+  assert.equal(ok.items[1].reading_aid, undefined);
+  const long = c.cleanStep({ type: "vocab", items: [{ word: "x", reading_aid: "a".repeat(61) }] });
+  assert.equal(long.items[0].reading_aid, undefined, "terlalu panjang diabaikan, bukan menolak langkah");
+});
+
+test("unitVocabEntries: tanpa duplikat, huruf kecil, membawa arti", () => {
+  const steps = c.parseSteps([
+    { type: "vocab", items: [{ word: "Hello", meaning_id: "halo" }, { word: "name", definition_en: "what you are called" }] },
+    { type: "vocab", items: [{ word: "hello", meaning_id: "salam" }, { word: "from" }] },
+    { type: "grammar", topic_slug: "to-be" },
+  ]);
+  const e = c.unitVocabEntries(steps);
+  assert.deepEqual(e.map((x: { word: string }) => x.word), ["hello", "name", "from"]);
+  assert.equal(e[0].meaning_id, "halo");
+  assert.equal(e[1].definition_en, "what you are called");
+  assert.deepEqual(c.unitVocabEntries([]), []);
+});
+
 console.log(`\n${passed} lulus, 0 gagal`);
