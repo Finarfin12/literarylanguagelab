@@ -98,3 +98,8 @@ assert.match(rls, /to_jsonb\(NEW\) - 'is_read'/);
 assert.ok(!/ON messages\s+FOR (ALL|INSERT|UPDATE)/i.test(rls.replace(/^--.*$/gm, "")));
 // blok D: system_config tidak lagi terbuka untuk anon
 assert.match(rls, /"Authenticated read system config" ON system_config\s+FOR SELECT TO authenticated/);
+
+// blok E: profiles hanya untuk pengguna login; portofolio publik tidak lagi memakai select("*") dengan klien anon
+assert.match(rls, /"Authenticated read profiles" ON profiles\s+FOR SELECT TO authenticated/);
+const portfolio = fs.readFileSync(path.join(repo, "app/p/[username]/page.tsx"), "utf8");
+assert.ok(!/from\("profiles"\)\s*\.select\("\*"\)/.test(portfolio), "portofolio publik harus memilih kolom publik saja");

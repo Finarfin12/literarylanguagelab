@@ -13,12 +13,12 @@ RLS aktif di seluruh 64 tabel `public`.
 | 3 | `group_discussions` | INSERT: `group_members.group_id = group_members.group_id` (tautologi), anggota grup mana pun bisa posting di grup mana pun | Tinggi | Diperbaiki di `0018` blok B (belum dijalankan) |
 | 4 | `direct_messages` | UPDATE oleh penerima tanpa batas kolom: isi pesan bisa dipalsukan | Sedang | Diperbaiki di blok C: trigger hanya mengizinkan perubahan `is_read` (belum dijalankan) |
 | 5 | `messages` | ALL untuk pengirim/penerima; sisipan atas nama orang lain mungkin. Tidak dipakai kode | Sedang | Diperbaiki di blok C: policy ALL diganti baca/hapus saja (belum dijalankan) |
-| 6 | `profiles` | SELECT `true` (anon membaca semua kolom, termasuk `role`); UPDATE bergantung pada trigger `0002` yang tak terlihat di `pg_policies` | Sedang | **Tidak diubah di `0018`**: SELECT `true` dipakai portofolio publik `/p/[username]` (anon, `select("*")`). Role dilindungi trigger `0002`. Menunggu daftar kolom `profiles` untuk memutuskan pembatasan kolom |
+| 6 | `profiles` | SELECT `true` (anon membaca semua kolom, termasuk `role`); UPDATE bergantung pada trigger `0002` yang tak terlihat di `pg_policies` | Sedang | Diperbaiki di blok E: SELECT hanya `authenticated`; `/p/[username]` membaca kolom publik lewat service client (belum dijalankan) |
 | 7 | `system_config` | SELECT `true`: anon membaca `features`, `rate_limits` | Sedang | Diperbaiki di blok D: SELECT hanya `authenticated` (belum dijalankan) |
 | 8 | `cultural_references` | INSERT terbuka bagi semua pengguna login | Rendah | Dibiarkan |
 | 9 | `ai_usage_logs` | Pengguna bisa mengisi sendiri | Rendah | Tidak berdampak setelah `0019` |
 | 10 | `translation_duels`, `user_badges`, `weekly_prompts` | Tabel peninggalan gamifikasi masih ada di produksi (tidak ada di migrasi repo, tidak dipakai kode) | Info | Bukan bagian `0018`; migrasi terpisah bila pemilik setuju |
-| 11 | `texts` | Fitur OCR (`library/add/ocr`) memanggil `/api/texts` yang **tidak ada** di repo (404) | Info | Perlu keputusan: buat route (dengan aturan teks pribadi yang sama) |
+| 11 | `texts` | Fitur OCR (`library/add/ocr`) memanggil `/api/texts` yang **tidak ada** di repo (404) | Info | Diperbaiki: route `app/api/texts` dibuat, menyimpan teks pribadi |
 
 ## Keputusan pemilik (5 Nov 2026)
 
@@ -42,6 +42,7 @@ Uji tambahan setelah blok B–D (akun uji):
 
 - B: anggota grup X tidak bisa memposting di grup Y; tetap bisa di grup X.
 - C: penerima bisa menandai pesan terbaca; mencoba mengubah `content` lewat API ditolak (`42501`); pengirim/penerima tetap bisa menghapus.
+- E: portofolio `/p/<username>` terbuka tanpa login masih tampil; pengguna login masih melihat profil lain di komunitas; permintaan anon langsung ke tabel `profiles` kosong.
 - D: pengguna login masih bisa memakai fitur AI (batas pemakaian terbaca); permintaan anon ke `system_config` kosong.
 
 Tabel lain: belum diuji (policy belum diubah).
@@ -49,6 +50,6 @@ Tabel lain: belum diuji (policy belum diubah).
 ## Urutan menjalankan `0018` (blok A–D, satu per satu)
 
 1. Deploy kode terbaru (addText, Library, route vocab).
-2. Jalankan blok demi blok dari `0018_rls_baseline.sql` di SQL Editor (A, uji; B, uji; C, uji; D, uji).
+2. Jalankan blok demi blok dari `0018_rls_baseline.sql` di SQL Editor (A–E, masing-masing diuji).
 3. Uji dengan akun uji: tambah teks lewat `/library/add` (harus tersimpan pribadi dan tampil bagi akun itu saja), buka Library dengan akun lain (tidak tampil), coba hapus teks dari akun biasa (harus gagal).
 4. Rollback: SQL ada di komentar bagian atas `0018`.

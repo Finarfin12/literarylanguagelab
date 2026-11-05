@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { getServiceClient } from "@/lib/ai/admin-client";
 import { notFound } from "next/navigation";
 import { User, GraduationCap, Library, Quote, Users } from "lucide-react";
 import ProfileActions from "@/components/community/ProfileActions";
@@ -7,10 +8,12 @@ export default async function PublicPortfolioPage({ params }: { params: Promise<
   const supabase = await createClient();
   const { username } = await params;
   
-  // Get user profile
-  const { data: profile } = await supabase
+  // Get user profile. Fase 19.1: hanya kolom portofolio publik, dibaca lewat service client supaya policy
+  // SELECT profiles bisa dibatasi ke pengguna login (migrasi 0018 blok E). Tanpa service key: klien biasa.
+  const PUBLIC_COLUMNS = "id, username, full_name, avatar_url, cefr_level, vocab_count";
+  const { data: profile } = await (getServiceClient() ?? supabase)
     .from("profiles")
-    .select("*")
+    .select(PUBLIC_COLUMNS)
     .eq("username", username)
     .single();
 

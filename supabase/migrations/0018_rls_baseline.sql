@@ -4,8 +4,8 @@
 --   Blok B: group_discussions (perbaiki syarat keanggotaan grup)
 --   Blok C: direct_messages (penerima hanya boleh mengubah penanda baca) dan messages (tabel lama, hanya baca/hapus)
 --   Blok D: system_config (anon tidak lagi bisa membaca)
--- TIDAK termasuk: policy profiles (SELECT true dipakai portofolio publik /p/[username] oleh anon dan select("*");
--- perlu daftar kolom dulu, lihat docs/v5/rls-check.md) dan policy tabel setelah `texts` yang belum ditinjau.
+--   Blok E: profiles (SELECT hanya pengguna login; portofolio publik membaca kolom publik lewat service client)
+-- TIDAK termasuk: policy tabel setelah `texts` yang belum ditinjau (hasil query terpotong).
 -- Hasil tinjauan: docs/v5/rls-check.md.
 --
 -- Bergantung pada: 0002 (fungsi is_admin()). Dijalankan SETELAH kode baru ter-deploy (addText memakai kolom owner_id,
@@ -142,5 +142,23 @@ ALTER TABLE system_config ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Everyone can read system config" ON system_config;
 DROP POLICY IF EXISTS "Authenticated read system config" ON system_config;
 CREATE POLICY "Authenticated read system config" ON system_config
+  FOR SELECT TO authenticated
+  USING (true);
+
+-- ===== BLOK E: profiles =====
+-- Produksi: SELECT true untuk semua role, jadi anon bisa membaca semua kolom semua profil lewat API. Portofolio publik
+-- /p/[username] kini membaca kolom publik (id, username, full_name, avatar_url, cefr_level, vocab_count) lewat
+-- service client, jadi SELECT dibatasi ke pengguna login. Pengguna login tetap bisa melihat profil lain (komunitas).
+-- Policy UPDATE dan trigger perlindungan role (0002) tidak diubah. JALANKAN SETELAH kode baru ter-deploy.
+--
+-- ROLLBACK blok E:
+--   DROP POLICY IF EXISTS "Authenticated read profiles" ON profiles;
+--   CREATE POLICY "Users can view all profiles" ON profiles FOR SELECT TO public USING (true);
+
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can view all profiles" ON profiles;
+DROP POLICY IF EXISTS "Authenticated read profiles" ON profiles;
+CREATE POLICY "Authenticated read profiles" ON profiles
   FOR SELECT TO authenticated
   USING (true);
