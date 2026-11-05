@@ -35,7 +35,7 @@ ATURAN UTAMA: jangan menghapus fitur atau route. Kerjakan HANYA fase yang saya s
 
 **Fase 23** — `Kerjakan Fase 23 (Susunan & label). Slug ruang, route, dan nama alat tidak berubah. Mulai dari lib/tool-categories.ts dan uji unitnya. menu-coverage harus lulus.`
 
-**Fase 24** — `Kerjakan Fase 24 (Peta belajar). Usulkan daftar topik ke saya dulu dan tunggu persetujuan. Jangan memakai "Semester", kode mata kuliah, atau materi berhak cipta. Mulai dari lib/topics.ts dan uji unitnya. Tulis migrasi 0022 tapi jangan jalankan.`
+**Fase 24** — `Kerjakan Fase 24 (Peta belajar). Cocokkan docs/v5/COMPETENCY_MAP.md dengan dokumen acuan yang saya lampirkan (jangan di-commit), lalu usulkan daftar topik beserta urutannya dan tunggu persetujuan. Urutan empat tahap hanya saran, tanpa kunci. Jangan memakai "Semester", kode mata kuliah, atau materi berhak cipta. Mulai dari lib/topics.ts dan uji unitnya. Tulis migrasi 0022 tapi jangan jalankan.`
 
 ---
 
@@ -84,4 +84,5 @@ Setelah fase selesai, perbarui tabel status di `docs/SESSION_HANDOFF.md`.
 | Fase 21 | Buat akun uji; jalani alur "Baru mulai dari nol" di HP; tinjau & terbitkan dua unit; nyalakan `kursus_dasar` |
 | Fase 22 | Jalankan `0020`, `0021`; tinjau frasa; isi CSV kata per tema |
 | Fase 23 | Telusuri tiga ruang dan `/tools`; pastikan alat favoritmu masih ada |
-| Fase 24 | Setujui daftar topik; jalankan `0022`; tinjau enam topik; nyalakan `peta_belajar` |
+| Sebelum Fase 24 | Siapkan `Buku-Pembelajaran…docx` dan `DAFTAR-PER-SEMESTER.txt` untuk dicocokkan dengan peta cakupan |
+| Fase 24 | Setujui daftar & urutan topik; jalankan `0022`; tinjau enam topik dari keempat tahap; coba "Topik berikutnya"; nyalakan `peta_belajar` |

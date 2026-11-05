@@ -136,12 +136,15 @@ Tampilan bawaan **tidak berubah** (keputusan pemilik di v4). Opsi "Tampilan ring
 
 Keputusan pemilik: **tidak memakai nama Semester 1–8**, materi bisa dipelajari lewat AI, dan pemilik bisa menambahkan materi manual.
 
-- **Topik bernama umum**, mis. "Membaca Cepat & Ide Pokok", "Menulis Paragraf", "Membaca Kritis", "Variasi Bahasa", "Dasar Penerjemahan", "Penyuntingan Terjemahan", "Struktur Kata & Kalimat", "Makna & Nuansa". Ditempatkan di dalam **Membaca & Sastra** dan **Menerjemahkan**, dikelompokkan Fondasi → Menengah → Lanjut.
+- **Topik bernama umum**, mis. "Membaca Cepat & Ide Pokok", "Menulis Paragraf", "Membaca Kritis", "Variasi Bahasa", "Dasar Penerjemahan", "Penyuntingan Terjemahan", "Struktur Kata & Kalimat", "Makna & Nuansa". Ditempatkan di dalam **Membaca & Sastra** dan **Menerjemahkan**; topik Fondasi juga ditautkan dari **Belajar Bahasa Inggris**, ke materi yang sudah ada di sana.
+- **Urutan belajar tetap mengikuti konsep Semester 1–8, dengan nama umum:** **Fondasi** (Sem. 1–2) → **Transisi** (Sem. 3–4) → **Pendalaman** (Sem. 5–6) → **Lanjut & proyek** (Sem. 7–8). Padanan ini hanya untuk tim. Di tampilan, setiap topik punya nomor urut dan satu tombol "Topik berikutnya" yang **disarankan, tidak dikunci**. Pengguna yang sudah mahir boleh mulai dari tahap mana pun.
+- **Peta cakupan kompetensi** ([COMPETENCY_MAP.md](COMPETENCY_MAP.md), internal): setiap kompetensi dari daftar mata kuliah inti harus punya topik atau alasan tertulis mengapa di luar cakupan. Kode mata kuliah tidak ikut masuk aplikasi maupun repo.
+- **Bukan kuliah resmi:** tidak ada SKS, nilai, atau ijazah.
 - **Setiap topik berisi**: capaian belajar → penjelasan → latihan/proyek → alat terkait → sumber terbuka.
 - **Penjelasan punya tiga sumber**, dengan urutan tampil: **manual → AI yang sudah ditinjau → AI baru**.
 - **Tombol "Pelajari dengan AI"**: penjelasan pertama disimpan untuk semua pengguna, supaya biayanya tidak berulang. Ada label "Dibuat AI, periksa kembali" dan tautan sumber. Pertanyaan lanjutan melewati pelindung biaya Fase 19.
 - **Admin** bisa menulis, mengedit, menyetujui, dan membuat ulang penjelasan.
-- Di balik flag `peta_belajar` sampai minimal enam topik siap.
+- Di balik flag `peta_belajar` sampai minimal enam topik siap, mencakup keempat tahap.
 
 ## 10. Tambahan sesuai kebutuhan nyata (Fase 25)
 
@@ -171,4 +174,5 @@ Dikerjakan hanya bila ada permintaan atau data pemakaian:
 | Q3 | Staging (proyek Supabase kedua)? | Diputuskan setelah tinjauan policy. Disarankan bila policy perlu diubah |
 | Q4 | Siapa peninjau materi Inggris–Indonesia dan cara baca? | Pemilik |
 | Q5 | Daftar 8 penulis fantasi di §6 sudah pas? | Ya |
-| Q6 | Daftar topik peta belajar? | Diusulkan sesi Fase 24, disetujui pemilik sebelum diisi |
+| Q6 | Daftar topik peta belajar? | Diusulkan sesi Fase 24 dari [COMPETENCY_MAP.md](COMPETENCY_MAP.md), disetujui pemilik sebelum diisi |
+| Q7 | Pemilik melampirkan `Buku-Pembelajaran…docx` dan `DAFTAR-PER-SEMESTER.txt` untuk mencocokkan peta cakupan? | Ya, sebelum Fase 24; filenya tidak di-commit |

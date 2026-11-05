@@ -178,18 +178,21 @@ Mengubah data dan urutan, **bukan** route atau alat. Gaya tetap DESIGN.md.
 
 ## Fase 24 — Peta belajar + "Pelajari dengan AI" + materi manual
 
-**Sebelum mulai:** usulkan daftar topik (±24) kepada pemilik (Q6). Topik ditulis sendiri, tanpa kode mata kuliah dan tanpa "Semester". Pemilik dapat memberikan dokumen acuannya; jangan menyalin isinya bila bersumber dari modul berhak cipta.
+**Sebelum mulai:**
+- Cocokkan [COMPETENCY_MAP.md](COMPETENCY_MAP.md) dengan dokumen acuan pemilik (Q7). Setiap kompetensi harus berakhir pada satu topik, bagian dari topik lain, atau "di luar cakupan" dengan alasan. Jangan menyalin isi dokumen acuan bila bersumber dari modul berhak cipta; jangan meng-commit filenya.
+- Usulkan daftar topik beserta urutannya kepada pemilik (Q6). Draf saat ini 28 topik. Topik ditulis sendiri, tanpa kode mata kuliah dan tanpa "Semester".
 
 **24.1 Skema** (`0022_learning_topics.sql`)
-- `learning_topics (slug pk, room_slug, stage, title, outcomes jsonb, tool_paths text[], activity jsonb, sources jsonb, sort_order, status)`. `stage` = `fondasi | menengah | lanjut`. `sources` berisi judul, URL, penyedia, lisensi, dan jenis pemakaian.
+- `learning_topics (slug pk, room_slug, stage, title, outcomes jsonb, tool_paths text[], activity jsonb, sources jsonb, sort_order, status)`. `stage` = `fondasi | transisi | pendalaman | lanjut`. `sort_order` unik global dan menjadi urutan belajar lintas tahap. `room_slug` boleh `belajar-dasar` untuk topik Fondasi. `sources` berisi judul, URL, penyedia, lisensi, dan jenis pemakaian.
 - `topic_explanations (id, topic_slug, source 'manual'|'ai', content, status 'draft'|'published', model, created_by, reviewed_by, updated_at)` dengan unik `(topic_slug, source)`.
 - RLS: topik dan penjelasan terbit dibaca pengguna login; tulis admin. Penjelasan AI baru ditulis server lewat service role. Feature key `topic-explain`, `topic-chat`. Flag `peta_belajar` mati.
 
 **24.2 Logika murni** (`lib/topics.ts`, **diuji unit**)
-- `pickExplanation(rows)`: manual terbit → AI ditinjau → AI baru → tidak ada. `validateTopic`: wajib punya capaian, satu latihan, dan alat yang benar-benar ada di `lib/rooms.ts`/`menu-config`.
+- `pickExplanation(rows)`: manual terbit → AI ditinjau → AI baru → tidak ada. `validateTopic`: wajib punya capaian, satu latihan, dan alat yang benar-benar ada di `lib/rooms.ts`/`menu-config`. `nextTopic(topics, currentSlug)`: topik terbit berikutnya menurut `sort_order`, melewati draft.
 
 **24.3 UI**
-- Bagian **Peta belajar** di halaman ruang Membaca & Sastra dan Menerjemahkan, dikelompokkan per tahap. Halaman `/topik/[slug]`: capaian → penjelasan → latihan → alat → sumber.
+- Bagian **Peta belajar** di halaman ruang Membaca & Sastra dan Menerjemahkan, dikelompokkan per tahap (Fondasi, Transisi, Pendalaman, Lanjut & proyek). Di Belajar Bahasa Inggris tampil topik Fondasi, dengan tautan ke materi yang sudah ada (Kursus Dasar, Grammar, Kosakata Inti, bacaan berjenjang). Tidak ada menu tingkat atas baru.
+- Halaman `/topik/[slug]`: capaian → penjelasan → latihan → alat → sumber → tombol **"Topik berikutnya"**. Urutan hanya saran; **tidak ada topik yang dikunci**. Jangan menampilkan "Semester", SKS, atau nilai.
 - Tombol **"Pelajari dengan AI"** bila belum ada penjelasan. Dibuat sekali lalu disimpan; permintaan bersamaan tidak boleh memanggil AI dua kali. Label "Dibuat AI, periksa kembali". Tanya-jawab lanjutan lewat pelindung Fase 19, tidak disimpan untuk umum.
 - Keterangan tetap: "Pendamping belajar mandiri; bukan program resmi lembaga mana pun."
 
@@ -199,7 +202,7 @@ Mengubah data dan urutan, **bukan** route atau alat. Gaya tetap DESIGN.md.
 **24.5 Kartu praktik**
 - Tombol alat membuka alat terkait. Bila alat sudah mendukung contoh (`lib/tool-examples.ts`), pakai contoh yang sudah ada.
 
-**Selesai jika:** enam topik contoh lengkap (setengah manual, setengah AI ditinjau) di dua ruang; satu penjelasan tidak memicu AI berulang; manual selalu didahulukan; uji unit lulus; flag mati menyembunyikan peta; `menu-coverage` lulus; build lulus.
+**Selesai jika:** COMPETENCY_MAP selesai dicocokkan (atau dicatat "menunggu dokumen pemilik"); enam topik contoh lengkap (setengah manual, setengah AI ditinjau) mencakup keempat tahap; "Topik berikutnya" mengikuti urutan dan tidak mengunci; satu penjelasan tidak memicu AI berulang; manual selalu didahulukan; uji unit lulus; flag mati menyembunyikan peta; `menu-coverage` lulus; build lulus.
 
 ---
 
@@ -218,5 +221,5 @@ Tiap item menjadi fase kecil tersendiri **setelah** ada permintaan atau data pem
 - [ ] Alur "Baru mulai dari nol" tuntas sampai review, tanpa AI, di HP.
 - [ ] Penyusun kalimat, bantuan dialog, frasa, dan tema berfungsi atau jelas menyatakan belum tersedia.
 - [ ] Tiga label ruang konsisten; kategori `/tools` berbahasa Indonesia; `menu-coverage` lulus.
-- [ ] Peta belajar: tanpa "Semester" dan kode mata kuliah; sumber berlisensi tercatat.
+- [ ] Peta belajar: empat tahap berurutan tanpa kunci; tanpa "Semester" dan kode mata kuliah; sumber berlisensi tercatat; setiap kompetensi di COMPETENCY_MAP punya topik atau alasan di luar cakupan.
 - [ ] Migrasi `0018`–`0022` tercantum di `docs/SESSION_HANDOFF.md`.
