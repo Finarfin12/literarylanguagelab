@@ -90,3 +90,11 @@ for (const name of ["Users can delete texts", "Anyone can insert texts", "Users 
 assert.match(rls, /CREATE POLICY "Admins manage texts"[\s\S]*?is_admin\(\)/);
 assert.match(rls, /WITH CHECK \(owner_id = auth\.uid\(\) AND is_public = false\)/);
 assert.ok(!/CREATE POLICY[^;]*is_public = true/i.test(rls.replace(/^--.*$/gm, "")), "tidak boleh ada policy baru yang membuka teks publik");
+// blok B: syarat keanggotaan mengacu ke baris yang disisipkan, bukan tautologi
+assert.match(rls, /gm\.group_id = group_discussions\.group_id/);
+assert.ok(!/group_members\.group_id = group_members\.group_id/.test(rls.replace(/^--.*$/gm, "")));
+// blok C: trigger hanya mengizinkan is_read; messages tidak punya INSERT/UPDATE
+assert.match(rls, /to_jsonb\(NEW\) - 'is_read'/);
+assert.ok(!/ON messages\s+FOR (ALL|INSERT|UPDATE)/i.test(rls.replace(/^--.*$/gm, "")));
+// blok D: system_config tidak lagi terbuka untuk anon
+assert.match(rls, /"Authenticated read system config" ON system_config\s+FOR SELECT TO authenticated/);
