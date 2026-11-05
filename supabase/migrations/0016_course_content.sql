@@ -12,8 +12,10 @@
 --  3. 55 soal latihan draft (pilihan ganda, isian, susun kalimat, pasangkan, dikte; 5 per unit).
 
 -- 1. Bacaan (draft, tidak tampil di Library sampai diterbitkan)
-INSERT INTO texts (title, author, content, difficulty, word_count, cefr_level, status, source, is_public)
-SELECT v.title, 'Literary Language Lab', v.content, v.level,
+-- Kolom difficulty sengaja tidak diisi: tabel texts punya aturan texts_difficulty_enum (tidak tercatat di repo) yang
+-- menolak nilai CEFR; level disimpan di cefr_level.
+INSERT INTO texts (title, author, content, word_count, cefr_level, status, source, is_public)
+SELECT v.title, 'Literary Language Lab', v.content,
        array_length(regexp_split_to_array(btrim(v.content), '\s+'), 1),
        v.level, 'draft', 'admin', false
 FROM (VALUES
