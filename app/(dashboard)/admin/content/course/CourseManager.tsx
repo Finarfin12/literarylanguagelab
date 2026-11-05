@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, ExternalLink, Pencil, Trash2 } from "lucide-react";
-import { COURSE_LEVELS, parseSteps, readySteps } from "@/lib/course";
+import { Eye, EyeOff, ExternalLink, Pencil, Sparkles, Square, Trash2 } from "lucide-react";
+import { COURSE_LEVELS, hasReadingContent, parseSteps, readySteps } from "@/lib/course";
 import { buttonClass, inputClass } from "../../_lib/ui";
-import { deleteCourseUnit, saveCourseUnit, setCourseUnitPublished } from "../../course-actions";
+import { deleteCourseUnit, generateUnitReading, saveCourseUnit, setCourseUnitPublished } from "../../course-actions";
 import StepEditor, { fromEditStep, toEditStep, type EditStep } from "./StepEditor";
 
 export interface AdminUnit {
@@ -48,6 +48,38 @@ export default function CourseManager({
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
   const [form, setForm] = useState<FormState | null>(null);
+  // Jalur 2 (Fase 18): bacaan AI per unit dan massal (satu per satu, bisa dihentikan)
+  const stopRef = useRef(false);
+  const [bulk, setBulk] = useState<{ running: boolean; done: number; total: number; log: string[] } | null>(null);
+  const [busySlug, setBusySlug] = useState<string | null>(null);
+  const withoutReading = units.filter((u) => !hasReadingContent(parseSteps(u.steps)));
+
+  const generateOne = async (slug: string) => {
+    setMessage(null);
+    setBusySlug(slug);
+    const res = await generateUnitReading(slug);
+    setBusySlug(null);
+    if (res.ok) {
+      setMessage({ tone: "ok", text: "Draf bacaan dibuat dan dikaitkan ke unit. Tinjau di Admin → Konten (tab Teks & Grammar), lalu Terbitkan." });
+      router.refresh();
+    } else setMessage({ tone: "error", text: res.error || "Gagal." });
+  };
+
+  const generateAll = async () => {
+    const targets = withoutReading;
+    if (targets.length === 0) return;
+    stopRef.current = false;
+    setMessage(null);
+    setBulk({ running: true, done: 0, total: targets.length, log: [] });
+    for (let i = 0; i < targets.length; i++) {
+      if (stopRef.current) break;
+      const u = targets[i];
+      const res = await generateUnitReading(u.slug);
+      setBulk((b) => (b ? { ...b, done: i + 1, log: [...b.log, res.ok ? `✓ ${u.title}` : `✗ ${u.title}: ${res.error || "gagal"}`] } : b));
+    }
+    setBulk((b) => (b ? { ...b, running: false } : b));
+    router.refresh();
+  };
 
   const run = (fn: () => Promise<{ ok: boolean; error?: string }>, successText: string, after?: () => void) => {
     setMessage(null);
@@ -112,6 +144,25 @@ export default function CourseManager({
           {message.text}
         </p>
       )}
+
+      <section className="bg-card border border-border rounded-card p-4 md:p-6">
+        <h2 className="text-lg font-medium font-serif mb-1 flex items-center gap-2"><Sparkles className="w-5 h-5 text-brand-ink" /> Bacaan dengan AI untuk unit</h2>
+        <p className="text-sm text-muted-foreground mb-4">Level, tema, panjang, dan kata target diambil dari unit. Hasilnya <strong>draf</strong> yang langsung dikaitkan ke langkah baca; tinjau dan terbitkan di tab Teks &amp; Grammar. Unit diproses satu per satu dan tiap panggilan tercatat di Pemakaian. Tombol AI lama di tab Teks &amp; Grammar tidak berubah.</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <button className={`${buttonClass} bg-brand-solid text-on-brand`} disabled={!schemaReady || !!bulk?.running || withoutReading.length === 0 || !!busySlug} onClick={generateAll}>
+            <Sparkles className="w-4 h-4" /> Buat draf untuk semua unit yang belum punya bacaan ({withoutReading.length})
+          </button>
+          {bulk?.running && (
+            <button className={`${buttonClass} bg-muted border border-border`} onClick={() => { stopRef.current = true; }}><Square className="w-4 h-4" /> Hentikan</button>
+          )}
+        </div>
+        {bulk && (
+          <div className="mt-4" role="status" aria-live="polite">
+            <p className="text-sm font-bold">{bulk.running ? `Memproses ${Math.min(bulk.done + 1, bulk.total)} dari ${bulk.total}...` : `Selesai: ${bulk.done} dari ${bulk.total} diproses.`}</p>
+            <ul className="mt-2 space-y-1 text-sm text-muted-foreground">{bulk.log.map((l, i) => <li key={i}>{l}</li>)}</ul>
+          </div>
+        )}
+      </section>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-lg font-medium font-serif">Unit ({units.length})</h2>
@@ -180,6 +231,9 @@ export default function CourseManager({
                   <div className="flex flex-wrap items-center gap-2">
                     <Link href={`/kursus/${u.slug}`} className={`${buttonClass} bg-muted border border-border`}><ExternalLink className="w-4 h-4" /> Buka</Link>
                     <Link href={`/admin/content/exercises?unit=${u.slug}`} className={`${buttonClass} bg-muted border border-border`}>Soal</Link>
+                    <button className={`${buttonClass} bg-muted border border-border`} disabled={!schemaReady || !!busySlug || !!bulk?.running} onClick={() => generateOne(u.slug)}>
+                      <Sparkles className="w-4 h-4" /> {busySlug === u.slug ? "Membuat..." : "Bacaan AI"}
+                    </button>
                     <button className={`${buttonClass} bg-muted border border-border`} onClick={() => edit(u)}><Pencil className="w-4 h-4" /> Edit</button>
                     <button
                       className={`${buttonClass} bg-muted border border-border`}

@@ -16,20 +16,30 @@ import {
   updateDraftText,
 } from "../content-actions";
 import { deleteText } from "../../library/actions";
+import OwnTextForm from "./OwnTextForm";
 
-export type EditableText = Omit<AdminTextRow, "created_at"> & { content: string | null };
+/** Pemeriksaan otomatis draf (Fase 18.6): hanya informasi, tidak memblokir Terbitkan. */
+export interface TextCheck {
+  summary: string;
+  ok: boolean | null;
+  offSample: string[];
+}
+
+export type EditableText = Omit<AdminTextRow, "created_at"> & { content: string | null; check?: TextCheck | null };
 
 const SOURCE_LABELS: Record<string, string> = { ai: "AI", admin: "Admin", public_domain: "Domain publik", user: "Pengguna" };
 
 export default function ContentManager({
   texts,
   topics,
+  units,
   coreCount,
   coreWithDefinition,
   schemaReady,
 }: {
   texts: EditableText[];
   topics: GrammarTopicRow[];
+  units: { slug: string; title: string }[];
   coreCount: number | null;
   coreWithDefinition: number | null;
   schemaReady: boolean;
@@ -118,6 +128,9 @@ export default function ContentManager({
         </button>
       </section>
 
+      {/* Jalur 3 (Fase 18): tulis teks sendiri */}
+      <OwnTextForm units={units} schemaReady={schemaReady} />
+
       {/* Daftar teks */}
       <section>
         <h2 className="text-lg font-medium font-serif mb-3">Teks ({texts.length})</h2>
@@ -171,6 +184,14 @@ export default function ContentManager({
                     </button>
                   </div>
                 </div>
+
+                {t.check && (
+                  <p className={`mt-2 text-xs ${t.check.ok === false ? "text-warning-ink" : "text-muted-foreground"}`}>
+                    <span className="font-bold">Pemeriksaan otomatis:</span> {t.check.summary}
+                    {t.check.ok === false && t.check.offSample.length > 0 && <> · Kata di luar daftar, mis.: {t.check.offSample.join(", ")}</>}
+                    <span className="text-muted-foreground"> (hanya informasi; tidak memblokir Terbitkan)</span>
+                  </p>
+                )}
 
                 {suggestions[t.id] && (
                   <div className="mt-3 text-sm bg-brand-tint border border-brand/20 rounded-control p-3">

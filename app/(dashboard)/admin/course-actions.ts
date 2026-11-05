@@ -6,7 +6,9 @@
 import { revalidatePath } from "next/cache";
 import { assertAdmin, toErrorMessage, type ActionResult } from "./_lib/guard";
 import { logAdminAction } from "@/lib/admin-audit";
-import { COURSE_LEVELS, readySteps, validateSteps } from "@/lib/course";
+import { COURSE_LEVELS, parseSteps, readySteps, unitVocabWords, validateSteps } from "@/lib/course";
+import { generateGradedText } from "./content-actions";
+import { attachTextToUnit } from "./_lib/course-link";
 import { MISSING_SCHEMA_CODES } from "./_lib/content-types";
 
 const MIGRATION_HINT = "Migrasi 0013_course_units.sql belum dijalankan.";
@@ -95,6 +97,43 @@ export async function deleteCourseUnit(slug: string): Promise<ActionResult> {
     await logAdminAction({ actorId: user.id, action: "course_unit.delete", target: slug });
     revalidateCourse();
     return { ok: true };
+  } catch (error) {
+    return { ok: false, error: toErrorMessage(error) };
+  }
+}
+
+const AI_WORDS: Record<string, number> = { A0: 90, A1: 100, A2: 150, B1: 200 };
+
+/**
+ * Jalur 2 (Fase 18): membuat bacaan dengan AI untuk SATU unit. Level, tema (judul unit), panjang, dan kata target
+ * (kata di langkah kosakata) terisi otomatis dari unit. Hasilnya draft yang langsung dikaitkan ke langkah baca unit.
+ * Memakai generateGradedText (tombol lama tidak berubah) -> runAI -> tercatat di ai_usage_logs dan tunduk pada kuota.
+ */
+export async function generateUnitReading(unitSlug: string): Promise<ActionResult<{ textId: string }>> {
+  try {
+    const { supabase, user } = await assertAdmin();
+    const { data: unit, error } = await supabase.from("course_units").select("slug, title, cefr_level, theme_id, steps").eq("slug", unitSlug).maybeSingle();
+    if (error) return { ok: false, error: dbError(error) };
+    if (!unit) return { ok: false, error: "Unit tidak ditemukan." };
+
+    const level = unit.cefr_level === "A0" ? "A1" : unit.cefr_level;
+    const steps = parseSteps(unit.steps);
+    const generated = await generateGradedText({
+      level,
+      topic: `${unit.title} (everyday situations)`.slice(0, 200),
+      length: "pendek",
+      approxWords: AI_WORDS[unit.cefr_level] ?? 120,
+      targetWords: unitVocabWords(steps),
+    });
+    if (!generated.ok || !generated.data) return { ok: false, error: generated.ok ? "AI tidak mengembalikan teks." : generated.error };
+
+    const { data: text } = await supabase.from("texts").select("title").eq("id", generated.data.id).maybeSingle();
+    const linked = await attachTextToUnit(supabase, unitSlug, generated.data.id, text?.title ?? unit.title);
+    if (!linked.ok) return { ok: false, error: `Draf dibuat, tetapi belum terkait ke unit: ${linked.error}` };
+
+    await logAdminAction({ actorId: user.id, action: "course_unit.generate_reading", target: unitSlug, after: { text_id: generated.data.id, level } });
+    revalidateCourse();
+    return { ok: true, data: { textId: generated.data.id } };
   } catch (error) {
     return { ok: false, error: toErrorMessage(error) };
   }

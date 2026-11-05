@@ -127,6 +127,16 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 > | **Pasangan Bunyi**: 15 pasangan + IPA + catatan, latihan dengar (TTS, pilih kata yang didengar, 10 ronde), dikte bertag `minimal-pair`, dan Pronunciation Clinic tertanam | `app/(dashboard)/pasangan-bunyi/`, `components/l1/PairsDrill.tsx`, tabel `minimal_pairs`; uji `l1` |
 > | Sesi latihan bisa disaring per tag (`l1-error`, `l1:<slug>`, `minimal-pair`) dan langkah `exercise` Kursus Dasar punya bidang `tag` opsional | `app/api/exercises/session`, `lib/course.ts`, editor langkah di Admin → Konten → Kursus |
 > | Kursus Dasar: langkah latihan bertag ("Kesalahan umum penutur Indonesia", "Pasangan bunyi") ditambahkan ke unit terkait oleh `0014` bila `0013` sudah dijalankan | `supabase/migrations/0014_l1_modules.sql` |
+
+> **(Fase 18, ✅ admin diuji 375px/1280px, terang/gelap)** Paket konten Kursus Dasar dan tiga jalur bacaan (baris baru; Kursus Dasar tetap tersembunyi sampai flag `kursus_dasar` dinyalakan):
+>
+> | Fitur | Lokasi / cara uji |
+> |---|---|
+> | Jalur 1: 20 bacaan asli A1–A2 + langkah 11 unit + 55 soal, semuanya **draft** | `supabase/migrations/0016_course_content.sql`; laporan kata & cakupan NGSL: `docs/v4/content-report.md`; uji `course-content` |
+> | Jalur 2: tombol "Bacaan AI" per unit dan "Buat draf untuk semua unit yang belum punya bacaan" (satu per satu, progres, bisa dihentikan, lewati yang gagal); `generateGradedText` mendapat dua bidang opsional (`targetWords`, `approxWords`) — pemanggil lama tidak berubah | Admin → Konten → Kursus; `admin/course-actions.ts` (`generateUnitReading`), `admin/content-actions.ts` |
+> | Jalur 3: formulir "Tulis teks sendiri" (judul, level, isi, unit tujuan opsional) → draf | Admin → Konten (tab Teks & Grammar); `createOwnText`, `OwnTextForm.tsx` |
+> | Pemeriksaan otomatis tiap draf: "89 kata ✓ · 94% Kosakata Inti A1 ✓" atau peringatan + contoh kata di luar daftar; hanya informasi, tidak memblokir Terbitkan | `lib/graded-check.ts` (uji `graded-check`), kartu draf di Admin → Konten |
+> | Tombol lama "Buat teks berjenjang dengan AI" dan tombol Edit draf tetap ada dan berfungsi | Admin → Konten |
 | Review SRS (SM-2): kartu, konteks, **Lihat di teks**, skor 0–3 | `app/(dashboard)/review/`, `app/(dashboard)/vocabulary/review/`, `components/vocabulary/ReviewClient.tsx` |
 | Flashcard SRS (English Lab): mode **guess-word, guess-meaning, dictation, collocation** | `app/(dashboard)/english-lab/flashcard/page.tsx` |
 | Idiom Library | `app/(dashboard)/idioms/page.tsx` |

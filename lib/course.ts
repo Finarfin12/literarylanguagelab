@@ -241,3 +241,39 @@ export function groupByLevel<T extends CourseUnitLike>(units: readonly T[]): { l
   levels.sort((a, b) => levelRank(a) - levelRank(b) || a.localeCompare(b));
   return levels.map((level) => ({ level, units: units.filter((u) => u.cefr_level === level).sort((a, b) => a.sort_order - b.sort_order) }));
 }
+
+// --- Fase 18: bacaan per unit ---
+
+/** Apakah unit sudah punya langkah baca yang berisi (id teks atau teks langsung). */
+export function hasReadingContent(steps: readonly CourseStep[]): boolean {
+  return steps.some((s) => s.type === "read" && !isStepEmpty(s));
+}
+
+/** Kata target unit (dari semua langkah kosakata), tanpa duplikat, urutan kemunculan. */
+export function unitVocabWords(steps: readonly CourseStep[]): string[] {
+  const out: string[] = [];
+  for (const s of steps) {
+    if (s.type !== "vocab") continue;
+    for (const i of s.items) if (!out.includes(i.word.toLowerCase())) out.push(i.word.toLowerCase());
+  }
+  return out;
+}
+
+/**
+ * Menambah langkah baca untuk teks tertentu: setelah langkah baca terakhir; bila belum ada, sebelum langkah dengar,
+ * lalu sebelum latihan, selain itu di akhir. Placeholder baca yang kosong diisi lebih dulu. Teks yang sama tidak ditambah dua kali.
+ */
+export function attachReadStep(steps: readonly CourseStep[], textId: string, title: string): CourseStep[] {
+  if (steps.some((s) => s.type === "read" && s.text_id === textId)) return steps.slice();
+  const emptyIdx = steps.findIndex((s) => s.type === "read" && isStepEmpty(s));
+  const filled: CourseStep = { type: "read", title, text_id: textId };
+  if (emptyIdx >= 0) return steps.map((s, i) => (i === emptyIdx ? { ...filled, ...(s.title ? { title: s.title } : {}) } : s));
+  const next = steps.slice();
+  let at = -1;
+  for (let i = next.length - 1; i >= 0; i--) if (next[i].type === "read") { at = i + 1; break; }
+  if (at < 0) at = next.findIndex((s) => s.type === "listen");
+  if (at < 0) at = next.findIndex((s) => s.type === "exercise");
+  if (at < 0) at = next.length;
+  next.splice(at, 0, filled);
+  return next;
+}

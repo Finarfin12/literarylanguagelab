@@ -9,6 +9,7 @@ import { logAdminAction } from "@/lib/admin-audit";
 import { runAI } from "@/lib/ai/run";
 import { isCefrLevel } from "@/lib/cefr";
 import { MISSING_SCHEMA_CODES, TEXT_LENGTHS, type TextLength } from "./_lib/content-types";
+import { attachTextToUnit } from "./_lib/course-link";
 
 const MIGRATION_HINT = "Migrasi 0007_graded_content.sql belum dijalankan.";
 
@@ -73,20 +74,29 @@ export async function estimateTextLevel(textId: string): Promise<ActionResult<{ 
   }
 }
 
-export async function generateGradedText(input: { level: string; topic: string; length: string }): Promise<ActionResult<{ id: string }>> {
+/**
+ * Tombol lama "Buat teks berjenjang dengan AI" memakai {level, topic, length}. Fase 18 menambah dua bidang OPSIONAL untuk
+ * pembuatan bacaan per unit: `targetWords` (kata yang sebaiknya dipakai) dan `approxWords` (panjang kira-kira; menimpa `length`).
+ * Tanpa keduanya perilakunya sama seperti sebelumnya.
+ */
+export async function generateGradedText(input: { level: string; topic: string; length: string; targetWords?: string[]; approxWords?: number }): Promise<ActionResult<{ id: string }>> {
   try {
     const { supabase, user } = await assertAdmin();
     const topic = input.topic.trim().slice(0, 200);
     if (!isCefrLevel(input.level)) return { ok: false, error: "Pilih level." };
     if (!topic) return { ok: false, error: "Tulis topik teks." };
     if (!(input.length in TEXT_LENGTHS)) return { ok: false, error: "Panjang tidak valid." };
-    const words = TEXT_LENGTHS[input.length as TextLength].words;
+    const words = typeof input.approxWords === "number" && Number.isFinite(input.approxWords)
+      ? Math.max(50, Math.min(400, Math.round(input.approxWords)))
+      : TEXT_LENGTHS[input.length as TextLength].words;
+    const targets = (input.targetWords ?? []).map((w) => String(w).trim()).filter((w) => /^[A-Za-z][A-Za-z' -]{0,30}$/.test(w)).slice(0, 15);
+    const targetNote = targets.length ? ` Where it fits naturally, use these target words: ${targets.join(", ")}. Use mostly very common English words besides these.` : "";
 
     const completion = await runAI("graded-text-generate", {
       messages: [
         {
           role: "system",
-          content: `You write ORIGINAL graded reading texts for learners of English. Level: CEFR ${input.level}. ${LEVEL_GUIDE[input.level]} Target length: about ${words} words. Do not copy or imitate any existing graded reader or copyrighted text. Respond ONLY with valid JSON: {"title": string, "content": string}. Separate paragraphs with a blank line.`,
+          content: `You write ORIGINAL graded reading texts for learners of English. Level: CEFR ${input.level}. ${LEVEL_GUIDE[input.level]} Target length: about ${words} words. Do not copy or imitate any existing graded reader or copyrighted text.${targetNote} Respond ONLY with valid JSON: {"title": string, "content": string}. Separate paragraphs with a blank line.`,
         },
         { role: "user", content: `Topic: ${topic}` },
       ],
@@ -122,7 +132,7 @@ export async function generateGradedText(input: { level: string; topic: string; 
       .single();
     if (error) return { ok: false, error: dbError(error) };
 
-    await logAdminAction({ actorId: user.id, action: "text.generate_graded", target: data.id, after: { level: input.level, topic, length: input.length } });
+    await logAdminAction({ actorId: user.id, action: "text.generate_graded", target: data.id, after: { level: input.level, topic, length: input.length, ...(targets.length ? { target_words: targets.length } : {}), ...(input.approxWords ? { approx_words: words } : {}) } });
     revalidatePath("/admin/content");
     return { ok: true, data: { id: data.id } };
   } catch (error) {
@@ -214,6 +224,57 @@ export async function deleteGrammarTopic(slug: string): Promise<ActionResult> {
     revalidatePath("/admin/content");
     revalidatePath("/english-lab/grammar");
     return { ok: true };
+  } catch (error) {
+    return { ok: false, error: toErrorMessage(error) };
+  }
+}
+
+/**
+ * Jalur 3 (Fase 18): "Tulis teks sendiri". Menyimpan teks buatan admin sebagai draft; bila `unitSlug` diisi, teks langsung
+ * dikaitkan ke langkah baca unit itu. Draft bisa diedit dengan tombol Edit yang sudah ada.
+ */
+export async function createOwnText(input: { title: string; level: string; content: string; unitSlug?: string }): Promise<ActionResult<{ id: string }>> {
+  try {
+    const { supabase, user } = await assertAdmin();
+    const title = input.title.trim().slice(0, 200);
+    const content = input.content.trim();
+    if (!title) return { ok: false, error: "Judul wajib diisi." };
+    if (!isCefrLevel(input.level)) return { ok: false, error: "Pilih level CEFR." };
+    if (content.length < 20) return { ok: false, error: "Isi teks terlalu pendek." };
+    if (content.length > 30000) return { ok: false, error: "Isi teks terlalu panjang (maks. 30.000 karakter)." };
+    const unitSlug = (input.unitSlug ?? "").trim();
+    if (unitSlug && !/^[a-z0-9-]{2,64}$/.test(unitSlug)) return { ok: false, error: "Unit tidak valid." };
+
+    const { data, error } = await supabase
+      .from("texts")
+      .insert({
+        title,
+        author: "Literary Language Lab",
+        content,
+        difficulty: input.level,
+        word_count: content.split(/\s+/).filter(Boolean).length,
+        cefr_level: input.level,
+        status: "draft",
+        source: "admin",
+        is_public: false, // draft tidak tampil di Library
+      })
+      .select("id")
+      .single();
+    if (error) return { ok: false, error: dbError(error) };
+
+    await logAdminAction({ actorId: user.id, action: "text.create_own", target: data.id, after: { level: input.level, title, unit: unitSlug || null } });
+
+    if (unitSlug) {
+      const linked = await attachTextToUnit(supabase, unitSlug, data.id, title);
+      if (!linked.ok) {
+        revalidatePath("/admin/content");
+        return { ok: false, error: `Teks tersimpan sebagai draft, tetapi belum terkait ke unit: ${linked.error}` };
+      }
+      await logAdminAction({ actorId: user.id, action: "course_unit.attach_reading", target: unitSlug, after: { text_id: data.id } });
+      revalidatePath("/admin/content/course");
+    }
+    revalidatePath("/admin/content");
+    return { ok: true, data: { id: data.id } };
   } catch (error) {
     return { ok: false, error: toErrorMessage(error) };
   }

@@ -5,7 +5,8 @@ import { AdminPageHeader, MigrationNotice, Notice } from "../_lib/ui";
 import { CEFR_LEVELS, isCefrLevel } from "@/lib/cefr";
 import { MISSING_SCHEMA_CODES, type AdminTextRow, type GrammarTopicRow } from "../_lib/content-types";
 import ContentSubnav from "./ContentSubnav";
-import ContentManager,{ type EditableText } from "./ContentManager";
+import { checkGradedText, summarizeCheck, type CoreWordLite } from "@/lib/graded-check";
+import ContentManager, { type EditableText } from "./ContentManager";
 
 export const dynamic = "force-dynamic";
 
@@ -66,6 +67,21 @@ export default async function AdminContentPage({
   const coreCount = coreRes.error ? null : coreRes.count ?? 0;
   const coreWithDefinition = coreDefRes.error ? null : coreDefRes.count ?? 0;
 
+  // Fase 18.6: pemeriksaan otomatis tiap draf (jumlah kata + cakupan Kosakata Inti). Hanya informasi.
+  const drafts = rows.filter((t) => t.status === "draft" && t.content);
+  let coreWords: CoreWordLite[] = [];
+  if (drafts.length > 0) {
+    const withForms = await supabase.from("core_words").select("word, band, forms").limit(3500);
+    if (!withForms.error) coreWords = (withForms.data || []) as CoreWordLite[];
+    else {
+      // Kolom forms dari migrasi 0015 belum ada
+      const basic = await supabase.from("core_words").select("word, band").limit(3500);
+      coreWords = basic.error ? [] : ((basic.data || []) as CoreWordLite[]);
+    }
+  }
+  const unitsRes = await supabase.from("course_units").select("slug, title").order("sort_order");
+  const courseUnits = (unitsRes.error ? [] : unitsRes.data || []) as { slug: string; title: string }[];
+
   const texts: EditableText[] = rows.map((t) => ({
     id: t.id,
     title: t.title,
@@ -76,6 +92,15 @@ export default async function AdminContentPage({
     word_count: t.word_count,
     // Isi hanya dikirim ke klien untuk draft (dipakai editor)
     content: t.status === "draft" ? t.content : null,
+    check:
+      t.status === "draft" && t.content
+        ? (() => {
+            const level = t.cefr_level ?? "";
+            const c = checkGradedText(t.content, level, coreWords);
+            const ok = c.inRange === null && c.meetsTarget === null ? null : c.inRange !== false && c.meetsTarget !== false;
+            return { summary: summarizeCheck(c, level), ok, offSample: c.offListSample };
+          })()
+        : null,
   }));
 
   const filterHref = (next: { level?: string; status?: string }) => {
@@ -120,7 +145,7 @@ export default async function AdminContentPage({
         <Link href={filterHref({ status: "published" })} className={chip(status === "published")}>Terbit</Link>
       </div>
 
-      <ContentManager texts={texts} topics={topics} coreCount={coreCount} coreWithDefinition={coreWithDefinition} schemaReady={!textsMissing && !topicsMissing} />
+      <ContentManager texts={texts} topics={topics} units={courseUnits} coreCount={coreCount} coreWithDefinition={coreWithDefinition} schemaReady={!textsMissing && !topicsMissing} />
       {rows.length >= PAGE_LIMIT && (
         <p className="text-xs text-muted-foreground mt-4">Menampilkan {PAGE_LIMIT} teks terbaru. Gunakan filter untuk mempersempit.</p>
       )}

@@ -135,6 +135,31 @@ test("courseSummary & groupByLevel", () => {
   assert.deepEqual(g[1].units.map((u: { slug: string }) => u.slug), ["u1", "u2"]);
 });
 
+test("attachReadStep: sesudah baca terakhir, atau sebelum dengar; placeholder diisi; tanpa duplikat", () => {
+  const steps = [{ type: "vocab", items: [{ word: "a" }] }, { type: "read", text_id: "t1" }, { type: "listen", text: "x" }, { type: "exercise" }];
+  const a = c.attachReadStep(steps, "t2", "Bacaan 2");
+  assert.deepEqual(a.map((s: { type: string }) => s.type), ["vocab", "read", "read", "listen", "exercise"]);
+  assert.equal(a[2].text_id, "t2");
+  const b = c.attachReadStep([{ type: "vocab", items: [] }, { type: "listen", text: "x" }], "t1", "B");
+  assert.deepEqual(b.map((s: { type: string }) => s.type), ["vocab", "read", "listen"]);
+  const d = c.attachReadStep([{ type: "vocab", items: [] }, { type: "exercise" }], "t1", "B");
+  assert.deepEqual(d.map((s: { type: string }) => s.type), ["vocab", "read", "exercise"]);
+  assert.deepEqual(c.attachReadStep([{ type: "vocab", items: [] }], "t1", "B").map((s: { type: string }) => s.type), ["vocab", "read"]);
+  const filled = c.attachReadStep([{ type: "read", title: "Bacaan" }, { type: "listen", text: "x" }], "t9", "AI");
+  assert.equal(filled.length, 2);
+  assert.equal(filled[0].text_id, "t9");
+  assert.equal(filled[0].title, "Bacaan");
+  assert.equal(c.attachReadStep(steps, "t1", "x").length, steps.length);
+  assert.equal(steps.length, 4); // masukan tidak diubah
+});
+
+test("hasReadingContent & unitVocabWords", () => {
+  assert.equal(c.hasReadingContent([{ type: "read" }, { type: "listen", text: "x" }]), false);
+  assert.equal(c.hasReadingContent([{ type: "read", text_id: "t" }]), true);
+  assert.equal(c.hasReadingContent([{ type: "read", content: "Hi." }]), true);
+  assert.deepEqual(c.unitVocabWords([{ type: "vocab", items: [{ word: "Book" }, { word: "water" }] }, { type: "vocab", items: [{ word: "book" }] }]), ["book", "water"]);
+});
+
 test("seed migrasi 0013: semua langkah dan soal contoh lolos validasi", () => {
   const sql = fs.readFileSync(path.join(repo, "supabase/migrations/0013_course_units.sql"), "utf8");
   const stepLists = [...sql.matchAll(/\$j\$([\s\S]*?)\$j\$/g)].map((m) => m[1]).concat([...sql.matchAll(/^\s*'(\[\{"type".*\]|\[\])',$/gm)].map((m) => m[1]));
