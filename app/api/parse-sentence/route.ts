@@ -1,6 +1,6 @@
 import { runAI } from "@/lib/ai/run";
+import { guardAIRoute } from "@/lib/ai/guard";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
 
 const SYSTEM_PROMPT = `You are an expert linguistics parser. 
 You will be provided with a long, complex English sentence.
@@ -54,14 +54,10 @@ Finally, provide a clear, concise 'anatomy_explanation' in Indonesian explaining
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { text } = await req.json();
+    const guard = await guardAIRoute(req, { limitKey: "parse-sentence", maxChars: 5000, maxMessages: 5 });
+    if (guard instanceof NextResponse) return guard;
+    const { user, supabase, body } = guard;
+    const { text } = body as { text?: string };
 
     if (!text || text.trim() === "") {
       return NextResponse.json({ error: "Missing sentence text" }, { status: 400 });
@@ -90,8 +86,6 @@ export async function POST(req: Request) {
 
     // LOG ACTIVITY
     try {
-      const supabase = await createClient();
-      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         await supabase.from("activity_logs").insert({
           user_id: user.id,

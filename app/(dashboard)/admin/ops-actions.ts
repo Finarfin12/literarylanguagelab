@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { assertAdmin, toErrorMessage, type ActionResult } from "./_lib/guard";
 import { getServiceClient } from "@/lib/ai/admin-client";
 import { invalidateFeatureFlags } from "@/lib/ai/flags";
+import { resolveFlag } from "@/lib/ai/flag-rules";
 import { logAdminAction } from "@/lib/admin-audit";
 import { RATE_LIMIT_USE_CASES } from "./_lib/constants";
 
@@ -40,7 +41,7 @@ export async function setFeatureFlag(featureKey: string, enabled: boolean): Prom
       actorId: user.id,
       action: "feature.toggle",
       target: featureKey,
-      before: { enabled: before[featureKey] !== false },
+      before: { enabled: resolveFlag(before as Record<string, boolean>, featureKey) },
       after: { enabled },
     });
     invalidateFeatureFlags();

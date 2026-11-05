@@ -31,7 +31,6 @@ export const viewport: Viewport = {
   themeColor: "#2fa16b",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -41,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="id"
       suppressHydrationWarning
       className={`${sourceSans.variable} ${alegreya.variable} h-full antialiased`}
     >

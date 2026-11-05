@@ -1,21 +1,17 @@
 import { runAI } from "@/lib/ai/run";
+import { guardAIRoute } from "@/lib/ai/guard";
 import { NextResponse } from "next/server";
 import { getRateLimit } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
 import { TOOLS } from "@/lib/tools-config";
-import { createClient } from "@/utils/supabase/server";
 
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { toolId, text, configValue } = await req.json();
+    const guard = await guardAIRoute(req, { limitKey: "dynamic-tools", maxChars: 40000, maxMessages: 5 });
+    if (guard instanceof NextResponse) return guard;
+    const { user, supabase, body } = guard;
+    const { toolId, text, configValue } = body as { toolId?: string; text?: string; configValue?: string };
 
     if (!text || !toolId) {
       return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
@@ -41,8 +37,6 @@ export async function POST(req: Request) {
 
     // LOG ACTIVITY
     try {
-      const supabase = await createClient();
-      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         await supabase.from("activity_logs").insert({
           user_id: user.id,

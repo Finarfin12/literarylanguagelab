@@ -26,7 +26,7 @@ export default function ClozeExercise({ exercise, locked, onSubmit }: TypeProps<
         if (!locked && ready) onSubmit({ blanks: values });
       }}
     >
-      <p className="font-serif text-xl text-foreground leading-[2.6]">
+      <p lang="en" className="font-serif text-xl text-foreground leading-[2.6]">
         {parts.map((part, i) => (
           <Fragment key={i}>
             {part}

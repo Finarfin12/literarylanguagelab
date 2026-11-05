@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import TextDisplay from "@/components/reader/TextDisplay";
 
-export default async function ReadTextPage({ params }: { params: { textId: string } }) {
+export default async function ReadTextPage({ params }: { params: Promise<{ textId: string }> }) {
   const supabase = await createClient();
   const { textId } = await params;
 

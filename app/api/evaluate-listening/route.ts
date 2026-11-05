@@ -1,23 +1,21 @@
 import { runAI } from "@/lib/ai/run";
+import { guardAIRoute } from "@/lib/ai/guard";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
 import { recordEvidence } from "@/lib/skill-evidence";
 
 export async function POST(req: Request) {
   try {
-    const { answers, textId, chapter } = await req.json();
+    const guard = await guardAIRoute(req, { limitKey: "evaluate-listening", maxChars: 20000, maxMessages: 10 });
+    if (guard instanceof NextResponse) return guard;
+    const { user, supabase, body } = guard;
+    const { answers, textId, chapter } = body as { answers?: { question: string; expected_answer: string; user_transcript: string }[]; textId?: string; chapter?: number };
+
     // answers is an array of { question, expected_answer, user_transcript }
 
     if (!answers || !Array.isArray(answers) || answers.length === 0) {
       return NextResponse.json({ error: "Missing answers" }, { status: 400 });
     }
 
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
 
     const prompt = `You are an expert English teacher evaluating a student's listening comprehension.

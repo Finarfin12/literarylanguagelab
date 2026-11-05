@@ -5,7 +5,8 @@ import Link from "next/link";
 import { postDiscussion } from "../actions";
 import SubmitButton from "@/components/ui/SubmitButton";
 
-export default async function ClubDetailPage({ params }: { params: { id: string } }) {
+export default async function ClubDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -29,7 +30,7 @@ export default async function ClubDetailPage({ params }: { params: { id: string 
         user:profiles(id, name, avatar_url)
       )
     `)
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (error || !group) {

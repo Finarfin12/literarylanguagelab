@@ -1,17 +1,13 @@
 import { runAI } from "@/lib/ai/run";
+import { guardAIRoute } from "@/lib/ai/guard";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
 
 export async function POST(req: Request) {
   try {
-    const { textId } = await req.json();
-
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const guard = await guardAIRoute(req, { limitKey: "vocab-analysis", maxChars: 500, maxMessages: 5 });
+    if (guard instanceof NextResponse) return guard;
+    const { user, supabase, body } = guard;
+    const { textId } = body as { textId?: string };
 
     const { data: textData } = await supabase.from('texts').select('content, key_vocabulary').eq('id', textId).single();
     

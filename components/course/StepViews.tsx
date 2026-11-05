@@ -82,7 +82,7 @@ export function ReadStep({ view }: { view: StepView }) {
     <div>
       <p className="font-serif text-xl text-foreground">{text.title}</p>
       {text.author && <p className="text-sm text-muted-foreground mb-3">{text.author}</p>}
-      <div className="mt-3 space-y-3 font-serif text-lg leading-[1.7] text-foreground">
+      <div lang="en" className="mt-3 space-y-3 font-serif text-lg leading-[1.7] text-foreground">
         {text.content.split(/\n{2,}/).map((p, i) => <p key={i}>{p}</p>)}
       </div>
       {text.id && (
@@ -108,7 +108,7 @@ export function ListenStep({ view }: { view: StepView }) {
           {show ? "Sembunyikan teks" : "Tampilkan teks"}
         </button>
       </div>
-      {show && <p className="mt-3 font-serif text-lg leading-relaxed text-foreground">{text}</p>}
+      {show && <p lang="en" className="mt-3 font-serif text-lg leading-relaxed text-foreground">{text}</p>}
       {note_id && <Note>{note_id}</Note>}
     </div>
   );
@@ -131,7 +131,7 @@ export function SpeakStep({ view }: { view: StepView }) {
           <ul className="divide-y divide-border">
             {view.step.sentences.map((s) => (
               <li key={s} className="flex items-center gap-3 py-3 min-h-[56px]">
-                <p className="flex-1 min-w-0 font-serif text-lg text-foreground">{s}</p>
+                <p lang="en" className="flex-1 min-w-0 font-serif text-lg text-foreground">{s}</p>
                 <SpeakButtons text={s} label={s} />
               </li>
             ))}

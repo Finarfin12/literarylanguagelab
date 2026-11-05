@@ -1,6 +1,6 @@
 import { runAI } from "@/lib/ai/run";
+import { guardAIRoute } from "@/lib/ai/guard";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
 import { getUserCefr } from "@/lib/user-level";
 import { explanationLanguage } from "@/lib/cefr";
 import { recordEvidence } from "@/lib/skill-evidence";
@@ -34,14 +34,10 @@ If the text has no errors, return score 100 with empty corrections array. Always
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { text } = await req.json();
+    const guard = await guardAIRoute(req, { limitKey: "grammar-clinic", maxChars: 20000, maxMessages: 5 });
+    if (guard instanceof NextResponse) return guard;
+    const { user, supabase, body } = guard;
+    const { text } = body as { text?: string };
 
     if (!text || !text.trim()) {
       return NextResponse.json({ error: "Teks tidak boleh kosong." }, { status: 400 });
@@ -88,8 +84,6 @@ export async function POST(req: Request) {
 
     // Save session to Supabase
     try {
-      const supabase = await createClient();
-      const { data: { user } } = await supabase.auth.getUser();
       if (user && parsed.corrections) {
         // Extract unique categories
         const categories = Array.from(new Set(parsed.corrections.map((c: any) => c.category).filter(Boolean)));

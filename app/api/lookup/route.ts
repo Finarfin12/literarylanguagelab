@@ -1,8 +1,8 @@
 import { runAI } from "@/lib/ai/run";
+import { guardAIRoute } from "@/lib/ai/guard";
 import { NextResponse } from "next/server";
 import { getRateLimit } from "@/lib/ai-config";
 import { formatAITextResponse, withAITextOutputRules } from "@/lib/ai-output";
-import { createClient } from "@/utils/supabase/server";
 import { getUserCefr } from "@/lib/user-level";
 import { explanationInstruction } from "@/lib/cefr";
 
@@ -34,14 +34,10 @@ const RAW_OUTPUT_MODES = new Set(["semantic-map", "collocations", "pictionary"])
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { word, contextSentence, title, author, mode = "dictionary", dictionaryPrefs } = await req.json();
+    const guard = await guardAIRoute(req, { limitKey: "lookup", maxChars: 10000, maxMessages: 5 });
+    if (guard instanceof NextResponse) return guard;
+    const { user, supabase, body } = guard;
+    const { word, contextSentence, title, author, mode = "dictionary", dictionaryPrefs } = body as { word?: string; contextSentence?: string; title?: string; author?: string; mode?: string; dictionaryPrefs?: { def_language?: string; show_register?: boolean; show_etymology?: boolean } };
 
     if (!word || !MODES[mode]) {
       return NextResponse.json({ error: "Invalid request parameters" }, { status: 400 });
@@ -82,9 +78,6 @@ export async function POST(req: Request) {
 
     // LOG ACTIVITY
     try {
-      const { createClient } = await import("@/utils/supabase/server");
-      const supabase = await createClient();
-      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         await supabase.from("activity_logs").insert({
           user_id: user.id,

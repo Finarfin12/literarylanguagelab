@@ -139,7 +139,11 @@ export async function isFeatureEnabled(featureName: string): Promise<boolean> {
  */
 export async function getRateLimit(
   useCase: 'lookup' | 'translation' | 'generation' | 'tools'
-): Promise<{ requests_per_minute: number; requests_per_hour: number }> {
+): Promise<{ requests_per_minute: number; requests_per_hour: number; requests_per_day?: number }> {
+  // Word Lookup dipakai terus-menerus saat membaca: bawaannya lebih longgar (Fase 19.2)
+  const fallback = useCase === 'lookup'
+    ? { requests_per_minute: 60, requests_per_hour: 1500, requests_per_day: 4000 }
+    : { requests_per_minute: 30, requests_per_hour: 500 };
   try {
     const supabase = await createClient();
     
@@ -150,13 +154,13 @@ export async function getRateLimit(
       .single();
     
     if (error || !data) {
-      return { requests_per_minute: 30, requests_per_hour: 500 }; // Default
+      return fallback; // Default
     }
-    
-    return data.value[useCase] || { requests_per_minute: 30, requests_per_hour: 500 };
+
+    return data.value[useCase] || fallback;
   } catch (error) {
     console.error('Error fetching rate limit:', error);
-    return { requests_per_minute: 30, requests_per_hour: 500 };
+    return fallback;
   }
 }
 

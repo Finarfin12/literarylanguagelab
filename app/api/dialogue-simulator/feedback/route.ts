@@ -1,6 +1,6 @@
 import { runAI } from "@/lib/ai/run";
+import { guardAIRoute } from "@/lib/ai/guard";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
 import { recordEvidence } from "@/lib/skill-evidence";
 
 const FEEDBACK_PROMPT = `You are an expert English language tutor analyzing a student's spoken English from a roleplay conversation. The student is an Indonesian learner.
@@ -34,14 +34,10 @@ Response format:
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { scenario, userMessages } = await req.json();
+    const guard = await guardAIRoute(req, { limitKey: "dialogue-feedback", maxChars: 20000, maxMessages: 60 });
+    if (guard instanceof NextResponse) return guard;
+    const { user, supabase, body } = guard;
+    const { scenario, userMessages } = body as { scenario?: string; userMessages?: string[] };
 
     if (!userMessages || userMessages.length === 0) {
       return NextResponse.json({ error: "Tidak ada pesan pengguna untuk dianalisis." }, { status: 400 });

@@ -1,20 +1,16 @@
 import { runAI } from "@/lib/ai/run";
+import { guardAIRoute } from "@/lib/ai/guard";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
 import { recordEvidence } from "@/lib/skill-evidence";
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const guard = await guardAIRoute(req, { limitKey: "writing-evaluate", maxChars: 20000, maxMessages: 50 });
+    if (guard instanceof NextResponse) return guard;
+    const { user, supabase, body } = guard;
+    const { textId, textTitle, prompt, response, requiredVocab } = body as { textId?: string; textTitle?: string; prompt?: string; response?: string; requiredVocab?: string[] };
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { textId, textTitle, prompt, response, requiredVocab } = await req.json();
-
-    if (!response || !prompt || !requiredVocab) {
+    if (!response || !prompt || !Array.isArray(requiredVocab)) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 

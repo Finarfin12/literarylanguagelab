@@ -3,6 +3,7 @@ import { requireAdminPage } from "./_lib/guard";
 import { AdminPageHeader, MissingMigrationNotice } from "./_lib/ui";
 import { getFeature } from "@/lib/ai/features";
 import VocabChart from "@/components/dashboard/VocabChart";
+import SchemaStatusCard from "./SchemaStatusCard";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +35,9 @@ export default async function AdminOverviewPage() {
   const { supabase } = await requireAdminPage();
 
   const { since7d, since24h } = getWindows();
+  // SHA deployment (Vercel mengisinya saat build/deploy; kosong di lokal)
+  const deploySha = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7);
+  const deployEnv = process.env.VERCEL_ENV;
 
   const [logsRes, usersRes, pricesRes] = await Promise.all([
     supabase
@@ -116,6 +120,12 @@ export default async function AdminOverviewPage() {
   return (
     <div className="p-4 lg:p-8 max-w-6xl mx-auto pb-24">
       <AdminPageHeader icon={<LayoutDashboard className="w-7 h-7" />} title="Ringkasan" description="Pemakaian AI 7 hari terakhir, error, pengguna aktif, dan estimasi biaya." />
+      <p className="text-xs text-muted-foreground -mt-3 mb-4">
+        Deployment:{" "}
+        {deploySha ? <code>{deploySha}</code> : "tidak diketahui (bukan deployment Vercel)"}
+        {deployEnv ? ` · ${deployEnv}` : ""}
+      </p>
+      <SchemaStatusCard />
       {logs.length >= MAX_ROWS && (
         <p className="text-xs text-muted-foreground mb-4">Menampilkan {MAX_ROWS.toLocaleString("id-ID")} log terbaru; angka 7 hari mungkin lebih kecil dari sebenarnya.</p>
       )}

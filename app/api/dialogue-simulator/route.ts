@@ -1,18 +1,14 @@
 import { runAI } from "@/lib/ai/run";
+import { guardAIRoute } from "@/lib/ai/guard";
 import { NextResponse } from "next/server";
 import { DIALOGUE_SCENARIOS } from "@/lib/dialogue-scenarios";
-import { createClient } from "@/utils/supabase/server";
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { scenarioId, messages } = await req.json();
+    const guard = await guardAIRoute(req, { limitKey: "dialogue-simulator", maxChars: 20000, maxMessages: 60 });
+    if (guard instanceof NextResponse) return guard;
+    const { user, body } = guard;
+    const { scenarioId, messages } = body as { scenarioId?: string; messages?: { role: "user" | "assistant"; content: string }[] };
 
     const scenario = DIALOGUE_SCENARIOS.find(s => s.id === scenarioId);
     if (!scenario) {
@@ -22,8 +18,8 @@ export async function POST(req: Request) {
 
     const chatMessages = [
       { role: "system" as const, content: scenario.systemPrompt },
-      ...messages.map((m: any) => ({
-        role: m.role as "user" | "assistant",
+      ...(messages ?? []).map((m) => ({
+        role: m.role,
         content: m.content,
       })),
     ];

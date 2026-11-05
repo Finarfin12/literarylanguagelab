@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { getRateLimit } from "@/lib/ai-config";
 import { isFeatureOn } from "@/lib/ai/flags";
+import { DEFAULT_PER_DAY, isMissingRpc, isOverLimit, limitMessage, windowSpecs } from "@/lib/rate-limit-rules";
 
 // In-memory sliding window cache for rate limiting (fallback & high-reliability)
 const usageMemory = new Map<string, number[]>();
@@ -33,9 +34,59 @@ function mapFeatureToUseCase(featureKey?: string): "lookup" | "translation" | "g
   return "tools";
 }
 
+function tooMany(message: string, retryAfter: number) {
+  return NextResponse.json({ error: message }, { status: 429, headers: { "Retry-After": String(retryAfter) } });
+}
+
+type Limits = { perMinute: number; perHour: number; perDay: number };
+
 /**
- * Memeriksa apakah pengguna telah melebihi batas kuota AI per menit atau per hari.
- * Mengembalikan NextResponse (429) jika limit terlampaui, atau null jika lolos.
+ * Penghitung lintas instance (migrasi 0019, fungsi consume_rate_limit).
+ * Hasil: "unavailable" = migrasi belum dijalankan (pakai perilaku lama), "ok", atau respons galat (429/503).
+ */
+async function consumeFromDatabase(useCase: string, limits: Limits): Promise<"unavailable" | "ok" | NextResponse> {
+  try {
+    const supabase = await createClient();
+    const specs = windowSpecs(limits);
+    // Menit dulu: bila sudah penuh, jendela jam/hari tidak ikut bertambah oleh permintaan yang ditolak.
+    for (const group of [[specs[0]], [specs[1], specs[2]]]) {
+      const results = await Promise.all(
+        group.map(async (w) => ({
+          w,
+          res: await supabase.rpc("consume_rate_limit", {
+            p_key: `ai:${useCase}`,
+            p_window_seconds: w.seconds,
+            p_limit: w.limit,
+          }),
+        }))
+      );
+      for (const { w, res } of results) {
+        if (res.error) {
+          if (isMissingRpc(res.error)) return "unavailable";
+          console.error("consume_rate_limit gagal:", res.error);
+          return NextResponse.json(
+            { error: "Penghitung batas pemakaian AI sedang bermasalah. Silakan coba lagi sebentar." },
+            { status: 503, headers: { "Retry-After": "30" } }
+          );
+        }
+        if (typeof res.data === "number" && isOverLimit(res.data, w.limit)) {
+          return tooMany(limitMessage(w.name, w.limit), w.retryAfter);
+        }
+      }
+    }
+    return "ok";
+  } catch (err) {
+    console.error("consume_rate_limit error:", err);
+    return NextResponse.json(
+      { error: "Penghitung batas pemakaian AI sedang bermasalah. Silakan coba lagi sebentar." },
+      { status: 503, headers: { "Retry-After": "30" } }
+    );
+  }
+}
+
+/**
+ * Memeriksa apakah pengguna telah melebihi batas kuota AI per menit, jam, atau hari.
+ * Mengembalikan NextResponse (429/503) jika ditolak, atau null jika lolos.
  */
 export async function checkRateLimit(
   userId: string,
@@ -47,71 +98,53 @@ export async function checkRateLimit(
   }
 
   const useCase = mapFeatureToUseCase(featureKey);
-  const limits = await getRateLimit(useCase);
-  const limitPerMinute = limits.requests_per_minute || 30;
-  const limitPerHour = limits.requests_per_hour || 500;
+  const config = await getRateLimit(useCase);
+  const limitPerMinute = config.requests_per_minute || 30;
+  const limitPerHour = config.requests_per_hour || 500;
+  const limitPerDay = config.requests_per_day || DEFAULT_PER_DAY;
 
   // 1. Cek in-memory sliding window
   const memCountMinute = getRecentCountFromMemory(userId, 60 * 1000);
   const memCountHour = getRecentCountFromMemory(`${userId}:hour`, 60 * 60 * 1000);
 
   if (memCountMinute >= limitPerMinute) {
-    return NextResponse.json(
-      {
-        error: `Batas pemakaian AI tercapai (maksimum ${limitPerMinute} request/menit). Silakan tunggu sebentar.`,
-      },
-      {
-        status: 429,
-        headers: { "Retry-After": "60" },
-      }
-    );
+    return tooMany(limitMessage("minute", limitPerMinute), 60);
   }
 
   if (memCountHour >= limitPerHour) {
-    return NextResponse.json(
-      {
-        error: "Batas pemakaian AI harian tercapai. Silakan coba kembali nanti.",
-      },
-      {
-        status: 429,
-        headers: { "Retry-After": "3600" },
-      }
-    );
+    return tooMany(limitMessage("hour", limitPerHour), 3600);
   }
 
-  // 2. Cek database via RPC count_recent_usage jika tersedia
-  try {
-    const supabase = await createClient();
-    const { data: dbCountMinute, error: rpcError } = await supabase.rpc(
-      "count_recent_usage",
-      {
+  // 2. Penghitung database lintas instance (0019). Jika belum dimigrasi: perilaku lama lewat count_recent_usage.
+  const consumed = await consumeFromDatabase(useCase, {
+    perMinute: limitPerMinute,
+    perHour: limitPerHour,
+    perDay: limitPerDay,
+  });
+  if (consumed instanceof NextResponse) return consumed;
+
+  if (consumed === "unavailable") {
+    try {
+      const supabase = await createClient();
+      const { data: dbCountMinute, error: rpcError } = await supabase.rpc("count_recent_usage", {
         target_user_id: userId,
         interval_text: "1 minute",
-      }
-    );
+      });
 
-    if (!rpcError && typeof dbCountMinute === "number") {
-      if (dbCountMinute >= limitPerMinute) {
-        return NextResponse.json(
-          {
-            error: `Batas pemakaian AI tercapai (maksimum ${limitPerMinute} request/menit). Silakan tunggu sebentar.`,
-          },
-          {
-            status: 429,
-            headers: { "Retry-After": "60" },
-          }
-        );
+      if (!rpcError && typeof dbCountMinute === "number" && dbCountMinute >= limitPerMinute) {
+        return tooMany(limitMessage("minute", limitPerMinute), 60);
       }
+    } catch {
+      // Abaikan jika RPC belum tersedia di database
     }
-  } catch {
-    // Abaikan jika RPC belum tersedia di database
   }
 
   // Catat pemakaian
   recordUsageInMemory(userId);
   recordUsageInMemory(`${userId}:hour`);
 
-  // Asinkron log ke tabel ai_usage_logs (best effort)
+  // Log ke tabel ai_usage_logs (best effort). Baris 'requested' ini hanya untuk statistik Admin,
+  // bukan sumber hitungan batas bila 0019 sudah ada.
   try {
     const supabase = await createClient();
     await supabase.from("ai_usage_logs").insert({
@@ -143,4 +176,3 @@ export async function checkIpRateLimit(
   recordUsageInMemory(`ip:${ip}`);
   return null;
 }
-

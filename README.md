@@ -55,7 +55,7 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Paraphrase Challenge**: Uji kemampuan memparafrase kalimat tingkat tinggi.
 - **Pronunciation Clinic**: Latih dan uji pelafalan bahasa Inggris Anda dengan penilaian skor cerdas berbasis teknologi *Voice-to-Text* (mendukung *Browser Native* dan model AI Whisper).
 - **Writing Prompts (Input → Output Loop)**: Melengkapi siklus membaca dengan tantangan merangkum cerita menggunakan kosakata yang baru dipelajari, dievaluasi langsung oleh AI (Grammar, Vocab, Coherence).
-- **All Toolkits Hub**: Etalase visual (*App Drawer*) interaktif yang menampung 30+ alat analisis AI mini, dilengkapi bilah pencarian pintar (*search bar*) dan filter berbasis kategori (Transformers, Extractors, Gamification, Lexicon).
+- **All Toolkits Hub**: Etalase visual (*App Drawer*) interaktif yang menampung 30+ alat analisis AI mini, dilengkapi bilah pencarian pintar (*search bar*) dan filter berbasis kategori (Transformers, Extractors, Lexicon).
 
 ### 4. Bantuan & Panduan Otomatis (Settings)
 - Semua pengaturan preferensi bacaan, tampilan antarmuka (termasuk micro-animations), dan akses bantuan sudah disinkronisasi secara **otomatis**.
@@ -66,9 +66,8 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - Mampu memberikan penjelasan kontekstual (Pop-up Companion) tanpa perlu menyalin teks secara manual.
 - Evaluasi penulisan dan analisis tata bahasa dilakukan seketika (otomatis) di latar belakang.
 
-### 6. Path Journey (Peta Pembelajaran Otomatis)
-- Sistem akan merekomendasikan jalur pembelajaran secara **otomatis** berdasarkan tes penempatan (Placement Test).
-- Semua progress dari latihan mikro (*Daily Practice*, kuis cerita) dilacak secara otomatis ke dalam *Journey Widget* tanpa perlu pembaruan manual.
+### 6. Jalur Belajar
+- Sistem merekomendasikan bacaan dan latihan berdasarkan tes penempatan (Placement Test) dan level CEFR per keterampilan Anda.
 
 ### 7. Vocabulary Bank, Lexicon & Spaced Repetition
 - Simpan kosa kata apa pun yang Anda temui saat membaca buku.
@@ -80,11 +79,10 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Spaced Repetition Algorithm**: Sistem pengulangan cerdas yang akan mengingatkan Anda untuk mengulang (review) suatu kata tepat sebelum Anda hampir melupakannya.
 - Pantau statistik dan grafik pertumbuhan penguasaan kosa kata.
 
-### 5. Komunitas, Forum & Gamifikasi
+### 5. Komunitas, Forum & Jejaring
 - **Reading Clubs**: Bentuk atau gabung klub baca untuk berdiskusi per bab.
-- **Translation Duels**: Kompetisi menerjemahkan kutipan sastra tersulit, di mana komunitas akan memberikan suara (voting) untuk terjemahan terbaik.
-- **Global Leaderboard & Gamification Tiers**: Dapatkan poin (XP) dari aktivitas belajar Anda. Pangkat Anda (misal: *Novice Reader* hingga *Master of Linguistics*) akan digabungkan dengan level CEFR bahasa Anda dan ditampilkan secara publik.
-- **Community Annotations**: Berbagi catatan untuk kutipan sulit dan kumpulkan poin dari dukungan komunitas.
+- **Level CEFR per keterampilan**: Level Anda dihitung dari bukti belajar nyata (latihan, tes, penulisan) dan dinaikkan lewat Tes Naik Level. Tidak ada poin, peringkat, atau streak.
+- **Community Annotations**: Berbagi catatan untuk kutipan sulit dan beri dukungan pada catatan yang membantu.
 - **Jejaring Pembaca & Pesan Langsung**: Temukan pembaca lain, ikuti (follow) profil mereka, dan bertukar pikiran secara pribadi melalui fitur Direct Messaging.
 - **Role System & User Management**: Sistem hak akses berjenjang (*User, Curator, Moderator, Admin*). Admin memiliki panel kontrol khusus untuk mengangkat staf komunitas secara aman.
 
@@ -95,22 +93,22 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Manajemen Privasi & Hapus Akun**: Kontrol penuh atas data Anda melalui menu Pengaturan Privasi, termasuk kemampuan untuk menghapus akun secara permanen.
 - **Developer Mode**: Fitur tersembunyi khusus Administrator untuk mengakses alat bantu *debugging*.
 
-### 11. Profile & Gamification
-- **Dashboard (/dashboard):** statistik (streak, teks selesai, review mingguan, total kosa kata), grafik pertumbuhan. Termasuk fitur **Daily Practice** yang menampilkan 3 misi mikro harian: *Word of the Day*, *Grammar Byte* (berdasarkan pola kelemahan personal), dan *Review Nudge*.
-- **Profile (/profile):** avatar, XP, streak, vocab count, achievements
+### 11. Dashboard & Profil
+- **Dashboard (/dashboard):** statistik (teks selesai, review mingguan, total kosa kata), grafik pertumbuhan, dan saran langkah berikutnya.
+- **Profile (/profile):** avatar, level CEFR per keterampilan, jumlah kosakata, portofolio publik
 
 ### 7. English Lab (General English Learning)
 Fitur pembelajaran bahasa Inggris umum yang dirancang bagi mereka yang ingin berlatih bahasa Inggris sehari-hari tanpa harus selalu membaca sastra berat.
 - **Everyday Grammar Clinic**: Tempelkan teks apa pun (email, obrolan santai, tugas) dan AI akan menganalisis kesalahan tata bahasa Anda dengan skor 0-100 dan penjelasan bahasa Indonesia yang mudah dimengerti. Mendukung input suara (Voice Dictation).
-- **Weekly Writing Challenge**: Tantangan menulis mingguan dengan pelacak *Writing Streak* untuk membentuk kebiasaan bahasa Inggris yang aktif. Dilengkapi evaluasi komprehensif dari AI (skor, pujian kosakata, dan perbaikan grammar).
+- **Writing Challenge (setelah membaca)**: Tantangan menulis ringkas dengan kosakata dari bacaan, dilengkapi evaluasi AI (skor, pujian kosakata, dan perbaikan grammar).
 - **Interactive Flashcards (SRS)**: Belajar menghafal kosakata yang Anda kumpulkan dari bacaan menggunakan tiga mode kuis interaktif (Tebak Arti, Tebak Kata, dan Dikte) yang ditenagai oleh algoritma Spaced Repetition (Leitner Box).
 - **Dialogue Simulator**: Berlatih berbicara langsung dengan AI dalam 8 skenario dunia nyata (seperti wawancara kerja, memesan kopi, check-in bandara, dsb). Menyediakan skor kelancaran, grammar, dan saran peningkatan kosa kata di akhir percakapan.
 - **Listening Comprehension Test**: Menguji kemampuan pendengaran dengan mode kuis pilihan ganda dan dikte (mengetik teks dari audio). Anda bisa mengatur level kesulitan (CEFR A1-B2) atau bahkan mengunggah file audio manual Anda sendiri.
 - **Modern Slang Decoder**: Membantu memecahkan dan menerjemahkan kalimat gaul, singkatan internet, atau referensi budaya pop (Gen Z lingo) ke dalam bahasa Indonesia sehari-hari, lengkap dengan tingkat formalitas dan contoh penggunaannya.
 
-### 10. Reading Journey & Placement Test (Learning Path)
+### 10. Placement Test & Tes Naik Level
 - **Placement Test**: Tes adaptif singkat untuk mengukur kemampuan bahasa Inggris (Reading, Listening, Grammar, Vocabulary) dan mendapatkan rekomendasi level CEFR secara otomatis.
-- **Reading Journey (Path Otomatis)**: Jalur pembelajaran gamifikasi terstruktur yang secara **otomatis** diperbarui berdasarkan penyelesaian tugas mikro Anda. Dari level A1 hingga C2, sistem melacak "Quest" dan menyajikan alat yang tepat tanpa navigasi membingungkan.
+- **Tes Naik Level**: Tes singkat yang dinilai di server untuk menaikkan level CEFR per keterampilan, tanpa poin atau peringkat.
 
 ---
 

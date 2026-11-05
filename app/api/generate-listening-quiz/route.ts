@@ -1,21 +1,18 @@
 import { runAI } from "@/lib/ai/run";
+import { guardAIRoute } from "@/lib/ai/guard";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
 
 export async function POST(req: Request) {
   try {
-    const { text, title, author } = await req.json();
+    const guard = await guardAIRoute(req, { limitKey: "listening-quiz", maxChars: 120000, maxMessages: 5 });
+    if (guard instanceof NextResponse) return guard;
+    const { user, body } = guard;
+    const { text, title, author } = body as { text?: string; title?: string; author?: string };
 
     if (!text || text.trim() === "") {
       return NextResponse.json({ error: "Missing text" }, { status: 400 });
     }
 
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
 
     const prompt = `You are an expert English teacher. The user just read a chapter or a passage from "${title || "a book"}" by ${author || "unknown"}.

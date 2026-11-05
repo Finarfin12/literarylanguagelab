@@ -61,6 +61,7 @@ function ReaderBlock({
         </span>
       )}
       <div
+        lang="en"
         className={`flex-1 min-w-0 ${
           isHeading
             ? "gutenberg-heading mt-10 mb-6 text-center text-2xl md:text-3xl font-bold"

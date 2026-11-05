@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { User, GraduationCap, Library, Quote, Users } from "lucide-react";
 import ProfileActions from "@/components/community/ProfileActions";
 
-export default async function PublicPortfolioPage({ params }: { params: { username: string } }) {
+export default async function PublicPortfolioPage({ params }: { params: Promise<{ username: string }> }) {
   const supabase = await createClient();
   const { username } = await params;
   
