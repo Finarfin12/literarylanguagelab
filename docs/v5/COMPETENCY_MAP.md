@@ -53,7 +53,7 @@ Alat periksa untuk Fase 24–28: memastikan Modul Belajar mencakup kompetensi ya
 |---|---|---|---|---|---|
 | 23 | Morfologi & sintaksis bahasa Inggris | Struktur Kata & Kalimat (Inggris) | `/tools/sentence-architect` | 📝 🔧 morfologi | ✅ draft |
 | 24 | Morfologi & sintaksis bahasa Indonesia | **Morfologi & Sintaksis Bahasa Indonesia** (baru, celah hasil pencocokan) | `/tools/sentence-architect` | 📝 | ✅ draft |
-| 25 | Semantik & relasi makna | Makna & Nuansa | `/tools/semantic-map`, `/tools/literary-synonyms`, `/tools/nuance-detector` | ✅ | ☐ |
+| 25 | Semantik & relasi makna | Makna & Nuansa | `/tools/semantic-map`, `/tools/literary-synonyms`, `/tools/nuance-detector` | ✅ | ✅ draft |
 | 26 | Sejarah pemikiran & teori kritis | Pemikiran & Teori Kritis | `/tools/critical-lens`, `/tools/time-traveler` | 📝 | ☐ |
 | 27 | Terjemahan hukum, kesehatan, sains | Terjemahan Domain Khusus | `/translation-workspace`, `/glossary` | ✅ | ☐ |
 | 28 | Terjemahan fiksi & puisi | Menerjemahkan Karya Fiksi | `/translation-workspace`, `/tools/imagery-grader` | ✅ | ☐ |
