@@ -382,8 +382,8 @@ test("AI hanya pendamping: rute lewat guardAIRoute; halaman utuh tanpa AI; keter
   assert.match(read("components/study/StudyDisclaimer.tsx"), /bukan program resmi lembaga mana pun/);
   // aksi admin mencatat log dan memeriksa admin
   const adminActions = read("app/(dashboard)/admin/study-actions.ts");
-  assert.equal((adminActions.match(/await assertAdmin\(\)/g) ?? []).length, 6);
-  assert.ok((adminActions.match(/await logAdminAction\(/g) ?? []).length >= 6);
+  assert.equal((adminActions.match(/await assertAdmin\(\)/g) ?? []).length, 7);
+  assert.ok((adminActions.match(/await logAdminAction\(/g) ?? []).length >= 7);
   // Markdown aman: tanpa HTML mentah
   const md = read("components/study/LessonMarkdown.tsx");
   assert.ok(!/rehype-raw|dangerouslySetInnerHTML/.test(md));

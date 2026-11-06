@@ -9,6 +9,7 @@ import { logAdminAction } from "@/lib/admin-audit";
 import { runAI } from "@/lib/ai/run";
 import { extractJsonObject } from "@/lib/ai/json";
 import { LESSON_LIMITS, SLUG, cleanLessonInput, cleanList, cleanSources } from "@/lib/study";
+import { validateExerciseDraft } from "@/lib/exercises/grade";
 import { MISSING_SCHEMA_CODES } from "./_lib/content-types";
 
 const MIGRATION_HINT = "Migrasi 0023_study_modules.sql belum dijalankan.";
@@ -117,6 +118,56 @@ export async function setSubjectPublished(slug: string, published: boolean): Pro
     await logAdminAction({ actorId: user.id, action: published ? "study_subject.publish" : "study_subject.unpublish", target: slug });
     revalidateStudy(slug);
     return { ok: true };
+  } catch (error) {
+    return { ok: false, error: toErrorMessage(error) };
+  }
+}
+
+/**
+ * Menerbitkan semua draf sekaligus (satu mata pelajaran, atau semuanya bila subject_slug kosong): mata pelajaran, pelajaran
+ * (ditandai ditinjau), serta soal pelajaran dan kuis akhir yang valid. Soal ikut diterbitkan karena pengguna hanya melihat soal
+ * berstatus terbit. Pelajaran yang sudah terbit tidak berubah. Hasil checkLesson hanya informasi, tidak memblokir.
+ */
+export async function publishStudyDrafts(input: { subject_slug?: string }): Promise<ActionResult<{ subjects: number; lessons: number; exercises: number; skipped: number }>> {
+  try {
+    const { supabase, user } = await assertAdmin();
+    const only = input.subject_slug?.trim() || "";
+    if (only && !SLUG.test(only)) return { ok: false, error: "Slug tidak valid." };
+    const now = new Date().toISOString();
+
+    let subjectQuery = supabase.from("study_subjects").update({ status: "published", updated_at: now }).eq("status", "draft");
+    if (only) subjectQuery = subjectQuery.eq("slug", only);
+    const subjectsRes = await subjectQuery.select("slug");
+    if (subjectsRes.error) return { ok: false, error: dbError(subjectsRes.error) };
+
+    // Pelajaran yang belum ditinjau ditandai ditinjau; yang sudah ditinjau mempertahankan tanda lamanya
+    let lessonQuery = supabase.from("study_lessons").update({ status: "published", updated_at: now }).eq("status", "draft");
+    if (only) lessonQuery = lessonQuery.eq("subject_slug", only);
+    const lessonsRes = await lessonQuery.select("slug");
+    if (lessonsRes.error) return { ok: false, error: dbError(lessonsRes.error) };
+    const lessonSlugs = (lessonsRes.data || []).map((r) => r.slug as string);
+    if (lessonSlugs.length > 0) {
+      const { error } = await supabase.from("study_lessons").update({ reviewed_at: now, reviewed_by: user.id }).in("slug", lessonSlugs).is("reviewed_at", null);
+      if (error) return { ok: false, error: dbError(error) };
+    }
+
+    // Soal draf pelajaran dan kuis akhir (tag mod:*), hanya yang lolos validasi
+    let exerciseQuery = supabase.from("exercises").select("*").eq("status", "draft").or("lesson_slug.not.is.null,subject_slug.not.is.null").limit(5000);
+    if (only) exerciseQuery = exerciseQuery.eq("subject_slug", only);
+    const exercisesRes = await exerciseQuery;
+    if (exercisesRes.error) return { ok: false, error: dbError(exercisesRes.error) };
+    const rows = exercisesRes.data || [];
+    const valid = rows.filter((row) => validateExerciseDraft(row).ok).map((row) => row.id as string);
+    for (let i = 0; i < valid.length; i += 200) {
+      const { error } = await supabase.from("exercises").update({ status: "published" }).in("id", valid.slice(i, i + 200));
+      if (error) return { ok: false, error: dbError(error) };
+    }
+
+    const result = { subjects: subjectsRes.data?.length ?? 0, lessons: lessonSlugs.length, exercises: valid.length, skipped: rows.length - valid.length };
+    await logAdminAction({ actorId: user.id, action: "study.publish_all", target: only || "semua", after: result });
+    revalidateStudy(only || undefined);
+    revalidatePath("/admin/content/exercises");
+    return { ok: true, data: result };
   } catch (error) {
     return { ok: false, error: toErrorMessage(error) };
   }

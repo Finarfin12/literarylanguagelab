@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { AlertTriangle, CheckCircle2, Eye, EyeOff, ExternalLink, Pencil, Sparkles, Trash2 } from "lucide-react";
 import { STAGE_LABELS, formatSourceLines, isStage, parseSourceLines, type LessonSource } from "@/lib/study";
 import { buttonClass, inputClass } from "../../_lib/ui";
-import { deleteLesson, generateLessonDraft, markLessonReviewed, saveLesson, setLessonPublished, setSubjectPublished } from "../../study-actions";
+import { deleteLesson, generateLessonDraft, markLessonReviewed, publishStudyDrafts, saveLesson, setLessonPublished, setSubjectPublished } from "../../study-actions";
 
 export interface AdminSubject {
   slug: string;
@@ -74,6 +74,24 @@ export default function ModuleManager({ subjects, lessons, schemaReady }: { subj
     });
   };
 
+  const draftLessons = lessons.filter((l) => l.status === "draft").length;
+  const draftSubjects = subjects.filter((s) => s.status === "draft").length;
+
+  const publishAll = (subject?: string, label?: string) => {
+    const scope = label ? `semua draft "${label}"` : "SEMUA draft modul";
+    if (!window.confirm(`Terbitkan ${scope}? Mata pelajaran, pelajaran (ditandai ditinjau), dan soalnya yang valid ikut terbit. Pemeriksaan di bawah tiap pelajaran hanya informasi.`)) return;
+    setMessage(null);
+    startTransition(async () => {
+      const res = await publishStudyDrafts({ subject_slug: subject });
+      if (!res.ok) setMessage({ tone: "error", text: res.error || "Gagal menerbitkan." });
+      else if (res.data) {
+        const d = res.data;
+        setMessage({ tone: "ok", text: `Diterbitkan: ${d.subjects} mata pelajaran, ${d.lessons} pelajaran, ${d.exercises} soal.${d.skipped ? ` ${d.skipped} soal dilewati karena tidak valid (periksa di tab Latihan).` : ""}` });
+        router.refresh();
+      }
+    });
+  };
+
   const newForm = (subject: string): FormState => {
     const own = lessons.filter((l) => l.subject_slug === subject);
     return {
@@ -136,6 +154,12 @@ export default function ModuleManager({ subjects, lessons, schemaReady }: { subj
           <button type="button" disabled={!schemaReady || aiBusy || aiTopic.trim().length < 5} onClick={generate} className={`${buttonClass} bg-muted border border-border`}>
             <Sparkles className="w-4 h-4" aria-hidden="true" /> {aiBusy ? "Membuat..." : "Buat draf dengan AI"}
           </button>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-border">
+          <button type="button" disabled={!schemaReady || pending || (draftLessons === 0 && draftSubjects === 0)} onClick={() => publishAll()} className={`${buttonClass} bg-brand-solid text-on-brand`}>
+            <Eye className="w-4 h-4" aria-hidden="true" /> Terbitkan semua draft
+          </button>
+          <span className="text-sm text-muted-foreground">{draftSubjects} mata pelajaran dan {draftLessons} pelajaran masih draft. Soal valid ikut terbit.</span>
         </div>
         <p className="text-xs text-muted-foreground">Draf AI tanpa sumber dan soal, dan selalu perlu ditinjau manusia. Tidak ada yang terlihat pengguna sebelum diterbitkan.</p>
       </div>
@@ -206,6 +230,11 @@ export default function ModuleManager({ subjects, lessons, schemaReady }: { subj
               <button type="button" disabled={pending} onClick={() => run(() => setSubjectPublished(s.slug, s.status !== "published"), s.status === "published" ? "Mata pelajaran dijadikan draft." : "Mata pelajaran diterbitkan.")} className={`${buttonClass} bg-muted border border-border`}>
                 {s.status === "published" ? <><EyeOff className="w-4 h-4" aria-hidden="true" /> Tarik</> : <><Eye className="w-4 h-4" aria-hidden="true" /> Terbitkan</>}
               </button>
+              {(s.status === "draft" || own.some((l) => l.status === "draft")) && (
+                <button type="button" disabled={pending} onClick={() => publishAll(s.slug, s.title)} className={`${buttonClass} bg-brand-solid text-on-brand`}>
+                  <Eye className="w-4 h-4" aria-hidden="true" /> Terbitkan semua
+                </button>
+              )}
               <button type="button" disabled={!schemaReady} onClick={() => setForm(newForm(s.slug))} className={`${buttonClass} bg-muted border border-border`}>Tambah pelajaran</button>
             </div>
             {own.length === 0 ? (
