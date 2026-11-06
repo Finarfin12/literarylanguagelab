@@ -51,7 +51,7 @@ Alat periksa untuk Fase 24–28: memastikan Modul Belajar mencakup kompetensi ya
 
 | # | Kompetensi | Mata pelajaran | Alat | Status | Penulisan |
 |---|---|---|---|---|---|
-| 23 | Morfologi & sintaksis bahasa Inggris | Struktur Kata & Kalimat (Inggris) | `/tools/sentence-architect` | 📝 🔧 morfologi | ☐ |
+| 23 | Morfologi & sintaksis bahasa Inggris | Struktur Kata & Kalimat (Inggris) | `/tools/sentence-architect` | 📝 🔧 morfologi | ✅ draft |
 | 24 | Morfologi & sintaksis bahasa Indonesia | **Morfologi & Sintaksis Bahasa Indonesia** (baru, celah hasil pencocokan) | `/tools/sentence-architect` | 📝 | ☐ |
 | 25 | Semantik & relasi makna | Makna & Nuansa | `/tools/semantic-map`, `/tools/literary-synonyms`, `/tools/nuance-detector` | ✅ | ☐ |
 | 26 | Sejarah pemikiran & teori kritis | Pemikiran & Teori Kritis | `/tools/critical-lens`, `/tools/time-traveler` | 📝 | ☐ |
