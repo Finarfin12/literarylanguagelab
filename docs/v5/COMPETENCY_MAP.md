@@ -45,7 +45,7 @@ Alat periksa untuk Fase 24–28: memastikan Modul Belajar mencakup kompetensi ya
 | 19 | Analisis teks sebelum menerjemahkan | Analisis Teks Sumber | `/tools/tone-analyzer`, `/tools/idiom-detector` | ✅ | ✅ draft |
 | 20 | Teori penerjemahan, domestikasi & forenisasi, pergeseran | Teori Penerjemahan | `/translation-workspace` | ✅ | ✅ draft |
 | 21 | Terjemahan informatif, idiom, kolokasi; teks opini, sejarah, akademik populer | Menerjemahkan Teks Informatif | `/tools/idiom-detector`, `/glossary`, `/translation-memory` | ✅ | ✅ draft |
-| 22 | Penyuntingan substansi, bahasa, ketikan | Penyuntingan Terjemahan | `/tools/comparator`, `/tools/translation-timelapse` | 📝 🔧 penyuntingan bahasa Indonesia | ☐ |
+| 22 | Penyuntingan substansi, bahasa, ketikan | Penyuntingan Terjemahan | `/tools/comparator`, `/tools/translation-timelapse` | 📝 🔧 penyuntingan bahasa Indonesia | ✅ draft |
 
 ## Tahap 4 — Lanjut & proyek
 
