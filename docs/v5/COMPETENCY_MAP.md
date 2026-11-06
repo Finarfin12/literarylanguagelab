@@ -24,7 +24,7 @@ Alat periksa untuk Fase 24–28: memastikan Modul Belajar mencakup kompetensi ya
 
 | # | Kompetensi | Mata pelajaran | Alat | Status | Penulisan |
 |---|---|---|---|---|---|
-| 6 | Kalimat majemuk & kompleks | Kalimat Panjang | `/tools/sentence-architect` | ✅ | ☐ |
+| 6 | Kalimat majemuk & kompleks | Kalimat Panjang | `/tools/sentence-architect` | ✅ | ✅ draft |
 | 7 | Prosa, puisi, drama, unsur intrinsik, istilah dasar sastra | **Pengantar Sastra Inggris** (baru, celah hasil pencocokan) | `/library`, `/gutenberg` | ✅ | ☐ |
 | 8 | Membaca kritis & anotasi | Membaca Kritis | `/tools/annotations`, `/tools/rhetorical-spotter` | ✅ | ☐ |
 | 9 | Pola esai & argumen | Menulis Esai | `/tools/academic-outline`, `/tools/essay-auditor` | ✅ | ☐ |
