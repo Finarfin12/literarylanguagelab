@@ -32,7 +32,7 @@ Alat periksa untuk Fase 24–28: memastikan Modul Belajar mencakup kompetensi ya
 | 11 | Pemahaman lintas budaya | Memahami Lintas Budaya | `/tools/cultural-context` | ✅ | ✅ draft |
 | 12 | Dialek, sosiolek, register, slang | Variasi Bahasa | `/tools/dialect-diver`, `/english-lab/slang-decoder` | ✅ | ✅ draft |
 | 13 | Padanan, register, terjemahan balik | Dasar Penerjemahan | `/translation-workshop` | ✅ | ✅ draft |
-| 14 | Terjemahan struktural kontrastif | Struktur Inggris vs Indonesia | `/translation-workshop` | ✅ | ☐ |
+| 14 | Terjemahan struktural kontrastif | Struktur Inggris vs Indonesia | `/translation-workshop` | ✅ | ✅ draft |
 
 ## Tahap 3 — Pendalaman
 
