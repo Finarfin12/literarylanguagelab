@@ -288,6 +288,44 @@ test("sumber nyata: tautan http(s), yang belum dicek bertanda perlu-cek, tanpa d
   assert.ok(flagged.length > 0 && flagged.every((s: { status: string }) => s.status === "perlu-cek"));
 });
 
+test("semua mata pelajaran yang sudah ditulis memenuhi panduan (Fase 25 dst.)", () => {
+  assert.ok(loaded.subjects.length >= 2);
+  const stages = new Set(["fondasi", "transisi", "pendalaman", "lanjut"]);
+  const orders = new Set<number>();
+  for (const s of loaded.subjects) {
+    assert.ok(stages.has(s.subject.stage), s.subject.slug);
+    assert.ok(!orders.has(s.subject.sort_order), `urutan ganda: ${s.subject.sort_order}`);
+    orders.add(s.subject.sort_order);
+    assert.ok(s.lessons.length >= 4 && s.lessons.length <= 6, `${s.subject.slug}: ${s.lessons.length} pelajaran`);
+    assert.ok(s.quiz && s.quiz.exercises.length >= 8, `${s.subject.slug}: kuis akhir`);
+    assert.ok(s.subject.outcomes.length >= 3, `${s.subject.slug}: kemampuan`);
+    const slugs = new Set<string>();
+    for (const l of s.lessons) {
+      assert.ok(!slugs.has(l.lesson.slug));
+      slugs.add(l.lesson.slug);
+      const c = lc.checkLesson(l.lesson, l.exercises.length, known);
+      const failing = c.items.filter((i: { ok: boolean; id: string }) => !i.ok && i.id !== "verify");
+      assert.deepEqual(failing, [], `${l.lesson.slug}: ${JSON.stringify(failing)}`);
+      assert.ok(l.lesson.task && l.lesson.objectives.length >= 3, `${l.lesson.slug}: tugas dan tujuan`);
+    }
+    for (const l of s.lessons) assert.ok(l.lesson.slug.length <= 80);
+  }
+  // slug pelajaran unik di seluruh konten
+  const all = loaded.subjects.flatMap((s: { lessons: { lesson: { slug: string } }[] }) => s.lessons.map((l) => l.lesson.slug));
+  assert.equal(new Set(all).size, all.length);
+});
+
+test("tahap Fondasi: Struktur Kalimat Dasar menempati urutan 2 dan semua sumbernya terverifikasi", () => {
+  const s = loaded.subjects.find((x: { subject: { slug: string } }) => x.subject.slug === "struktur-kalimat-dasar");
+  assert.ok(s);
+  assert.equal(s.subject.sort_order, 2);
+  assert.equal(s.subject.stage, "fondasi");
+  for (const l of s.lessons) for (const src of l.lesson.sources) assert.equal(src.status, "ok", `${l.lesson.slug}: ${src.title}`);
+  // contoh Inggris dalam kutipan blok memberi lang="en"; tidak ada kode mata kuliah atau klaim terlarang
+  const text = fs.readdirSync(path.join(root, "struktur-kalimat-dasar")).map((f) => read(`content/modules/struktur-kalimat-dasar/${f}`)).join("\n");
+  for (const bad of [/\bakurat\b/i, /siap (skripsi|TAP)/i, /offline penuh/i, /aman secara hukum/i, /\bBING\d{4}/, /\bPBIS\d{4}/, /\bSemester [1-8]\b/i, /\bSKS\b/]) assert.ok(!bad.test(text), `${bad}`);
+});
+
 // --- Migrasi, flag, AI, rute ---
 const sql = read("supabase/migrations/0023_study_modules.sql");
 const code = sql.replace(/^--.*$/gm, "");
