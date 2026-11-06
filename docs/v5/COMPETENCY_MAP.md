@@ -28,7 +28,7 @@ Alat periksa untuk Fase 24–28: memastikan Modul Belajar mencakup kompetensi ya
 | 7 | Prosa, puisi, drama, unsur intrinsik, istilah dasar sastra | **Pengantar Sastra Inggris** (baru, celah hasil pencocokan) | `/library`, `/gutenberg` | ✅ | ✅ draft |
 | 8 | Membaca kritis & anotasi | Membaca Kritis | `/tools/annotations`, `/tools/rhetorical-spotter` | ✅ | ✅ draft |
 | 9 | Pola esai & argumen | Menulis Esai | `/tools/academic-outline`, `/tools/essay-auditor` | ✅ | ✅ draft |
-| 10 | Analisis sastra berbasis bukti | Menulis Analisis Sastra | `/tools/critical-lens`, `/tools/essay-auditor` | ✅ | ☐ |
+| 10 | Analisis sastra berbasis bukti | Menulis Analisis Sastra | `/tools/critical-lens`, `/tools/essay-auditor` | ✅ | ✅ draft |
 | 11 | Pemahaman lintas budaya | Memahami Lintas Budaya | `/tools/cultural-context` | ✅ | ☐ |
 | 12 | Dialek, sosiolek, register, slang | Variasi Bahasa | `/tools/dialect-diver`, `/english-lab/slang-decoder` | ✅ | ☐ |
 | 13 | Padanan, register, terjemahan balik | Dasar Penerjemahan | `/translation-workshop` | ✅ | ☐ |
