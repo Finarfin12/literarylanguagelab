@@ -150,6 +150,19 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 > | Beranda: tiga pintasan Mulai dari Nol / Lanjutkan Membaca / Mulai Menerjemahkan | `app/(dashboard)/dashboard/page.tsx`, `lib/rooms.ts` (`homeShortcuts`) |
 > | `/tools`: kategori Pemahaman & Kosakata, Kajian Sastra & Teori, Penulisan, Bantuan Penerjemahan, Latihan Interaktif + Semua Alat; pencarian dan seluruh alat tetap | `lib/tool-categories.ts`, `app/(dashboard)/tools/page.tsx` |
 > | Grammar: progres total dan filter Semua / Belum / Selesai | `app/(dashboard)/english-lab/grammar/TopicList.tsx`, `lib/topic-filter.ts` |
+
+>
+> **(Fase 24, v5)** Modul Belajar (fitur baru; tersembunyi dari pengguna biasa sampai flag `modul_belajar` dinyalakan; tidak ada fitur lama yang berubah):
+>
+> | Fitur | Lokasi |
+> |---|---|
+> | `/modul` (tahap → mata pelajaran, progres, pelajaran yang disarankan), `/modul/[subject]` (daftar pelajaran, tujuan, kuis akhir), `/modul/[subject]/[lesson]` (tujuan, isi, latihan, rangkuman, tugas, sumber, praktikkan opsional) | `app/(dashboard)/modul/`, `components/study/`, `lib/study.ts`, `lib/study-server.ts`; uji `study` |
+> | Tombol selesai, tugas pribadi tersimpan (tanpa penilaian AI), pelajaran berikutnya hanya disarankan | `app/(dashboard)/modul/actions.ts`, `components/study/LessonActions.tsx` |
+> | Pendamping AI opsional: "Jelaskan lebih sederhana" (dibuat sekali, disimpan) dan tanya jawab, lewat pelindung Fase 19 | `app/api/modul/simplify`, `app/api/modul/chat` |
+> | Latihan pelajaran dan kuis akhir memakai mesin latihan yang sama (`lesson_slug`, `subject_slug`) | `app/api/exercises/session`, `components/exercises/ExerciseSession.tsx` |
+> | Admin → Konten → **Modul**: tulis manual, sunting, tandai ditinjau, terbitkan, draf AI, hasil `checkLesson` | `app/(dashboard)/admin/content/modules/`, `admin/study-actions.ts`, `lib/lesson-check.ts` |
+> | Impor konten dari berkas ke draft (tidak menimpa yang ditinjau/disunting, tidak menerbitkan) | `scripts/import-modules.mjs`, `scripts/lib/parse-lesson.mjs`, `content/modules/` |
+> | Item `/modul` di Ruang I, II, III, disembunyikan menurut flag | `lib/rooms.ts`, `components/CourseVisibility.tsx` (`useStudyVisible`), `lib/study-access.ts` |
 > | Kursus Dasar: langkah latihan bertag ("Kesalahan umum penutur Indonesia", "Pasangan bunyi") ditambahkan ke unit terkait oleh `0014` bila `0013` sudah dijalankan | `supabase/migrations/0014_l1_modules.sql` |
 
 > **(Fase 18, ✅ admin diuji 375px/1280px, terang/gelap)** Paket konten Kursus Dasar dan tiga jalur bacaan (baris baru; Kursus Dasar tetap tersembunyi sampai flag `kursus_dasar` dinyalakan):

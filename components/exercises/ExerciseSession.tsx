@@ -18,6 +18,9 @@ export default function ExerciseSession({
   topicSlug,
   unitSlug,
   tag,
+  lessonSlug,
+  subjectSlug,
+  quiz,
   count = 8,
   title = "Latihan terstruktur",
   onFinished,
@@ -26,6 +29,11 @@ export default function ExerciseSession({
   unitSlug?: string;
   /** Fase 17: hanya soal bertanda ini (mis. "l1-error", "minimal-pair"). */
   tag?: string;
+  /** Fase 24: soal satu pelajaran Modul Belajar. */
+  lessonSlug?: string;
+  /** Fase 24: bersama `quiz`, kuis akhir mata pelajaran. */
+  subjectSlug?: string;
+  quiz?: boolean;
   count?: number;
   title?: string;
   /** Dipanggil setelah sesi ditutup (mis. untuk memuat ulang jadwal review). */
@@ -47,7 +55,7 @@ export default function ExerciseSession({
       const res = await fetch("/api/exercises/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic_slug: topicSlug, unit_slug: unitSlug, tag, count }),
+        body: JSON.stringify({ topic_slug: topicSlug, unit_slug: unitSlug, tag, lesson_slug: lessonSlug, subject_slug: subjectSlug, quiz, count }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Gagal memuat soal.");

@@ -26,6 +26,9 @@ export interface Room {
 /** Kursus Dasar (Fase 16). Disembunyikan dari pengguna biasa selama flag `kursus_dasar` mati; tetap terdaftar di ruang agar uji cakupan menu tidak gagal. */
 export const COURSE_PATH = "/kursus";
 
+/** Modul Belajar (Fase 24). Disembunyikan dari pengguna biasa selama flag `modul_belajar` mati; tetap terdaftar di ruang agar uji cakupan menu tidak gagal. */
+export const STUDY_PATH = "/modul";
+
 export const ROOMS: Room[] = [
   {
     slug: "belajar-dasar",
@@ -37,6 +40,7 @@ export const ROOMS: Room[] = [
       { title: "Ketahui levelmu", blurb: "Mulai di sini bila belum yakin level CEFR kamu.", paths: ["/english-lab/placement-test", "/english-lab/level-test"] },
       { title: "Kursus Dasar", blurb: "Unit bertema A0–A2: kosakata, grammar, bacaan, dengar, latihan, dan bicara.", paths: [COURSE_PATH] },
       { title: "Frasa harian", blurb: "Kalimat siap pakai per situasi: salam, angka & waktu, belanja, arah, darurat.", paths: ["/frasa-harian"] },
+      { title: "Modul Belajar", blurb: "Belajar mandiri bertahap, mulai dari tahap Fondasi.", paths: [STUDY_PATH] },
       { title: "Grammar & kosakata inti", blurb: "Fondasi yang paling sering dipakai.", paths: ["/english-lab/grammar", "/vocabulary/core"] },
       { title: "Khas penutur Indonesia", blurb: "Kesalahan yang sering muncul dan bunyi yang mirip di telinga kita.", paths: ["/kesalahan-umum", "/pasangan-bunyi"] },
       { title: "Bacaan berjenjang", blurb: "Teks yang disaring menurut level.", paths: ["/library"] },
@@ -117,6 +121,7 @@ export const ROOMS: Room[] = [
           "/tools/plot-twist",
         ],
       },
+      { title: "Modul Belajar", blurb: "Pelajaran lengkap tentang membaca, menulis, bahasa, dan sastra.", paths: [STUDY_PATH] },
       { title: "Catatanmu", paths: ["/tools/annotations"] },
     ],
   },
@@ -132,6 +137,7 @@ export const ROOMS: Room[] = [
       { title: "Memori & glosarium", paths: ["/translation-memory", "/glossary"] },
       { title: "Evaluasi & perbandingan", blurb: "Bandingkan pilihan terjemahan dan nilai citraannya.", paths: ["/tools/comparator", "/tools/parallel-text", "/tools/imagery-grader"] },
       { title: "Menelusuri proses", paths: ["/tools/translation-timelapse"] },
+      { title: "Modul Belajar", blurb: "Pelajaran lengkap tentang teori dan praktik penerjemahan.", paths: [STUDY_PATH] },
       { title: "Tahap penerjemah", blurb: "Lihat tahapmu di profil.", paths: ["/profile"] },
     ],
   },
@@ -179,6 +185,7 @@ export const EXTRA_ITEMS: Record<string, { name: string; description: string }> 
   "/kesalahan-umum": { name: "Kesalahan Umum", description: "Kesalahan khas penutur Indonesia: kalimat salah, perbaikan, penjelasan, dan latihan." },
   "/pasangan-bunyi": { name: "Pasangan Bunyi", description: "Latihan dengar dan ucapkan kata yang bunyinya mirip, seperti ship dan sheep." },
   "/frasa-harian": { name: "Frasa harian", description: "Kalimat siap pakai per situasi, dengan audio, arti natural, dan arti kata per kata." },
+  [STUDY_PATH]: { name: "Modul Belajar", description: "Pelajaran lengkap per mata pelajaran: penjelasan, contoh, latihan, rangkuman, dan tugas. Pendamping belajar mandiri, bukan program resmi lembaga mana pun." },
   [COURSE_PATH]: { name: "Kursus Dasar", description: "Unit bertema A0–A2 dengan langkah berurutan; unit berikutnya disarankan, tidak dikunci." },
   "/dashboard": { name: "Rak bacaan", description: "Lanjutkan membaca dari terakhir kamu berhenti." },
   "/library/add": { name: "Tambah Teks", description: "Tulis teks sendiri atau buat teks bacaan dengan AI." },
@@ -189,15 +196,20 @@ export const EXTRA_ITEMS: Record<string, { name: string; description: string }> 
   "/tools/case-study-generator": { name: "Portfolio Case Study Generator", description: "Buat case study profesional untuk portofolio." },
 };
 
-/** Path yang disembunyikan menurut flag; `courseVisible` = Kursus Dasar boleh tampil (flag menyala atau pengguna admin). */
-export function isPathVisible(path: string, courseVisible: boolean): boolean {
-  return courseVisible || path !== COURSE_PATH;
+/**
+ * Path yang disembunyikan menurut flag; `courseVisible` = Kursus Dasar boleh tampil, `studyVisible` = Modul Belajar boleh
+ * tampil (flag menyala atau pengguna admin). Bawaan studyVisible = false, jadi pemanggil lama tidak melihat /modul.
+ */
+export function isPathVisible(path: string, courseVisible: boolean, studyVisible = false): boolean {
+  if (path === COURSE_PATH) return courseVisible;
+  if (path === STUDY_PATH) return studyVisible;
+  return true;
 }
 
 /** Bagian ruang tanpa item yang disembunyikan; bagian yang jadi kosong ikut dibuang. */
-export function visibleSections(room: Room, courseVisible: boolean): RoomSection[] {
+export function visibleSections(room: Room, courseVisible: boolean, studyVisible = false): RoomSection[] {
   return room.sections
-    .map((s) => ({ ...s, paths: s.paths.filter((p) => isPathVisible(p, courseVisible)) }))
+    .map((s) => ({ ...s, paths: s.paths.filter((p) => isPathVisible(p, courseVisible, studyVisible)) }))
     .filter((s) => s.paths.length > 0);
 }
 

@@ -16,7 +16,7 @@ const PAGE_LIMIT = 100;
 export default async function AdminExercisesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ type?: string; level?: string; status?: string; topic?: string; unit?: string }>;
+  searchParams: Promise<{ type?: string; level?: string; status?: string; topic?: string; unit?: string; lesson?: string; subject?: string }>;
 }) {
   const { supabase } = await requireAdminPage();
   const params = await searchParams;
@@ -25,6 +25,9 @@ export default async function AdminExercisesPage({
   const status = params.status === "draft" || params.status === "published" ? params.status : "";
   const topic = /^[a-z0-9-]{2,64}$/.test(params.topic ?? "") ? params.topic! : "";
   const unit = /^[a-z0-9-]{2,64}$/.test(params.unit ?? "") ? params.unit! : "";
+  // Fase 24: soal satu pelajaran (?lesson=) atau kuis akhir sebuah mata pelajaran (?subject=)
+  const lesson = /^[a-z0-9-]{2,80}$/.test(params.lesson ?? "") ? params.lesson! : "";
+  const subject = /^[a-z0-9-]{2,80}$/.test(params.subject ?? "") ? params.subject! : "";
 
   let q = supabase
     .from("exercises")
@@ -36,6 +39,8 @@ export default async function AdminExercisesPage({
   if (status) q = q.eq("status", status);
   if (topic) q = q.eq("topic_slug", topic);
   if (unit) q = q.eq("unit_slug", unit);
+  if (lesson) q = q.eq("lesson_slug", lesson);
+  else if (subject) q = q.eq("subject_slug", subject).is("lesson_slug", null);
 
   const [res, topicsRes, unitsRes] = await Promise.all([
     q,
@@ -48,8 +53,8 @@ export default async function AdminExercisesPage({
   const topics = (topicsRes.data || []) as { slug: string; title: string }[];
   const units = (unitsRes.error ? [] : unitsRes.data || []) as { slug: string; title: string }[];
 
-  const filterHref = (next: Partial<Record<"type" | "level" | "status" | "topic" | "unit", string>>) => {
-    const merged = { type, level, status, topic, unit, ...next };
+  const filterHref = (next: Partial<Record<"type" | "level" | "status" | "topic" | "unit" | "lesson" | "subject", string>>) => {
+    const merged = { type, level, status, topic, unit, lesson, subject, ...next };
     const sp = new URLSearchParams();
     for (const [k, v] of Object.entries(merged)) if (v) sp.set(k, v);
     const qs = sp.toString();

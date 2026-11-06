@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { MENU_GROUPS, type MenuGroup } from "@/lib/menu-config";
 import { ROOMS, isPathVisible, resolveItem } from "@/lib/rooms";
-import { useCourseVisible } from "@/components/CourseVisibility";
+import { useCourseVisible, useStudyVisible } from "@/components/CourseVisibility";
 import { User, Settings, LogOut, ChevronRight, ChevronDown, HelpCircle, MessageSquare, Sun, Moon, Search, Home, ShieldAlert, GraduationCap, BookOpen, Languages, BookMarked, Users, type LucideIcon } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import AnimatedPage from "@/components/AnimatedPage";
@@ -38,13 +38,13 @@ const ROOM_ICONS: Record<string, LucideIcon> = {
 };
 
 /** Ruang → grup menu HP (semua item, urutan ruang). Pencarian mencari di semua grup ini. */
-function roomGroups(courseVisible: boolean): MenuGroup[] {
+function roomGroups(courseVisible: boolean, studyVisible: boolean): MenuGroup[] {
   const menu = MENU_GROUPS.flatMap((g) => g.items);
   return ROOMS.map((room) => ({
     title: `${room.eyebrow === room.title ? "" : room.eyebrow + " · "}${room.title}`,
     icon: ROOM_ICONS[room.slug] ?? Home,
     color: "text-foreground",
-    items: Array.from(new Set(room.sections.flatMap((s) => s.paths))).filter((p) => isPathVisible(p, courseVisible)).map((p) => resolveItem(p, menu)),
+    items: Array.from(new Set(room.sections.flatMap((s) => s.paths))).filter((p) => isPathVisible(p, courseVisible, studyVisible)).map((p) => resolveItem(p, menu)),
   }));
 }
 
@@ -72,6 +72,7 @@ export default function MobileMenuPage() {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const supabase = createClient();
   const courseVisible = useCourseVisible();
+  const studyVisible = useStudyVisible();
   const unreadMessages = useUnreadMessages();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -98,7 +99,7 @@ export default function MobileMenuPage() {
 
   const searching = query.trim().length > 0;
   const q = query.trim().toLowerCase();
-  const groups = [CORE_GROUP, ...roomGroups(courseVisible), ...(isAdmin ? [ADMIN_GROUP] : [])]
+  const groups = [CORE_GROUP, ...roomGroups(courseVisible, studyVisible), ...(isAdmin ? [ADMIN_GROUP] : [])]
     .map((g) => ({
       ...g,
       items: searching

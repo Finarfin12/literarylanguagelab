@@ -7,6 +7,7 @@ import { MENU_GROUPS } from "@/lib/menu-config";
 import { ROOMS, getRoom, resolveItem, visibleSections } from "@/lib/rooms";
 import { getRequestUser } from "@/utils/supabase/get-user";
 import { getCourseAccess } from "@/lib/course-access";
+import { getStudyAccess } from "@/lib/study-access";
 import { loadLearningGoal } from "../_lib/goal";
 
 export function generateStaticParams() {
@@ -21,7 +22,8 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
   const goal = await loadLearningGoal();
   const { supabase, user } = await getRequestUser();
   const courseAccess = await getCourseAccess(supabase, user?.id);
-  const sections = visibleSections(room, courseAccess.visible);
+  const studyAccess = await getStudyAccess(supabase, user?.id);
+  const sections = visibleSections(room, courseAccess.visible, studyAccess.visible);
   const menu = MENU_GROUPS.flatMap((g) => g.items);
   // Nomor berlanjut antar bagian (gaya daftar isi)
   const starts = sections.map((_, i) => sections.slice(0, i).reduce((sum, s) => sum + s.paths.length, 0));

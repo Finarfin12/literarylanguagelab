@@ -6,7 +6,8 @@ import Sidebar from "@/components/Sidebar";
 import TopActions from "@/components/TopActions";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import PresenceTracker from "@/components/PresenceTracker";
-import { CourseVisibilityProvider } from "@/components/CourseVisibility";
+import { CourseVisibilityProvider, StudyVisibilityProvider } from "@/components/CourseVisibility";
+import { getStudyAccess } from "@/lib/study-access";
 import { getCourseAccess } from "@/lib/course-access";
 
 export default async function DashboardLayout({
@@ -35,9 +36,12 @@ export default async function DashboardLayout({
 
   // Fase 16: Kursus Dasar tersembunyi dari menu sampai flag `kursus_dasar` menyala (admin selalu melihatnya)
   const courseAccess = await getCourseAccess(supabase, user.id);
+  // Fase 24: Modul Belajar tersembunyi sampai flag `modul_belajar` menyala (admin selalu melihatnya)
+  const studyAccess = await getStudyAccess(supabase, user.id);
 
   return (
     <CourseVisibilityProvider visible={courseAccess.visible}>
+    <StudyVisibilityProvider visible={studyAccess.visible}>
     <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar 
         userEmail={user?.email} 
@@ -54,6 +58,7 @@ export default async function DashboardLayout({
       <MobileBottomNav />
       <PresenceTracker />
     </div>
+    </StudyVisibilityProvider>
     </CourseVisibilityProvider>
   );
 }

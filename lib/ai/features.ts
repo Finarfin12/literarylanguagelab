@@ -56,6 +56,9 @@ export const AI_FEATURES: AIFeature[] = [
 
   { key: "liter-ai", label: "Liter-AI (bantuan)", group: "Lainnya", requires: "text" },
   { key: "wotd", label: "Word of the Day", group: "Lainnya", requires: "text" },
+  { key: "lesson-simplify", label: "Modul Belajar: Jelaskan lebih sederhana", group: "Lainnya", requires: "text" },
+  { key: "lesson-chat", label: "Modul Belajar: tanya jawab pelajaran", group: "Lainnya", requires: "text" },
+  { key: "lesson-draft", label: "Modul Belajar: draf pelajaran (admin)", group: "Lainnya", requires: "text" },
 ];
 
 export function getFeature(key: string): AIFeature | undefined {

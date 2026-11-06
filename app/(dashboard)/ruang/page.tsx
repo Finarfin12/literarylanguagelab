@@ -5,6 +5,7 @@ import { Badge, Eyebrow, Card } from "@/components/ui/primitives";
 import { ROOMS, visibleSections } from "@/lib/rooms";
 import { getRequestUser } from "@/utils/supabase/get-user";
 import { getCourseAccess } from "@/lib/course-access";
+import { getStudyAccess } from "@/lib/study-access";
 import { loadLearningGoal } from "./_lib/goal";
 
 export const metadata = { title: "Ruang · Literary Language Lab" };
@@ -13,6 +14,7 @@ export default async function RuangIndexPage() {
   const goal = await loadLearningGoal();
   const { supabase, user } = await getRequestUser();
   const courseAccess = await getCourseAccess(supabase, user?.id);
+  const studyAccess = await getStudyAccess(supabase, user?.id);
   // Ruang sesuai tujuan belajar tampil pertama; urutan sisanya tetap
   const learning = ROOMS.filter((r) => r.goal).sort((a, b) => Number(b.goal === goal) - Number(a.goal === goal));
   const others = ROOMS.filter((r) => !r.goal);
@@ -29,7 +31,7 @@ export default async function RuangIndexPage() {
 
       <div className="space-y-4">
         {learning.map((room) => {
-          const sections = visibleSections(room, courseAccess.visible);
+          const sections = visibleSections(room, courseAccess.visible, studyAccess.visible);
           const count = new Set(sections.flatMap((s) => s.paths)).size;
           return (
             <Link key={room.slug} href={`/ruang/${room.slug}`} className="block group">

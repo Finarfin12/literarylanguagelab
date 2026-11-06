@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { MENU_GROUPS } from "@/lib/menu-config";
 import { ROOMS, isPathVisible, resolveItem } from "@/lib/rooms";
-import { useCourseVisible } from "@/components/CourseVisibility";
+import { useCourseVisible, useStudyVisible } from "@/components/CourseVisibility";
 import WotdCard from "@/components/wotd/WotdCard";
 
 // Pintasan utama (PINNED_PATHS di lib/menu-config.ts): Text Library, Baca Buku, Kamus A-Z
@@ -32,6 +32,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const courseVisible = useCourseVisible();
+  const studyVisible = useStudyVisible();
   const supabase = createClient();
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -159,7 +160,7 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
           <p className="px-4 pt-4 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Ruang belajar</p>
 
           {ROOMS.map((room) => {
-            const paths = Array.from(new Set(room.sections.flatMap((s) => s.paths))).filter((p) => isPathVisible(p, courseVisible));
+            const paths = Array.from(new Set(room.sections.flatMap((s) => s.paths))).filter((p) => isPathVisible(p, courseVisible, studyVisible));
             const isRoomActive = pathname === `/ruang/${room.slug}`;
             const hasActiveChild = paths.some((p) => pathname === p);
             const isOpen = openGroups[room.slug] ?? (isRoomActive || hasActiveChild);

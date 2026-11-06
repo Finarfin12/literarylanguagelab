@@ -101,7 +101,7 @@ test("Kursus Dasar (Fase 16): urutan ke-2 di Ruang I, terdaftar walau flag mati,
   const hidden = rooms.visibleSections(room, false);
   assert.ok(!hidden.some((s: { paths: string[] }) => s.paths.includes("/kursus")));
   assert.ok(!hidden.some((s: { title: string }) => s.title === "Kursus Dasar")); // bagian kosong ikut dibuang
-  assert.equal(rooms.visibleSections(room, true).length, room.sections.length);
+  assert.equal(rooms.visibleSections(room, true, true).length, room.sections.length);
 });
 
 console.log(`\n${passed} lulus, 0 gagal`);

@@ -8,6 +8,7 @@ const ITEMS = [
   { href: "/admin/content/exercises", label: "Latihan" },
   { href: "/admin/content/course", label: "Kursus" },
   { href: "/admin/content/phrases", label: "Frasa" },
+  { href: "/admin/content/modules", label: "Modul" },
 ];
 
 /** Sub-tab di dalam tab Konten: Teks & Grammar | Latihan (Fase 15) | Kursus (Fase 16). */

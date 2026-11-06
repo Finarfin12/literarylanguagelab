@@ -6,7 +6,8 @@ import { mulberry32, pickSession } from "@/lib/exercises/session";
 import type { AttemptSummary, Exercise } from "@/lib/exercises/types";
 
 // Memilih soal latihan terstruktur untuk satu sesi. Tidak memanggil AI.
-// Body: { topic_slug?: string, unit_slug?: string, tag?: string, count?: number } (minimal salah satu dari ketiganya)
+// Body: { topic_slug?, unit_slug?, tag?, lesson_slug?, subject_slug? + quiz?, count? } (minimal salah satu).
+// Fase 24: lesson_slug = soal satu pelajaran; subject_slug + quiz:true = kuis akhir mata pelajaran (soal tanpa lesson_slug).
 const SLUG = /^[a-z0-9-]{2,64}$/;
 const TAG = /^[a-z0-9:-]{2,64}$/;
 const POOL_LIMIT = 300;
@@ -20,12 +21,17 @@ export async function POST(req: Request) {
   const topic = typeof body?.topic_slug === "string" && SLUG.test(body.topic_slug) ? body.topic_slug : null;
   const unit = typeof body?.unit_slug === "string" && SLUG.test(body.unit_slug) ? body.unit_slug : null;
   const tag = typeof body?.tag === "string" && TAG.test(body.tag) ? body.tag : null;
-  if (!topic && !unit && !tag) return NextResponse.json({ error: "Tentukan topik, unit, atau tag." }, { status: 400 });
+  const lesson = typeof body?.lesson_slug === "string" && SLUG.test(body.lesson_slug) ? body.lesson_slug : null;
+  const subject = typeof body?.subject_slug === "string" && SLUG.test(body.subject_slug) ? body.subject_slug : null;
+  const quiz = body?.quiz === true && !!subject;
+  if (!topic && !unit && !tag && !lesson && !quiz) return NextResponse.json({ error: "Tentukan topik, unit, tag, pelajaran, atau kuis." }, { status: 400 });
   const count = Math.max(1, Math.min(20, Math.floor(Number(body?.count) || 8)));
 
   let q = supabase.from("exercises").select("*").eq("status", "published").limit(POOL_LIMIT);
   if (topic) q = q.eq("topic_slug", topic);
   else if (unit) q = q.eq("unit_slug", unit);
+  else if (lesson) q = q.eq("lesson_slug", lesson);
+  else if (quiz && subject) q = q.eq("subject_slug", subject).is("lesson_slug", null);
   if (tag) q = q.contains("tags", [tag]); // Fase 17: mis. "l1-error", "l1:third-person-s", "minimal-pair"
   const { data, error } = await q;
   if (error) {
