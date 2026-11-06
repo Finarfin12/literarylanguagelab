@@ -41,7 +41,7 @@ Alat periksa untuk Fase 24–28: memastikan Modul Belajar mencakup kompetensi ya
 | 15 | Kalimat efektif, afiksasi, ejaan Indonesia | Bahasa Indonesia untuk Penerjemah | — | 📝 🔧 penyuntingan bahasa Indonesia | ✅ draft |
 | 16 | Merangkum | Merangkum | `/tools/paraphrase` | 📝 | ✅ draft |
 | 17 | Fonetik & fonologi | Bunyi Bahasa | `/tools/pronunciation-clinic` | ✅ | ✅ draft |
-| 18 | Linguistik umum | Pengantar Cara Kerja Bahasa | `/tools/sentence-architect`, `/tools/semantic-map` | 📝 | ☐ |
+| 18 | Linguistik umum | Pengantar Cara Kerja Bahasa | `/tools/sentence-architect`, `/tools/semantic-map` | 📝 | ✅ draft |
 | 19 | Analisis teks sebelum menerjemahkan | Analisis Teks Sumber | `/tools/tone-analyzer`, `/tools/idiom-detector` | ✅ | ☐ |
 | 20 | Teori penerjemahan, domestikasi & forenisasi, pergeseran | Teori Penerjemahan | `/translation-workspace` | ✅ | ☐ |
 | 21 | Terjemahan informatif, idiom, kolokasi; teks opini, sejarah, akademik populer | Menerjemahkan Teks Informatif | `/tools/idiom-detector`, `/glossary`, `/translation-memory` | ✅ | ☐ |
