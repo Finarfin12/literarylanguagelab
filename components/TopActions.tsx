@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HelpCircle, MessageSquare } from "lucide-react";
+import { HelpCircle, MessageSquare, Search } from "lucide-react";
+import { openFeatureSearch } from "@/components/FeatureSearch";
 import { createClient } from "@/utils/supabase/client";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
@@ -19,6 +20,17 @@ export default function TopActions({ className }: { className?: string }) {
 
   return (
     <div className={className || "hidden lg:flex absolute top-4 right-4 z-30 items-center gap-3"}>
+      {/* Pencarian fitur */}
+      <button
+        type="button"
+        onClick={openFeatureSearch}
+        className="flex items-center justify-center w-10 h-10 sm:w-auto sm:px-4 sm:gap-2 bg-card border border-border rounded-full sm:rounded-control text-muted-foreground hover:text-foreground hover:border-brand/50 hover:bg-muted transition-all"
+        title="Cari fitur (Ctrl+K)"
+      >
+        <Search className="w-5 h-5 sm:w-4 sm:h-4" />
+        <span className="hidden sm:inline font-medium text-sm">Cari</span>
+      </button>
+
       {/* Messages Inbox Button */}
       <Link
         href="/messages"

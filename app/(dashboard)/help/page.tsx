@@ -5,6 +5,8 @@ import { Send, Loader2, Bot, User, MessageCircle, BookOpen, Sparkles, BrainCircu
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { openFeatureSearch } from "@/components/FeatureSearch";
+import { normalizeQuery } from "@/lib/feature-search";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -82,10 +84,20 @@ const FAQ_ITEMS = [
   { q: "Bagaimana cara menggunakan Dialogue Simulator?", a: "Buka menu /english-lab/dialogue-simulator , pilih skenario (misalnya: wawancara kerja), lalu berbicaralah menggunakan mikrofon Anda. AI akan merespons secara lisan. Di akhir sesi, klik 'Akhiri & Feedback' untuk mendapatkan penilaian kelancaran dan tata bahasa Anda." },
   { q: "Bisakah saya mengunggah audio sendiri di Listening Test?", a: "Ya! Di halaman /english-lab/listening-test , Anda bisa menekan tombol 'Unggah Audio Manual' untuk mengunggah file MP3/WAV milik Anda sendiri dan melatih pendengaran di mode Dikte." },
   { q: "Apa itu Placement Test?", a: "Placement Test di /english-lab/placement-test adalah tes adaptif singkat untuk mengetahui level awal Anda (CEFR). Anda juga bisa memilih level secara manual di Pengaturan. Level ini dipakai untuk menyesuaikan tingkat kesulitan materi." },
-  { q: "Bagaimana cara melakukan pratinjau kosa kata sebelum membaca?", a: "Anda bisa mengaktifkan opsi 'Pre-Reading Vocab Preview' di menu Pengaturan (Settings). Setelah aktif, setiap kali Anda memilih buku di Text Library, sistem akan secara otomatis mengekstrak 8-12 kata kunci untuk Anda pelajari terlebih dahulu melalui mode flashcard temporer." }
+  { q: "Bagaimana cara melakukan pratinjau kosa kata sebelum membaca?", a: "Anda bisa mengaktifkan opsi 'Pre-Reading Vocab Preview' di menu Pengaturan (Settings). Setelah aktif, setiap kali Anda memilih buku di Text Library, sistem akan secara otomatis mengekstrak 8-12 kata kunci untuk Anda pelajari terlebih dahulu melalui mode flashcard temporer." },
+  { q: "Bagaimana cara mencari fitur dengan cepat?", a: "Tekan Ctrl+K (atau Cmd+K di Mac), atau tekan tombol / di halaman mana pun, lalu ketik kata yang kamu cari, misalnya \"kamus\", \"skimming\", atau \"terjemahan\". Gunakan panah atas/bawah untuk memilih dan Enter untuk membuka. Tombol Cari juga ada di sidebar dan bilah atas. Di HP, buka halaman Menu lalu pakai kotak pencarian di bagian atas." },
+  { q: "Apa itu Ruang belajar?", a: "Ruang belajar mengelompokkan fitur menurut tujuanmu: Ruang I untuk belajar bahasa Inggris dari dasar, Ruang II untuk membaca sastra, dan Ruang III untuk menerjemahkan. Ada juga Koleksi (kata, bacaan, catatan) dan Komunitas. Semua fitur tetap ada; ruang hanya membantu menemukannya. Buka lewat halaman Beranda atau menu Ruang belajar." },
+  { q: "Apa itu Kursus Dasar dan Modul Belajar?", a: "Kursus Dasar adalah unit bertema level A0-A2 dengan langkah berurutan; unit berikutnya disarankan, tidak dikunci. Modul Belajar adalah pelajaran lengkap per mata pelajaran (penjelasan, contoh, latihan, rangkuman, tugas) sebagai pendamping belajar mandiri, bukan program resmi lembaga mana pun. Keduanya muncul bertahap: jika belum terlihat di menu, berarti belum dibuka untuk akunmu." },
+  { q: "Apa itu Latihan Skimming & Scanning?", a: "Di halaman Latihan Skimming & Scanning kamu berlatih dua kebiasaan membaca: skimming (menangkap gambaran umum) dan scanning (mencari informasi tertentu, seperti angka atau nama). Ada timer opsional untuk melihat kecepatanmu; teks tidak disembunyikan, dan hasilnya hanya untuk dirimu sendiri." },
+  { q: "Bagaimana cara memakai Translation Workspace dengan benar?", a: "Buat proyek, tempel teks sumber, lalu terjemahkan per segmen. Di tiap segmen ada saran penyuntingan bahasa Indonesia dari AI (kalimat efektif, ejaan, pilihan kata): AI hanya mengusulkan, dan teksmu baru berubah setelah kamu menekan Terapkan (bisa diurungkan). Kartu Ringkasan statistik proyek menampilkan angka beserta rumus dan data yang dikecualikan, sebagai bahan tinjauan, bukan nilai resmi." },
+  { q: "Apa saja latihan khusus penutur Indonesia?", a: "Kesalahan Umum membahas kekeliruan khas penutur Indonesia (kalimat salah, perbaikan, penjelasan, latihan). Pasangan Bunyi melatih dengar dan ucap kata yang bunyinya mirip, seperti ship dan sheep. Frasa Harian berisi kalimat siap pakai per situasi, dengan audio dan arti kata per kata." },
+  { q: "Apakah Grammar hanya sampai level pemula?", a: "Tidak. Selain topik dasar A1-B1, ada topik lanjutan bertema sastra di level B2-C1: inversi untuk penekanan, subjunctive, dan klausa partisipel. Latihannya ditinjau admin sebelum diterbitkan, jadi topik atau soal baru bisa muncul bertahap." },
+  { q: "Kenapa ada pesan kecil yang muncul di pojok layar?", a: "Itu pemberitahuan singkat (toast) untuk hasil aksi, misalnya 'Tersimpan' atau pesan galat. Pesan hilang sendiri; galat bertahan sedikit lebih lama. Konfirmasi tindakan berisiko seperti menghapus memakai kotak dialog yang meminta persetujuanmu dulu." },
 ];
 
 const SAMPLE_QUESTIONS = [
+  "Bagaimana cara mencari fitur dengan cepat?",
+  "Apa bedanya Kursus Dasar dan Modul Belajar?",
   "Bagaimana cara menggunakan fitur Translation Workshop?",
   "Apa saja kemampuan LingoWise AI?",
   "Bagaimana prosedur bergabung dengan Reading Club?",
@@ -214,6 +226,8 @@ function LiterAIChat({ onClose }: { onClose: () => void }) {
 
 export default function HelpPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [faqQuery, setFaqQuery] = useState("");
+  const faqItems = FAQ_ITEMS.map((item, i) => ({ item, i })).filter(({ item }) => !faqQuery.trim() || normalizeQuery(`${item.q} ${item.a}`).includes(normalizeQuery(faqQuery)));
   const [showChat, setShowChat] = useState(false);
 
   return (
@@ -235,8 +249,24 @@ export default function HelpPage() {
             <HelpCircle className="w-4 h-4 md:w-5 md:h-5 text-brand-ink" />
             Pertanyaan Umum
           </h2>
+          <div className="flex flex-col sm:flex-row gap-2 mb-3">
+            <input
+              type="search"
+              value={faqQuery}
+              onChange={(e) => { setFaqQuery(e.target.value); setOpenFaq(null); }}
+              placeholder="Cari di pertanyaan umum…"
+              aria-label="Cari di pertanyaan umum"
+              className="flex-1 min-h-[44px] bg-card border border-border rounded-control px-3 text-sm focus:outline-none focus:border-brand-solid"
+            />
+            <button type="button" onClick={openFeatureSearch} className="min-h-[44px] px-4 rounded-control border border-border bg-card text-sm font-semibold text-foreground hover:bg-muted">
+              Cari fitur (Ctrl+K)
+            </button>
+          </div>
+          {faqItems.length === 0 && (
+            <p className="text-sm text-muted-foreground mb-3">Tidak ada pertanyaan yang cocok. Coba kata lain, atau tanya Liter AI lewat tombol di pojok kanan bawah.</p>
+          )}
           <div className="space-y-2 md:space-y-3">
-            {FAQ_ITEMS.map((item, i) => (
+            {faqItems.map(({ item, i }) => (
               <div key={i} className="bg-card border border-border rounded-control md:rounded-card overflow-hidden">
                 <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full text-left p-3 md:p-4 min-h-[44px] font-bold text-foreground flex items-center justify-between hover:bg-muted transition-colors">
                   <span className="text-xs md:text-sm pr-4">{item.q}</span>

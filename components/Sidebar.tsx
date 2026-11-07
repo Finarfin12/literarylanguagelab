@@ -8,12 +8,13 @@ import { createClient } from "@/utils/supabase/client";
 import { 
   ChevronDown, ChevronRight, LogOut, 
   Sun, Moon, Sparkles, User, Settings, Library, BookOpen, BookA,
-  Menu, PanelLeftClose, LayoutDashboard, ShieldAlert, BrainCircuit, MessageSquareText
+  Menu, PanelLeftClose, LayoutDashboard, ShieldAlert, BrainCircuit, MessageSquareText, Search
 } from "lucide-react";
 import { MENU_GROUPS } from "@/lib/menu-config";
 import { ROOMS, isPathVisible, resolveItem } from "@/lib/rooms";
 import { useCourseVisible, useStudyVisible } from "@/components/CourseVisibility";
 import WotdCard from "@/components/wotd/WotdCard";
+import { openFeatureSearch } from "@/components/FeatureSearch";
 
 // Pintasan utama (PINNED_PATHS di lib/menu-config.ts): Text Library, Baca Buku, Kamus A-Z
 const PINNED_LINKS = [
@@ -126,6 +127,17 @@ export default function Sidebar({ userEmail, userName, userAvatar }: SidebarProp
 
       <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
         <div className="space-y-2 pb-8">
+
+          {/* Pencarian fitur (Ctrl+K) */}
+          <button
+            type="button"
+            onClick={openFeatureSearch}
+            className="w-full flex items-center gap-3 px-4 min-h-[48px] rounded-control border border-border bg-card text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Search className="w-5 h-5" aria-hidden="true" />
+            <span className="font-semibold flex-1 text-left">Cari fitur</span>
+            <kbd className="text-[11px] border border-border rounded px-1.5 py-0.5">Ctrl K</kbd>
+          </button>
 
           {/* Beranda */}
           <Link

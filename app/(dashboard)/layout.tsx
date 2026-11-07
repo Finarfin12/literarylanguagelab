@@ -5,6 +5,7 @@ import { getRequestUser } from "@/utils/supabase/get-user";
 import Sidebar from "@/components/Sidebar";
 import TopActions from "@/components/TopActions";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import FeatureSearch from "@/components/FeatureSearch";
 import PresenceTracker from "@/components/PresenceTracker";
 import { CourseVisibilityProvider, StudyVisibilityProvider } from "@/components/CourseVisibility";
 import { getStudyAccess } from "@/lib/study-access";
@@ -57,6 +58,7 @@ export default async function DashboardLayout({
       
       <MobileBottomNav />
       <PresenceTracker />
+      <FeatureSearch />
     </div>
     </StudyVisibilityProvider>
     </CourseVisibilityProvider>

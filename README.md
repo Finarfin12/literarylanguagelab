@@ -2,7 +2,7 @@
 
   **Platform E-Learning Bahasa Inggris Komprehensif Melalui Mahakarya Sastra Klasik**
   
-  [![Next.js](https://img.shields.io/badge/Next.js-15.0+-black?logo=next.js&logoColor=white)](https://nextjs.org/)
+  [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js&logoColor=white)](https://nextjs.org/)
   [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -57,7 +57,24 @@ Asisten cerdas yang dapat membedah teks bahasa Inggris apa pun menggunakan 8 len
 - **Writing Prompts (Input → Output Loop)**: Melengkapi siklus membaca dengan tantangan merangkum cerita menggunakan kosakata yang baru dipelajari, dievaluasi langsung oleh AI (Grammar, Vocab, Coherence).
 - **All Toolkits Hub**: Etalase visual (*App Drawer*) interaktif yang menampung 30+ alat analisis AI mini, dilengkapi bilah pencarian pintar (*search bar*) dan filter berbasis kategori (Transformers, Extractors, Lexicon).
 
+### 3b. Ruang Belajar, Kursus, Modul, dan Latihan Terarah
+- **Ruang belajar**: fitur dikelompokkan menurut tujuan, yaitu Ruang I (belajar dasar), Ruang II (baca sastra), Ruang III (terjemah), ditambah Koleksi dan Komunitas. Semua fitur tetap ada; ruang hanya mempermudah menemukannya.
+- **Kursus Dasar**: unit bertema level A0-A2 dengan langkah berurutan; unit berikutnya disarankan, tidak dikunci.
+- **Modul Belajar**: pelajaran lengkap per mata pelajaran (penjelasan, contoh, latihan, rangkuman, tugas) sebagai pendamping belajar mandiri. Konten ditulis sebagai draf dan hanya tampil setelah ditinjau dan diterbitkan admin.
+- **Latihan Skimming & Scanning**: melatih menangkap gambaran umum dan mencari informasi tertentu, dengan timer opsional.
+- **Latihan penutur Indonesia**: Kesalahan Umum, Pasangan Bunyi, dan Frasa Harian.
+- **Grammar**: topik A1-B1 ditambah topik lanjutan bertema sastra B2-C1 (inversi, subjunctive, klausa partisipel).
+- **Translation Workspace**: proyek terjemahan per segmen dengan anotasi teknik, saran penyuntingan bahasa Indonesia dari AI (AI hanya mengusulkan; teks berubah setelah Anda menekan Terapkan), dan ringkasan statistik proyek beserta rumus dan data yang dikecualikan.
+
+### 3c. Pencarian Fitur
+- Tekan **Ctrl+K** (Cmd+K di Mac) atau **/** di halaman mana pun untuk membuka menu pencarian, lalu ketik kata seperti "kamus", "skimming", atau "terjemahan". Panah atas/bawah memilih, Enter membuka, Esc menutup.
+- Tombol **Cari** juga ada di sidebar dan bilah atas; di HP gunakan kotak pencarian di halaman Menu.
+- Indeks pencarian dibangun otomatis dari susunan menu dan ruang (`lib/feature-search.ts`), sehingga fitur baru yang didaftarkan di menu ikut tercari. Kursus dan Modul Belajar disembunyikan dari hasil sampai fiturnya dibuka.
+
 ### 4. Bantuan & Panduan Otomatis (Settings)
+- **Pusat Bantuan (/help)**: pertanyaan umum yang bisa dicari, panduan fitur, dan chat dengan Liter AI.
+- **Liter AI di Bantuan**: asisten yang menjawab cara memakai aplikasi. Daftar halamannya dibuat otomatis dari menu, jadi tautan yang diberikan selalu mengarah ke halaman yang ada. Model AI diatur admin lewat Routing Fitur.
+- **Notifikasi dan konfirmasi** memakai SweetAlert2: hasil aksi tampil sebagai toast, tindakan berisiko meminta konfirmasi lewat dialog.
 - Semua pengaturan preferensi bacaan, tampilan antarmuka (termasuk micro-animations), dan akses bantuan sudah disinkronisasi secara **otomatis**.
 - UI/UX responsif yang dapat menyesuaikan diri sesuai ukuran layar (penggunaan Bottom Navigation Bar otomatis di *mobile*).
 
@@ -165,6 +182,12 @@ Pastikan Anda memiliki Node.js terinstal di sistem Anda.
    npm run dev
    ```
    Aplikasi akan berjalan di `http://localhost:3000`.
+
+6. **Verifikasi perubahan** (sebelum commit)
+   ```bash
+   npx tsc --noEmit
+   npm test
+   ```
 
 ---
 

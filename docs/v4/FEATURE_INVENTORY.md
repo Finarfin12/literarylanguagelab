@@ -187,6 +187,7 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 > | Seed rute model fitur baru (opsional bagi kode: tanpa seed, `runAI` memakai konfigurasi lama) | `supabase/migrations/0024_translation_id_edit.sql` (**belum dijalankan; tindakan pemilik**); uji `tests/translation-edit-suggest.test.mts` |
 
 > **(Fase 29 item 4, v5)** Topik grammar B2–C1 bertema sastra (konten baru lewat migrasi; tidak ada fitur lama yang berubah):
+> **(Pencarian fitur, Bantuan, Liter AI, v5)** Menambah menu pencarian (Ctrl+K), memperbarui FAQ Pusat Bantuan dan pengetahuan Liter AI; tidak ada fitur lama yang dihapus atau digabung. Konfirmasi dan pesan hasil aksi kini memakai SweetAlert2 (perilaku sama, tampilan berbeda).
 >
 > | Fitur | Lokasi |
 > |---|---|
