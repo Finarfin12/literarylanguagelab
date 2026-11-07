@@ -9,6 +9,7 @@ import { Button, Card, CardTitle } from "@/components/ui/primitives";
 import { runQaChecks, type QaWarning } from "@/lib/translation/qa";
 import { saveSegment } from "../actions";
 import SegmentPanel from "./SegmentPanel";
+import ProjectSummaryCard from "./ProjectSummaryCard";
 import type {
   WorkspaceAnnotation,
   WorkspaceAssessment,
@@ -232,6 +233,15 @@ export default function WorkspaceEditor({
           <Button variant="secondary" disabled={page >= totalPages - 1} onClick={() => setPage(page + 1)}>Berikutnya</Button>
         </div>
       )}
+
+      {/* Ringkasan statistik untuk ditinjau (Fase 29) */}
+      <ProjectSummaryCard
+        title={project.title}
+        segments={segments}
+        warnings={warnings}
+        assessment={assessment?.per_segment ?? null}
+        annotatedSegmentCount={new Set(annotations.map((a) => a.segment_id)).size}
+      />
 
       {/* Distribusi teknik */}
       {distribution.length > 0 && (

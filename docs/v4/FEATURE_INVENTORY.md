@@ -172,6 +172,12 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 > | `/latihan-membaca`: empat teks latihan B1–C1 (ditulis sendiri); skimming (baca sekilas, jawab soal gambaran umum) dan scanning (pilih paragraf yang memuat jawaban); timer **opsional** yang hanya menampilkan waktu, teks tidak pernah disembunyikan dan latihan tidak dihentikan; tanpa AI, tanpa database, tanpa migrasi | `app/(dashboard)/latihan-membaca/page.tsx`, `components/reading/ReadingDrill.tsx`, `lib/reading-drill.ts`; uji `tests/reading-drill.test.mts` |
 > | Terdaftar di Ruang I, bagian "Bacaan berjenjang" | `lib/rooms.ts` |
 
+> **(Fase 29 item 2, v5)** Ringkasan statistik proyek terjemahan (fitur baru di Ruang Kerja Segmen; tidak ada fitur lama yang berubah):
+>
+> | Fitur | Lokasi |
+> |---|---|
+> | Kartu **"Ringkasan untuk ditinjau"** di halaman proyek: kemajuan, kata sumber dan terjemahan, rasio panjang, panjang rata-rata segmen, peringatan pemeriksaan otomatis, segmen beranotasi, dan rata-rata rubrik; **setiap angka menampilkan rumus dan data yang dikecualikan** (mis. segmen dengan terjemahan kosong, nomor segmen); tombol salin sebagai teks; dihitung di browser, tanpa AI, tanpa database baru, tanpa migrasi | `app/(dashboard)/translation-workspace/[id]/ProjectSummaryCard.tsx`, `lib/translation/summary.ts`; uji `tests/translation-summary.test.mts` |
+
 > **(Fase 18, ✅ admin diuji 375px/1280px, terang/gelap)** Paket konten Kursus Dasar dan tiga jalur bacaan (baris baru; Kursus Dasar tetap tersembunyi sampai flag `kursus_dasar` dinyalakan):
 >
 > | Fitur | Lokasi / cara uji |
