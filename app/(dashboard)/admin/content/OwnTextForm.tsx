@@ -7,6 +7,7 @@ import { CEFR_LEVELS } from "@/lib/cefr";
 import { countWords, LEVEL_RULES } from "@/lib/graded-check";
 import { buttonClass, inputClass } from "../_lib/ui";
 import { createOwnText } from "../content-actions";
+import { useNotice } from "@/lib/swal";
 
 /** Jalur 3 (Fase 18): "Tulis teks sendiri" -> draf (opsional langsung dikaitkan ke langkah baca sebuah unit). */
 export default function OwnTextForm({ units, schemaReady }: { units: { slug: string; title: string }[]; schemaReady: boolean }) {
@@ -16,7 +17,7 @@ export default function OwnTextForm({ units, schemaReady }: { units: { slug: str
   const [level, setLevel] = useState("A1");
   const [unit, setUnit] = useState("");
   const [content, setContent] = useState("");
-  const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
+  const setMessage = useNotice();
 
   const words = countWords(content);
   const rule = LEVEL_RULES[level];
@@ -39,9 +40,6 @@ export default function OwnTextForm({ units, schemaReady }: { units: { slug: str
     <section className="bg-card border border-border rounded-card p-4 md:p-6">
       <h2 className="text-lg font-medium font-serif mb-1 flex items-center gap-2"><PenLine className="w-5 h-5 text-brand-ink" /> Tulis teks sendiri</h2>
       <p className="text-sm text-muted-foreground mb-4">Tulis bacaan berjenjang tanpa AI. Disimpan sebagai draf; bisa diedit lagi dengan tombol Edit di daftar.</p>
-      {message && (
-        <p role="status" className={`text-sm font-bold rounded-control border p-3 mb-4 ${message.tone === "ok" ? "border-brand/30 bg-brand-tint text-brand-ink" : "border-danger/30 bg-danger-tint text-danger"}`}>{message.text}</p>
-      )}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <label className="text-sm font-medium md:col-span-2">Judul
           <input className={`${inputClass} min-h-[44px] mt-1`} value={title} maxLength={200} onChange={(e) => setTitle(e.target.value)} />

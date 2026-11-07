@@ -8,6 +8,7 @@ import { COURSE_LEVELS, hasReadingContent, parseSteps, readySteps } from "@/lib/
 import { buttonClass, inputClass } from "../../_lib/ui";
 import { deleteCourseUnit, generateUnitReading, saveCourseUnit, setCourseUnitPublished } from "../../course-actions";
 import StepEditor, { fromEditStep, toEditStep, type EditStep } from "./StepEditor";
+import { confirmDialog, useNotice } from "@/lib/swal";
 
 export interface AdminUnit {
   slug: string;
@@ -46,7 +47,7 @@ export default function CourseManager({
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
+  const setMessage = useNotice();
   const [form, setForm] = useState<FormState | null>(null);
   // Jalur 2 (Fase 18): bacaan AI per unit dan massal (satu per satu, bisa dihentikan)
   const stopRef = useRef(false);
@@ -139,11 +140,6 @@ export default function CourseManager({
 
   return (
     <div className="space-y-6">
-      {message && (
-        <p role="status" className={`text-sm font-bold rounded-control border p-3 ${message.tone === "ok" ? "border-brand/30 bg-brand-tint text-brand-ink" : "border-danger/30 bg-danger-tint text-danger"}`}>
-          {message.text}
-        </p>
-      )}
 
       <section className="bg-card border border-border rounded-card p-4 md:p-6">
         <h2 className="text-lg font-medium font-serif mb-1 flex items-center gap-2"><Sparkles className="w-5 h-5 text-brand-ink" /> Bacaan dengan AI untuk unit</h2>
@@ -246,7 +242,7 @@ export default function CourseManager({
                       className={`${buttonClass} bg-danger-tint text-danger`}
                       disabled={pending}
                       aria-label={`Hapus ${u.title}`}
-                      onClick={() => window.confirm(`Hapus unit "${u.title}" beserta kemajuan pengguna di unit ini?`) && run(() => deleteCourseUnit(u.slug), "Unit dihapus.")}
+                      onClick={async () => (await confirmDialog({ title: "Hapus?", text: `Hapus unit "${u.title}" beserta kemajuan pengguna di unit ini?`, confirmText: "Ya, hapus", danger: true })) && run(() => deleteCourseUnit(u.slug), "Unit dihapus.")}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

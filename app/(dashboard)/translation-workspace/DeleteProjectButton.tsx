@@ -4,13 +4,14 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import { deleteProject } from "./actions";
+import { confirmDialog } from "@/lib/swal";
 
 export default function DeleteProjectButton({ projectId, title }: { projectId: string; title: string }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  const remove = () => {
-    if (!window.confirm(`Hapus proyek "${title}" beserta semua segmen dan anotasinya?`)) return;
+  const remove = async () => {
+    if (!(await confirmDialog({ title: "Hapus?", text: `Hapus proyek "${title}" beserta semua segmen dan anotasinya?`, confirmText: "Ya, hapus", danger: true }))) return;
     startTransition(async () => {
       await deleteProject(projectId);
       router.refresh();

@@ -10,6 +10,7 @@ import { EXERCISE_TYPES, EXERCISE_TYPE_LABELS, type ExerciseType } from "@/lib/e
 import { buttonClass, inputClass } from "../../_lib/ui";
 import { EXERCISE_TEMPLATES, exerciseSummary, type AdminExerciseRow } from "../../_lib/exercise-templates";
 import { deleteExercise, generateCoreWordExercises, generateExercisesWithAI, saveExercise, setExercisesPublished } from "../../exercise-actions";
+import { confirmDialog, useNotice } from "@/lib/swal";
 
 interface FormState {
   id?: string;
@@ -52,7 +53,7 @@ export default function ExerciseManager({
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
+  const setMessage = useNotice();
   const [previewId, setPreviewId] = useState<string | null>(null);
 
   // Generator AI
@@ -139,11 +140,6 @@ export default function ExerciseManager({
 
   return (
     <div className="space-y-10">
-      {message && (
-        <p role="status" className={`text-sm font-bold rounded-control border p-3 ${message.tone === "ok" ? "border-brand/30 bg-brand-tint text-brand-ink" : "border-danger/30 bg-danger-tint text-danger"}`}>
-          {message.text}
-        </p>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* AI */}
@@ -238,8 +234,8 @@ export default function ExerciseManager({
               <button
                 className={`${buttonClass} bg-brand-solid text-on-brand`}
                 disabled={pending || !schemaReady}
-                onClick={() => {
-                  if (!window.confirm(`Terbitkan ${drafts.length} draf yang tampil? Pastikan sudah ditinjau.`)) return;
+                onClick={async () => {
+                  if (!(await confirmDialog({ title: "Terbitkan?", text: `Terbitkan ${drafts.length} draf yang tampil? Pastikan sudah ditinjau.`, confirmText: "Ya, terbitkan" }))) return;
                   setMessage(null);
                   startTransition(async () => {
                     const res = await setExercisesPublished(drafts.map((d) => d.id), true);
@@ -353,7 +349,7 @@ export default function ExerciseManager({
                         className={`${buttonClass} bg-danger-tint text-danger`}
                         disabled={pending}
                         aria-label="Hapus soal"
-                        onClick={() => window.confirm("Hapus soal ini secara permanen?") && run(() => deleteExercise(row.id), "Soal dihapus.")}
+                        onClick={async () => (await confirmDialog({ title: "Hapus?", text: "Hapus soal ini secara permanen?", confirmText: "Ya, hapus", danger: true })) && run(() => deleteExercise(row.id), "Soal dihapus.")}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

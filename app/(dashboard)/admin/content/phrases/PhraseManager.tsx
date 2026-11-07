@@ -6,6 +6,7 @@ import { Eye, EyeOff, Pencil, Trash2 } from "lucide-react";
 import { PHRASE_SITUATIONS, groupPhrases, type DailyPhrase } from "@/lib/phrases";
 import { buttonClass, inputClass } from "../../_lib/ui";
 import { deletePhrase, savePhrase, setPhrasePublished } from "../../phrase-actions";
+import { confirmDialog, useNotice } from "@/lib/swal";
 
 interface FormState {
   isNew: boolean;
@@ -22,7 +23,7 @@ const EMPTY: FormState = { isNew: true, slug: "", situation: "salam", text_en: "
 export default function PhraseManager({ phrases, schemaReady }: { phrases: DailyPhrase[]; schemaReady: boolean }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
+  const setMessage = useNotice();
   const [form, setForm] = useState<FormState | null>(null);
 
   const published = phrases.filter((p) => p.status === "published").length;
@@ -49,10 +50,6 @@ export default function PhraseManager({ phrases, schemaReady }: { phrases: Daily
           Tambah frasa
         </button>
       </div>
-
-      {message && (
-        <p role="status" className={`mb-4 text-sm ${message.tone === "ok" ? "text-brand-ink" : "text-danger"}`}>{message.text}</p>
-      )}
 
       {form && (
         <form
@@ -112,7 +109,7 @@ export default function PhraseManager({ phrases, schemaReady }: { phrases: Daily
                   <button type="button" disabled={pending} onClick={() => run(() => setPhrasePublished(p.slug, p.status !== "published"), p.status === "published" ? "Frasa dijadikan draft." : "Frasa diterbitkan.")} className={`${buttonClass} bg-muted border border-border`}>
                     {p.status === "published" ? <><EyeOff className="w-4 h-4" aria-hidden="true" /> Tarik</> : <><Eye className="w-4 h-4" aria-hidden="true" /> Terbitkan</>}
                   </button>
-                  <button type="button" disabled={pending} onClick={() => { if (window.confirm(`Hapus frasa "${p.text_en}"?`)) run(() => deletePhrase(p.slug), "Frasa dihapus."); }} className={`${buttonClass} bg-danger-tint text-danger border border-danger/30`} aria-label={`Hapus ${p.text_en}`}>
+                  <button type="button" disabled={pending} onClick={async () => { if ((await confirmDialog({ title: "Hapus?", text: `Hapus frasa "${p.text_en}"?`, confirmText: "Ya, hapus", danger: true }))) run(() => deletePhrase(p.slug), "Frasa dihapus."); }} className={`${buttonClass} bg-danger-tint text-danger border border-danger/30`} aria-label={`Hapus ${p.text_en}`}>
                     <Trash2 className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>

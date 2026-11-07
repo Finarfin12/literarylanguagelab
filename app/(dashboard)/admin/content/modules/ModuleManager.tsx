@@ -7,6 +7,7 @@ import { AlertTriangle, CheckCircle2, Eye, EyeOff, ExternalLink, Pencil, Sparkle
 import { STAGE_LABELS, formatSourceLines, isStage, parseSourceLines, type LessonSource } from "@/lib/study";
 import { buttonClass, inputClass } from "../../_lib/ui";
 import { deleteLesson, generateLessonDraft, markLessonReviewed, publishStudyDrafts, saveLesson, setLessonPublished, setSubjectPublished } from "../../study-actions";
+import { confirmDialog, useNotice } from "@/lib/swal";
 
 export interface AdminSubject {
   slug: string;
@@ -56,7 +57,7 @@ const ORIGIN_LABEL = { claude: "Draf Claude", manual: "Manual", ai: "Draf AI" } 
 export default function ModuleManager({ subjects, lessons, schemaReady }: { subjects: AdminSubject[]; lessons: AdminLesson[]; schemaReady: boolean }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
+  const setMessage = useNotice();
   const [form, setForm] = useState<FormState | null>(null);
   const [aiSubject, setAiSubject] = useState(subjects[0]?.slug ?? "");
   const [aiTopic, setAiTopic] = useState("");
@@ -77,9 +78,9 @@ export default function ModuleManager({ subjects, lessons, schemaReady }: { subj
   const draftLessons = lessons.filter((l) => l.status === "draft").length;
   const draftSubjects = subjects.filter((s) => s.status === "draft").length;
 
-  const publishAll = (subject?: string, label?: string) => {
+  const publishAll = async (subject?: string, label?: string) => {
     const scope = label ? `semua draft "${label}"` : "SEMUA draft modul";
-    if (!window.confirm(`Terbitkan ${scope}? Mata pelajaran, pelajaran (ditandai ditinjau), dan soalnya yang valid ikut terbit. Pemeriksaan di bawah tiap pelajaran hanya informasi.`)) return;
+    if (!(await confirmDialog({ title: "Terbitkan?", text: `Terbitkan ${scope}? Mata pelajaran, pelajaran (ditandai ditinjau), dan soalnya yang valid ikut terbit. Pemeriksaan di bawah tiap pelajaran hanya informasi.`, confirmText: "Ya, terbitkan" }))) return;
     setMessage(null);
     startTransition(async () => {
       const res = await publishStudyDrafts({ subject_slug: subject });
@@ -139,7 +140,6 @@ export default function ModuleManager({ subjects, lessons, schemaReady }: { subj
 
   return (
     <div>
-      {message && <p role="status" className={`mb-4 text-sm ${message.tone === "ok" ? "text-brand-ink" : "text-danger"}`}>{message.text}</p>}
 
       <div className="mb-6 p-4 rounded-card border border-border bg-card space-y-3">
         <div className="flex flex-wrap items-center gap-2">
@@ -268,7 +268,7 @@ export default function ModuleManager({ subjects, lessons, schemaReady }: { subj
                         <button type="button" disabled={pending} onClick={() => run(() => setLessonPublished(l.slug, l.status !== "published"), l.status === "published" ? "Pelajaran dijadikan draft." : "Pelajaran diterbitkan.")} className={`${buttonClass} bg-muted border border-border`}>
                           {l.status === "published" ? <><EyeOff className="w-4 h-4" aria-hidden="true" /> Tarik</> : <><Eye className="w-4 h-4" aria-hidden="true" /> Terbitkan</>}
                         </button>
-                        <button type="button" disabled={pending} onClick={() => { if (window.confirm(`Hapus pelajaran "${l.title}"?`)) run(() => deleteLesson(l.slug), "Pelajaran dihapus."); }} className={`${buttonClass} bg-danger-tint text-danger border border-danger/30`} aria-label={`Hapus ${l.title}`}>
+                        <button type="button" disabled={pending} onClick={async () => { if ((await confirmDialog({ title: "Hapus?", text: `Hapus pelajaran "${l.title}"?`, confirmText: "Ya, hapus", danger: true }))) run(() => deleteLesson(l.slug), "Pelajaran dihapus."); }} className={`${buttonClass} bg-danger-tint text-danger border border-danger/30`} aria-label={`Hapus ${l.title}`}>
                           <Trash2 className="w-4 h-4" aria-hidden="true" />
                         </button>
                       </div>

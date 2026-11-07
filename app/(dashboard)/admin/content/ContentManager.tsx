@@ -17,6 +17,7 @@ import {
 } from "../content-actions";
 import { deleteText } from "../../library/actions";
 import OwnTextForm from "./OwnTextForm";
+import { confirmDialog, useNotice } from "@/lib/swal";
 
 /** Pemeriksaan otomatis draf (Fase 18.6): hanya informasi, tidak memblokir Terbitkan. */
 export interface TextCheck {
@@ -46,7 +47,7 @@ export default function ContentManager({
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
+  const setMessage = useNotice();
   const [suggestions, setSuggestions] = useState<Record<string, { cefr: string; explanation: string }>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
@@ -84,8 +85,8 @@ export default function ContentManager({
     });
   };
 
-  const remove = (t: EditableText) => {
-    if (!window.confirm(`Hapus teks "${t.title}" secara permanen?`)) return;
+  const remove = async (t: EditableText) => {
+    if (!(await confirmDialog({ title: "Hapus?", text: `Hapus teks "${t.title}" secara permanen?`, confirmText: "Ya, hapus", danger: true }))) return;
     run(async () => {
       const res = await deleteText(t.id);
       return res.success ? { ok: true } : { ok: false, error: res.error };
@@ -94,11 +95,6 @@ export default function ContentManager({
 
   return (
     <div className="space-y-10">
-      {message && (
-        <p role="status" className={`text-sm font-bold rounded-control border p-3 ${message.tone === "ok" ? "border-brand/30 bg-brand-tint text-brand-ink" : "border-danger/30 bg-danger-tint text-danger"}`}>
-          {message.text}
-        </p>
-      )}
 
       {/* Generator */}
       <section className="bg-card border border-border rounded-card p-4 md:p-6">
@@ -239,7 +235,7 @@ export default function ContentManager({
                 className={`${buttonClass} bg-danger-tint text-danger`}
                 disabled={pending}
                 aria-label={`Hapus ${tp.title}`}
-                onClick={() => window.confirm(`Hapus topik "${tp.title}"?`) && run(() => deleteGrammarTopic(tp.slug), "Topik dihapus.")}
+                onClick={async () => (await confirmDialog({ title: "Hapus?", text: `Hapus topik "${tp.title}"?`, confirmText: "Ya, hapus", danger: true })) && run(() => deleteGrammarTopic(tp.slug), "Topik dihapus.")}
               >
                 <Trash2 className="w-4 h-4" />
               </button>
