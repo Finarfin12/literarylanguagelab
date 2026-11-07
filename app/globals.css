@@ -124,6 +124,32 @@ body {
   background-color: var(--background);
 }
 
+/*
+ * Kontrol bawaan peramban (dropdown, input, scrollbar) mengikuti tema, dan daftar pilihan <select>
+ * diberi latar + teks dari token. Tanpa ini, teks pilihan mewarisi warna krem tema gelap di atas
+ * daftar putih bawaan peramban sehingga nyaris tak terbaca.
+ */
+:root {
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
+}
+select,
+select option,
+select optgroup {
+  background-color: var(--card);
+  color: var(--foreground);
+}
+select option:disabled {
+  color: var(--muted-foreground);
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted-foreground);
+  opacity: 1;
+}
+
 /* Utilities for literature text */
 .prose-literature {
   /* Warna diwarisi dari tema reader (terang/sepia/gelap/kontras tinggi); ukuran & jarak bisa diubah pengguna */
