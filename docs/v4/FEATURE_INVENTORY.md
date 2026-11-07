@@ -165,6 +165,13 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 > | Item `/modul` di Ruang I, II, III, disembunyikan menurut flag | `lib/rooms.ts`, `components/CourseVisibility.tsx` (`useStudyVisible`), `lib/study-access.ts` |
 > | Kursus Dasar: langkah latihan bertag ("Kesalahan umum penutur Indonesia", "Pasangan bunyi") ditambahkan ke unit terkait oleh `0014` bila `0013` sudah dijalankan | `supabase/migrations/0014_l1_modules.sql` |
 
+> **(Fase 29 item 1, v5)** Latihan skimming dan scanning (fitur baru; tidak ada fitur lama yang berubah; tidak di balik flag):
+>
+> | Fitur | Lokasi |
+> |---|---|
+> | `/latihan-membaca`: empat teks latihan B1–C1 (ditulis sendiri); skimming (baca sekilas, jawab soal gambaran umum) dan scanning (pilih paragraf yang memuat jawaban); timer **opsional** yang hanya menampilkan waktu, teks tidak pernah disembunyikan dan latihan tidak dihentikan; tanpa AI, tanpa database, tanpa migrasi | `app/(dashboard)/latihan-membaca/page.tsx`, `components/reading/ReadingDrill.tsx`, `lib/reading-drill.ts`; uji `tests/reading-drill.test.mts` |
+> | Terdaftar di Ruang I, bagian "Bacaan berjenjang" | `lib/rooms.ts` |
+
 > **(Fase 18, ✅ admin diuji 375px/1280px, terang/gelap)** Paket konten Kursus Dasar dan tiga jalur bacaan (baris baru; Kursus Dasar tetap tersembunyi sampai flag `kursus_dasar` dinyalakan):
 >
 > | Fitur | Lokasi / cara uji |

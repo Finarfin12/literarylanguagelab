@@ -14,7 +14,7 @@ Alat periksa untuk Fase 24–28: memastikan Modul Belajar mencakup kompetensi ya
 
 | # | Kompetensi | Mata pelajaran | Alat | Status | Penulisan |
 |---|---|---|---|---|---|
-| 1 | Skimming, scanning, ide pokok, kecepatan baca | Membaca Cepat & Ide Pokok | `/library` | 📝 🔧 latihan skimming | ✍️ |
+| 1 | Skimming, scanning, ide pokok, kecepatan baca | Membaca Cepat & Ide Pokok | `/library`, `/latihan-membaca` | ✅ latihan skimming (Fase 29) | ✍️ |
 | 2 | Kelas kata, kala, modal, perbandingan | Struktur Kalimat Dasar | `/english-lab/grammar`, `/kursus` | ✅ | ✅ draft |
 | 3 | Makna tersirat, kosakata dari konteks | Memahami Makna dari Konteks | `/library`, `/tools/nuance-detector` | ✅ | ✅ draft |
 | 4 | Keluarga kata & kolokasi | Keluarga Kata & Kolokasi | `/vocabulary/core` | ✅ | ✅ draft |

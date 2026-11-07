@@ -43,7 +43,7 @@ export const ROOMS: Room[] = [
       { title: "Modul Belajar", blurb: "Belajar mandiri bertahap, mulai dari tahap Fondasi.", paths: [STUDY_PATH] },
       { title: "Grammar & kosakata inti", blurb: "Fondasi yang paling sering dipakai.", paths: ["/english-lab/grammar", "/vocabulary/core"] },
       { title: "Khas penutur Indonesia", blurb: "Kesalahan yang sering muncul dan bunyi yang mirip di telinga kita.", paths: ["/kesalahan-umum", "/pasangan-bunyi"] },
-      { title: "Bacaan berjenjang", blurb: "Teks yang disaring menurut level.", paths: ["/library"] },
+      { title: "Bacaan berjenjang", blurb: "Teks yang disaring menurut level, dan latihan membaca cepat.", paths: ["/library", "/latihan-membaca"] },
       {
         title: "Latihan keterampilan",
         blurb: "Menyimak, berbicara, dan grammar dalam praktik.",
@@ -184,6 +184,7 @@ export function getRoom(slug: string): Room | undefined {
 export const EXTRA_ITEMS: Record<string, { name: string; description: string }> = {
   "/kesalahan-umum": { name: "Kesalahan Umum", description: "Kesalahan khas penutur Indonesia: kalimat salah, perbaikan, penjelasan, dan latihan." },
   "/pasangan-bunyi": { name: "Pasangan Bunyi", description: "Latihan dengar dan ucapkan kata yang bunyinya mirip, seperti ship dan sheep." },
+  "/latihan-membaca": { name: "Latihan Skimming & Scanning", description: "Latihan menangkap gambaran umum dan mencari informasi tertentu di teks, dengan timer opsional." },
   "/frasa-harian": { name: "Frasa harian", description: "Kalimat siap pakai per situasi, dengan audio, arti natural, dan arti kata per kata." },
   [STUDY_PATH]: { name: "Modul Belajar", description: "Pelajaran lengkap per mata pelajaran: penjelasan, contoh, latihan, rangkuman, dan tugas. Pendamping belajar mandiri, bukan program resmi lembaga mana pun." },
   [COURSE_PATH]: { name: "Kursus Dasar", description: "Unit bertema A0–A2 dengan langkah berurutan; unit berikutnya disarankan, tidak dikunci." },

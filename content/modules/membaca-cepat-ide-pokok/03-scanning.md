@@ -4,7 +4,7 @@ subject: membaca-cepat-ide-pokok
 order: 3
 level: B1
 title: Scanning: menemukan informasi tertentu dengan cepat
-tools: /library
+tools: /library, /latihan-membaca
 objectives:
 - Menjelaskan apa itu scanning dan membedakannya dari skimming
 - Menemukan informasi spesifik (angka, nama, waktu, istilah) di jadwal, daftar, atau artikel

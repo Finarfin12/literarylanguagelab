@@ -4,7 +4,7 @@ subject: membaca-cepat-ide-pokok
 order: 2
 level: B1
 title: Skimming: menangkap gambaran umum dalam satu menit
-tools: /library
+tools: /library, /latihan-membaca
 objectives:
 - Menjelaskan apa itu skimming dan kapan memakainya
 - Melakukan skimming dengan urutan lima langkah
