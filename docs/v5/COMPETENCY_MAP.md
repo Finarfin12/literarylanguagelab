@@ -58,7 +58,7 @@ Alat periksa untuk Fase 24–28: memastikan Modul Belajar mencakup kompetensi ya
 | 27 | Terjemahan hukum, kesehatan, sains | Terjemahan Domain Khusus | `/translation-workspace`, `/glossary` | ✅ | ✅ draft |
 | 28 | Terjemahan fiksi & puisi | Menerjemahkan Karya Fiksi | `/translation-workspace`, `/tools/imagery-grader` | ✅ | ✅ draft |
 | 29 | Metode penelitian penerjemahan, penilaian kualitas | Meneliti Terjemahan | `/translation-workspace` | ✅ 🔧 ringkasan statistik | ✅ draft |
-| 30 | Proyek akhir & portofolio | Proyek Akhir | `/translation-workspace`, `/tools/case-study-generator` | ✅ | ☐ |
+| 30 | Proyek akhir & portofolio | Proyek Akhir | `/translation-workspace`, `/tools/case-study-generator` | ✅ | ✅ draft |
 
 ## Hasil pencocokan dengan dokumen acuan pemilik
 
