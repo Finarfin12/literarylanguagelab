@@ -4,6 +4,7 @@ import { useMemo, useRef, useState, useTransition } from "react";
 import { Lightbulb, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/primitives";
 import ToneAnalysis from "@/components/tone/ToneAnalysis";
+import EditSuggestSection from "./EditSuggestSection";
 import { containsTerm, type QaWarning } from "@/lib/translation/qa";
 import { matchTm } from "@/lib/translation/tm-match";
 import {
@@ -33,6 +34,7 @@ export default function SegmentPanel({
   annotations,
   onClose,
   onUseTm,
+  onEditTarget,
   onComment,
   onAnnotationsChange,
 }: {
@@ -44,6 +46,7 @@ export default function SegmentPanel({
   annotations: WorkspaceAnnotation[];
   onClose: () => void;
   onUseTm: (target: string) => void;
+  onEditTarget: (target: string) => void;
   onComment: (comment: string) => void;
   onAnnotationsChange: (next: WorkspaceAnnotation[]) => void;
 }) {
@@ -186,6 +189,8 @@ export default function SegmentPanel({
         <section aria-label="Analisis tone segmen">
           <ToneAnalysis text={segment.source} onUse={onUseTm} label="Analisis tone segmen" />
         </section>
+
+        <EditSuggestSection segment={segment} onEditTarget={onEditTarget} />
 
         <section aria-label="Komentar penerjemah">
           <h3 className="text-sm font-bold mb-2">Komentar penerjemah</h3>

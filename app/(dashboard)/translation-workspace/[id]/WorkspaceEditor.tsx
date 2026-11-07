@@ -288,6 +288,7 @@ export default function WorkspaceEditor({
             annotations={annotations.filter((a) => a.segment_id === selected.id)}
             onClose={() => setSelectedId(null)}
             onUseTm={(target) => update(selected.id, { target })}
+            onEditTarget={(target) => update(selected.id, { target })}
             onComment={(comment) => update(selected.id, { comment })}
             onAnnotationsChange={(next) => setAnnotations((prev) => [...prev.filter((a) => a.segment_id !== selected.id), ...next])}
           />

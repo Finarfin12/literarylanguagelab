@@ -38,14 +38,14 @@ Alat periksa untuk Fase 24–28: memastikan Modul Belajar mencakup kompetensi ya
 
 | # | Kompetensi | Mata pelajaran | Alat | Status | Penulisan |
 |---|---|---|---|---|---|
-| 15 | Kalimat efektif, afiksasi, ejaan Indonesia | Bahasa Indonesia untuk Penerjemah | — | 📝 🔧 penyuntingan bahasa Indonesia | ✅ draft |
+| 15 | Kalimat efektif, afiksasi, ejaan Indonesia | Bahasa Indonesia untuk Penerjemah | — | ✅ penyuntingan bahasa Indonesia (Fase 29, AI; perlu migrasi 0024 untuk Routing Fitur) | ✅ draft |
 | 16 | Merangkum | Merangkum | `/tools/paraphrase` | 📝 | ✅ draft |
 | 17 | Fonetik & fonologi | Bunyi Bahasa | `/tools/pronunciation-clinic` | ✅ | ✅ draft |
 | 18 | Linguistik umum | Pengantar Cara Kerja Bahasa | `/tools/sentence-architect`, `/tools/semantic-map` | 📝 | ✅ draft |
 | 19 | Analisis teks sebelum menerjemahkan | Analisis Teks Sumber | `/tools/tone-analyzer`, `/tools/idiom-detector` | ✅ | ✅ draft |
 | 20 | Teori penerjemahan, domestikasi & forenisasi, pergeseran | Teori Penerjemahan | `/translation-workspace` | ✅ | ✅ draft |
 | 21 | Terjemahan informatif, idiom, kolokasi; teks opini, sejarah, akademik populer | Menerjemahkan Teks Informatif | `/tools/idiom-detector`, `/glossary`, `/translation-memory` | ✅ | ✅ draft |
-| 22 | Penyuntingan substansi, bahasa, ketikan | Penyuntingan Terjemahan | `/tools/comparator`, `/tools/translation-timelapse` | 📝 🔧 penyuntingan bahasa Indonesia | ✅ draft |
+| 22 | Penyuntingan substansi, bahasa, ketikan | Penyuntingan Terjemahan | `/tools/comparator`, `/tools/translation-timelapse` | ✅ penyuntingan bahasa Indonesia (Fase 29, AI; perlu migrasi 0024 untuk Routing Fitur) | ✅ draft |
 
 ## Tahap 4 — Lanjut & proyek
 

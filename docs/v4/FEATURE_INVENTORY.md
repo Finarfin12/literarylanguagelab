@@ -178,6 +178,14 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 > |---|---|
 > | Kartu **"Ringkasan untuk ditinjau"** di halaman proyek: kemajuan, kata sumber dan terjemahan, rasio panjang, panjang rata-rata segmen, peringatan pemeriksaan otomatis, segmen beranotasi, dan rata-rata rubrik; **setiap angka menampilkan rumus dan data yang dikecualikan** (mis. segmen dengan terjemahan kosong, nomor segmen); tombol salin sebagai teks; dihitung di browser, tanpa AI, tanpa database baru, tanpa migrasi | `app/(dashboard)/translation-workspace/[id]/ProjectSummaryCard.tsx`, `lib/translation/summary.ts`; uji `tests/translation-summary.test.mts` |
 
+> **(Fase 29 item 3, v5)** Penyuntingan bahasa Indonesia hasil terjemahan (fitur AI baru di Ruang Kerja Segmen; tidak ada fitur lama yang berubah):
+>
+> | Fitur | Lokasi |
+> |---|---|
+> | Panel segmen: **"Minta saran penyuntingan"** menampilkan saran AI (ejaan, tata bahasa, tanda baca, kalimat efektif, pilihan kata, register, konsistensi) berupa kutipan harfiah, usulan, dan alasan; **tidak ada yang berubah sebelum pengguna menekan Terapkan** per saran; Abaikan, dan Urungkan perubahan terakhir; "catatan makna" hanya peringatan untuk diperiksa dengan sumber | `app/(dashboard)/translation-workspace/[id]/EditSuggestSection.tsx`, `SegmentPanel.tsx`, `WorkspaceEditor.tsx` |
+> | Route `POST /api/translation/edit-suggest`: lewat `guardAIRoute` (login, batas pemakaian kategori terjemahan, ukuran badan), `runAI` dengan feature key baru `translation-id-edit`, tanpa pesan sistem dari klien; saran disaring di server (kutipan harus harfiah ada di terjemahan, angka tidak boleh berubah, maksimum 8, duplikat dibuang) | `app/api/translation/edit-suggest/route.ts`, `lib/translation/edit-suggest.ts`, `lib/ai/features.ts` |
+> | Seed rute model fitur baru (opsional bagi kode: tanpa seed, `runAI` memakai konfigurasi lama) | `supabase/migrations/0024_translation_id_edit.sql` (**belum dijalankan; tindakan pemilik**); uji `tests/translation-edit-suggest.test.mts` |
+
 > **(Fase 18, ✅ admin diuji 375px/1280px, terang/gelap)** Paket konten Kursus Dasar dan tiga jalur bacaan (baris baru; Kursus Dasar tetap tersembunyi sampai flag `kursus_dasar` dinyalakan):
 >
 > | Fitur | Lokasi / cara uji |
