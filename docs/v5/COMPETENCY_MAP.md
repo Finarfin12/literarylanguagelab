@@ -57,7 +57,7 @@ Alat periksa untuk Fase 24–28: memastikan Modul Belajar mencakup kompetensi ya
 | 26 | Sejarah pemikiran & teori kritis | Pemikiran & Teori Kritis | `/tools/critical-lens`, `/tools/time-traveler` | 📝 | ✅ draft |
 | 27 | Terjemahan hukum, kesehatan, sains | Terjemahan Domain Khusus | `/translation-workspace`, `/glossary` | ✅ | ✅ draft |
 | 28 | Terjemahan fiksi & puisi | Menerjemahkan Karya Fiksi | `/translation-workspace`, `/tools/imagery-grader` | ✅ | ✅ draft |
-| 29 | Metode penelitian penerjemahan, penilaian kualitas | Meneliti Terjemahan | `/translation-workspace` | ✅ 🔧 ringkasan statistik | ☐ |
+| 29 | Metode penelitian penerjemahan, penilaian kualitas | Meneliti Terjemahan | `/translation-workspace` | ✅ 🔧 ringkasan statistik | ✅ draft |
 | 30 | Proyek akhir & portofolio | Proyek Akhir | `/translation-workspace`, `/tools/case-study-generator` | ✅ | ☐ |
 
 ## Hasil pencocokan dengan dokumen acuan pemilik
