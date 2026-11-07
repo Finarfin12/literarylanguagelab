@@ -186,6 +186,13 @@ Angka ringkas: 72 halaman, 59 route API, 16 file server action, 38 komponen, 28 
 > | Route `POST /api/translation/edit-suggest`: lewat `guardAIRoute` (login, batas pemakaian kategori terjemahan, ukuran badan), `runAI` dengan feature key baru `translation-id-edit`, tanpa pesan sistem dari klien; saran disaring di server (kutipan harus harfiah ada di terjemahan, angka tidak boleh berubah, maksimum 8, duplikat dibuang) | `app/api/translation/edit-suggest/route.ts`, `lib/translation/edit-suggest.ts`, `lib/ai/features.ts` |
 > | Seed rute model fitur baru (opsional bagi kode: tanpa seed, `runAI` memakai konfigurasi lama) | `supabase/migrations/0024_translation_id_edit.sql` (**belum dijalankan; tindakan pemilik**); uji `tests/translation-edit-suggest.test.mts` |
 
+> **(Fase 29 item 4, v5)** Topik grammar B2–C1 bertema sastra (konten baru lewat migrasi; tidak ada fitur lama yang berubah):
+>
+> | Fitur | Lokasi |
+> |---|---|
+> | Tiga topik lanjutan di Grammar Dasar (level C1, urutan 21–23): **Inversion for emphasis**, **Subjunctive** (were, wish, mandatif), **Participle clauses**; ringkasan Indonesia dan empat contoh en/id per topik (ditulis sendiri); lima soal **draft** per topik (pilihan ganda, isian, urutan) yang diterbitkan pemilik lewat Admin → Konten → Latihan | `supabase/migrations/0025_grammar_literary.sql` (**belum dijalankan; tindakan pemilik**); uji `tests/grammar-literary.test.mts` |
+> | Teks pengantar Grammar Dasar dan deskripsi menu tidak lagi menyebut "A1 sampai B1" atau "20 topik" | `app/(dashboard)/english-lab/grammar/page.tsx`, `lib/menu-config.ts` |
+
 > **(Fase 18, ✅ admin diuji 375px/1280px, terang/gelap)** Paket konten Kursus Dasar dan tiga jalur bacaan (baris baru; Kursus Dasar tetap tersembunyi sampai flag `kursus_dasar` dinyalakan):
 >
 > | Fitur | Lokasi / cara uji |

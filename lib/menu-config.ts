@@ -69,7 +69,7 @@ export const MENU_GROUPS: MenuGroup[] = [
     items: [
       { name: "Placement Test", path: "/english-lab/placement-test", description: "Tes singkat untuk mengetahui level CEFR kamu.", goals: ["umum"] },
       { name: "Tes Naik Level", path: "/english-lab/level-test", description: "Tes singkat untuk naik ke level CEFR berikutnya.", goals: ["umum"] },
-      { name: "Grammar Dasar", path: "/english-lab/grammar", description: "20 topik grammar A1-B1 yang disusun berurutan.", goals: ["umum"] },
+      { name: "Grammar Dasar", path: "/english-lab/grammar", description: "Topik grammar yang disusun berurutan, dari A1 sampai lanjutan bertema sastra.", goals: ["umum"] },
       { name: "Grammar Clinic", path: "/english-lab/grammar-clinic", description: "Latihan dan penjelasan tata bahasa.", goals: ["umum", "penerjemahan"] },
       { name: "Dialogue Simulator", path: "/english-lab/dialogue-simulator", description: "Latihan percakapan dengan lawan bicara AI.", goals: ["umum"] },
       { name: "Listening Test", path: "/english-lab/listening-test", description: "Latihan menyimak dengan soal pemahaman.", goals: ["umum"] },

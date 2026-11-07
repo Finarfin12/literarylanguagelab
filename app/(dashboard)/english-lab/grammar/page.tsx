@@ -23,7 +23,7 @@ export default async function GrammarTopicsPage() {
           <GraduationCap className="w-7 h-7 text-brand-ink" /> Grammar Dasar
         </h1>
         <p className="text-muted-foreground mt-2">
-          Topik grammar A1 sampai B1 yang disusun berurutan. Mulai dari atas, centang yang sudah kamu kuasai.
+          Topik grammar yang disusun berurutan, dari dasar sampai lanjutan bertema sastra. Mulai dari atas, centang yang sudah kamu kuasai.
         </p>
       </div>
 
