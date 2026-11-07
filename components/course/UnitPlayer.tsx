@@ -7,6 +7,7 @@ import { Button, ButtonLink, Card, EmptyState, ProgressBar } from "@/components/
 import { STEP_LABELS, stepTitle, unitPercent } from "@/lib/course";
 import type { StepView } from "./types";
 import { ExerciseStep, GrammarStep, ListenStep, ReadStep, SpeakStep, VocabStep } from "./StepViews";
+import { useToastOn } from "@/lib/swal";
 
 /**
  * Pemutar unit: langkah berurutan, tetapi bebas berpindah (tidak ada yang dikunci). "Selesai, lanjut" menyimpan
@@ -34,6 +35,7 @@ export default function UnitPlayer({
   const [saved, setSaved] = useState(alreadyCompleted ? views.length : startIndex);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  useToastOn(error, "error");
 
   const view = views[index];
   const last = index === views.length - 1;
@@ -143,7 +145,6 @@ export default function UnitPlayer({
         )}
       </Card>
 
-      {error && <p role="alert" className="text-sm text-danger mt-3">{error}</p>}
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <Button variant="secondary" onClick={() => { setIndex(index - 1); setError(""); }} disabled={index === 0}>

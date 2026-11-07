@@ -17,6 +17,7 @@ import {
   type LearningGoal,
 } from "@/lib/learning-goals";
 import { saveOnboarding } from "./actions";
+import { useToastOn } from "@/lib/swal";
 
 type Level = CefrLevel | typeof LEVEL_UNKNOWN | typeof LEVEL_ZERO;
 
@@ -48,6 +49,7 @@ export default function OnboardingPage() {
   const [goal, setGoal] = useState<LearningGoal | null>(null);
   const [minutes, setMinutes] = useState<DailyMinutes | null>(null);
   const [error, setError] = useState("");
+  useToastOn(error, "error");
   const [pending, startTransition] = useTransition();
 
   const canNext = step === 0 ? level !== null : step === 1 ? goal !== null : minutes !== null;
@@ -122,7 +124,6 @@ export default function OnboardingPage() {
           </fieldset>
         )}
 
-        {error && <p role="alert" className="mt-4 text-sm text-danger">{error}</p>}
 
         <div className="mt-6 flex items-center gap-2">
           {step > 0 && (

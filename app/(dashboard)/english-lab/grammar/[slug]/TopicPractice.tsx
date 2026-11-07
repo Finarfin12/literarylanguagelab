@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import { Button, Card, CardTitle } from "@/components/ui/primitives";
 import { isTopicDone, loadGrammarProgressSynced, saveTopicDone } from "@/lib/grammar-progress";
 import ExerciseSession from "@/components/exercises/ExerciseSession";
+import { useToastOn } from "@/lib/swal";
 
 type QuizItem = { sentence: string; answer: string; options: string[] };
 type Lesson = { title?: string; lesson_text?: string; quiz?: QuizItem[] };
@@ -32,6 +33,7 @@ export default function TopicPractice({
   const [done, setDone] = useState(false);
   const [dueNow, setDueNow] = useState(reviewDue);
   const [reviewNote, setReviewNote] = useState("");
+  useToastOn(reviewNote, "info");
   const [reviewBusy, setReviewBusy] = useState(false);
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [lessonLoading, setLessonLoading] = useState(false);
@@ -40,6 +42,7 @@ export default function TopicPractice({
   const [clinic, setClinic] = useState<ClinicResult | null>(null);
   const [clinicLoading, setClinicLoading] = useState(false);
   const [error, setError] = useState("");
+  useToastOn(error, "error");
 
   useEffect(() => {
     // localStorage hanya ada di browser
@@ -127,7 +130,6 @@ export default function TopicPractice({
 
   return (
     <div className="space-y-4">
-      {error && <p role="alert" className="text-sm text-danger">{error}</p>}
 
       {dueNow && (
         <Card className="border-warning-ink/30 bg-warning-tint">
@@ -145,7 +147,6 @@ export default function TopicPractice({
           )}
         </Card>
       )}
-      {reviewNote && <p role="status" className="text-sm font-bold text-brand-ink">{reviewNote}</p>}
 
       {exerciseCount > 0 && (
         <ExerciseSession

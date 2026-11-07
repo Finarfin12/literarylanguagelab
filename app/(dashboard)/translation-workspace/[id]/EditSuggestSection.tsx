@@ -5,6 +5,7 @@ import { PenLine, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/primitives";
 import { EDIT_ISSUE_LABELS, applySuggestion, type EditResult, type EditSuggestion } from "@/lib/translation/edit-suggest";
 import type { WorkspaceSegment } from "../_lib/types";
+import { useToastOn } from "@/lib/swal";
 
 /**
  * Penyuntingan bahasa Indonesia (Fase 29, item 3): AI hanya MENGUSULKAN. Tidak ada yang berubah sebelum pengguna menekan
@@ -13,6 +14,7 @@ import type { WorkspaceSegment } from "../_lib/types";
 export default function EditSuggestSection({ segment, onEditTarget }: { segment: WorkspaceSegment; onEditTarget: (target: string) => void }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  useToastOn(message, "info");
   const [result, setResult] = useState<EditResult | null>(null);
   const [undo, setUndo] = useState<string[]>([]);
   const target = segment.target ?? "";
@@ -75,7 +77,6 @@ export default function EditSuggestSection({ segment, onEditTarget }: { segment:
           </Button>
         )}
       </div>
-      {message && <p role="status" className="mt-2 text-sm text-muted-foreground bg-muted rounded-control p-2">{message}</p>}
 
       {result && result.meaningNotes.length > 0 && (
         <div className="mt-3 border border-warning/40 bg-warning-tint rounded-control p-2 text-sm">

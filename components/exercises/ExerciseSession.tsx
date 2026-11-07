@@ -5,6 +5,7 @@ import { ListChecks, RotateCcw } from "lucide-react";
 import { Button, Card, CardTitle, ProgressBar } from "@/components/ui/primitives";
 import { EXERCISE_TYPE_LABELS, type Exercise, type ExerciseResponse, type GradeResult } from "@/lib/exercises/types";
 import ExerciseRunner from "./ExerciseRunner";
+import { useToastOn } from "@/lib/swal";
 
 type Phase = "idle" | "loading" | "running" | "done";
 interface Answered { exercise: Exercise; result: GradeResult }
@@ -44,6 +45,7 @@ export default function ExerciseSession({
   const [index, setIndex] = useState(0);
   const [answered, setAnswered] = useState<Answered[]>([]);
   const [error, setError] = useState("");
+  useToastOn(error, "error");
   const [finish, setFinish] = useState<FinishInfo | null>(null);
   // Jawaban yang sudah dikirim ke server: hanya tutup sesi setelah semuanya terkirim
   const pending = useRef<Promise<unknown>[]>([]);
@@ -123,7 +125,6 @@ export default function ExerciseSession({
           <p className="text-sm text-muted-foreground mb-3">
             Soal pilihan ganda, isian, susun kalimat, pasangkan, dan dikte dengan umpan balik langsung. Soal yang pernah salah muncul lebih dulu.
           </p>
-          {error && <p role="alert" className="text-sm text-danger mb-3">{error}</p>}
           <Button onClick={start}>Mulai latihan ({count} soal)</Button>
         </div>
       )}

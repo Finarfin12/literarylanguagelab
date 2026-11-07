@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/primitives";
 import { saveLearningGoal } from "@/app/(dashboard)/onboarding/actions";
+import { useToastOn } from "@/lib/swal";
 import {
   DAILY_MINUTES,
   GOAL_LABELS,
@@ -16,6 +17,7 @@ export default function LearningGoalSection({ initialGoal, initialMinutes }: { i
   const [goal, setGoal] = useState<LearningGoal>(initialGoal ?? "umum");
   const [minutes, setMinutes] = useState<DailyMinutes>(initialMinutes ?? 20);
   const [message, setMessage] = useState("");
+  useToastOn(message, "info");
   const [pending, startTransition] = useTransition();
 
   const save = () => {
@@ -58,7 +60,6 @@ export default function LearningGoalSection({ initialGoal, initialMinutes }: { i
         </div>
         <div className="flex items-center gap-3">
           <Button type="button" variant="secondary" onClick={save} loading={pending}>Simpan tujuan</Button>
-          {message && <p role="status" className="text-sm text-muted-foreground">{message}</p>}
         </div>
       </div>
     </div>

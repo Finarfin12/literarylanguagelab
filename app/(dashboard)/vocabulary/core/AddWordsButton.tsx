@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/primitives";
 import { addNextCoreWords } from "./actions";
+import { useToastOn } from "@/lib/swal";
 
 export default function AddWordsButton({ level }: { level: string }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+  useToastOn(message, "info");
 
   const add = () => {
     setMessage("");
@@ -27,7 +29,6 @@ export default function AddWordsButton({ level }: { level: string }) {
       <Button onClick={add} loading={pending}>
         <Plus className="w-4 h-4" /> Tambah 10 kata berikutnya ke Review
       </Button>
-      {message && <p role="status" className="text-sm text-muted-foreground">{message}</p>}
     </div>
   );
 }

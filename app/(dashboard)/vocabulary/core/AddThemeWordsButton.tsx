@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/primitives";
 import { addThemeWords } from "./actions";
+import { useToastOn } from "@/lib/swal";
 
 /** Tambahkan kata satu tema ke Review (kata yang sudah dimiliki dilewati). */
 export default function AddThemeWordsButton({ theme }: { theme: string }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+  useToastOn(message, "info");
 
   const add = () => {
     setMessage("");
@@ -28,7 +30,6 @@ export default function AddThemeWordsButton({ theme }: { theme: string }) {
       <Button onClick={add} loading={pending}>
         <Plus className="w-4 h-4" /> Tambah kata tema ini ke Review
       </Button>
-      {message && <p role="status" className="text-sm text-muted-foreground">{message}</p>}
     </div>
   );
 }

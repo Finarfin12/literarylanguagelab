@@ -10,6 +10,7 @@ import { runQaChecks, type QaWarning } from "@/lib/translation/qa";
 import { saveSegment } from "../actions";
 import SegmentPanel from "./SegmentPanel";
 import ProjectSummaryCard from "./ProjectSummaryCard";
+import { useToastOn } from "@/lib/swal";
 import type {
   WorkspaceAnnotation,
   WorkspaceAssessment,
@@ -50,6 +51,7 @@ export default function WorkspaceEditor({
   const [assessment, setAssessment] = useState<WorkspaceAssessment | null>(latestAssessment);
   const [rubricLoading, setRubricLoading] = useState(false);
   const [message, setMessage] = useState("");
+  useToastOn(message, "info");
 
   // Simpan otomatis per segmen (debounce). Ref berisi data terbaru untuk dipakai timer.
   const segmentsRef = useRef(segments);
@@ -180,7 +182,6 @@ export default function WorkspaceEditor({
         </div>
       </div>
 
-      {message && <p role="status" className="mb-4 text-sm bg-muted rounded-control p-3">{message}</p>}
 
       <div className="flex flex-wrap gap-2 mb-6">
         <Button onClick={runRubric} loading={rubricLoading}><Award className="w-4 h-4" /> Nilai dengan rubrik</Button>

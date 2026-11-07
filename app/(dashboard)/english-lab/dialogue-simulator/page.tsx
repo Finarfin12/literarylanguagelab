@@ -8,6 +8,7 @@ import { DIALOGUE_SCENARIOS, type DialogueScenario } from "@/lib/dialogue-scenar
 import { helpFor, phraseMeaning, resolveBeginnerHelp } from "@/lib/dialogue-help";
 import { createClient } from "@/utils/supabase/client";
 import Swal from "sweetalert2";
+import { useToastOn } from "@/lib/swal";
 
 const ICON_MAP: Record<string, any> = { Coffee, Briefcase, Plane, Building, Stethoscope, UtensilsCrossed, Users, Headphones };
 
@@ -49,6 +50,7 @@ export default function DialogueSimulatorPage() {
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [translating, setTranslating] = useState<string | null>(null);
   const [translateError, setTranslateError] = useState<string | null>(null);
+  useToastOn(translateError, "error");
 
   useEffect(() => {
     let cancelled = false;
@@ -339,9 +341,6 @@ export default function DialogueSimulatorPage() {
                     >
                       {translating === msg.content ? <Loader2 className="w-3 h-3 animate-spin" /> : null} Lihat terjemahan
                     </button>
-                  )}
-                  {translateError && translating === null && !translations[msg.content] && i === messages.length - 1 && (
-                    <p role="alert" className="text-xs text-danger mt-1">{translateError}</p>
                   )}
                 </div>
               )}

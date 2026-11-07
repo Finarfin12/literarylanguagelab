@@ -7,6 +7,7 @@ import { CheckCircle2, Volume2, XCircle } from "lucide-react";
 import AnimatedPage from "@/components/AnimatedPage";
 import { Button, ButtonLink, Card, CardTitle } from "@/components/ui/primitives";
 import type { LevelSummary } from "@/components/profile/LevelProgressCard";
+import { useToastOn } from "@/lib/swal";
 
 type Question = {
   index: number;
@@ -46,6 +47,7 @@ export default function LevelTestPage() {
   const [starting, setStarting] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  useToastOn(error, "error");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [target, setTarget] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -119,7 +121,6 @@ export default function LevelTestPage() {
         </p>
       </div>
 
-      {error && <p role="alert" className="mb-4 text-sm text-danger">{error}</p>}
 
       {/* Hasil */}
       {result && (

@@ -8,6 +8,7 @@ import { Button, Card, CardTitle } from "@/components/ui/primitives";
 import Markdown from "@/components/ui/Markdown";
 import { smallButtonClass } from "@/components/exercises/shared";
 import { saveLessonTask, setLessonCompleted } from "@/app/(dashboard)/modul/actions";
+import { useToastOn } from "@/lib/swal";
 
 /** Tugas pribadi: jawaban disimpan hanya untuk pemilik, tanpa penilaian AI. */
 export function TaskBox({ lessonSlug, prompt, initial }: { lessonSlug: string; prompt: string; initial: string }) {
@@ -70,6 +71,7 @@ export function LessonFooter({
   const [done, setDone] = useState(completed);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
+  useToastOn(error, "error");
 
   const toggle = () => {
     setError("");
@@ -98,7 +100,6 @@ export function LessonFooter({
           </Link>
         )}
       </div>
-      {error && <p role="alert" className="mt-2 text-sm text-danger">{error}</p>}
       <p className="mt-3 text-xs text-muted-foreground">Urutan hanya saran: kamu boleh membuka pelajaran mana pun.</p>
     </div>
   );
@@ -114,11 +115,13 @@ export function LessonCompanion({ lessonSlug }: { lessonSlug: string }) {
   const [simple, setSimple] = useState<string | null>(null);
   const [simpleState, setSimpleState] = useState<"idle" | "loading" | "error">("idle");
   const [simpleError, setSimpleError] = useState("");
+  useToastOn(simpleError, "error");
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
   const [chatError, setChatError] = useState("");
+  useToastOn(chatError, "error");
 
   const loadSimple = async () => {
     setSimpleState("loading");
@@ -173,7 +176,6 @@ export function LessonCompanion({ lessonSlug }: { lessonSlug: string }) {
               {simpleState === "loading" ? "Menyusun..." : simpleState === "error" ? "Coba lagi" : "Jelaskan lebih sederhana"}
             </button>
           )}
-          {simpleError && <p role="alert" className="mt-2 text-sm text-danger">{simpleError}</p>}
         </div>
 
         <div>
@@ -188,7 +190,6 @@ export function LessonCompanion({ lessonSlug }: { lessonSlug: string }) {
               ))}
             </ul>
           )}
-          {chatError && <p role="alert" className="mb-2 text-sm text-danger">{chatError}</p>}
           <div className="flex gap-2">
             <input
               value={input}

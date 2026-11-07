@@ -7,6 +7,7 @@ import ToneAnalysis from "@/components/tone/ToneAnalysis";
 import EditSuggestSection from "./EditSuggestSection";
 import { containsTerm, type QaWarning } from "@/lib/translation/qa";
 import { matchTm } from "@/lib/translation/tm-match";
+import { useToastOn } from "@/lib/swal";
 import {
   addAnnotation,
   deleteAnnotation,
@@ -52,6 +53,7 @@ export default function SegmentPanel({
 }) {
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+  useToastOn(message, "info");
   const [sourceSpan, setSourceSpan] = useState("");
   const [targetSpan, setTargetSpan] = useState("");
   const [techniqueKey, setTechniqueKey] = useState(techniques[0]?.key ?? "");
@@ -141,7 +143,6 @@ export default function SegmentPanel({
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
-        {message && <p role="status" className="text-sm text-muted-foreground bg-muted rounded-control p-2">{message}</p>}
 
         {warnings.length > 0 && (
           <section aria-label="Peringatan pemeriksaan otomatis">

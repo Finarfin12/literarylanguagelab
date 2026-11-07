@@ -1,6 +1,7 @@
 "use client";
 
 // Pembungkus SweetAlert2 untuk konfirmasi dan pemberitahuan singkat (toast). Gaya mengikuti token di app/globals.css (.swal2-*).
+import { useEffect } from "react";
 import Swal from "sweetalert2";
 
 type ConfirmOptions = {
@@ -49,4 +50,11 @@ export function useNotice(): (value: NoticeValue) => void {
   return (value) => {
     if (value) notify(value.tone, value.text);
   };
+}
+
+/** Tampilkan toast setiap kali nilai pesan berubah menjadi teks tak kosong (untuk state error/pesan di komponen). */
+export function useToastOn(value: string | null | undefined, tone: "ok" | "error" | "info") {
+  useEffect(() => {
+    if (value) notify(tone, value);
+  }, [value, tone]);
 }

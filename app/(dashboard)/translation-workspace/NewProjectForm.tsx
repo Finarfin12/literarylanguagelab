@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/primitives";
 import { splitSentences } from "@/lib/translation/segment";
 import { createProject } from "./actions";
+import { useToastOn } from "@/lib/swal";
 
 const fieldClass = "w-full bg-background border border-border rounded-control p-3 text-foreground focus:outline-none focus:border-brand";
 
@@ -14,6 +15,7 @@ export default function NewProjectForm() {
   const [brief, setBrief] = useState("");
   const [sourceText, setSourceText] = useState("");
   const [error, setError] = useState("");
+  useToastOn(error, "error");
   const [pending, startTransition] = useTransition();
 
   const segmentCount = sourceText.trim() ? splitSentences(sourceText).length : 0;
@@ -44,7 +46,6 @@ export default function NewProjectForm() {
       <p className="text-xs text-muted-foreground">
         {segmentCount > 0 ? `Akan dipecah menjadi ${segmentCount} segmen (kalimat).` : "Teks dipecah otomatis per kalimat."}
       </p>
-      {error && <p role="alert" className="text-sm text-danger">{error}</p>}
       <Button onClick={submit} loading={pending} disabled={!title.trim() || !sourceText.trim()}>Buat proyek</Button>
     </div>
   );
