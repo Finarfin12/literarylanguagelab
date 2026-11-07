@@ -31,6 +31,17 @@ const match = {
 };
 const dictation = { ...base, type: "dictation", prompt: { text: "I don't like tea." }, answer: { accept: ["I don't like tea.", "I do not like tea."] } };
 
+test("validator: tag modul belajar yang panjang (sampai 100 karakter) diterima; lebih dari itu ditolak", () => {
+  const base = { type: "mcq", cefr_level: "C1", topic_slug: null, unit_slug: null, prompt: { question: "Pilih yang benar.", options: ["a", "b"] }, answer: { correct: "a" }, explanation_id: "Penjelasan singkat." };
+  const long = `mod:${"a".repeat(80)}:12`;
+  assert.equal(long.length, 87);
+  assert.ok(g.validateExerciseDraft({ ...base, tags: [long] }).ok);
+  assert.ok(g.validateExerciseDraft({ ...base, tags: ["x".repeat(g.MAX_TAG_LENGTH)] }).ok);
+  const tooLong = g.validateExerciseDraft({ ...base, tags: ["x".repeat(g.MAX_TAG_LENGTH + 1)] });
+  assert.equal(tooLong.ok, false);
+  assert.match(tooLong.error, /maksimal 100/);
+});
+
 test("normalizeAnswer: huruf besar, tanda baca, spasi, apostrof miring, tanda hubung", () => {
   assert.equal(g.normalizeAnswer("  She’s   Happy! "), "she's happy");
   assert.equal(g.normalizeAnswer("well-known"), "well known");

@@ -15,6 +15,7 @@ const pl = await load("scripts/lib/parse-lesson.mjs");
 const lm = await load("scripts/lib/load-modules.mjs");
 const rooms = await load("lib/rooms.ts");
 const flags = await load("lib/ai/flag-rules.ts");
+const grade = await load("lib/exercises/grade.ts");
 
 let passed = 0;
 function test(name: string, fn: () => void) {
@@ -241,6 +242,25 @@ test("semua berkas konten sah dan mata pelajaran percobaan lengkap", () => {
   assert.ok(trial.lessons.length >= 4 && trial.lessons.length <= 6, `${trial.lessons.length} pelajaran`);
   assert.ok(trial.quiz && trial.quiz.exercises.length >= 8, "kuis akhir");
   assert.ok(trial.subject.outcomes.length >= 3);
+});
+
+test("semua soal semua mata pelajaran lolos validator mesin latihan dengan tag yang dibuat impor (mod:<pelajaran>:<n>, maks. panjang tag)", () => {
+  let checked = 0;
+  let longest = 0;
+  const check = (ex: Record<string, unknown>, prefix: string, n: number, where: string) => {
+    const tags = [prefix, `${prefix}:${n}`];
+    longest = Math.max(longest, ...tags.map((x) => x.length));
+    const v = grade.validateExerciseDraft({ ...ex, topic_slug: null, unit_slug: null, tags });
+    assert.ok(v.ok, `${where} soal ${n}: ${v.error}`);
+    checked++;
+  };
+  for (const subj of loaded.subjects) {
+    for (const l of subj.lessons) l.exercises.forEach((ex: Record<string, unknown>, i: number) => check(ex, `mod:${l.lesson.slug}`, i + 1, l.lesson.slug));
+    if (subj.quiz) subj.quiz.exercises.forEach((ex: Record<string, unknown>, i: number) => check(ex, `mod:${subj.subject.slug}:kuis`, i + 1, `${subj.subject.slug} kuis`));
+  }
+  assert.ok(checked > 900, `hanya ${checked} soal diperiksa`);
+  assert.ok(longest > 60, "uji harus mencakup tag lebih panjang dari 60 karakter");
+  assert.ok(longest <= grade.MAX_TAG_LENGTH, `tag terpanjang ${longest} melebihi batas ${grade.MAX_TAG_LENGTH}`);
 });
 
 test("setiap pelajaran percobaan memenuhi panduan: tujuan, panjang, 3+ soal, rangkuman, tugas, sumber, alat valid", () => {

@@ -23,6 +23,8 @@ import type {
 } from "./types";
 
 const CEFR = ["A1", "A2", "B1", "B2", "C1", "C2"];
+/** Tag modul belajar berbentuk "mod:<slug-pelajaran>:<nomor>"; slug pelajaran bisa 80 karakter, jadi batasnya longgar. */
+export const MAX_TAG_LENGTH = 100;
 const TYPES: readonly string[] = ["mcq", "cloze", "order", "match", "dictation", "pattern"];
 const BLANK = "___";
 
@@ -317,7 +319,7 @@ export function validateExerciseDraft(raw: unknown): ValidationResult<ExerciseDr
   const tagsRaw = raw.tags === undefined || raw.tags === null ? [] : raw.tags;
   if (!isStringArray(tagsRaw) || tagsRaw.length > 12) return { ok: false, error: "Tag maksimal 12 dan berupa teks." };
   const tags = Array.from(new Set(tagsRaw.map((t) => t.trim()).filter(Boolean)));
-  if (tags.some((t) => t.length > 60)) return { ok: false, error: "Satu tag maksimal 60 karakter." };
+  if (tags.some((t) => t.length > MAX_TAG_LENGTH)) return { ok: false, error: `Satu tag maksimal ${MAX_TAG_LENGTH} karakter.` };
 
   const explanation = text(raw.explanation_id, 3, 1200);
   if (!explanation) return { ok: false, error: "Penjelasan bahasa Indonesia wajib (3-1200 karakter)." };
